@@ -50,6 +50,12 @@ def make_server(service, *, host='127.0.0.1', port=8765):
                 route=parts[3:]
                 if self.command=='GET' and route==['events']:
                     result=service.events(token,project,int(parse_qs(url.query).get('after',['0'])[0]))
+                elif self.command=='POST' and route==['hypotheses']:
+                    result=service.publish_hypothesis(token,project,**body)
+                elif self.command=='GET' and route==['hypotheses']:
+                    result=service.hypotheses(token,project)
+                elif self.command=='GET' and len(route)==2 and route[0]=='hypotheses':
+                    result=service.hypotheses(token,project,route[1])
                 elif self.command=='GET' and len(route)==2 and route[0]=='runs':
                     result=service.get_run(token,project,route[1])
                 elif self.command=='GET' and route==['dispatch']:
@@ -88,7 +94,7 @@ def make_server(service, *, host='127.0.0.1', port=8765):
                 self.respond(200,result)
             except (ValueError,TypeError,KeyError) as exc:
                 code=getattr(exc,'code',str(exc))
-                status=401 if code=='unauthorized' else 403 if code=='forbidden' else 404 if code in ('not_found','run_not_found','contract_not_found','reference_not_found') else 409 if code in ('revision_conflict','idempotency_conflict','admission_closed','budget_exhausted') else 400
+                status=401 if code=='unauthorized' else 403 if code=='forbidden' else 404 if code in ('not_found','run_not_found','contract_not_found','reference_not_found','hypothesis_not_found') else 409 if code in ('revision_conflict','idempotency_conflict','admission_closed','budget_exhausted') else 400
                 self.respond(status,{'error':code})
             except Exception:
                 self.respond(500,{'error':'internal_error'})

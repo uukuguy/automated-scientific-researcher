@@ -53,6 +53,7 @@ class ControlService(PolicyStore):
             CREATE TABLE IF NOT EXISTS asr_dispatch(id TEXT PRIMARY KEY, project TEXT, run TEXT, trial TEXT, attempt TEXT UNIQUE, state TEXT, record TEXT);
             CREATE TABLE IF NOT EXISTS asr_commands(project TEXT, run TEXT, command_id TEXT PRIMARY KEY, record TEXT);
             CREATE TABLE IF NOT EXISTS asr_runtime_sessions(project TEXT, run TEXT, session_id TEXT PRIMARY KEY, state TEXT, record TEXT);
+            CREATE TABLE IF NOT EXISTS asr_hypotheses(project TEXT NOT NULL, hypothesis_id TEXT NOT NULL, revision INTEGER NOT NULL, record TEXT NOT NULL, PRIMARY KEY(project,hypothesis_id,revision));
             CREATE TABLE IF NOT EXISTS asr_findings(project TEXT, run TEXT, finding_id TEXT, revision INTEGER, record TEXT, PRIMARY KEY(project,run,finding_id,revision));
             ''')
 
@@ -196,6 +197,9 @@ class ControlService(PolicyStore):
             record['contract']=self._contract(db,project,record['contract_id'],record['contract_revision'])
             record['budget']={d:self.budgets._balance(db,project,d) for d in record['contract']['document']['budget']}
             record['trials']=[dict(json.loads(body),dispatch_state=state) for state,body in db.execute('SELECT state,record FROM asr_dispatch WHERE project=? AND run=? ORDER BY rowid',(project,run))]
+            for trial in record['trials']:
+                trial.setdefault('hypothesis_ref',None)
+                trial.setdefault('hypothesis_linkage','linked' if trial['hypothesis_ref'] else 'legacy_unlinked')
             commands=[json.loads(r[0]) for r in db.execute('SELECT record FROM asr_commands WHERE project=? AND run=? ORDER BY rowid',(project,run))]
             record['guidance']=[r for r in commands if r['kind']=='guidance']
             if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='asr_executions'").fetchone():
@@ -211,15 +215,18 @@ class ControlService(PolicyStore):
         run=ControlService._run(db,dispatch['project_id'],dispatch['research_run_id'])
         return run['state']=='running' and run['admission_open'] and run['health']=='ok' and run.get('quota_state','unknown') in ('unknown','available')
 
-    def submit_trial(self, token, project, run, *, request_key, variables, references, requested_budget):
+    def submit_trial(self, token, project, run, *, request_key, variables, references, requested_budget, hypothesis_ref=None):
         principal=self._auth(token,project,{'researcher','human'})
         self._identity(run,request_key)
         payload=[principal['subject'],variables,references,requested_budget]
+        # Preserve byte-for-byte request identity for historical unlinked trials.
+        if hypothesis_ref is not None: payload.append(hypothesis_ref)
         with self._connect() as db:
             db.execute('BEGIN IMMEDIATE')
             replay=self._replay(db,project,'trial:'+run,request_key,payload)
             if replay:return replay
             running=self._run(db,project,run)
+            frozen_hypothesis=self._hypothesis_ref(db,project,hypothesis_ref) if hypothesis_ref is not None else None
             if not self.owning_gate(db,{'project_id':project,'research_run_id':run}): raise ControlError('admission_closed')
             contract=self._contract(db,project,running['contract_id'],running['contract_revision'])
             doc=contract['document']
@@ -244,6 +251,7 @@ class ControlService(PolicyStore):
             trial='trial_'+uuid.uuid4().hex;attempt='attempt_'+uuid.uuid4().hex
             self.budgets.reserve_many_in_transaction(db,project,attempt,requested_budget)
             record=dict(project_id=project,research_run_id=run,trial_id=trial,execution_attempt_id=attempt,contract_id=running['contract_id'],contract_revision=running['contract_revision'],contract=contract,variables=values,references=references,requested_budget=requested_budget,execution_request=execution_request,state='queued',created_at=now())
+            record.update(hypothesis_ref=frozen_hypothesis,hypothesis_linkage='linked' if frozen_hypothesis else 'legacy_unlinked')
             db.execute('INSERT INTO asr_dispatch VALUES (?,?,?,?,?,?,?)',(attempt,project,run,trial,attempt,'queued',encoded(record)))
             self._remember(db,project,'trial:'+run,request_key,payload,record)
             self._event(db,project,run,'trial_admitted',trial_id=trial,execution_attempt_id=attempt)
@@ -342,20 +350,22 @@ class ControlService(PolicyStore):
         return self.references.get(project,kind,digest)
 
     def publish_finding(self, token, project, run, *, finding_id, expected_revision,
-                        idempotency_key, statement, trial_ids, limitations):
+                        idempotency_key, statement, trial_ids, limitations, hypothesis_evidence=None):
         principal=self._auth(token,project,{'human','researcher'})
         self._identity(run,finding_id,idempotency_key);self._revision(expected_revision)
         if type(statement) is not str or not statement.strip() or type(limitations) is not str or not limitations.strip(): raise ControlError('invalid_finding')
         if type(trial_ids) is not list or not trial_ids or any(type(t) is not str for t in trial_ids) or len(set(trial_ids))!=len(trial_ids): raise ControlError('invalid_trial_ids')
         payload=[principal['subject'],finding_id,expected_revision,statement,trial_ids,limitations]
+        if hypothesis_evidence is not None: payload.append(hypothesis_evidence)
         with self._connect() as db:
             db.execute('BEGIN IMMEDIATE')
             replay=self._replay(db,project,'finding:'+run,idempotency_key,payload)
             if replay:return replay
             self._run(db,project,run)
             evidence=[]
+            admitted_trials={}
             for trial in trial_ids:
-                row=db.execute('SELECT attempt,state FROM asr_dispatch WHERE project=? AND run=? AND trial=?',(project,run,trial)).fetchone()
+                row=db.execute('SELECT attempt,state,record FROM asr_dispatch WHERE project=? AND run=? AND trial=?',(project,run,trial)).fetchone()
                 if row is None: raise ControlError('trial_not_found')
                 if row[1] not in ('succeeded','failed','cancelled','timed_out','interrupted'): raise ControlError('evidence_not_published')
                 from asr_supervisor.store import ExecutionStore
@@ -372,9 +382,12 @@ class ControlService(PolicyStore):
                 except (OSError,ValueError,KeyError,RuntimeError) as exc:
                     raise ControlError('evidence_unavailable') from exc
                 evidence.append(dict(trial_id=trial,execution_attempt_id=row[0],manifest_hash=execution['report']['manifest_hash']))
+                admitted_trials[trial]=json.loads(row[2])
             latest=db.execute('SELECT COALESCE(MAX(revision),0) FROM asr_findings WHERE project=? AND run=? AND finding_id=?',(project,run,finding_id)).fetchone()[0]
             if latest!=expected_revision: raise ControlError('revision_conflict')
             record=dict(project_id=project,research_run_id=run,finding_id=finding_id,revision=latest+1,statement=statement,limitations=limitations,evidence=evidence,status='candidate',author=principal['subject'],created_at=now())
+            if hypothesis_evidence is not None:
+                record['hypothesis_evidence']=self._finding_hypothesis_evidence(db,project,hypothesis_evidence,admitted_trials,evidence,principal['subject'])
             db.execute('INSERT INTO asr_findings VALUES (?,?,?,?,?)',(project,run,finding_id,latest+1,encoded(record)))
             self._remember(db,project,'finding:'+run,idempotency_key,payload,record)
             self._event(db,project,run,'candidate_finding_published',finding_id=finding_id,revision=latest+1)
@@ -613,3 +626,61 @@ class ControlService(PolicyStore):
             from asr_supervisor.store import ExecutionStore
             ExecutionStore.finalize_controls_in_transaction(db,project,run)
             return session
+
+    def publish_hypothesis(self, token, project, hypothesis_id, document, *, expected_revision, idempotency_key):
+        """Append an immutable author prediction; never publish validation status."""
+        principal=self._auth(token,project,{'human','researcher'})
+        self._identity(hypothesis_id,idempotency_key);self._revision(expected_revision)
+        from .hypotheses import validate_document
+        document=validate_document(document)
+        payload=[principal['subject'],hypothesis_id,document,expected_revision]
+        with self._connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            replay=self._replay(db,project,'hypothesis',idempotency_key,payload)
+            if replay:return replay
+            latest=db.execute('SELECT COALESCE(MAX(revision),0) FROM asr_hypotheses WHERE project=? AND hypothesis_id=?',(project,hypothesis_id)).fetchone()[0]
+            if latest!=expected_revision:raise ControlError('revision_conflict')
+            record=dict(schema_version='asr-hypothesis/1',project_id=project,hypothesis_id=hypothesis_id,revision=latest+1,parent_revision=latest or None,document=document,sha256=hashlib.sha256(encoded(document).encode()).hexdigest(),author=principal['subject'],created_at=now())
+            db.execute('INSERT INTO asr_hypotheses VALUES (?,?,?,?)',(project,hypothesis_id,latest+1,encoded(record)))
+            self._remember(db,project,'hypothesis',idempotency_key,payload,record)
+            self._event(db,project,None,'hypothesis_published',hypothesis_id=hypothesis_id,revision=latest+1,parent_revision=record['parent_revision'])
+            return record
+
+    def hypotheses(self, token, project, hypothesis_id=None):
+        self._auth(token,project)
+        if hypothesis_id is not None:self._identity(hypothesis_id)
+        with self._connect() as db:
+            if hypothesis_id is None:
+                rows=db.execute('SELECT record FROM asr_hypotheses WHERE project=? ORDER BY hypothesis_id,revision',(project,))
+            else:
+                rows=db.execute('SELECT record FROM asr_hypotheses WHERE project=? AND hypothesis_id=? ORDER BY revision',(project,hypothesis_id))
+            return [json.loads(row[0]) for row in rows]
+
+    def _hypothesis_ref(self, db, project, reference):
+        if type(reference) is not dict or set(reference)!={'project_id','hypothesis_id','revision'}:raise ControlError('invalid_hypothesis_ref')
+        if reference['project_id']!=project:raise ControlError('hypothesis_scope_conflict')
+        self._identity(reference['hypothesis_id'])
+        if type(reference['revision']) is not int or not 1<=reference['revision']<=2**63-1:raise ControlError('invalid_hypothesis_ref')
+        row=db.execute('SELECT record FROM asr_hypotheses WHERE project=? AND hypothesis_id=? AND revision=?',(project,reference['hypothesis_id'],reference['revision'])).fetchone()
+        if row is None:raise ControlError('hypothesis_not_found')
+        record=json.loads(row[0])
+        return dict(reference,sha256=record['sha256'])
+
+    def _finding_hypothesis_evidence(self, db, project, relations, trials, evidence, author):
+        """Validate author links without deciding experimental/scientific validity."""
+        fields={'hypothesis_ref','trial_id','assessment','scope','analysis_timing'}
+        if type(relations) is not list or not relations or len(relations)>256:raise ControlError('invalid_hypothesis_evidence')
+        records=[];seen=set()
+        for relation in relations:
+            if type(relation) is not dict or set(relation)!=fields:raise ControlError('invalid_hypothesis_evidence')
+            if relation['assessment'] not in ('supports','opposes','uncertain') or relation['analysis_timing'] not in ('prospective','post_hoc') or type(relation['scope']) is not str or not relation['scope'].strip():raise ControlError('invalid_hypothesis_evidence')
+            if type(relation['trial_id']) is not str or relation['trial_id'] not in trials:raise ControlError('hypothesis_evidence_trial_conflict')
+            reference=self._hypothesis_ref(db,project,relation['hypothesis_ref'])
+            key=(reference['hypothesis_id'],reference['revision'],relation['trial_id'])
+            if key in seen:raise ControlError('duplicate_hypothesis_evidence')
+            seen.add(key)
+            hypothesis=json.loads(db.execute('SELECT record FROM asr_hypotheses WHERE project=? AND hypothesis_id=? AND revision=?',(project,reference['hypothesis_id'],reference['revision'])).fetchone()[0])
+            if relation['analysis_timing']=='prospective' and (trials[relation['trial_id']].get('hypothesis_ref')!=reference or hypothesis['document']['analysis_timing']=='post_hoc'):raise ControlError('post_hoc_label_required')
+            source=next(item for item in evidence if item['trial_id']==relation['trial_id'])
+            records.append(dict(relation,hypothesis_ref=reference,execution_attempt_id=source['execution_attempt_id'],manifest_hash=source['manifest_hash'],assessment_kind='author_claim',assessment_author=author))
+        return records

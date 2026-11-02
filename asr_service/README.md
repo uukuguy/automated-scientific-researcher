@@ -154,3 +154,62 @@ not establish containment of descendants that detach into another group; this
 researcher profile exposes bounded file tools and keeps numerical execution in
 the supervised container backend. Broader researcher shell privileges require
 a verified OS execution boundary before claiming complete subtree containment.
+
+## P3 hypothesis revisions (first D016 slice)
+
+Project-scoped hypotheses are immutable author statements, independent of runtime
+sessions. `publish_hypothesis(token, project, hypothesis_id, document,
+expected_revision=..., idempotency_key=...)` appends a revision under a SQLite
+write transaction with an event and replay receipt. The service assigns revision,
+parent revision, author, timestamp and document SHA-256. A stale version or a
+reused key with different content is rejected. Publication does not judge whether
+an experiment is valid or a hypothesis is supported.
+
+HTTP provides POST `/v1/projects/{project}/hypotheses` with `hypothesis_id`,
+`document`, `expected_revision`, and `idempotency_key`; GET the same path lists all
+revisions, and GET `/hypotheses/{hypothesis_id}` filters that list. Human and
+researcher roles can publish; existing project ACLs govern reads. The strict
+schema is exported as `asr_service.hypotheses.HYPOTHESIS_SCHEMA`.
+
+The document requires nonempty `statement`, `prediction`, `scope`,
+`refutation_criteria`, and `change_reason`, plus `study_type` (`exploratory` or
+`confirmatory`) and `analysis_timing` (`prospective` or `post_hoc`). Unknown fields,
+including author-written validation status, are rejected. Revisions form a
+linear parent chain within a project/hypothesis ID; branching hypotheses and
+formal Validation reports are outside this slice.
+
+Trial admission optionally accepts:
+
+```json
+{"hypothesis_ref":{"project_id":"project-id","hypothesis_id":"hypothesis-id","revision":1}}
+```
+
+The owning transaction checks project membership and exact revision before
+reserving resources, then freezes that reference with the document hash beside
+the already frozen evaluation reference. Later revisions cannot replace it.
+Omitting the reference preserves the historical request encoding and replay
+receipt. New omitted-reference trials use the compatibility label
+`legacy_unlinked`; old records receive that label only in the read projection.
+Persisted trial evidence and old receipts are not rewritten.
+
+Finding publication optionally accepts `hypothesis_evidence`, a nonempty array:
+
+```json
+[{"hypothesis_ref":{"project_id":"project-id","hypothesis_id":"hypothesis-id","revision":1},"trial_id":"trial-id","assessment":"uncertain","scope":"This fixed input only","analysis_timing":"prospective"}]
+```
+
+Assessment choices are `supports`, `opposes`, and `uncertain`. Every trial must
+already belong to the finding's verified evidence list. Stored links include its
+actual attempt/manifest and are explicitly marked `assessment_kind: author_claim`.
+They cannot set an evaluator or formal validation state. `prospective` is accepted
+only for the exact hypothesis revision frozen at trial admission and a hypothesis
+not marked post hoc. Legacy unlinked trials or a different revision require an
+explicit `post_hoc` interpretation; they cannot be backfilled as earlier
+predictions. New finding revisions preserve prior opposing or uncertain records.
+No relationship automatically establishes scientific support or refutation.
+
+When the optional upstream AAR organization is enabled, its shared Finding
+projection carries these canonical links in `config.hypothesis_evidence` and
+preserves `status: candidate`. Prior finding revisions remain separate Forum
+records, including opposing claims; projection consistency checks reject altered
+links. This does not introduce a second Hypothesis authority in the upstream ORM.

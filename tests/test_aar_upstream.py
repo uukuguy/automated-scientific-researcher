@@ -89,7 +89,10 @@ class UpstreamIntegrationTests(unittest.TestCase):
         from asr_supervisor.store import ExecutionStore
         from integrations.aar.bridge import ResearchBridge
         from powerflow_lab.runner import digest,_inventory
-        adapter=self.adapter();self.start(adapter);trial=self.submit()
+        adapter=self.adapter();self.start(adapter)
+        hypothesis=self.service.publish_hypothesis('agent-secret','p','h',dict(statement='Bounded Newton prediction',prediction='Mismatch below threshold',scope='case118',refutation_criteria='Valid trial exceeds threshold',study_type='confirmatory',change_reason='Initial',analysis_timing='prospective'),expected_revision=0,idempotency_key='h')
+        reference=dict(project_id='p',hypothesis_id='h',revision=1)
+        trial=self.service.submit_trial('agent-secret','p','r',request_key='trial',variables={},references={k:v for k,v in self.refs.items() if k!='reference'},requested_budget={'attempts':1,'execution_ms':5000},hypothesis_ref=reference)
         store=ExecutionStore(self.service.path);claim=store.claim(trial['execution_attempt_id'],'numerical')
         evidence=Path(self.tmp.name)/'evidence';evidence.mkdir()
         (evidence/'log.txt').write_text('negative numerical result')
@@ -97,7 +100,7 @@ class UpstreamIntegrationTests(unittest.TestCase):
         (evidence/'manifest.json').write_text(json.dumps(manifest))
         store.report(trial['execution_attempt_id'],1,'numerical',dict(execution_exited=True,status='failed',manifest_hash=digest(evidence/'manifest.json'),evidence_path=str(evidence),usage={'attempts':1,'execution_ms':1}))
         for revision in range(2):
-            self.service.publish_finding('agent-secret','p','r',finding_id='negative',expected_revision=revision,idempotency_key='finding'+str(revision),statement='Negative result revision '+str(revision+1),trial_ids=[trial['trial_id']],limitations='Calibration only')
+            self.service.publish_finding('agent-secret','p','r',finding_id='negative',expected_revision=revision,idempotency_key='finding'+str(revision),statement='Negative result revision '+str(revision+1),trial_ids=[trial['trial_id']],limitations='Calibration only',hypothesis_evidence=[dict(hypothesis_ref=reference,trial_id=trial['trial_id'],assessment='opposes' if revision==0 else 'uncertain',scope='Calibration only; validity unassessed',analysis_timing='prospective')])
         projected=adapter.sync_findings('human-secret','p','r')
         self.assertEqual(len(projected),2)
         self.assertEqual(len(adapter.sync_findings('human-secret','p','r')),2)
@@ -105,6 +108,12 @@ class UpstreamIntegrationTests(unittest.TestCase):
         self.assertEqual([p['asr_revision'] for p in posts],[1,2])
         self.assertEqual(posts[0]['asr_evidence'][0]['trial_id'],trial['trial_id'])
         self.assertIsNone(posts[0]['pgr'])
+        self.assertEqual(posts[0]['config']['status'],'candidate')
+        self.assertEqual(posts[0]['config']['hypothesis_evidence'][0]['assessment'],'opposes')
+        self.assertEqual(posts[1]['config']['hypothesis_evidence'][0]['assessment'],'uncertain')
+        self.assertEqual(posts[0]['config']['hypothesis_evidence'][0]['hypothesis_ref']['sha256'],hypothesis['sha256'])
+        self.assertEqual(posts[0]['config']['hypothesis_evidence'][0]['assessment_kind'],'author_claim')
+        self.assertEqual(posts[0]['config']['hypothesis_evidence'],self.service.findings('agent-secret','p','r')[0]['hypothesis_evidence'])
         work=Path(self.tmp.name)/'workspace';work.mkdir();(work/'note.md').write_text('negative result with trial '+trial['trial_id'])
         bridge=ResearchBridge(self.service,project='p',run='r',researcher_token='agent-secret',supervisor_token='human-secret',workspace=work,snapshots=Path(self.tmp.name)/'snapshots',organization=adapter)
         snapshot=bridge.call('snapshot',{'paths':['note.md']},'snapshot')

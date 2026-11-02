@@ -140,12 +140,14 @@ class UpstreamAdapter:
             db.execute('BEGIN IMMEDIATE')
             for body, in db.execute('SELECT record FROM asr_findings WHERE project=? AND run=? ORDER BY finding_id,revision',(project,run)).fetchall():
                 finding=json.loads(body)
-                prior=db.execute('SELECT content,asr_evidence FROM findings WHERE asr_project_id=? AND asr_research_run_id=? AND asr_finding_id=? AND asr_revision=?',(project,run,finding['finding_id'],finding['revision'])).fetchone()
+                config=dict(status='candidate',limitations=finding['limitations'],asr_author=finding['author'])
+                if 'hypothesis_evidence' in finding:config['hypothesis_evidence']=finding['hypothesis_evidence']
+                prior=db.execute('SELECT content,asr_evidence,config FROM findings WHERE asr_project_id=? AND asr_research_run_id=? AND asr_finding_id=? AND asr_revision=?',(project,run,finding['finding_id'],finding['revision'])).fetchone()
                 if prior:
-                    if prior!=(finding['statement'],encoded(finding['evidence'])):raise ValueError('upstream_finding_projection_corrupt')
+                    if prior!=(finding['statement'],encoded(finding['evidence']),encoded(config)):raise ValueError('upstream_finding_projection_corrupt')
                     continue
                 post=hashlib.sha256(encoded([project,run,finding['finding_id'],finding['revision']]).encode()).hexdigest()
-                self._insert(db,self.models.Finding,dict(post_id=post,title=finding['finding_id'],content=finding['statement'],finding_type='result',idea_uid=project,idea_name=project,run_id=run,dataset='asr-powerflow',config=encoded(dict(status='candidate',limitations=finding['limitations'],asr_author=finding['author'])),asr_project_id=project,asr_research_run_id=run,asr_finding_id=finding['finding_id'],asr_revision=finding['revision'],asr_evidence=encoded(finding['evidence'])))
+                self._insert(db,self.models.Finding,dict(post_id=post,title=finding['finding_id'],content=finding['statement'],finding_type='result',idea_uid=project,idea_name=project,run_id=run,dataset='asr-powerflow',config=encoded(config),asr_project_id=project,asr_research_run_id=run,asr_finding_id=finding['finding_id'],asr_revision=finding['revision'],asr_evidence=encoded(finding['evidence'])))
                 service._event(db,project,run,'aar_finding_projected',finding_id=finding['finding_id'],revision=finding['revision'],post_id=post)
         return [row for row in self.forum(token,project) if row['asr_research_run_id']==run and row['finding_type']!='snapshot']
 
