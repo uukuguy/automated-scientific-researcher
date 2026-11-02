@@ -1,0 +1,28 @@
+{
+  "schema": "asr-calibration-fixture/1",
+  "source_attempt_path": "data/p2-supervisor-reference-20261102/evidence/trial_attempt_baseline/attempt_baseline",
+  "source_trial_id": "trial_attempt_baseline",
+  "source_attempt_id": "attempt_baseline",
+  "original_manifest_sha256": "67ae4be2965eb833c148a29cb2f12578116d11214ccebe79f2740cfeda6a62bd",
+  "files": {
+    "input.json": {
+      "sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+      "bytes": 17045
+    },
+    "solution.json": {
+      "sha256": "fef760807bf926816d26c7ade0152e9c735ac3c812bd04972cd454fab10a41c2",
+      "bytes": 35505
+    },
+    "solver.json": {
+      "sha256": "08d8ebb0e6ac6332c4a6b706a7177305f272efab85248b795d9e7849f90dffb6",
+      "bytes": 304
+    },
+    "original-manifest.json": {
+      "sha256": "67ae4be2965eb833c148a29cb2f12578116d11214ccebe79f2740cfeda6a62bd",
+      "bytes": 1766
+    }
+  },
+  "subset_only": true,
+  "note": "Frozen subset of existing published evidence, not a newly executed MATPOWER trial. Original manifest names additional provenance artifacts retained at source.",
+  "matpower_license": "MATPOWER code: BSD-3-Clause. Case files are expressly excluded; case118 source credits University of Washington IEEE Common Data Format archive. See SOURCE-NOTICE.txt; no blanket BSD claim for data."
+}

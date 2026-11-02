@@ -1,0 +1,1675 @@
+{
+  "schema": "asr-pandapower-calibration/1",
+  "created_at": "2026-11-02T14:23:34.443978+00:00",
+  "profile": "fixed-pv-pq-single-slack/1",
+  "purpose": "development calibration; not generalization or formal replication",
+  "environment": {
+    "python": "3.12.12 (main, Oct  9 2025, 11:07:00) [Clang 17.0.0 (clang-1700.6.3.2)]",
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "machine": "arm64",
+    "packages": {
+      "pandapower": "3.5.6",
+      "numpy": "2.4.6",
+      "scipy": "1.18.1",
+      "pandas": "2.3.3",
+      "pyarrow": "26.0.0",
+      "networkx": "3.7",
+      "matplotlib": "3.11.2",
+      "pytest": "9.2.0",
+      "jupyterlab": "4.6.5",
+      "ipykernel": "7.4.0"
+    },
+    "uv_lock_sha256": "81303c283dabf033624def67f42511e07d16c796fb11937fb4e5485d05bd7406",
+    "calibration_source_sha256": "103177b36b0d9990dad52632bd8bbc0df373a6f42e018f85fb0542c82986e68c",
+    "independent_validator_sha256": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3"
+  },
+  "fixture": {
+    "schema": "asr-calibration-fixture/1",
+    "source_attempt_path": "data/p2-supervisor-reference-20261102/evidence/trial_attempt_baseline/attempt_baseline",
+    "source_trial_id": "trial_attempt_baseline",
+    "source_attempt_id": "attempt_baseline",
+    "original_manifest_sha256": "67ae4be2965eb833c148a29cb2f12578116d11214ccebe79f2740cfeda6a62bd",
+    "files": {
+      "input.json": {
+        "sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+        "bytes": 17045
+      },
+      "solution.json": {
+        "sha256": "fef760807bf926816d26c7ade0152e9c735ac3c812bd04972cd454fab10a41c2",
+        "bytes": 35505
+      },
+      "solver.json": {
+        "sha256": "08d8ebb0e6ac6332c4a6b706a7177305f272efab85248b795d9e7849f90dffb6",
+        "bytes": 304
+      },
+      "original-manifest.json": {
+        "sha256": "67ae4be2965eb833c148a29cb2f12578116d11214ccebe79f2740cfeda6a62bd",
+        "bytes": 1766
+      }
+    },
+    "subset_only": true,
+    "note": "Frozen subset of existing published evidence, not a newly executed MATPOWER trial. Original manifest names additional provenance artifacts retained at source.",
+    "matpower_license": "MATPOWER code: BSD-3-Clause. Case files are expressly excluded; case118 source credits University of Washington IEEE Common Data Format archive. See SOURCE-NOTICE.txt; no blanket BSD claim for data."
+  },
+  "case_size": {
+    "bus": 118,
+    "gen": 54,
+    "branch": 186
+  },
+  "matpower_solver": {
+    "solver_success": true,
+    "iterations": 4,
+    "solver_elapsed_seconds": 0.008778095245361328,
+    "matpower_version": {
+      "Name": "MATPOWER",
+      "Version": "8.1",
+      "Release": "",
+      "Date": "12-Jul-2025"
+    },
+    "octave_version": "7.3.0",
+    "policy": "fixed-pv-pq-single-slack/1",
+    "initialization": "flat",
+    "max_iterations": 20,
+    "pf_tolerance_pu": 1e-10
+  },
+  "pandapower_solver": {
+    "converged": true,
+    "iterations": 4,
+    "solver_elapsed_seconds": 0.013688415987417102,
+    "options": {
+      "algorithm": "nr",
+      "init": "auto",
+      "init_vm_pu": 1.0,
+      "init_va_degree": 30,
+      "calculate_voltage_angles": true,
+      "enforce_q_lims": false,
+      "enforce_p_lims": false,
+      "trafo_model": "pi",
+      "voltage_depend_loads": false,
+      "distributed_slack": false,
+      "max_iteration": 20,
+      "tolerance_mva": 1e-08,
+      "numba": false,
+      "lightsim2grid": false,
+      "v_debug": true
+    },
+    "bus_map_count": 118,
+    "generator_map_count": 54,
+    "generator_map": [
+      {
+        "original_row": 0,
+        "bus": 1,
+        "element_type": "gen",
+        "element": 0
+      },
+      {
+        "original_row": 1,
+        "bus": 4,
+        "element_type": "gen",
+        "element": 1
+      },
+      {
+        "original_row": 2,
+        "bus": 6,
+        "element_type": "gen",
+        "element": 2
+      },
+      {
+        "original_row": 3,
+        "bus": 8,
+        "element_type": "gen",
+        "element": 3
+      },
+      {
+        "original_row": 4,
+        "bus": 10,
+        "element_type": "gen",
+        "element": 4
+      },
+      {
+        "original_row": 5,
+        "bus": 12,
+        "element_type": "gen",
+        "element": 5
+      },
+      {
+        "original_row": 6,
+        "bus": 15,
+        "element_type": "gen",
+        "element": 6
+      },
+      {
+        "original_row": 7,
+        "bus": 18,
+        "element_type": "gen",
+        "element": 7
+      },
+      {
+        "original_row": 8,
+        "bus": 19,
+        "element_type": "gen",
+        "element": 8
+      },
+      {
+        "original_row": 9,
+        "bus": 24,
+        "element_type": "gen",
+        "element": 9
+      },
+      {
+        "original_row": 10,
+        "bus": 25,
+        "element_type": "gen",
+        "element": 10
+      },
+      {
+        "original_row": 11,
+        "bus": 26,
+        "element_type": "gen",
+        "element": 11
+      },
+      {
+        "original_row": 12,
+        "bus": 27,
+        "element_type": "gen",
+        "element": 12
+      },
+      {
+        "original_row": 13,
+        "bus": 31,
+        "element_type": "gen",
+        "element": 13
+      },
+      {
+        "original_row": 14,
+        "bus": 32,
+        "element_type": "gen",
+        "element": 14
+      },
+      {
+        "original_row": 15,
+        "bus": 34,
+        "element_type": "gen",
+        "element": 15
+      },
+      {
+        "original_row": 16,
+        "bus": 36,
+        "element_type": "gen",
+        "element": 16
+      },
+      {
+        "original_row": 17,
+        "bus": 40,
+        "element_type": "gen",
+        "element": 17
+      },
+      {
+        "original_row": 18,
+        "bus": 42,
+        "element_type": "gen",
+        "element": 18
+      },
+      {
+        "original_row": 19,
+        "bus": 46,
+        "element_type": "gen",
+        "element": 19
+      },
+      {
+        "original_row": 20,
+        "bus": 49,
+        "element_type": "gen",
+        "element": 20
+      },
+      {
+        "original_row": 21,
+        "bus": 54,
+        "element_type": "gen",
+        "element": 21
+      },
+      {
+        "original_row": 22,
+        "bus": 55,
+        "element_type": "gen",
+        "element": 22
+      },
+      {
+        "original_row": 23,
+        "bus": 56,
+        "element_type": "gen",
+        "element": 23
+      },
+      {
+        "original_row": 24,
+        "bus": 59,
+        "element_type": "gen",
+        "element": 24
+      },
+      {
+        "original_row": 25,
+        "bus": 61,
+        "element_type": "gen",
+        "element": 25
+      },
+      {
+        "original_row": 26,
+        "bus": 62,
+        "element_type": "gen",
+        "element": 26
+      },
+      {
+        "original_row": 27,
+        "bus": 65,
+        "element_type": "gen",
+        "element": 27
+      },
+      {
+        "original_row": 28,
+        "bus": 66,
+        "element_type": "gen",
+        "element": 28
+      },
+      {
+        "original_row": 29,
+        "bus": 69,
+        "element_type": "ext_grid",
+        "element": 0
+      },
+      {
+        "original_row": 30,
+        "bus": 70,
+        "element_type": "gen",
+        "element": 29
+      },
+      {
+        "original_row": 31,
+        "bus": 72,
+        "element_type": "gen",
+        "element": 30
+      },
+      {
+        "original_row": 32,
+        "bus": 73,
+        "element_type": "gen",
+        "element": 31
+      },
+      {
+        "original_row": 33,
+        "bus": 74,
+        "element_type": "gen",
+        "element": 32
+      },
+      {
+        "original_row": 34,
+        "bus": 76,
+        "element_type": "gen",
+        "element": 33
+      },
+      {
+        "original_row": 35,
+        "bus": 77,
+        "element_type": "gen",
+        "element": 34
+      },
+      {
+        "original_row": 36,
+        "bus": 80,
+        "element_type": "gen",
+        "element": 35
+      },
+      {
+        "original_row": 37,
+        "bus": 85,
+        "element_type": "gen",
+        "element": 36
+      },
+      {
+        "original_row": 38,
+        "bus": 87,
+        "element_type": "gen",
+        "element": 37
+      },
+      {
+        "original_row": 39,
+        "bus": 89,
+        "element_type": "gen",
+        "element": 38
+      },
+      {
+        "original_row": 40,
+        "bus": 90,
+        "element_type": "gen",
+        "element": 39
+      },
+      {
+        "original_row": 41,
+        "bus": 91,
+        "element_type": "gen",
+        "element": 40
+      },
+      {
+        "original_row": 42,
+        "bus": 92,
+        "element_type": "gen",
+        "element": 41
+      },
+      {
+        "original_row": 43,
+        "bus": 99,
+        "element_type": "gen",
+        "element": 42
+      },
+      {
+        "original_row": 44,
+        "bus": 100,
+        "element_type": "gen",
+        "element": 43
+      },
+      {
+        "original_row": 45,
+        "bus": 103,
+        "element_type": "gen",
+        "element": 44
+      },
+      {
+        "original_row": 46,
+        "bus": 104,
+        "element_type": "gen",
+        "element": 45
+      },
+      {
+        "original_row": 47,
+        "bus": 105,
+        "element_type": "gen",
+        "element": 46
+      },
+      {
+        "original_row": 48,
+        "bus": 107,
+        "element_type": "gen",
+        "element": 47
+      },
+      {
+        "original_row": 49,
+        "bus": 110,
+        "element_type": "gen",
+        "element": 48
+      },
+      {
+        "original_row": 50,
+        "bus": 111,
+        "element_type": "gen",
+        "element": 49
+      },
+      {
+        "original_row": 51,
+        "bus": 112,
+        "element_type": "gen",
+        "element": 50
+      },
+      {
+        "original_row": 52,
+        "bus": 113,
+        "element_type": "gen",
+        "element": 51
+      },
+      {
+        "original_row": 53,
+        "bus": 116,
+        "element_type": "gen",
+        "element": 52
+      }
+    ],
+    "branch_map": [
+      {
+        "original_row": 0,
+        "element_type": "line",
+        "element": 0,
+        "same_direction": true
+      },
+      {
+        "original_row": 1,
+        "element_type": "line",
+        "element": 1,
+        "same_direction": true
+      },
+      {
+        "original_row": 2,
+        "element_type": "line",
+        "element": 2,
+        "same_direction": true
+      },
+      {
+        "original_row": 3,
+        "element_type": "line",
+        "element": 3,
+        "same_direction": true
+      },
+      {
+        "original_row": 4,
+        "element_type": "line",
+        "element": 4,
+        "same_direction": true
+      },
+      {
+        "original_row": 5,
+        "element_type": "line",
+        "element": 5,
+        "same_direction": true
+      },
+      {
+        "original_row": 6,
+        "element_type": "line",
+        "element": 6,
+        "same_direction": true
+      },
+      {
+        "original_row": 7,
+        "element_type": "trafo",
+        "element": 0,
+        "same_direction": true
+      },
+      {
+        "original_row": 8,
+        "element_type": "line",
+        "element": 7,
+        "same_direction": true
+      },
+      {
+        "original_row": 9,
+        "element_type": "line",
+        "element": 8,
+        "same_direction": true
+      },
+      {
+        "original_row": 10,
+        "element_type": "line",
+        "element": 9,
+        "same_direction": true
+      },
+      {
+        "original_row": 11,
+        "element_type": "line",
+        "element": 10,
+        "same_direction": true
+      },
+      {
+        "original_row": 12,
+        "element_type": "line",
+        "element": 11,
+        "same_direction": true
+      },
+      {
+        "original_row": 13,
+        "element_type": "line",
+        "element": 12,
+        "same_direction": true
+      },
+      {
+        "original_row": 14,
+        "element_type": "line",
+        "element": 13,
+        "same_direction": true
+      },
+      {
+        "original_row": 15,
+        "element_type": "line",
+        "element": 14,
+        "same_direction": true
+      },
+      {
+        "original_row": 16,
+        "element_type": "line",
+        "element": 15,
+        "same_direction": true
+      },
+      {
+        "original_row": 17,
+        "element_type": "line",
+        "element": 16,
+        "same_direction": true
+      },
+      {
+        "original_row": 18,
+        "element_type": "line",
+        "element": 17,
+        "same_direction": true
+      },
+      {
+        "original_row": 19,
+        "element_type": "line",
+        "element": 18,
+        "same_direction": true
+      },
+      {
+        "original_row": 20,
+        "element_type": "line",
+        "element": 19,
+        "same_direction": true
+      },
+      {
+        "original_row": 21,
+        "element_type": "line",
+        "element": 20,
+        "same_direction": true
+      },
+      {
+        "original_row": 22,
+        "element_type": "line",
+        "element": 21,
+        "same_direction": true
+      },
+      {
+        "original_row": 23,
+        "element_type": "line",
+        "element": 22,
+        "same_direction": true
+      },
+      {
+        "original_row": 24,
+        "element_type": "line",
+        "element": 23,
+        "same_direction": true
+      },
+      {
+        "original_row": 25,
+        "element_type": "line",
+        "element": 24,
+        "same_direction": true
+      },
+      {
+        "original_row": 26,
+        "element_type": "line",
+        "element": 25,
+        "same_direction": true
+      },
+      {
+        "original_row": 27,
+        "element_type": "line",
+        "element": 26,
+        "same_direction": true
+      },
+      {
+        "original_row": 28,
+        "element_type": "line",
+        "element": 27,
+        "same_direction": true
+      },
+      {
+        "original_row": 29,
+        "element_type": "line",
+        "element": 28,
+        "same_direction": true
+      },
+      {
+        "original_row": 30,
+        "element_type": "line",
+        "element": 29,
+        "same_direction": true
+      },
+      {
+        "original_row": 31,
+        "element_type": "trafo",
+        "element": 1,
+        "same_direction": true
+      },
+      {
+        "original_row": 32,
+        "element_type": "line",
+        "element": 30,
+        "same_direction": true
+      },
+      {
+        "original_row": 33,
+        "element_type": "line",
+        "element": 31,
+        "same_direction": true
+      },
+      {
+        "original_row": 34,
+        "element_type": "line",
+        "element": 32,
+        "same_direction": true
+      },
+      {
+        "original_row": 35,
+        "element_type": "trafo",
+        "element": 2,
+        "same_direction": true
+      },
+      {
+        "original_row": 36,
+        "element_type": "line",
+        "element": 33,
+        "same_direction": true
+      },
+      {
+        "original_row": 37,
+        "element_type": "line",
+        "element": 34,
+        "same_direction": true
+      },
+      {
+        "original_row": 38,
+        "element_type": "line",
+        "element": 35,
+        "same_direction": true
+      },
+      {
+        "original_row": 39,
+        "element_type": "line",
+        "element": 36,
+        "same_direction": true
+      },
+      {
+        "original_row": 40,
+        "element_type": "line",
+        "element": 37,
+        "same_direction": true
+      },
+      {
+        "original_row": 41,
+        "element_type": "line",
+        "element": 38,
+        "same_direction": true
+      },
+      {
+        "original_row": 42,
+        "element_type": "line",
+        "element": 39,
+        "same_direction": true
+      },
+      {
+        "original_row": 43,
+        "element_type": "line",
+        "element": 40,
+        "same_direction": true
+      },
+      {
+        "original_row": 44,
+        "element_type": "line",
+        "element": 41,
+        "same_direction": true
+      },
+      {
+        "original_row": 45,
+        "element_type": "line",
+        "element": 42,
+        "same_direction": true
+      },
+      {
+        "original_row": 46,
+        "element_type": "line",
+        "element": 43,
+        "same_direction": true
+      },
+      {
+        "original_row": 47,
+        "element_type": "line",
+        "element": 44,
+        "same_direction": true
+      },
+      {
+        "original_row": 48,
+        "element_type": "line",
+        "element": 45,
+        "same_direction": true
+      },
+      {
+        "original_row": 49,
+        "element_type": "line",
+        "element": 46,
+        "same_direction": true
+      },
+      {
+        "original_row": 50,
+        "element_type": "trafo",
+        "element": 3,
+        "same_direction": true
+      },
+      {
+        "original_row": 51,
+        "element_type": "line",
+        "element": 47,
+        "same_direction": true
+      },
+      {
+        "original_row": 52,
+        "element_type": "line",
+        "element": 48,
+        "same_direction": true
+      },
+      {
+        "original_row": 53,
+        "element_type": "line",
+        "element": 49,
+        "same_direction": true
+      },
+      {
+        "original_row": 54,
+        "element_type": "line",
+        "element": 50,
+        "same_direction": true
+      },
+      {
+        "original_row": 55,
+        "element_type": "line",
+        "element": 51,
+        "same_direction": true
+      },
+      {
+        "original_row": 56,
+        "element_type": "line",
+        "element": 52,
+        "same_direction": true
+      },
+      {
+        "original_row": 57,
+        "element_type": "line",
+        "element": 53,
+        "same_direction": true
+      },
+      {
+        "original_row": 58,
+        "element_type": "line",
+        "element": 54,
+        "same_direction": true
+      },
+      {
+        "original_row": 59,
+        "element_type": "line",
+        "element": 55,
+        "same_direction": true
+      },
+      {
+        "original_row": 60,
+        "element_type": "line",
+        "element": 56,
+        "same_direction": true
+      },
+      {
+        "original_row": 61,
+        "element_type": "line",
+        "element": 57,
+        "same_direction": true
+      },
+      {
+        "original_row": 62,
+        "element_type": "line",
+        "element": 58,
+        "same_direction": true
+      },
+      {
+        "original_row": 63,
+        "element_type": "line",
+        "element": 59,
+        "same_direction": true
+      },
+      {
+        "original_row": 64,
+        "element_type": "line",
+        "element": 60,
+        "same_direction": true
+      },
+      {
+        "original_row": 65,
+        "element_type": "line",
+        "element": 61,
+        "same_direction": true
+      },
+      {
+        "original_row": 66,
+        "element_type": "line",
+        "element": 62,
+        "same_direction": true
+      },
+      {
+        "original_row": 67,
+        "element_type": "line",
+        "element": 63,
+        "same_direction": true
+      },
+      {
+        "original_row": 68,
+        "element_type": "line",
+        "element": 64,
+        "same_direction": true
+      },
+      {
+        "original_row": 69,
+        "element_type": "line",
+        "element": 65,
+        "same_direction": true
+      },
+      {
+        "original_row": 70,
+        "element_type": "line",
+        "element": 66,
+        "same_direction": true
+      },
+      {
+        "original_row": 71,
+        "element_type": "line",
+        "element": 67,
+        "same_direction": true
+      },
+      {
+        "original_row": 72,
+        "element_type": "line",
+        "element": 68,
+        "same_direction": true
+      },
+      {
+        "original_row": 73,
+        "element_type": "line",
+        "element": 69,
+        "same_direction": true
+      },
+      {
+        "original_row": 74,
+        "element_type": "line",
+        "element": 70,
+        "same_direction": true
+      },
+      {
+        "original_row": 75,
+        "element_type": "line",
+        "element": 71,
+        "same_direction": true
+      },
+      {
+        "original_row": 76,
+        "element_type": "line",
+        "element": 72,
+        "same_direction": true
+      },
+      {
+        "original_row": 77,
+        "element_type": "line",
+        "element": 73,
+        "same_direction": true
+      },
+      {
+        "original_row": 78,
+        "element_type": "line",
+        "element": 74,
+        "same_direction": true
+      },
+      {
+        "original_row": 79,
+        "element_type": "line",
+        "element": 75,
+        "same_direction": true
+      },
+      {
+        "original_row": 80,
+        "element_type": "line",
+        "element": 76,
+        "same_direction": true
+      },
+      {
+        "original_row": 81,
+        "element_type": "line",
+        "element": 77,
+        "same_direction": true
+      },
+      {
+        "original_row": 82,
+        "element_type": "line",
+        "element": 78,
+        "same_direction": true
+      },
+      {
+        "original_row": 83,
+        "element_type": "line",
+        "element": 79,
+        "same_direction": true
+      },
+      {
+        "original_row": 84,
+        "element_type": "line",
+        "element": 80,
+        "same_direction": true
+      },
+      {
+        "original_row": 85,
+        "element_type": "line",
+        "element": 81,
+        "same_direction": true
+      },
+      {
+        "original_row": 86,
+        "element_type": "line",
+        "element": 82,
+        "same_direction": true
+      },
+      {
+        "original_row": 87,
+        "element_type": "line",
+        "element": 83,
+        "same_direction": true
+      },
+      {
+        "original_row": 88,
+        "element_type": "line",
+        "element": 84,
+        "same_direction": true
+      },
+      {
+        "original_row": 89,
+        "element_type": "line",
+        "element": 85,
+        "same_direction": true
+      },
+      {
+        "original_row": 90,
+        "element_type": "line",
+        "element": 86,
+        "same_direction": true
+      },
+      {
+        "original_row": 91,
+        "element_type": "line",
+        "element": 87,
+        "same_direction": true
+      },
+      {
+        "original_row": 92,
+        "element_type": "trafo",
+        "element": 4,
+        "same_direction": true
+      },
+      {
+        "original_row": 93,
+        "element_type": "line",
+        "element": 88,
+        "same_direction": true
+      },
+      {
+        "original_row": 94,
+        "element_type": "trafo",
+        "element": 5,
+        "same_direction": true
+      },
+      {
+        "original_row": 95,
+        "element_type": "line",
+        "element": 89,
+        "same_direction": true
+      },
+      {
+        "original_row": 96,
+        "element_type": "line",
+        "element": 90,
+        "same_direction": true
+      },
+      {
+        "original_row": 97,
+        "element_type": "line",
+        "element": 91,
+        "same_direction": true
+      },
+      {
+        "original_row": 98,
+        "element_type": "line",
+        "element": 92,
+        "same_direction": true
+      },
+      {
+        "original_row": 99,
+        "element_type": "line",
+        "element": 93,
+        "same_direction": true
+      },
+      {
+        "original_row": 100,
+        "element_type": "line",
+        "element": 94,
+        "same_direction": true
+      },
+      {
+        "original_row": 101,
+        "element_type": "trafo",
+        "element": 6,
+        "same_direction": true
+      },
+      {
+        "original_row": 102,
+        "element_type": "line",
+        "element": 95,
+        "same_direction": true
+      },
+      {
+        "original_row": 103,
+        "element_type": "line",
+        "element": 96,
+        "same_direction": true
+      },
+      {
+        "original_row": 104,
+        "element_type": "line",
+        "element": 97,
+        "same_direction": true
+      },
+      {
+        "original_row": 105,
+        "element_type": "line",
+        "element": 98,
+        "same_direction": true
+      },
+      {
+        "original_row": 106,
+        "element_type": "trafo",
+        "element": 7,
+        "same_direction": true
+      },
+      {
+        "original_row": 107,
+        "element_type": "line",
+        "element": 99,
+        "same_direction": true
+      },
+      {
+        "original_row": 108,
+        "element_type": "line",
+        "element": 100,
+        "same_direction": true
+      },
+      {
+        "original_row": 109,
+        "element_type": "line",
+        "element": 101,
+        "same_direction": true
+      },
+      {
+        "original_row": 110,
+        "element_type": "line",
+        "element": 102,
+        "same_direction": true
+      },
+      {
+        "original_row": 111,
+        "element_type": "line",
+        "element": 103,
+        "same_direction": true
+      },
+      {
+        "original_row": 112,
+        "element_type": "line",
+        "element": 104,
+        "same_direction": true
+      },
+      {
+        "original_row": 113,
+        "element_type": "line",
+        "element": 105,
+        "same_direction": true
+      },
+      {
+        "original_row": 114,
+        "element_type": "line",
+        "element": 106,
+        "same_direction": true
+      },
+      {
+        "original_row": 115,
+        "element_type": "line",
+        "element": 107,
+        "same_direction": true
+      },
+      {
+        "original_row": 116,
+        "element_type": "line",
+        "element": 108,
+        "same_direction": true
+      },
+      {
+        "original_row": 117,
+        "element_type": "line",
+        "element": 109,
+        "same_direction": true
+      },
+      {
+        "original_row": 118,
+        "element_type": "line",
+        "element": 110,
+        "same_direction": true
+      },
+      {
+        "original_row": 119,
+        "element_type": "line",
+        "element": 111,
+        "same_direction": true
+      },
+      {
+        "original_row": 120,
+        "element_type": "line",
+        "element": 112,
+        "same_direction": true
+      },
+      {
+        "original_row": 121,
+        "element_type": "line",
+        "element": 113,
+        "same_direction": true
+      },
+      {
+        "original_row": 122,
+        "element_type": "line",
+        "element": 114,
+        "same_direction": true
+      },
+      {
+        "original_row": 123,
+        "element_type": "line",
+        "element": 115,
+        "same_direction": true
+      },
+      {
+        "original_row": 124,
+        "element_type": "line",
+        "element": 116,
+        "same_direction": true
+      },
+      {
+        "original_row": 125,
+        "element_type": "line",
+        "element": 117,
+        "same_direction": true
+      },
+      {
+        "original_row": 126,
+        "element_type": "trafo",
+        "element": 8,
+        "same_direction": true
+      },
+      {
+        "original_row": 127,
+        "element_type": "line",
+        "element": 118,
+        "same_direction": true
+      },
+      {
+        "original_row": 128,
+        "element_type": "line",
+        "element": 119,
+        "same_direction": true
+      },
+      {
+        "original_row": 129,
+        "element_type": "line",
+        "element": 120,
+        "same_direction": true
+      },
+      {
+        "original_row": 130,
+        "element_type": "line",
+        "element": 121,
+        "same_direction": true
+      },
+      {
+        "original_row": 131,
+        "element_type": "line",
+        "element": 122,
+        "same_direction": true
+      },
+      {
+        "original_row": 132,
+        "element_type": "line",
+        "element": 123,
+        "same_direction": true
+      },
+      {
+        "original_row": 133,
+        "element_type": "impedance",
+        "element": 0,
+        "same_direction": true
+      },
+      {
+        "original_row": 134,
+        "element_type": "line",
+        "element": 124,
+        "same_direction": true
+      },
+      {
+        "original_row": 135,
+        "element_type": "line",
+        "element": 125,
+        "same_direction": true
+      },
+      {
+        "original_row": 136,
+        "element_type": "line",
+        "element": 126,
+        "same_direction": true
+      },
+      {
+        "original_row": 137,
+        "element_type": "line",
+        "element": 127,
+        "same_direction": true
+      },
+      {
+        "original_row": 138,
+        "element_type": "line",
+        "element": 128,
+        "same_direction": true
+      },
+      {
+        "original_row": 139,
+        "element_type": "line",
+        "element": 129,
+        "same_direction": true
+      },
+      {
+        "original_row": 140,
+        "element_type": "line",
+        "element": 130,
+        "same_direction": true
+      },
+      {
+        "original_row": 141,
+        "element_type": "line",
+        "element": 131,
+        "same_direction": true
+      },
+      {
+        "original_row": 142,
+        "element_type": "line",
+        "element": 132,
+        "same_direction": true
+      },
+      {
+        "original_row": 143,
+        "element_type": "line",
+        "element": 133,
+        "same_direction": true
+      },
+      {
+        "original_row": 144,
+        "element_type": "line",
+        "element": 134,
+        "same_direction": true
+      },
+      {
+        "original_row": 145,
+        "element_type": "line",
+        "element": 135,
+        "same_direction": true
+      },
+      {
+        "original_row": 146,
+        "element_type": "line",
+        "element": 136,
+        "same_direction": true
+      },
+      {
+        "original_row": 147,
+        "element_type": "line",
+        "element": 137,
+        "same_direction": true
+      },
+      {
+        "original_row": 148,
+        "element_type": "line",
+        "element": 138,
+        "same_direction": true
+      },
+      {
+        "original_row": 149,
+        "element_type": "line",
+        "element": 139,
+        "same_direction": true
+      },
+      {
+        "original_row": 150,
+        "element_type": "line",
+        "element": 140,
+        "same_direction": true
+      },
+      {
+        "original_row": 151,
+        "element_type": "line",
+        "element": 141,
+        "same_direction": true
+      },
+      {
+        "original_row": 152,
+        "element_type": "line",
+        "element": 142,
+        "same_direction": true
+      },
+      {
+        "original_row": 153,
+        "element_type": "line",
+        "element": 143,
+        "same_direction": true
+      },
+      {
+        "original_row": 154,
+        "element_type": "line",
+        "element": 144,
+        "same_direction": true
+      },
+      {
+        "original_row": 155,
+        "element_type": "line",
+        "element": 145,
+        "same_direction": true
+      },
+      {
+        "original_row": 156,
+        "element_type": "line",
+        "element": 146,
+        "same_direction": true
+      },
+      {
+        "original_row": 157,
+        "element_type": "line",
+        "element": 147,
+        "same_direction": true
+      },
+      {
+        "original_row": 158,
+        "element_type": "line",
+        "element": 148,
+        "same_direction": true
+      },
+      {
+        "original_row": 159,
+        "element_type": "line",
+        "element": 149,
+        "same_direction": true
+      },
+      {
+        "original_row": 160,
+        "element_type": "line",
+        "element": 150,
+        "same_direction": true
+      },
+      {
+        "original_row": 161,
+        "element_type": "line",
+        "element": 151,
+        "same_direction": true
+      },
+      {
+        "original_row": 162,
+        "element_type": "line",
+        "element": 152,
+        "same_direction": true
+      },
+      {
+        "original_row": 163,
+        "element_type": "line",
+        "element": 153,
+        "same_direction": true
+      },
+      {
+        "original_row": 164,
+        "element_type": "line",
+        "element": 154,
+        "same_direction": true
+      },
+      {
+        "original_row": 165,
+        "element_type": "line",
+        "element": 155,
+        "same_direction": true
+      },
+      {
+        "original_row": 166,
+        "element_type": "line",
+        "element": 156,
+        "same_direction": true
+      },
+      {
+        "original_row": 167,
+        "element_type": "line",
+        "element": 157,
+        "same_direction": true
+      },
+      {
+        "original_row": 168,
+        "element_type": "line",
+        "element": 158,
+        "same_direction": true
+      },
+      {
+        "original_row": 169,
+        "element_type": "line",
+        "element": 159,
+        "same_direction": true
+      },
+      {
+        "original_row": 170,
+        "element_type": "line",
+        "element": 160,
+        "same_direction": true
+      },
+      {
+        "original_row": 171,
+        "element_type": "line",
+        "element": 161,
+        "same_direction": true
+      },
+      {
+        "original_row": 172,
+        "element_type": "line",
+        "element": 162,
+        "same_direction": true
+      },
+      {
+        "original_row": 173,
+        "element_type": "line",
+        "element": 163,
+        "same_direction": true
+      },
+      {
+        "original_row": 174,
+        "element_type": "line",
+        "element": 164,
+        "same_direction": true
+      },
+      {
+        "original_row": 175,
+        "element_type": "line",
+        "element": 165,
+        "same_direction": true
+      },
+      {
+        "original_row": 176,
+        "element_type": "line",
+        "element": 166,
+        "same_direction": true
+      },
+      {
+        "original_row": 177,
+        "element_type": "line",
+        "element": 167,
+        "same_direction": true
+      },
+      {
+        "original_row": 178,
+        "element_type": "line",
+        "element": 168,
+        "same_direction": true
+      },
+      {
+        "original_row": 179,
+        "element_type": "line",
+        "element": 169,
+        "same_direction": true
+      },
+      {
+        "original_row": 180,
+        "element_type": "line",
+        "element": 170,
+        "same_direction": true
+      },
+      {
+        "original_row": 181,
+        "element_type": "line",
+        "element": 171,
+        "same_direction": true
+      },
+      {
+        "original_row": 182,
+        "element_type": "impedance",
+        "element": 1,
+        "same_direction": true
+      },
+      {
+        "original_row": 183,
+        "element_type": "line",
+        "element": 172,
+        "same_direction": true
+      },
+      {
+        "original_row": 184,
+        "element_type": "line",
+        "element": 173,
+        "same_direction": true
+      },
+      {
+        "original_row": 185,
+        "element_type": "line",
+        "element": 174,
+        "same_direction": true
+      }
+    ],
+    "element_counts": {
+      "bus": 118,
+      "gen": 53,
+      "sgen": 0,
+      "ext_grid": 1,
+      "line": 175,
+      "trafo": 9,
+      "impedance": 2,
+      "load": 99,
+      "shunt": 14
+    },
+    "max_admittance_difference_pu": 5.695433295429594e-14,
+    "initial_vm_pu_min": 0.943,
+    "initial_vm_pu_max": 1.05,
+    "initial_va_degree_min": 0.0,
+    "initial_va_degree_max": 29.999999999999993,
+    "frozen_request_preserved": true
+  },
+  "matpower_validation": {
+    "input_preserved": true,
+    "equation_valid": true,
+    "max_mismatch_pu": 3.935784299266862e-13,
+    "operational_status": "violated",
+    "thermal_limits_unassessed": 186,
+    "violations": [
+      {
+        "kind": "reactive_generation",
+        "id": 8,
+        "value": -14.274171532444697,
+        "low": -8,
+        "high": 24
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 14,
+        "value": -16.28477473252564,
+        "low": -14,
+        "high": 42
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 15,
+        "value": -20.827111730988882,
+        "low": -8,
+        "high": 24
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 42,
+        "value": -13.956248186875492,
+        "low": -3,
+        "high": 9
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 45,
+        "value": 75.42236358206829,
+        "low": -15,
+        "high": 40
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 47,
+        "value": -18.334525252388048,
+        "low": -8,
+        "high": 23
+      }
+    ],
+    "errors": [],
+    "policy": "fixed-pv-pq-single-slack/1"
+  },
+  "pandapower_validation": {
+    "input_preserved": true,
+    "equation_valid": true,
+    "max_mismatch_pu": 1.147159173209289e-10,
+    "operational_status": "violated",
+    "thermal_limits_unassessed": 186,
+    "violations": [
+      {
+        "kind": "reactive_generation",
+        "id": 8,
+        "value": -14.27417153244253,
+        "low": -8,
+        "high": 24
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 14,
+        "value": -16.28477473250983,
+        "low": -14,
+        "high": 42
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 15,
+        "value": -20.827111731039253,
+        "low": -8,
+        "high": 24
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 42,
+        "value": -13.956248186871047,
+        "low": -3,
+        "high": 9
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 45,
+        "value": 75.42236358207025,
+        "low": -15,
+        "high": 40
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 47,
+        "value": -18.334525252391998,
+        "low": -8,
+        "high": 23
+      }
+    ],
+    "errors": [],
+    "policy": "fixed-pv-pq-single-slack/1"
+  },
+  "differences": {
+    "max_vm_pu": 2.599365167554879e-12,
+    "max_va_degree": 2.964490875001502e-10,
+    "max_pg_mw": 1.313560460403096e-08,
+    "max_qg_mvar": 6.7748260335065424e-09,
+    "max_branch_p_mw": 3.741590148820251e-09,
+    "max_branch_q_mvar": 6.380328265720436e-09
+  },
+  "solution_sha256": "19ddba923116093adc144044556eb4b902a34aa3fe9588e722368d338af0ec5c"
+}

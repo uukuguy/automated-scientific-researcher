@@ -1,0 +1,1 @@
+{"solver_success":true,"iterations":4,"solver_elapsed_seconds":0.008778095245361328,"matpower_version":{"Name":"MATPOWER","Version":"8.1","Release":"","Date":"12-Jul-2025"},"octave_version":"7.3.0","policy":"fixed-pv-pq-single-slack/1","initialization":"flat","max_iterations":20,"pf_tolerance_pu":1e-10}

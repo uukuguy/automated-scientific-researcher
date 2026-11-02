@@ -1,0 +1,21 @@
+{
+  "schema": "asr-scientific-api-verification/1",
+  "created_at": "2026-11-02T14:32:03.350126+00:00",
+  "installed_version": "3.5.6",
+  "context7_library": "/e2niee/pandapower",
+  "context7_indexed_version": "3.5.4 (reported by parent Context7 lookup)",
+  "context7_authority": "Prototype guidance only; local pinned 3.5.6 source/signatures and real execution are authoritative for this environment.",
+  "functions": {
+    "pandapower.runpp": {
+      "signature": "(net, algorithm='nr', calculate_voltage_angles=True, init='auto', max_iteration='auto', tolerance_mva=1e-08, trafo_model='t', trafo_loading='current', enforce_p_lims=False, enforce_q_lims=False, check_connectivity=True, voltage_depend_loads=True, consider_line_temperature=False, run_control=False, distributed_slack=False, tdpf=False, tdpf_delay_s=None, **kwargs)",
+      "source_sha256": "3315cf4973fc21bc4169b6e3d78cd5bd668e08c7bdc20cf54b24b6bada798670",
+      "distribution_relative_source": "pandapower/run.py"
+    },
+    "pandapower.converter.pypower.from_ppc.from_ppc": {
+      "signature": "(ppc, f_hz=50, validate_conversion=False, **kwargs) -> pandapower.auxiliary.pandapowerNet",
+      "source_sha256": "91e1fa1e1354fcc502e41e382591ca51d24293fc9576f6024fb824fb4164c3a1",
+      "distribution_relative_source": "pandapower/converter/pypower/from_ppc.py"
+    }
+  },
+  "internal_api_limit": "_from_ppc_lookups, _pd2ppc_lookups and _ppc are private version-pinned calibration interfaces, not a stable public backend contract."
+}
