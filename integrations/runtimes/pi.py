@@ -54,13 +54,14 @@ def prepare_oauth(source: Path, config_dir: Path):
 class PiRuntime:
     provider='openai-codex'
 
-    def __init__(self, *, executable='pi', model):
+    def __init__(self, *, executable='pi', model, thinking='high'):
         if not isinstance(model,str) or not model or ':' in model or '/' in model:
             raise ValueError('explicit_codex_model_id_required')
         self.executable=executable
         self.model=model
+        self.thinking=thinking
 
-    def run(self, *, workspace, config_dir, session_id, prompt, limits, bridge_url, bridge_token, on_event=None):
+    def run(self, *, workspace, config_dir, session_id, prompt, limits, bridge_url, bridge_token, on_event=None, should_stop=None):
         if not re.fullmatch(r'[A-Za-z0-9](?:[A-Za-z0-9_.-]*[A-Za-z0-9])?',session_id):
             raise ValueError('invalid_native_session_id')
         workspace=Path(workspace).resolve(); config_dir=Path(config_dir).resolve()
@@ -68,9 +69,10 @@ class PiRuntime:
         extension=Path(__file__).with_name('asr-extension.mjs').resolve()
         # Allowlist avoids ambient paid credentials and arbitrary shell startup hooks.
         env={k:os.environ[k] for k in ('PATH','HOME','TMPDIR','LANG','LC_ALL','SSL_CERT_FILE','SSL_CERT_DIR','HTTPS_PROXY','HTTP_PROXY','NO_PROXY') if k in os.environ}
+        env['GIT_CEILING_DIRECTORIES']=str(workspace.parent)
         env.update(PI_CODING_AGENT_DIR=str(config_dir),PI_OFFLINE='1',ASR_BRIDGE_URL=bridge_url,ASR_BRIDGE_TOKEN=bridge_token,
                    ASR_MAX_TURNS=str(limits.turns),ASR_MAX_TOOLS=str(limits.tool_executions),ASR_DEADLINE_MS=str(int((time.time()+limits.walltime_seconds)*1000)))
-        argv=[self.executable,'--mode','rpc','--provider',self.provider,'--model',self.model,'--thinking','low',
+        argv=[self.executable,'--mode','rpc','--provider',self.provider,'--model',self.model,'--thinking',self.thinking,
               '--session-id',session_id,'--session-dir',str(sessions),'--no-extensions','--extension',str(extension),
               '--no-skills','--no-prompt-templates','--no-context-files','--tools','asr']
         process=subprocess.Popen(argv,cwd=workspace,env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
@@ -94,6 +96,7 @@ class PiRuntime:
         try:
             send({'id':'state','type':'get_state'})
             while True:
+                if should_stop and should_stop(): status='cancelled'; break
                 remaining=limits.walltime_seconds-(time.monotonic()-started)
                 if remaining<=0: status='timed_out'; break
                 try: record=records.get(timeout=min(.1,remaining))
@@ -145,6 +148,7 @@ class PiRuntime:
             for reader in readers: reader.join(timeout=1)
             for stream in (process.stdout,process.stderr): stream.close()
             if process.stdin and not process.stdin.closed: process.stdin.close()
+        if process.returncode==75 and status=='interrupted': status='gate_closed'
         return dict(runtime='pi-rpc/1',provider=self.provider,model=self.model,status=status,session=state,
                     native_session_id=session_id,settled=settled,turns=turns,tool_executions=tools,
                     duration_seconds=time.monotonic()-started,assistant_messages=assistant,exit_code=process.returncode)

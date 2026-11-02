@@ -19,7 +19,8 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
         effective=Limits(min(limits.walltime_seconds,claim['reserved_walltime_ms']/1000),limits.turns,limits.tool_executions)
         with bridge:
             result=runtime.run(workspace=bridge.workspace,config_dir=config_dir,session_id=native_session_id,
-                prompt=prompt,limits=effective,bridge_url=bridge.url,bridge_token=bridge.token,on_event=on_event)
+                prompt=prompt,limits=effective,bridge_url=bridge.url,bridge_token=bridge.token,on_event=on_event,
+                should_stop=lambda: service.get_run(bridge.supervisor_token,bridge.project,bridge.run)['state'] in ('stopping','stopped','failed','finishing','finished'))
         exited=True
         result['runtime_claim']=claim
         if result['status']=='rate_limited':
@@ -31,6 +32,6 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
         # If setup failed before spawn, there is no child to reconcile. A runtime
         # exception after launch is conservatively unresolved unless run returned.
         if not exited and not locals().get('effective'): exited=True
-        service.release_runtime(bridge.supervisor_token,bridge.project,bridge.run,
+        if exited: service.release_runtime(bridge.supervisor_token,bridge.project,bridge.run,
             claim['session_id'],claim['epoch'],owner,execution_exited=exited,
             actual_walltime_ms=max(1,int((time.monotonic()-started)*1000)))

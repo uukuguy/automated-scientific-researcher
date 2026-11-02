@@ -1,0 +1,17 @@
+{
+  "schema": "asr-research-capability-pack/1",
+  "id": "powerflow-calibration-smoke/1",
+  "status": "bounded acceptance profile",
+  "runtime_protocol": "pi-rpc/1",
+  "runtime_version": "1.0.0",
+  "authentication": "openai-codex subscription_oauth only",
+  "skills": [],
+  "tools": ["asr.state", "asr.submit_trial", "asr.publish_finding", "asr.snapshot"],
+  "hooks": ["before_provider_request: turn permit", "tool_call: tool permit"],
+  "dependencies": ["pi 1.0.0", "node >=22.19", "ASR ControlService", "Docker reference supervisor"],
+  "ambient_resources": false,
+  "coding_tools": [],
+  "isolation_claim": "no arbitrary coding tools; numerical trials execute in supervised offline containers",
+  "limits": "acceptance-limits.json",
+  "future_runtime_translation": "versioned curated skills, tools and dependencies; never implicitly enable home resources"
+}

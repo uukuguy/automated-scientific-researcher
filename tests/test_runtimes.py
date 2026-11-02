@@ -38,6 +38,12 @@ class RuntimeTests(unittest.TestCase):
             result=runtime.run(workspace=Path(d),config_dir=Path(d),session_id='run1',prompt='test',limits=Limits(.1,2,3),bridge_url='http://localhost:1',bridge_token='test')
             self.assertEqual(result['status'],'timed_out')
 
+    def test_external_stop_interrupts_generation(self):
+        with tempfile.TemporaryDirectory() as d:
+            runtime=PiRuntime(executable=self.fake(d,[],True),model='test')
+            result=runtime.run(workspace=Path(d),config_dir=Path(d),session_id='run1',prompt='test',limits=Limits(2,2,3),bridge_url='http://localhost:1',bridge_token='test',should_stop=lambda:True)
+            self.assertEqual(result['status'],'cancelled')
+
     def test_provider_error_is_not_success(self):
         with tempfile.TemporaryDirectory() as d:
             exe=self.fake(d,[{'type':'message_end','message':{'role':'assistant','stopReason':'error','errorMessage':'rate limit 429'}},{'type':'agent_settled'}])

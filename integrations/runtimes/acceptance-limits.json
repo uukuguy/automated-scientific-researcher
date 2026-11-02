@@ -1,0 +1,12 @@
+{
+  "schema": "asr-runtime-acceptance/1",
+  "provider": "openai-codex",
+  "model": "from validated pi default openai-codex settings",
+  "auth_mode": "subscription_oauth",
+  "billing_mode": "subscription",
+  "total_walltime_seconds": 120,
+  "turns": 12,
+  "tool_executions": 20,
+  "numerical_attempts": 2,
+  "paid_api_fallback": false
+}
