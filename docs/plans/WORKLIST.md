@@ -15,6 +15,10 @@ Exactly one package is active. Status records evidence, not elapsed time.
 | P3 | Independent verification and system acceptance. Isolate evaluation and replay evidence in a clean execution environment. | pending | P2 | Separate replay report, failed validation cases, process-recovery checks and one complete research trajectory. A supported negative result is acceptable. |
 | P4 | First scientific deliverable: sample-generation, solver-method or joint research. Freeze evaluation contract; compare candidates and replicate on held-out families. | pending | P3 | Equal-budget comparisons, separate equation/operational validity, defined coverage proxies, reproducible methods and independent evidence; report null results honestly. |
 
+## Design and parallel preparation
+
+The accepted architecture is detailed in [Minimum-loop design](../architecture/ASR-MINIMUM-LOOP.md). Its technical mechanisms are designed, not implemented: contract publication/application, independent control revisions, transactionally admitted trials, budget reservations, immutable publication, fenced recovery and the control API candidate. Acceptance IDs A1–A11 map to P1–P4. Capstone owns its separate C0–C4 preparation lane; no Capstone completion is inferred here.
+
 ## Current evidence
 
 - P0: `docs/status/DECISIONS.md` and the linked design.

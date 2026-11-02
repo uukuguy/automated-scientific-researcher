@@ -79,3 +79,12 @@
 - Deliver preparation through C0–C4 in `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md`: integration design, mock adapter, minimum workspace, asynchronous intervention/recovery, and real-service integration readiness.
 - Wire fields and endpoint choices remain a joint protocol draft. Mock acceptance does not prove real scientific execution.
 - Supersedes D008's proposed status for the responsibility split. P1 numerical work remains active; the Capstone preparation lane is tracked in its own project.
+
+## D010 — Complete the minimum-loop design and align repository guidance
+
+- Date: 2026-11-02. Status: scope accepted; new technical details are the implementation design, not runtime evidence.
+- User authorized completing the minimum-loop design and aligning AGENTS.md and README with actual project maturity.
+- Main design delegates technical behavior to `docs/architecture/ASR-MINIMUM-LOOP.md`; it remains the canonical overall design entry.
+- Technical choices: extend the AAR local database behind one control writer; separate admission, execution and verification; preserve explicit contract application, budget reservations, immutable evidence and process reconciliation.
+- The detailed control protocol remains an integration candidate until Capstone alignment and executable schema validation. Scientific parameters require baseline calibration; actual resource amounts require configuration.
+- Rationale: close behavioral gaps before implementation without presenting design, simulated interaction or unfinished tests as a working research system.

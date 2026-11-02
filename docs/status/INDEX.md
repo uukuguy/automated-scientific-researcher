@@ -42,3 +42,5 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 - `docs/superpowers/specs/2026-11-02-bounded-aar-design.md` — historical redirect; not a separate design authority.
 
 - `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md` — Capstone preparation tasks, proposed service contract and acceptance boundaries.
+
+- `docs/architecture/ASR-MINIMUM-LOOP.md` — detailed minimum-loop design, interface candidate and acceptance mapping.

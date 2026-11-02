@@ -6,6 +6,8 @@ Goal: run a real, reproducible IEEE-118 reference trial in OrbStack Docker, inde
 Architecture: a CPU-only MATPOWER/Octave image, Python standard-library runner and independent electrical checks. Candidate solvers remain research variables; this slice supplies a reference implementation only.
 Constraints: no extra VM, no paid model calls, no AAR runtime launch; preserve failures and changed-input detection.
 
+Technical behavior: [Minimum-loop design](../../architecture/ASR-MINIMUM-LOOP.md), especially §5–§7. The local runner must preserve the same admission, manifest and attempt semantics later exposed by the service. A reference tolerance is a calibration input, not an accepted scientific threshold.
+
 ## Deliverables and verification
 
 - [ ] Pin base-image digest and MATPOWER archive checksum; build native arm64 image. Record installed package versions.

@@ -25,3 +25,6 @@
 - 17:32 Inspected Capstone working-tree sources at 54e33dbf; documented reusable UI, control gaps and proposed AAR integration boundaries.
 - 19:10 User accepted Capstone architecture; prepared C0–C4 handoff with ownership, draft protocol and mock/real acceptance boundaries.
 - 19:10 Verified handoff links, required preparation coverage and documentation whitespace; no runtime tests or Capstone writes performed.
+- 19:16 Committed Capstone handoff and accepted workbench boundaries to enable parallel preparation. [c09f643]
+- 19:37 Detailed minimum-loop contracts, control, execution, budgets, evidence, recovery and interfaces; aligned AGENTS, README and Capstone handoff.
+- 19:38 Reviewed minimum-loop consistency; verified document links, JSON examples, table continuity, instruction symlink and whitespace.

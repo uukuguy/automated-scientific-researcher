@@ -1,11 +1,10 @@
 # Live Session Checkpoint
 
-> Updated: 2026-11-02 19:10 (Asia/Shanghai). **Session remains active — not a final handoff.**
+> Updated: 2026-11-02 19:37 (Asia/Shanghai). **Session remains active — not a final handoff.**
 
 ## Current intent
 
-User accepted Capstone as the scientific-research workbench and authorized parallel preparation. Prepared `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md` with C0–C4 tasks, draft interfaces, ownership and acceptance. Main design §9.2 and D009 now record the accepted architecture. The handoff is available in this repository; no message was sent and no Capstone implementation was changed.
-Canonical design remains `docs/PROJECT-DESIGN.md`. Numerical-environment work remains active but unfinished.
+User authorized completing ASR's minimum-loop detailed design and explicitly requested AGENTS.md and README alignment. Main design revision 0.6 now points to `docs/architecture/ASR-MINIMUM-LOOP.md`, covering contracts, state, execution, budgets, recovery, independent evaluation, AAR adaptation and control protocol candidate. Capstone handoff is revision 0.2 with matching semantics. No production code was added.
 
 ## Confirmed scope
 
@@ -19,7 +18,7 @@ Canonical design remains `docs/PROJECT-DESIGN.md`. Numerical-environment work re
 ## Work state
 
 - Managed ledger: `docs/plans/WORKLIST.md`; P1 active.
-- Living design baseline was committed as 9f81e2e; the current documentation change adds accepted interaction/workbench architecture and the Capstone handoff. See JOURNAL and Git for its commit. No solver implementation was added.
+- Living design baseline was committed as 9f81e2e. Commit c09f643 adds accepted interaction/workbench architecture and the Capstone handoff. The subsequent design/guidance update is recorded in JOURNAL and Git; no solver implementation was added.
 - Implementation plan: `docs/superpowers/plans/2026-11-02-container-lab.md`.
 - `tests/test_validation.py` is an unfinished test-first draft. It currently fails to import `powerflow_lab.validation`, which has not been implemented. Do not claim passing tests.
 - Existing OrbStack context is reachable; Docker Engine 29.8.2 reports linux/arm64; OrbStack 2.2.4.
@@ -31,7 +30,7 @@ Canonical design remains `docs/PROJECT-DESIGN.md`. Numerical-environment work re
 
 ## Immediate next action
 
-Capstone can consume the handoff and return C0 design/interface differences while preparing C1 mock adapters. ASR must align the service contract and preserve a single research executor per run. No Capstone implementation has begun in this session.
+The detailed design is ready for review and subsequent implementation slicing. Capstone can return C0 interface differences while preparing C1 mocks. Control protocol is a candidate, not a working API. No Capstone implementation has begun in this session. Schema files and migrations are implementation deliverables; scientific thresholds remain calibration-gated.
 P1 remains the numerical foundation: obtain and verify the complete MATPOWER source, pin/build the native image, implement validation against negative tests, then run a real base-case trial and replay.
 Reference solver configuration is only a baseline; future candidate solver execution must remain open under the research contract.
 

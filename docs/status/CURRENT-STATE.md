@@ -11,8 +11,8 @@
 
 ## Current Architecture
 
-- Project shell: Python >=3.12, with no declared dependencies or application code.
-- Current design: `docs/PROJECT-DESIGN.md`; sampling and solver methods are both configurable research variables.
+- Project shell: Python >=3.12, with no declared dependencies or application code; validator tests are an unfinished draft.
+- Current design: `docs/PROJECT-DESIGN.md`; detailed behavior: `docs/architecture/ASR-MINIMUM-LOOP.md`. Sampling and solver methods are configurable research variables.
 - Deployment: local OrbStack Docker Engine and Compose; no additional VM.
 - Research reference: `docs/IEEE118_OOD_Sample_Expansion_Task_v2_2.md`; accepted user decisions in `docs/status/DECISIONS.md` govern scope.
 - Planned numerical layer: canonical MATPOWER case, scenario generation, AC power flow, independent residual validation.
