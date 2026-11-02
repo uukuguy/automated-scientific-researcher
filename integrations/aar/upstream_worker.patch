@@ -1,0 +1,32 @@
+--- a/w2s_research/web_ui/backend/worker.py
++++ b/w2s_research/web_ui/backend/worker.py
+@@ -9,7 +9,6 @@
+ from datetime import datetime, timezone
+ from pathlib import Path
+ 
+-from w2s_research.infrastructure.runpod import RunPodCapacityError, RunPodPermanentError
+ from w2s_research.web_ui.backend.models import db, Experiment, _safe_datetime_subtract
+ from w2s_research.web_ui.backend import config
+ 
+@@ -24,6 +23,10 @@
+ 
+     def start(self):
+         """Start the worker thread."""
++        if self.app.config.get("ASR_MODE"):
++            raise RuntimeError("ASR mode disables the legacy experiment worker")
++        global RunPodCapacityError, RunPodPermanentError
++        from w2s_research.infrastructure.runpod import RunPodCapacityError, RunPodPermanentError
+         if self.running:
+             return
+ 
+@@ -98,6 +101,10 @@
+ 
+     def _run_experiment(self, experiment):
+         """Run a single experiment."""
++        if experiment.execution_mode == "asr":
++            raise RuntimeError("ASR experiments require the ASR owning executor")
++        global RunPodCapacityError, RunPodPermanentError
++        from w2s_research.infrastructure.runpod import RunPodCapacityError, RunPodPermanentError
+         print(f"\n{'=' * 80}")
+         print(f"Starting experiment: {experiment.idea_name}")
+         print(f"{'=' * 80}\n")

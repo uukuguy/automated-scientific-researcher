@@ -8,5 +8,6 @@
     "w2s_research/web_ui/backend/models.py": "2e16899f46059bcc5ae971e8a5b6f46dd7e909b67ac8de7bdab0ce1bfd5d23a1"
   },
   "license_status": "No repository-root license file found in the pinned tree; confirm terms before redistributing adapted upstream code.",
-  "integration_status": "source pinned only; no upstream patches or runtime launched"
+  "integration_status": "private tracked worker/loop adaptation and actual upstream ORM organization; optional CPU-only dependencies, no model runs implied",
+  "source_url": "https://github.com/safety-research/automated-w2s-research.git"
 }

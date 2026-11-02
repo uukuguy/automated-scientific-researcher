@@ -166,22 +166,27 @@ class ControlService(PolicyStore):
             db.execute('INSERT INTO asr_budget_limits VALUES (?,?,?) ON CONFLICT(project,dimension) DO UPDATE SET amount=excluded.amount',(project,dimension,amount))
 
     def create_run(self, token, project, run_id, experiment_id, contract_id, contract_revision, *, idempotency_key):
+        with self._connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            return self.create_run_in_transaction(db,token,project,run_id,experiment_id,contract_id,contract_revision,idempotency_key=idempotency_key)
+
+    def create_run_in_transaction(self, db, token, project, run_id, experiment_id, contract_id, contract_revision, *, idempotency_key):
+        """Join the owning transaction, including a real upstream Experiment row."""
+        if not db.in_transaction: raise ControlError('transaction_required')
         principal=self._auth(token,project,{'human'})
         self._identity(run_id,experiment_id,contract_id,idempotency_key);self._revision(contract_revision)
         payload=[principal['subject'],run_id,experiment_id,contract_id,contract_revision]
-        with self._connect() as db:
-            db.execute('BEGIN IMMEDIATE')
-            replay=self._replay(db,project,'create_run',idempotency_key,payload)
-            if replay:return replay
-            if db.execute('SELECT 1 FROM asr_runs WHERE (project=? AND run=?) OR experiment_id=?',(project,run_id,experiment_id)).fetchone(): raise ControlError('run_mapping_conflict')
-            contract=self._contract(db,project,contract_id,contract_revision)
-            self._set_limits(db,project,contract['document']['budget'])
-            record=dict(project_id=project,research_run_id=run_id,experiment_id=experiment_id,contract_id=contract_id,contract_revision=contract_revision,control_revision=1,state='running',admission_open=True,health='ok',quota_state=contract['document']['runtime_policy']['quota_state'],created_at=now())
-            if record['quota_state'] in ('rate_limited','exhausted'): record.update(state='paused',admission_open=False)
-            db.execute('INSERT INTO asr_runs VALUES (?,?,?,?)',(project,run_id,experiment_id,encoded(record)))
-            self._remember(db,project,'create_run',idempotency_key,payload,record)
-            self._event(db,project,run_id,'run_bound',**record)
-            return record
+        replay=self._replay(db,project,'create_run',idempotency_key,payload)
+        if replay:return replay
+        if db.execute('SELECT 1 FROM asr_runs WHERE (project=? AND run=?) OR experiment_id=?',(project,run_id,experiment_id)).fetchone(): raise ControlError('run_mapping_conflict')
+        contract=self._contract(db,project,contract_id,contract_revision)
+        self._set_limits(db,project,contract['document']['budget'])
+        record=dict(project_id=project,research_run_id=run_id,experiment_id=experiment_id,contract_id=contract_id,contract_revision=contract_revision,control_revision=1,state='running',admission_open=True,health='ok',quota_state=contract['document']['runtime_policy']['quota_state'],created_at=now())
+        if record['quota_state'] in ('rate_limited','exhausted'): record.update(state='paused',admission_open=False)
+        db.execute('INSERT INTO asr_runs VALUES (?,?,?,?)',(project,run_id,experiment_id,encoded(record)))
+        self._remember(db,project,'create_run',idempotency_key,payload,record)
+        self._event(db,project,run_id,'run_bound',**record)
+        return record
 
     def get_run(self, token, project, run):
         self._auth(token,project)
