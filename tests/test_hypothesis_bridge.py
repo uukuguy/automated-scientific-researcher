@@ -41,6 +41,12 @@ class HypothesisBridgeTests(unittest.TestCase):
         self.assertEqual(state['run']['trials'][0]['hypothesis_ref']['revision'], 1)
 
 
+    def test_documentation_tool_uses_bounded_client(self):
+        with patch('integrations.research_tools.context7.Context7Client.resolve_library', return_value={'kind': 'external_documentation'}) as resolve:
+            result = self.bridge.call('resolve_library', {'library_name': 'pandapower', 'query': 'runpp'}, 'lookup')
+            self.assertEqual(result['kind'], 'external_documentation')
+            resolve.assert_called_once_with(library_name='pandapower', query='runpp')
+
     def test_bridge_uses_researcher_not_supervisor_for_hypothesis_writes(self):
         with patch.object(self.fixture.service, 'publish_hypothesis', create=True) as publish:
             publish.return_value = {'revision': 1}

@@ -34,7 +34,7 @@
     {
       "id": "systematic-debugging/1",
       "path": "systematic-debugging/SKILL.md",
-      "sha256": "3a26ddb7b93c5fc033d6a2127f2c495128cb028ec949b369140219ae6ff412a6",
+      "sha256": "ed07642cd7eefd8062eb4b4bc6da9fedf7a1014d60e473d225eef55c64146f3a",
       "origin": "Superpowers adapted for ASR",
       "original_paths": [
         "skills/systematic-debugging/SKILL.md"
@@ -45,7 +45,7 @@
     {
       "id": "code-review/1",
       "path": "code-review/SKILL.md",
-      "sha256": "190f2bea2a43fccd924393686eb7aec0736adbf1f95d2e0e20e8fedd4bd4ad8b",
+      "sha256": "f579ba418163f380c8ab3290a45a790300ead845ea236bb575ad0aca4763fed0",
       "origin": "Superpowers adapted for ASR",
       "original_paths": [
         "skills/requesting-code-review/SKILL.md",
@@ -57,7 +57,7 @@
     {
       "id": "verification-before-completion/1",
       "path": "verification-before-completion/SKILL.md",
-      "sha256": "dd26063fd75ab62e8f4d2c393a851209601653515ebb1bba431ab243e15cf4c4",
+      "sha256": "88067fa4c862228008e93112a8d060c2ffe2c4ac007046f839138b56ff53d418",
       "origin": "Superpowers adapted for ASR",
       "original_paths": [
         "skills/verification-before-completion/SKILL.md"

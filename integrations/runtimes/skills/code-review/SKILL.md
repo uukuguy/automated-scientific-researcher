@@ -31,4 +31,4 @@ changes, then check the affected behavior. This method neither requires another
 agent nor authorizes additional model calls, tools or changes.
 
 Adapted from Superpowers review-request and review-reception guidance; source pins,
-original hashes and MIT notice are in [the shared provenance catalog](../provenance.json).
+original hashes and MIT notice are in the installation source catalog (`integrations/runtimes/skills/provenance.json`).

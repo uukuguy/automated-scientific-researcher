@@ -1,0 +1,23 @@
+{
+  "schema": "asr-context7-acceptance/1",
+  "provider": "context7",
+  "auth_mode": "anonymous",
+  "model_calls": 0,
+  "library_resolved": "/e2niee/pandapower",
+  "requested_version": "v3.5.6",
+  "returned_version": {
+    "libraryId": "/e2niee/pandapower",
+    "requested": "v3.5.6",
+    "served": null,
+    "status": "unverified"
+  },
+  "response_keys": [
+    "codeSnippets",
+    "infoSnippets",
+    "version"
+  ],
+  "response_sha256": "b6ea40093f0dfa06c8929204360136e4f6c119534ae668530f20167e7772e0b1",
+  "retrieved_at": "2026-11-02T15:20:11.145208+00:00",
+  "source_url": "https://context7.com/api/v2/context?libraryId=%2Fe2niee%2Fpandapower%2Fv3.5.6&query=runpp+init+flat+initialization&type=json",
+  "scope": "Actual HTTP client lookup; not model-driven usage or numerical validation."
+}

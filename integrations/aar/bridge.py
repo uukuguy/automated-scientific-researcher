@@ -25,11 +25,20 @@ class ResearchBridge:
         self.token=secrets.token_urlsafe(32); self.server=None
         self.permits=[]
         self.runtime_identity={}
+        self.documentation=None
 
     def call(self, operation, arguments, key):
         if not isinstance(arguments,dict) or not isinstance(key,str) or not key:
             raise ValueError('invalid_bridge_request')
         s=self.service; p=self.project; r=self.run; t=self.researcher_token
+        if operation in ('resolve_library','query_docs'):
+            if self.documentation is None:
+                from integrations.research_tools.context7 import Context7Client
+                self.documentation=Context7Client()
+            return getattr(self.documentation,operation)(**arguments)
+        if operation=='search_literature':
+            from integrations.research_tools.literature import search
+            return search(**arguments)
         if operation=='permit':
             result=s.admit_activity(self.supervisor_token,p,r,kind=arguments['kind'],idempotency_key=key,**self.runtime_identity)
             self.permits.append(result); return result

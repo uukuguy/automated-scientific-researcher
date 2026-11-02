@@ -29,4 +29,4 @@ that they exited. Verification does not authorize rewriting published evidence o
 self-issuing an evaluator verdict.
 
 Adapted from Superpowers; source pin, original hash and MIT notice are recorded in
-[the shared provenance catalog](../provenance.json).
+the installation source catalog (`integrations/runtimes/skills/provenance.json`).

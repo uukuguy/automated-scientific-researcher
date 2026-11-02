@@ -30,4 +30,4 @@ Never alter immutable evidence, hidden evaluation assets or independent evaluato
 to repair candidate results.
 
 Adapted from Superpowers; source pin, original hash and MIT notice are recorded in
-[the shared provenance catalog](../provenance.json).
+the installation source catalog (`integrations/runtimes/skills/provenance.json`).
