@@ -267,7 +267,9 @@ class ControlService(PolicyStore):
             elif kind=='quota':
                 if set(payload)!={'state'} or payload['state'] not in ('unknown','available','exhausted','rate_limited'): raise ControlError('invalid_quota_state')
                 record['quota_state']=payload['state']
-                if payload['state'] in ('exhausted','rate_limited'): record.update(state='paused',admission_open=False)
+                if payload['state'] in ('exhausted','rate_limited'):
+                    record['admission_open']=False
+                    if record['state'] not in ('stopping','finishing'): record['state']='paused'
                 scope='subsequent_submissions'
             elif kind=='guidance':
                 if set(payload)!={'text'} or type(payload['text']) is not str or not payload['text'].strip(): raise ControlError('invalid_guidance')

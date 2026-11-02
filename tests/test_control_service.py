@@ -161,8 +161,10 @@ class ControlTests(unittest.TestCase):
         session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='runtime')
         receipt=self.service.command('human-secret','p','r','finish',expected_revision=1,idempotency_key='finish')
         self.assertEqual(receipt['status'],'pending')
+        self.service.command('human-secret','p','r','quota',expected_revision=2,idempotency_key='late-quota',payload={'state':'rate_limited'})
+        self.assertEqual(self.service.get_run('human-secret','p','r')['state'],'finishing')
         with self.assertRaisesRegex(ValueError,'control_transition_pending'):
-            self.service.command('human-secret','p','r','resume',expected_revision=2,idempotency_key='resume')
+            self.service.command('human-secret','p','r','resume',expected_revision=3,idempotency_key='resume')
         self.service.release_runtime('human-secret','p','r',session['session_id'],session['epoch'],'worker',execution_exited=True,actual_walltime_ms=12)
         self.assertEqual(self.service.get_run('human-secret','p','r')['state'],'completed')
         self.assertEqual(self.service.command('human-secret','p','r','finish',expected_revision=1,idempotency_key='finish')['status'],'applied')
