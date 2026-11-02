@@ -49,7 +49,7 @@ def prepare_oauth(source: Path, config_dir: Path):
     fd=os.open(target,os.O_WRONLY|os.O_CREAT|os.O_TRUNC,0o600)
     os.fchmod(fd,0o600)
     with os.fdopen(fd,'w') as stream: json.dump({'openai-codex':auth},stream)
-    (config_dir/'settings.json').write_text(json.dumps({'retry':{'enabled':False},'compaction':{'enabled':False}}))
+    (config_dir/'settings.json').write_text(json.dumps({'retry':{'enabled':False,'provider':{'maxRetries':0}},'cacheWarming':'off','compaction':{'enabled':False}}))
 
 
 class PiRuntime:

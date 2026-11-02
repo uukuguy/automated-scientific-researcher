@@ -37,7 +37,7 @@ export default function(pi) {
       await bridge('permit', {kind:'tool_execution'}, event.toolCallId);
       if(event.toolName!=='asr') {
         try { const input=event.input.path || '.';
-          const safe=(event.toolName==='read' && input===process.env.ASR_SKILL_PATH) ? process.env.ASR_SKILL_PATH : workspacePath(process.env.ASR_WORKSPACE,input,event.toolName); return {input:{...event.input,path:safe}}; }
+          const safe=(event.toolName==='read' && input===process.env.ASR_SKILL_PATH) ? process.env.ASR_SKILL_PATH : workspacePath(process.env.ASR_WORKSPACE,input,event.toolName); event.input.path=safe; return; }
         catch { return {block:true,reason:'Only ordinary ASCII paths inside the research workspace are allowed; symlinks and metadata paths are forbidden.'}; }
       }
     } catch { fatal(); }

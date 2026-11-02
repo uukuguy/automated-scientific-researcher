@@ -15,11 +15,12 @@ import threading
 
 
 class ResearchBridge:
-    def __init__(self, service, *, project, run, researcher_token, supervisor_token, workspace, snapshots, dispatch=None):
+    def __init__(self, service, *, project, run, researcher_token, supervisor_token, workspace, snapshots, dispatch=None, organization=None):
         self.service=service; self.project=project; self.run=run
         self.researcher_token=researcher_token; self.supervisor_token=supervisor_token
         self.workspace=Path(workspace).resolve(); self.snapshots=Path(snapshots).resolve()
         self.dispatch=dispatch
+        self.organization=organization
         self.dispatch_lock=threading.Lock()
         self.token=secrets.token_urlsafe(32); self.server=None
         self.permits=[]
@@ -47,8 +48,13 @@ class ResearchBridge:
         if operation=='ack_guidance':
             return s.ack_guidance(t,p,r,idempotency_key=key,**self.runtime_identity,**arguments)
         if operation=='publish_finding':
-            return s.publish_finding(t,p,r,idempotency_key=key,**arguments)
-        if operation=='snapshot': return self.snapshot(arguments.get('paths',[]))
+            receipt=s.publish_finding(t,p,r,idempotency_key=key,**arguments)
+            if self.organization:self.organization.sync_findings(self.supervisor_token,p,r)
+            return receipt
+        if operation=='snapshot':
+            receipt=self.snapshot(arguments.get('paths',[]))
+            if self.organization:self.organization.register_snapshot(self.supervisor_token,p,r,snapshot_root=self.snapshots,digest=receipt['snapshot_sha256'])
+            return receipt
         raise ValueError('unsupported_bridge_operation')
 
     def state(self):
@@ -61,7 +67,7 @@ class ResearchBridge:
             validation=path/'validation.json'
             if validation.is_file():
                 observations.append(dict(trial_id=trial['trial_id'],manifest_hash=report['manifest_hash'],validation=json.loads(validation.read_text())))
-        return dict(run=run,findings=self.service.findings(self.researcher_token,self.project,self.run),observations=observations,snapshot_refs=self._snapshot_refs())
+        return dict(run=run,findings=self.service.findings(self.researcher_token,self.project,self.run),observations=observations,snapshot_refs=self._snapshot_refs(),shared_findings=self.organization.forum(self.supervisor_token,self.project) if self.organization else [])
 
     def _snapshot_refs(self):
         if not self.snapshots.exists(): return []

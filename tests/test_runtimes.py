@@ -20,6 +20,9 @@ class RuntimeTests(unittest.TestCase):
             prepare_oauth(src,dst)
             self.assertEqual(list(json.loads((dst/'auth.json').read_text())),['openai-codex'])
             self.assertEqual((dst/'auth.json').stat().st_mode & 0o777,0o600)
+            settings=json.loads((dst/'settings.json').read_text())
+            self.assertEqual(settings['retry'],{'enabled':False,'provider':{'maxRetries':0}})
+            self.assertEqual(settings['cacheWarming'],'off')
 
     def fake(self, d, records, wait=False):
         p=Path(d)/'fake-pi'; p.write_text('#!/usr/bin/env python3\nimport sys,json,time\nif "--version" in sys.argv: print("1.5.0");sys.exit()\nfor line in sys.stdin:\n c=json.loads(line)\n if c["type"]=="get_state": print(json.dumps({"type":"response","id":c["id"],"success":True,"data":{"sessionId":"native","sessionFile":"native.jsonl","model":{"provider":"openai-codex","id":"test"}}}),flush=True)\n if c["type"]=="prompt":\n  '+ ('time.sleep(10)' if wait else '\n  '.join('print('+repr(json.dumps(r))+',flush=True)' for r in records))+'\n')
@@ -140,3 +143,35 @@ class CapabilityPackTests(unittest.TestCase):
             exe=helper.fake(d,[{'type':'agent_settled'}])
             result=PiRuntime(model='test',executable=exe,capabilities_path=manifest).run(workspace=Path(d),config_dir=Path(d),session_id='run1',prompt='test',limits=Limits(1,1,1),bridge_url='http://localhost:1',bridge_token='test')
             self.assertEqual(result['capability_pack_sha256'],hashlib.sha256(manifest.read_bytes()).hexdigest())
+
+class InstalledHookTests(unittest.TestCase):
+    def test_actual_pi_runner_mutation_reaches_native_write_execution(self):
+        import shutil
+        import subprocess
+        import time
+        exe=shutil.which('pi')
+        if not exe:self.skipTest('pi not installed')
+        package=Path(exe).resolve().parents[2]
+        runner=package/'dist/core/extensions/runner.js';write=package/'dist/core/tools/write.js'
+        if not runner.exists():self.skipTest('installed pi JS module layout unavailable')
+        with tempfile.TemporaryDirectory() as d:
+            module=Path('integrations/runtimes/asr-extension.mjs').resolve().as_uri()
+            code=f'''import extension from {json.dumps(module)};
+import {{ExtensionRunner}} from {json.dumps(runner.as_uri())};
+import {{createWriteTool}} from {json.dumps(write.as_uri())};
+import fs from 'node:fs';
+const handlers=new Map();
+const pi={{on:(event,handler)=>handlers.set(event,[handler]),registerTool:()=>{{}}}};
+globalThis.fetch=async()=>({{ok:true,json:async()=>({{activity_id:'test-permit'}})}});
+extension(pi);
+const runner=new ExtensionRunner([{{handlers}}],{{}},{json.dumps(d)},{{}},{{}});
+const args={{path:'note.md',content:'verified native execution'}};
+const decision=await runner.emitToolCall({{type:'tool_call',toolName:'write',toolCallId:'native1',input:args}});
+if(decision?.block)throw new Error('unexpected block');
+if(args.path!=={json.dumps(str(Path(d).resolve()/'note.md'))})throw new Error('hook failed to mutate actual args');
+const tool=createWriteTool({json.dumps(d)});
+await tool.execute('native1',args,new AbortController().signal);
+if(fs.readFileSync(args.path,'utf8')!=='verified native execution')throw new Error('native execution mismatch');'''
+            env=dict(os.environ,ASR_WORKSPACE=d,ASR_MAX_TURNS='1',ASR_MAX_TOOLS='1',ASR_DEADLINE_MS=str(int((time.time()+5)*1000)))
+            result=subprocess.run(['node','--input-type=module','-e',code],env=env,capture_output=True,timeout=8)
+            self.assertEqual(result.returncode,0,result.stderr.decode())
