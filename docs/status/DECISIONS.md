@@ -54,3 +54,28 @@
 - Rationale: rapid evolution must not leave conflicting design versions controlling implementation.
 - Other files: DECISIONS records rationale and supersession; WORKLIST records delivery; JOURNAL records events; RESUME records live intent.
 - Former dated design is a redirect. The original task specification remains background, not the current scope authority.
+
+## D007 — Human intervention throughout research
+
+- Date: 2026-11-02. Status: basic model accepted.
+- Decision: humans may observe, ask, guide and control throughout a run; event-driven intervention does not require approval for every research step.
+- Distinguish conversation, research guidance and runtime controls. Changes have targets, versions, effective boundaries and execution receipts.
+- Default pause stops new submissions while preserving in-flight work; explicit immediate stop requests cancellation. Exact UI, notification and protocol details remain design work.
+- Source: user accepted the basic interaction setting before requesting the Capstone assessment. Main design §9.1 owns the current model.
+
+## D008 — Capstone adaptation is available
+
+- Date: 2026-11-02. Status: adaptation premise confirmed; architecture recommendation subsequently accepted in D009.
+- User confirmed Capstone can cooperate with adaptations, including a dedicated scientific-research mode.
+- Assess reusable architecture and reasonable extensions, rather than requiring existing screens to meet every research need unchanged.
+- Recommendation: Capstone owns human interaction; an explicit service contract connects AAR research execution and authoritative experiment evidence. This was a recommendation when D008 was recorded; D009 accepts the responsibility split. Detailed protocol and implementation remain pending.
+- Evidence and proposed boundaries: main design §9.2. Capstone was inspected read-only at HEAD 54e33dbf with a dirty working tree; no runtime acceptance is claimed.
+
+## D009 — Capstone scientific-research workbench and parallel preparation
+
+- Date: 2026-11-02. Status: accepted.
+- User accepted the proposed workbench architecture and requested a handoff enabling Capstone preparation in parallel.
+- Capstone owns human interaction; ASR owns research control, AAR integration, numerical experiments and independent evaluation. One executor advances each autonomous research run; Capstone does not create a competing experiment scheduler.
+- Deliver preparation through C0–C4 in `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md`: integration design, mock adapter, minimum workspace, asynchronous intervention/recovery, and real-service integration readiness.
+- Wire fields and endpoint choices remain a joint protocol draft. Mock acceptance does not prove real scientific execution.
+- Supersedes D008's proposed status for the responsibility split. P1 numerical work remains active; the Capstone preparation lane is tracked in its own project.

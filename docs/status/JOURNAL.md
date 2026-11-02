@@ -19,3 +19,9 @@
 - 16:57 Recorded user corrections: solver methods are research variables; users control defaults, boundaries and directions.
 - 16:57 Established docs/PROJECT-DESIGN.md as living design; aligned plans, instructions and historical redirect to prevent stale scope.
 - 16:58 Verified design links, status index, variable controls, supersession and instruction symlink; documentation whitespace check passed.
+- 16:58 Committed living design and configurable research boundaries to keep evolving decisions aligned with implementation. [9f81e2e]
+- 17:24 Drafted human intervention nodes and versioned control semantics in main design; proposal remains unconfirmed.
+- 17:32 User accepted basic human-intervention model and confirmed Capstone can adapt, including a dedicated scientific-research mode.
+- 17:32 Inspected Capstone working-tree sources at 54e33dbf; documented reusable UI, control gaps and proposed AAR integration boundaries.
+- 19:10 User accepted Capstone architecture; prepared C0–C4 handoff with ownership, draft protocol and mock/real acceptance boundaries.
+- 19:10 Verified handoff links, required preparation coverage and documentation whitespace; no runtime tests or Capstone writes performed.

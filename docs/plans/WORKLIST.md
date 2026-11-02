@@ -24,6 +24,7 @@ Exactly one package is active. Status records evidence, not elapsed time.
 
 ## Execution constraints
 
+- Human intervention follows main design §9.1 (accepted basic model). Capstone scientific-research architecture is accepted in §9.2/D009. Its parallel preparation follows `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md`; protocol details remain to be aligned. Capstone owns C0–C4 in its ledger; P1 remains this repository’s active package.
 - Solver methods and sampling are research variables from the start. Variable defaults and permitted changes come from the user-controlled contract.
 - Preserve the user's bounded-autonomy model. Research workflow is autonomous; scope and evaluation remain governed.
 - Preserve AAR collaboration capabilities while separating W2S dependencies. Ignored local changes alone are not reproducible integration.

@@ -14,7 +14,7 @@ Register each new status file here. Register archive buckets as one row per buck
 | `JOURNAL.md` | 🟢 active | Append-only event log. |
 | `RESUME-NEXT-SESSION.md` | 🟢 active | Session recovery point. |
 | `INDEX.md` | 🟢 active | File catalog. |
-| `DECISIONS.md` | 🟢 active | Accepted scope and architecture decisions. |
+| `DECISIONS.md` | 🟢 active | Accepted scope, interaction principles and Capstone architecture; protocol details remain draft. |
 | `BOOTSTRAP-PREFLIGHT.md` | 🟢 active | Dated WP1 environment evidence; recheck before setup. |
 
 ## Decision history
@@ -40,3 +40,5 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 - `docs/PROJECT-DESIGN.md` — canonical current design; read before implementation or design discussion.
 - `docs/superpowers/plans/2026-11-02-container-lab.md` — current numerical-environment implementation slice.
 - `docs/superpowers/specs/2026-11-02-bounded-aar-design.md` — historical redirect; not a separate design authority.
+
+- `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md` — Capstone preparation tasks, proposed service contract and acceptance boundaries.

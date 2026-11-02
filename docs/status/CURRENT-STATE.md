@@ -17,6 +17,7 @@
 - Research reference: `docs/IEEE118_OOD_Sample_Expansion_Task_v2_2.md`; accepted user decisions in `docs/status/DECISIONS.md` govern scope.
 - Planned numerical layer: canonical MATPOWER case, scenario generation, AC power flow, independent residual validation.
 - Planned research layer: adapt AAR for early single-researcher experiments; humans set direction and evaluation rules, researchers choose methods within scope.
+- Human interaction: asynchronous guidance and versioned controls; Capstone scientific-research mode is the accepted workbench architecture; preparation is defined in `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md`.
 - Local upstream: `3th-party/automated-w2s-research/`, ignored by the parent repository; not yet integrated.
 
 ## Open Problems (theme-level)
@@ -30,7 +31,7 @@
 
 ### Repository instructions
 
-- `AGENTS.md` — empty instruction file; `CLAUDE.md` is a symlink to it.
+- `AGENTS.md` — living-design, research-boundary and durable-state rules; `CLAUDE.md` is a symlink to it.
 - No repository `MEMORY.md` exists.
 
 ### State / recovery
