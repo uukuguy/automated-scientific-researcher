@@ -75,6 +75,14 @@ class ControlTests(unittest.TestCase):
         self.assertEqual(self.service.command('human-secret','p','r','pause',expected_revision=1,idempotency_key='pause'), receipt)
         self.assertEqual(self.service.get_run('agent-secret','p','r')['trials'][0]['trial_id'],trial['trial_id'])
 
+    def test_logical_resource_ledgers_share_existing_balances_and_acl(self):
+        self.start();self.submit()
+        run=self.service.get_run('agent-secret','p','r')
+        self.assertEqual(run['resource_ledgers']['compute']['attempts'],run['budget']['attempts'])
+        self.assertEqual(run['resource_ledgers']['model']['turns'],run['budget']['turns'])
+        self.assertEqual(run['resource_ledgers']['provider_quota']['state'],'unknown')
+        with self.assertRaises(ControlError):self.service.get_run('other-secret','p','r')
+
     def test_complete_contract_and_capability_validation(self):
         for key in ('budget','evaluation_ref','execution_policy'):
             bad=copy.deepcopy(self.contract);del bad[key]

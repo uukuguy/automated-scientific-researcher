@@ -62,6 +62,8 @@ def make_server(service, *, host='127.0.0.1', port=8765):
                     result=service.pending_dispatch(token,project)
                 elif self.command=='GET' and len(route)==3 and route[0]=='references':
                     result=service.get_reference(token,project,route[1],route[2])
+                elif len(route)==3 and route[0]=='runs' and route[2]=='validations':
+                    result=service.validations(token,project,route[1]) if self.command=='GET' else service.publish_validation(token,project,route[1],**body)
                 elif len(route)==3 and route[0]=='runs' and route[2]=='findings':
                     result=service.findings(token,project,route[1]) if self.command=='GET' else service.publish_finding(token,project,route[1],**body)
                 elif self.command=='POST' and route==['contracts']:
@@ -94,7 +96,7 @@ def make_server(service, *, host='127.0.0.1', port=8765):
                 self.respond(200,result)
             except (ValueError,TypeError,KeyError) as exc:
                 code=getattr(exc,'code',str(exc))
-                status=401 if code=='unauthorized' else 403 if code=='forbidden' else 404 if code in ('not_found','run_not_found','contract_not_found','reference_not_found','hypothesis_not_found') else 409 if code in ('revision_conflict','idempotency_conflict','admission_closed','budget_exhausted') else 400
+                status=401 if code=='unauthorized' else 403 if code=='forbidden' else 404 if code in ('not_found','run_not_found','contract_not_found','reference_not_found','hypothesis_not_found','validation_not_found') else 409 if code in ('revision_conflict','idempotency_conflict','admission_closed','budget_exhausted','validation_id_conflict') else 400
                 self.respond(status,{'error':code})
             except Exception:
                 self.respond(500,{'error':'internal_error'})

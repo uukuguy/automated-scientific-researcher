@@ -39,7 +39,7 @@ class ControlService(PolicyStore):
             raise ControlError('credentials_required')
         self.credentials = copy.deepcopy(credentials)
         for token, principal in self.credentials.items():
-            if not isinstance(token, str) or not token or principal.get('role') not in ('human','researcher','supervisor','viewer') or not isinstance(principal.get('projects'),list) or not principal.get('subject'):
+            if not isinstance(token, str) or not token or principal.get('role') not in ('human','researcher','supervisor','viewer','evaluator') or not isinstance(principal.get('projects'),list) or not principal.get('subject'):
                 raise ControlError('invalid_credentials')
         self.budgets = BudgetStore(path)
         self.references = ReferenceStore(path)
@@ -56,6 +56,8 @@ class ControlService(PolicyStore):
             CREATE TABLE IF NOT EXISTS asr_hypotheses(project TEXT NOT NULL, hypothesis_id TEXT NOT NULL, revision INTEGER NOT NULL, record TEXT NOT NULL, PRIMARY KEY(project,hypothesis_id,revision));
             CREATE TABLE IF NOT EXISTS asr_findings(project TEXT, run TEXT, finding_id TEXT, revision INTEGER, record TEXT, PRIMARY KEY(project,run,finding_id,revision));
             ''')
+            from .validations import initialize
+            initialize(db)
 
     def _auth(self, token, project, roles=None):
         principal = None
@@ -196,6 +198,7 @@ class ControlService(PolicyStore):
             record=self._run(db,project,run)
             record['contract']=self._contract(db,project,record['contract_id'],record['contract_revision'])
             record['budget']={d:self.budgets._balance(db,project,d) for d in record['contract']['document']['budget']}
+            record['resource_ledgers']=self.budgets.ledger_snapshot_in_transaction(db,project)
             record['trials']=[dict(json.loads(body),dispatch_state=state) for state,body in db.execute('SELECT state,record FROM asr_dispatch WHERE project=? AND run=? ORDER BY rowid',(project,run))]
             for trial in record['trials']:
                 trial.setdefault('hypothesis_ref',None)
@@ -684,3 +687,11 @@ class ControlService(PolicyStore):
             source=next(item for item in evidence if item['trial_id']==relation['trial_id'])
             records.append(dict(relation,hypothesis_ref=reference,execution_attempt_id=source['execution_attempt_id'],manifest_hash=source['manifest_hash'],assessment_kind='author_claim',assessment_author=author))
         return records
+
+    def publish_validation(self, token, project, run, validation_id, document, *, idempotency_key, supersedes=None):
+        from .validations import publish_validation
+        return publish_validation(self,token,project,run,validation_id,document,idempotency_key=idempotency_key,supersedes=supersedes)
+
+    def validations(self, token, project, run):
+        from .validations import validations
+        return validations(self,token,project,run)
