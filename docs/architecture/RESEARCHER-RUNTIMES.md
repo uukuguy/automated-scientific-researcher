@@ -78,9 +78,10 @@ load it unchanged in subscription mode. Replace it with method guidance or an
 explicitly budgeted subscription delegation capability. Skill text cannot grant
 network, credentials, evaluator access or execution authority.
 
-The current smoke manifest has no coding tools or skills. It validates tool-only
-research integration. A coding-research profile needs a separately verified
-isolated workspace with editing/testing/candidate submission. Its methods and
+The current calibration manifest includes curated scientific guidance, guarded pi
+native file tools and ASR service tools. It does not execute arbitrary candidate
+code. A coding-research profile needs a separately verified isolated execution
+environment for testing and candidate submission. Its methods and
 tool effects must be assessed on scientific tasks, not by installed skill count.
 
 ### ASR base toolset: omp + AAR
@@ -110,9 +111,97 @@ pi extensions, native coding-agent tools or MCP provide the frontend. Runtime
 and pack versions are recorded separately so experiments can attribute behavior
 to model, runtime and tool changes rather than treating them as one opaque agent.
 
-Two profiles remain explicit: calibration-smoke (ASR service tools only), and
+Two profiles remain explicit: calibration-smoke (ASR service tools, curated skill and guarded workspace file tools), and
 coding-research (workspace tools, bounded execution and research skills). The
 latter cannot be declared operational solely by adding names to a manifest.
+
+### Storage and reuse across runtimes
+
+| Material | Current location / behavior | Cross-runtime boundary |
+|---|---|---|
+| Canonical skill source | `integrations/runtimes/skills/scientific-reasoning/SKILL.md` | Shared versioned method guidance; executable scripts would need declared dependencies and permissions |
+| Capability declaration | `integrations/runtimes/capabilities.json` and `domain-powergrid.json` | Shared capability identity and contract; current runtime/version binding is pi-specific, not a universal loader |
+| Session skill copy | `<config_dir>/capabilities/<skill_sha256>/SKILL.md`, verified then frozen read-only | Each runtime gets the same verified content through its own loader; never a mutable global home installation |
+| pi service-tool binding | `integrations/runtimes/asr-extension.mjs` → local authenticated `integrations/aar/bridge.py` | The extension is pi-specific; ASR operations/backend are reusable through another adapter |
+| Scientific dependencies | `environments/scientific/.venv`, managed by that directory's locked uv environment | Reusable dependency specification; runtime access must go through supported controlled execution, not unrestricted host shell |
+| Runtime auth and sessions | Private `<config_dir>`; acceptance example `artifacts/p2-aar-subscription-20261102-05/pi-private/` | Credentials/session formats are runtime-specific and must not be shared as tool-pack content |
+
+Currently there is no ASR-installed general MCP server or Claude runtime binding.
+MCP is an optional common interface to the same backend, not a requirement to
+replace useful pi native tools. A future Claude adapter can load the shared skill
+and connect supported tools through native SDK/MCP bindings, with the same
+project/run authorization and resource accounting. Server implementations and
+read-only assets may be shared; stdio servers normally have per-client processes,
+while a network service needs explicit client/run isolation. Reusing an installation
+does not imply sharing mutable sessions, credentials or permissions.
+
+Current pi launch explicitly uses `PI_CODING_AGENT_DIR=<config_dir>`, disables
+automatic skill/extension discovery, and passes only the selected frozen skill and
+extension. Global `~/.pi`/`~/.claude`/developer MCP settings are not the authoritative
+ASR configuration. Tools available to the development assistant (for example
+Context7) are not automatically installed or authorized for the ASR researcher.
+Claude loading and subscription authentication must be verified
+against the selected installed SDK before claiming runtime parity.
+
+### Context7 documentation capability (recommended; not installed in ASR yet)
+
+Context7 is a suitable shared coding-documentation capability: resolve a library,
+then query its documentation/examples. The [official API guide](https://context7.com/docs/api-guide)
+exposes the same lookups through MCP and REST; the [official MCP package](https://github.com/upstash/context7/blob/master/packages/mcp/README.md)
+supports remote or local connection. This makes a narrow pi native adapter and a
+future Claude MCP binding possible without a general plugin platform.
+
+Use for SDK/library syntax and version checks, including pi, Claude SDK and
+scientific dependencies when indexed. Record library ID, documentation version,
+query and source attribution; verify against installed source/signatures when
+indexed versions lag. Documentation output is reference material, not executable
+permission or scientific validation. Do not send credentials or private evaluation
+assets in queries. Credentials stay in operator/runtime configuration, outside
+candidate containers. Bound requests/time/response size and report rate limits;
+Context7 service usage is distinct from coding-model subscription usage. Provider
+outages must not cause unbounded retries or paid-model fallback.
+
+Current developer Context7 access does not establish ASR access. Activation needs
+an explicit capability declaration and adapter, authentication/availability check,
+and actual tool-call test; no Context7 server or credential was installed by this
+recommendation. Generic text skills remain reusable across runtimes.
+
+### Engineering and literature skill selection
+
+User requested systematic debugging, code review, deep search and deep research
+alongside Context7. Select by behavior and provenance, not vendor-like names.
+[Superpowers](https://github.com/obra/superpowers) supplies systematic-debugging,
+requesting-code-review and verification guidance; these are community sources,
+not automatically Anthropic official assets. Any imported material requires a
+pinned source, license, content hash and runtime/dependency check before loading.
+
+| Capability | ASR use | Required boundary / current state |
+|---|---|---|
+| Systematic debugging | Reproduce technical failures, distinguish root cause from scientific negative evidence, verify minimal repairs | Selected for adaptation; no blanket requirement to keep fixing a refuted hypothesis |
+| Code review / receiving review | Examine candidate code, numerical conventions, leakage and unsupported claims | Selected; reviewer comments are author/development evidence, not independent validation; additional agents consume configured budget |
+| Verification before completion | Check actual execution and evidence before claiming success | Selected; existing scientific-reasoning guidance already enforces claim limits |
+| Deep search | Search decomposition, synonyms, citation trails, source deduplication and counterexamples | Selected; needs actual search/fetch backend, bounded queries and retained provenance |
+| Deep literature research | Compare methods, assumptions and contradictions; extract testable hypotheses and research gaps | Selected; literature synthesis is not a novel experimentally verified finding |
+| Context7 | Version-aware implementation documentation | Recommended backend; ASR adapter and live lookup acceptance pending |
+
+The active pack currently contains the ASR scientific-reasoning skill and pi/ASR
+tools only. The table is selection scope, not an installed-tool inventory. Do not
+import a whole workflow framework that forces approval for every experiment,
+automatic commits, unrestricted shell or hidden paid-model consultation. A
+subscription product called Deep Research is not assumed callable by SDK/MCP or
+included in another provider's coding subscription. Preserve the single researcher
+and let skills guide relevant decisions rather than impose one fixed research
+sequence.
+
+### Active AAR adaptation audit (2026-11-02)
+
+The active ASR override replaces original W2S/PGR task prompts and agent creation;
+legacy training/five-seed/S3/paid research-thinking paths are not active. Remaining
+limitations are explicit: reference-only execution, one-session acceptance bound,
+and original ORM fields with null W2S metrics. Do not enable the original PGR
+leaderboard or mislabel candidate claims as verified results. Upstream private
+method/text-patch coupling and eager legacy dependencies require versioned upgrade
+checks; maintain the existing loop instead of creating another scheduler.
 
 ## Power-grid scientific computing pack (accepted scope)
 

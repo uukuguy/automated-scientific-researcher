@@ -76,7 +76,7 @@ class PiRuntime:
             if pack.get('ambient_resources') is not False:
                 raise RuntimeFailure('ambient_capabilities_forbidden')
             skills=pack.get('skills',[])
-            if not isinstance(skills,list) or len(skills)!=1 or not isinstance(skills[0],dict) or skills[0].get('id')!='scientific-reasoning/1' or skills[0].get('path')!='skills/scientific-reasoning/SKILL.md':
+            if not isinstance(skills,list) or len(skills)!=1 or not isinstance(skills[0],dict) or skills[0].get('id')!='scientific-reasoning/2' or skills[0].get('path')!='skills/scientific-reasoning/SKILL.md':
                 raise RuntimeFailure('capability_skill_path_mismatch')
             skill_path=self.capabilities_path.parent/skills[0]['path']
             if any(path.is_symlink() for path in (skill_path,skill_path.parent,skill_path.parent.parent)):
@@ -85,7 +85,7 @@ class PiRuntime:
             if hashlib.sha256(skill).hexdigest()!=skills[0].get('sha256'):
                 raise RuntimeFailure('capability_skill_hash_mismatch')
             expected=['pi.read','pi.edit','pi.write','pi.grep','pi.find','pi.ls']
-            if pack.get('coding_tools')!=expected or set(pack.get('tools',[]))!={'asr.state','asr.submit_trial','asr.publish_finding','asr.snapshot','asr.ack_guidance'}:
+            if pack.get('coding_tools')!=expected or set(pack.get('tools',[]))!={'asr.state','asr.publish_hypothesis','asr.submit_trial','asr.publish_finding','asr.snapshot','asr.ack_guidance'}:
                 raise RuntimeFailure('capability_tool_inventory_mismatch')
             return dict(sha256=hashlib.sha256(raw).hexdigest(),pack=pack,skill=skill,skill_sha256=skills[0]['sha256'])
         except (OSError,ValueError,TypeError,KeyError) as error:

@@ -3,13 +3,19 @@ name: scientific-reasoning
 description: Plan and interpret bounded scientific experiments using ASR evidence, including negative findings and uncertainty.
 ---
 
-# Scientific reasoning pack v1
+# Scientific reasoning pack v2
 
 Start from the effective contract, remaining budget, existing trials, findings,
 research notes and human guidance returned by ASR state. A new conversation is
 not permission to repeat an accepted experiment. Keep hypotheses, observations
 and conclusions separate; choose methods inside the contract rather than following
 a mandatory experimental sequence.
+
+Use publish_hypothesis to preserve the statement, prediction, scope, refutation
+criteria and change reason as an immutable revision. Read all hypothesis versions
+from state after recovery. Bind new trials to the intended hypothesis_ref; changing
+the prediction must not rewrite previous trials. Label post-hoc interpretations
+explicitly; an invalid experiment cannot by itself refute a hypothesis.
 
 For a testable hypothesis, state the expected observation and what would count
 against it. Compare against an explicit reference and keep scientific questions

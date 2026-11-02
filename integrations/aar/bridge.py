@@ -47,6 +47,8 @@ class ResearchBridge:
             return dict(receipt=receipt,state=self.state())
         if operation=='ack_guidance':
             return s.ack_guidance(t,p,r,idempotency_key=key,**self.runtime_identity,**arguments)
+        if operation=='publish_hypothesis':
+            return s.publish_hypothesis(t,p,idempotency_key=key,**arguments)
         if operation=='publish_finding':
             receipt=s.publish_finding(t,p,r,idempotency_key=key,**arguments)
             if self.organization:self.organization.sync_findings(self.supervisor_token,p,r)
@@ -67,7 +69,7 @@ class ResearchBridge:
             validation=path/'validation.json'
             if validation.is_file():
                 observations.append(dict(trial_id=trial['trial_id'],manifest_hash=report['manifest_hash'],validation=json.loads(validation.read_text())))
-        return dict(run=run,findings=self.service.findings(self.researcher_token,self.project,self.run),observations=observations,snapshot_refs=self._snapshot_refs(),shared_findings=self.organization.forum(self.supervisor_token,self.project) if self.organization else [])
+        return dict(run=run,hypotheses=self.service.hypotheses(self.researcher_token,self.project),findings=self.service.findings(self.researcher_token,self.project,self.run),observations=observations,snapshot_refs=self._snapshot_refs(),shared_findings=self.organization.forum(self.supervisor_token,self.project) if self.organization else [])
 
     def _snapshot_refs(self):
         if not self.snapshots.exists(): return []

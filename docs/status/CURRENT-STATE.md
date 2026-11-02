@@ -26,7 +26,7 @@
 
 ## Open Problems (theme-level)
 
-- D016 requires immutable hypothesis evolution, separate scientific outcome semantics, three-layer evaluator independence and model/compute ledgers; implementation and subscription quota observability remain incomplete.
+- D016 requires immutable hypothesis evolution, separate scientific outcome semantics, three-layer evaluator independence and model/compute ledgers; local hypothesis revision/binding/author-evidence APIs exist; full scientific lifecycle, evaluator isolation and subscription quota accounting remain incomplete.
 - Local authenticated control API and reference execution supervision exist; generalized candidate execution remains unavailable.
 - Unconfirmed real-world input distribution, OOD definition, failure cases, and downstream task.
 - Formal evaluation policy and expanded operating conventions remain uncalibrated; the implemented reference uses fixed PV/PQ and one Slack.

@@ -46,7 +46,13 @@ The accepted architecture is detailed in [Minimum-loop design](../architecture/A
 
 ## P3 implementation order under D016
 
-1. Hypothesis revision and evidence relations: inspect existing control transactions; implement immutable revisions, frozen trial bindings, cross-project checks, legacy handling and candidate finding associations. Verify revisions survive runtime replacement and retain opposing evidence (A12).
+1. Hypothesis revision and evidence relations: first local slice implemented with immutable revisions, optional frozen trial bindings, project checks, legacy replay, candidate author assessments and pi/AAR sharing. Interface tests exercise service reopen and opposing-evidence retention (A12); actual model-driven hypothesis revision and full trajectory remain outstanding.
 2. Orthogonal outcome and Validation lifecycle: record execution separately from experiment validity and claim assessment; restrict official validation writes to evaluator identity (A13).
 3. Two logical resource ledgers: preserve existing consumption through migration, atomically reserve model/compute dimensions, record unknown quota without silent fallback and test failure/recovery accounting (A14).
-4. Isolated evaluator and replay: prove execution/data/logic independence with real frozen-material replay and deliberate invalid cases (A8/A9). Integrate a complete negative-or-positive research trajectory; mocks alone cannot close P3.
+4. Minimal isolated candidate execution and evaluator replay: enable one contract-permitted candidate-method slice with real code/input/resource isolation, then prove execution/data/logic independence with real frozen-material replay and deliberate invalid cases (A8/A9). Integrate a complete negative-or-positive research trajectory; mocks alone cannot close P3.
+
+## Risk checks during P3
+
+- Highest: scientific trust. Inspect failure denominators, original-problem preservation, evaluator independence, exposed evaluation data and claim scope. Do not promote a metric improvement into a scientific finding.
+- High: AAR coupling. Audit active prompt/tools/loop overrides and tracked patch size; keep upstream W2S/PGR task goals out of ASR contracts.
+- High: infrastructure replacing research. Every P3 slice must serve the single-researcher hypothesis → candidate method → experiment → revision → finding → independent replay trajectory. Current reference-only iteration experiments do not prove candidate-method autonomy. No speculative multi-agent/distributed/plugin-platform work.

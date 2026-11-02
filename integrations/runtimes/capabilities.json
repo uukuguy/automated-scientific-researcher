@@ -1,19 +1,20 @@
 {
   "schema": "asr-research-capability-pack/1",
-  "id": "powerflow-calibration-smoke/1",
+  "id": "powerflow-calibration-smoke/2",
   "status": "bounded research and workspace-file profile",
   "runtime_protocol": "pi-rpc/1",
   "runtime_version": "1.5.0",
   "authentication": "openai-codex subscription_oauth only",
   "skills": [
     {
-      "id": "scientific-reasoning/1",
+      "id": "scientific-reasoning/2",
       "path": "skills/scientific-reasoning/SKILL.md",
-      "sha256": "f0522dc3ff7d8039f36923a138bcf4effbc6404a06c1216fdae1bdcd4ef70a3c"
+      "sha256": "eae8c5709306206ee31e97219f33a30c8adb0cba63e2311f6afa65bd7794a66c"
     }
   ],
   "tools": [
     "asr.state",
+    "asr.publish_hypothesis",
     "asr.submit_trial",
     "asr.publish_finding",
     "asr.snapshot",
