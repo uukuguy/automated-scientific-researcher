@@ -1,0 +1,42 @@
+{
+  "schema": "asr-codex-native-conversation/1",
+  "recorded_at": "2026-11-02T16:21:10.586972+00:00",
+  "runtime_version": "codex-cli 0.166.0",
+  "status": "passed",
+  "walltime_limit_seconds": 45,
+  "prompt_count": 1,
+  "prompt": "Respond exactly ASR_CODEX_OK. Do not use any tools.",
+  "auth_evidence": {
+    "type": "chatgpt",
+    "source": "native account/read with refreshToken=false; raw response not retained"
+  },
+  "isolation": {
+    "private_home": true,
+    "private_codex_home": true,
+    "private_workspace": true,
+    "plugins_disabled": true,
+    "shell_disabled": true,
+    "approval_policy": "never",
+    "sandbox": "read-only"
+  },
+  "billing": {
+    "mode": "native ChatGPT subscription",
+    "api_fallback": false,
+    "actual_charge": null,
+    "quota_entitlement": "not inferred from handshake/account metadata"
+  },
+  "scope": "One native protocol conversation only; not AAR integration, ASR admission or arbitrary-code isolation acceptance",
+  "thread_id": "01a19d10-9b8f-7193-a41b-736f7680c46b",
+  "model": "gpt-6.1-sol",
+  "model_provider": "openai",
+  "reasoning_effort": "high",
+  "turn_id": "01a19d10-af2f-7f93-8e1f-3b9a4514a022",
+  "reply": "ASR_CODEX_OK",
+  "terminal_status": "completed",
+  "tool_attempt": false,
+  "process_exit": {
+    "direct_child_exited": true,
+    "exit_code": 0
+  },
+  "duration_seconds": 25.409
+}
