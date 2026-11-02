@@ -22,7 +22,7 @@ class RuntimeTests(unittest.TestCase):
             self.assertEqual((dst/'auth.json').stat().st_mode & 0o777,0o600)
 
     def fake(self, d, records, wait=False):
-        p=Path(d)/'fake-pi'; p.write_text('#!/usr/bin/env python3\nimport sys,json,time\nfor line in sys.stdin:\n c=json.loads(line)\n if c["type"]=="get_state": print(json.dumps({"type":"response","id":c["id"],"success":True,"data":{"sessionId":"native","sessionFile":"native.jsonl","model":{"provider":"openai-codex","id":"test"}}}),flush=True)\n if c["type"]=="prompt":\n  '+ ('time.sleep(10)' if wait else '\n  '.join('print('+repr(json.dumps(r))+',flush=True)' for r in records))+'\n')
+        p=Path(d)/'fake-pi'; p.write_text('#!/usr/bin/env python3\nimport sys,json,time\nif "--version" in sys.argv: print("1.5.0");sys.exit()\nfor line in sys.stdin:\n c=json.loads(line)\n if c["type"]=="get_state": print(json.dumps({"type":"response","id":c["id"],"success":True,"data":{"sessionId":"native","sessionFile":"native.jsonl","model":{"provider":"openai-codex","id":"test"}}}),flush=True)\n if c["type"]=="prompt":\n  '+ ('time.sleep(10)' if wait else '\n  '.join('print('+repr(json.dumps(r))+',flush=True)' for r in records))+'\n')
         p.chmod(0o700); return str(p)
 
     def test_completion_requires_settled_not_just_prompt_receipt(self):
@@ -74,3 +74,31 @@ class BridgeTests(unittest.TestCase):
             self.assertEqual(saved.read_text(),'hypothesis')
             (work/'secret').symlink_to('/etc/passwd')
             with self.assertRaises(ValueError): bridge.snapshot(['secret'])
+
+class WorkspacePathTests(unittest.TestCase):
+    def test_pi_native_path_guard_blocks_host_escape_and_symlinks(self):
+        import subprocess
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d); (root/'note.txt').write_text('safe');(root/'link').symlink_to('/etc')
+            module=Path('integrations/runtimes/workspace-path.mjs').resolve().as_uri()
+            code=f'''import {{workspacePath}} from {json.dumps(module)};
+const root={json.dumps(str(root))};
+for(const name of ['/etc/passwd','../outside','link/passwd','.git/config','@/etc/passwd','~/secret']) {{
+ let blocked=false;try{{workspacePath(root,name,'read')}}catch{{blocked=true}};
+ if(!blocked)throw new Error('escape '+name);
+}}
+if(!workspacePath(root,'note.txt','read').endsWith('/note.txt'))throw new Error('normal file failed');
+workspacePath(root,'new/note.txt','write');'''
+            result=subprocess.run(['node','--input-type=module','-e',code],capture_output=True,timeout=5)
+            self.assertEqual(result.returncode,0,result.stderr.decode())
+
+class OrphanDeadlineTests(unittest.TestCase):
+    def test_extension_deadline_kills_owned_group_without_supervisor(self):
+        import subprocess
+        import time
+        module=Path('integrations/runtimes/asr-extension.mjs').resolve().as_uri()
+        code=f"import extension from {json.dumps(module)}; extension({{on:()=>{{}},registerTool:()=>{{}}}}); setInterval(()=>{{}},1000);"
+        env=dict(os.environ,ASR_MAX_TURNS='1',ASR_MAX_TOOLS='1',ASR_DEADLINE_MS=str(int((time.time()+.2)*1000)),ASR_OWNED_PROCESS_GROUP='1')
+        p=subprocess.Popen(['node','--input-type=module','-e',code],env=env,start_new_session=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        p.communicate(timeout=3)
+        self.assertEqual(p.returncode,-9)

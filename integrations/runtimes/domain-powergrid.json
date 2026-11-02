@@ -1,0 +1,19 @@
+{
+  "schema": "asr-domain-capability-pack/1",
+  "id": "powergrid-scientific-computing/1",
+  "scope": "IEEE-118 fixed-PV/PQ single-slack calibration profile; research methods remain contract variables",
+  "capabilities": [
+    {"name": "case", "status": "implemented", "implementation": "powerflow_lab.reference.make_request", "profile": "MATPOWER case118 pinned hash/image"},
+    {"name": "scenario", "status": "baseline_only", "implementation": "frozen original case118 flat-start input", "expansion": "Versioned scenario input manifest and independent input policy validation required"},
+    {"name": "sampling", "status": "unavailable", "expansion": "Candidate sampler interface plus seeded input manifests, cost accounting and coverage protocol required"},
+    {"name": "solver", "status": "reference_only", "implementation": "MATPOWER/Octave Newton reference with bounded maximum iterations", "expansion": "New/custom solver must implement asr-candidate/1:solver and pass actual isolated execution capability admission"},
+    {"name": "diagnostics", "status": "implemented_for_reference", "implementation": "powerflow_lab.validation.validate", "outputs": ["equation residual", "input preservation", "voltage/control constraints", "operating violations", "unassessed missing limits"]},
+    {"name": "comparison", "status": "unavailable", "expansion": "Frozen seed/resource/evaluation/denominator protocol, repeated trials and uncertainty required"},
+    {"name": "independent_replication", "status": "unavailable", "expansion": "Independent evaluation identity, isolated frozen strategy execution and signed service report required"}
+  ],
+  "dependencies": ["configs/numerical-environment.json", "configs/numerical-packages.txt", "scripts/reference_pf.m", "powerflow_lab/validation.py"],
+  "tools": ["asr.state", "asr.submit_trial", "asr.publish_finding"],
+  "execution": "asr_supervisor DockerBackend; no researcher Docker socket",
+  "unsupported_behavior": "explicit capability_unavailable; never substitute reference for a novel candidate",
+  "installation_policy": "existing local packages only; no automatic external toolkit installation"
+}

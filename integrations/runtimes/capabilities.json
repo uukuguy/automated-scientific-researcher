@@ -1,17 +1,50 @@
 {
   "schema": "asr-research-capability-pack/1",
   "id": "powerflow-calibration-smoke/1",
-  "status": "bounded acceptance profile",
+  "status": "bounded research and workspace-file profile",
   "runtime_protocol": "pi-rpc/1",
-  "runtime_version": "1.0.0",
+  "runtime_version": "1.5.0",
   "authentication": "openai-codex subscription_oauth only",
-  "skills": [],
-  "tools": ["asr.state", "asr.submit_trial", "asr.publish_finding", "asr.snapshot"],
-  "hooks": ["before_provider_request: turn permit", "tool_call: tool permit"],
-  "dependencies": ["pi 1.0.0", "node >=22.19", "ASR ControlService", "Docker reference supervisor"],
+  "skills": [
+    {
+      "id": "scientific-reasoning/1",
+      "path": "skills/scientific-reasoning/SKILL.md",
+      "sha256": "f0522dc3ff7d8039f36923a138bcf4effbc6404a06c1216fdae1bdcd4ef70a3c"
+    }
+  ],
+  "tools": [
+    "asr.state",
+    "asr.submit_trial",
+    "asr.publish_finding",
+    "asr.snapshot",
+    "asr.ack_guidance"
+  ],
+  "hooks": [
+    "before_provider_request: turn permit",
+    "tool_call: tool permit"
+  ],
+  "dependencies": [
+    "pi 1.5.0",
+    "node >=22.19",
+    "ASR ControlService",
+    "Docker reference supervisor"
+  ],
   "ambient_resources": false,
-  "coding_tools": [],
-  "isolation_claim": "no arbitrary coding tools; numerical trials execute in supervised offline containers",
+  "coding_tools": [
+    "pi.read",
+    "pi.edit",
+    "pi.write",
+    "pi.grep",
+    "pi.find",
+    "pi.ls"
+  ],
+  "isolation_claim": "Pi native workspace file tools have explicit path guards; arbitrary coding execution unavailable. Numerical trials execute in offline supervised containers.",
   "limits": "acceptance-limits.json",
-  "future_runtime_translation": "versioned curated skills, tools and dependencies; never implicitly enable home resources"
+  "future_runtime_translation": "versioned curated skills, tools and dependencies; never implicitly enable home resources",
+  "coding_execution": {
+    "tool": "sandbox_exec",
+    "status": "unavailable",
+    "requires": "OS-enforced coding environment with measured quotas; host Bash remains disabled"
+  },
+  "domain_pack": "domain-powergrid.json"
 }

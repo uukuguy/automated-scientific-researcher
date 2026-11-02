@@ -44,6 +44,8 @@ class ResearchBridge:
                     trial=next(x for x in current['trials'] if x['execution_attempt_id']==receipt['execution_attempt_id'])
                     if trial['dispatch_state']=='queued': self.dispatch(receipt)
             return dict(receipt=receipt,state=self.state())
+        if operation=='ack_guidance':
+            return s.ack_guidance(t,p,r,idempotency_key=key,**self.runtime_identity,**arguments)
         if operation=='publish_finding':
             return s.publish_finding(t,p,r,idempotency_key=key,**arguments)
         if operation=='snapshot': return self.snapshot(arguments.get('paths',[]))
@@ -113,7 +115,10 @@ class ResearchBridge:
                     raw=json.dumps(result).encode(); self.send_response(200)
                 except Exception as error:
                     # Only structured code leaves service; no secrets in diagnostics.
-                    raw=json.dumps({'error':getattr(error,'code','bridge_rejected')}).encode(); self.send_response(422)
+                    code=getattr(error,'code',None)
+                    allowed={'explicit_snapshot_paths_required','invalid_snapshot_path','snapshot_too_large','snapshot_corrupt','unsupported_bridge_operation','invalid_bridge_request'}
+                    if code is None: code=str(error) if str(error) in allowed else 'bridge_rejected'
+                    raw=json.dumps({'error':code}).encode(); self.send_response(422)
                 self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(raw)))
                 self.end_headers();self.wfile.write(raw)
         self.server=ThreadingHTTPServer(('127.0.0.1',0),Handler)

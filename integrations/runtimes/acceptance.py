@@ -22,13 +22,14 @@ from .session import run_session
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--oauth-source',type=Path,default=Path.home()/'.pi/agent/auth.json')
     parser.add_argument('--refresh-oauth',action='store_true',help='Refresh isolated OAuth copy after provider expiry; never rewrites user auth')
     args=parser.parse_args();root=args.output.resolve();root.mkdir(parents=True,exist_ok=False)
     settings=json.loads((Path.home()/'.pi/agent/settings.json').read_text())
     if settings.get('defaultProvider')!='openai-codex': raise ValueError('default_codex_subscription_required')
     model=settings['defaultModel'];thinking=settings.get('defaultThinkingLevel','high')
     if args.refresh_oauth:
-        private=root/'pi-private';prepare_oauth(Path.home()/'.pi/agent/auth.json',private)
+        private=root/'pi-private';prepare_oauth(args.oauth_source,private)
         authfile=private/'auth.json';auth=json.loads(authfile.read_text());auth['openai-codex']['expires']=0
         authfile.write_text(json.dumps(auth))
         import os
@@ -54,22 +55,23 @@ def main():
         variable_policy=json.loads(Path('contracts/examples/research-variables.json').read_text()),problem_ref=refs['problem'],reference_ref=refs['reference'],evaluation_ref=refs['evaluation'],
         budget=dict(attempts=2,execution_ms=30000,research_walltime_ms=120000,turns=12,tool_executions=20),
         execution_policy=dict(researchers=1,candidate_interface='asr-candidate/1',timeout_seconds=15,output_bytes=104857600,max_concurrency=1,retry_limit=0),
-        runtime_policy=dict(provider='openai-codex',auth_mode='subscription_oauth',billing_mode='subscription',quota_state='unknown'),
+        runtime_policy=dict(provider='openai-codex',model=model,auth_mode='subscription_oauth',billing_mode='subscription',quota_state='unknown'),
         intervention_policy=dict(guidance_boundary='next_submission',pause='drain'),provenance=dict(source='bounded-subscription-acceptance',aar_upstream='79a0562fa1a2c246048ed7c009f3684907987b05',organization='AAR-inspired research/finding/snapshot bridge; upstream SDK loop not launched'))
     service.publish_contract(human,project,'calibration',contract,expected_revision=0,idempotency_key='publish')
     service.create_run(human,project,run,'pi-experiment-'+run,'calibration',1,idempotency_key='start')
+    service.command(human,project,run,'guidance',expected_revision=1,idempotency_key='guidance',payload={'text':'Report operating violations and unassessed limits separately from equation validity; no feasibility claim.'})
     store=ExecutionStore(service.path);manager=Supervisor(store,root/'evidence')
     def dispatch(receipt): manager.execute(receipt['execution_attempt_id'],'acceptance-supervisor')
     def bridge(): return ResearchBridge(service,project=project,run=run,researcher_token=researcher,supervisor_token=supervisor,workspace=work,snapshots=root/'snapshots',dispatch=dispatch)
     trialrefs={k:v for k,v in refs.items() if k!='reference'}
-    prompt='''You are the single autonomous scientific researcher. Use ASR tools to read your contract and budgets. Choose and state your own testable hypothesis, choose an allowed iterations value, submit at least one real trial, inspect independent validation observations, and publish your own candidate finding citing actual trial IDs. Work within the bounded calibration profile; broader sampler/solver research is allowed conceptually but currently unsupported execution returns capability_unavailable. Do not claim generalization, feasibility, or novel-method discovery from this smoke test. Tool submit_trial arguments are {variables:{iterations: INTEGER}, references:REFERENCES, requested_budget:{attempts:1,execution_ms:15000}}. Tool publish_finding arguments are {finding_id:STRING,expected_revision:0,statement:STRING,trial_ids:[ACTUAL_TRIAL_ID],limitations:STRING}. Stable key strings deduplicate requests. Read state for guidance and evidence. Published findings are candidate author claims, independent validation is separate. No need to spend both attempts. Finish promptly after publishing. REFERENCES='''+json.dumps(trialrefs)
+    prompt='''You are the single autonomous scientific researcher. Read the curated scientific-reasoning skill, create a concise research-note.md with the pi write tool, and snapshot it with ASR snapshot before publishing. Acknowledge received guidance with ack_guidance arguments {command_id:ID,status:'adopted',reason:STRING}. Use ASR tools to read your contract and budgets. Choose and state your own testable hypothesis, choose an allowed iterations value, submit at least one real trial, inspect independent validation observations, and publish your own candidate finding citing actual trial IDs. Work within the bounded calibration profile; broader sampler/solver research is allowed conceptually but currently unsupported execution returns capability_unavailable. Do not claim generalization, feasibility, or novel-method discovery from this smoke test. Tool submit_trial arguments are {variables:{iterations: INTEGER}, references:REFERENCES, requested_budget:{attempts:1,execution_ms:15000}}. Tool publish_finding arguments are {finding_id:STRING,expected_revision:0,statement:STRING,trial_ids:[ACTUAL_TRIAL_ID],limitations:STRING}. Stable key strings deduplicate requests. Read state for guidance and evidence. Published findings are candidate author claims, independent validation is separate. No need to spend both attempts. Finish promptly after publishing. REFERENCES='''+json.dumps(trialrefs)
     started=time.monotonic();events=[]
     def event(record):
         # Full native transcript stays in private pi config; evidence records final
         # responses and tool lifecycle without streaming thought duplication.
         if record.get('type') in ('message_end','tool_execution_start','tool_execution_end','agent_settled'):
             events.append(record)
-    first=run_session(PiRuntime(model=model,thinking=thinking),bridge(),config_dir=root/'pi-private',native_session_id=run,prompt=prompt,limits=Limits(100,12,20),on_event=event)
+    first=run_session(PiRuntime(model=model,thinking=thinking),bridge(),config_dir=root/'pi-private',native_session_id=run,prompt=prompt,limits=Limits(100,12,20),on_event=event,oauth_source=args.oauth_source)
     before=service.get_run(human,project,run)
     # Reopen the same ledger and native session; do not reinitialize identities.
     service=ControlService(service.path,credentials=credentials)
@@ -78,7 +80,7 @@ def main():
     if first['status']=='settled' and service.findings(human,project,run) and remaining>3:
         second=run_session(PiRuntime(model=model,thinking=thinking),bridge(),config_dir=root/'pi-private',native_session_id=run,
             prompt='Recovery check only: read ASR state, report the existing research run, accepted trial and candidate finding IDs. Do not submit or repeat experiments. Finish immediately.',
-            limits=Limits(min(remaining,20),12-first['turns'],max(1,20-first['tool_executions'])),on_event=event)
+            limits=Limits(min(remaining,20),12-first['turns'],max(1,20-first['tool_executions'])),on_event=event,oauth_source=args.oauth_source)
     after=service.get_run(human,project,run);findings=service.findings(human,project,run)
     result=dict(schema='asr-subscription-acceptance-result/1',project_id=project,research_run_id=run,
         external_experiment_id=after['experiment_id'],runtime_sessions=[x for x in (first,second) if x],
