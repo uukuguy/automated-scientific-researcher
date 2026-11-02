@@ -27,3 +27,6 @@ output/playwright/
 
 # Local deployed gateway configuration and credentials
 /runtime/
+
+# Private runtime credentials and local acceptance transcripts
+/artifacts/

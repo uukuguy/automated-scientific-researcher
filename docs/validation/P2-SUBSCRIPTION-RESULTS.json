@@ -1,0 +1,102 @@
+{
+  "schema": "asr-subscription-acceptance-result/1",
+  "project_id": "p2-subscription",
+  "research_run_id": "research_d0886d9018044f798272ab49bc3aeaa1",
+  "external_experiment_id": "pi-experiment-research_d0886d9018044f798272ab49bc3aeaa1",
+  "findings": [
+    {
+      "author": "researcher",
+      "created_at": "2026-11-02T14:01:43.706393+00:00",
+      "evidence": [
+        {
+          "execution_attempt_id": "attempt_6c76d86e21674142880a0bfbb5cc3eff",
+          "manifest_hash": "857d51420a503266aa1a946bf28795200c4a5f4299765b23e1f4cca6c09912e1",
+          "trial_id": "trial_f8100ecdb54f490fa1450757b1946c52"
+        }
+      ],
+      "finding_id": "case118-flat-newton-budget20-smoke",
+      "limitations": "Single smoke-test execution under fixed-pv-pq-single-slack/1 with fixed case118, flat initialization and recorded environment; no replication, comparison of iteration budgets, minimal-budget estimate, or actual iteration count inferred. Independent validation reports operational_status=violated with six reactive-generation limit violations and 186 thermal limits unassessed. Equation validity does not establish operational feasibility. No generalization, feasibility or novel-method discovery is claimed. Broader sampler/solver research was not executed and is unsupported by this bounded execution profile.",
+      "project_id": "p2-subscription",
+      "research_run_id": "research_d0886d9018044f798272ab49bc3aeaa1",
+      "revision": 1,
+      "statement": "My hypothesis was that a maximum iteration budget of 20 for the fixed case118 flat-start Newton reference would yield final maximum mismatch below 1e-6 pu. Trial trial_f8100ecdb54f490fa1450757b1946c52 completed successfully with iterations=20. Separate independent validation observations report max_mismatch_pu=3.935784299266862e-13, equation_valid=true and input_preserved=true, supporting the hypothesis for this single bounded calibration execution. This is my evidence-linked candidate author claim, not an independent validation endorsement of the finding.",
+      "status": "candidate"
+    }
+  ],
+  "budget": {
+    "attempts": {
+      "limit": 2,
+      "spent": 1,
+      "reserved": 0,
+      "available": 1
+    },
+    "execution_ms": {
+      "limit": 30000,
+      "spent": 649,
+      "reserved": 0,
+      "available": 29351
+    },
+    "research_walltime_ms": {
+      "limit": 120000,
+      "spent": 47353,
+      "reserved": 0,
+      "available": 72647
+    },
+    "tool_executions": {
+      "limit": 20,
+      "spent": 5,
+      "reserved": 0,
+      "available": 15
+    },
+    "turns": {
+      "limit": 12,
+      "spent": 7,
+      "reserved": 0,
+      "available": 5
+    }
+  },
+  "same_trial_ids_after_reopen": true,
+  "billing": {
+    "mode": "subscription",
+    "actual_dollar_charge": null,
+    "model_reported_cost_is_estimate": true
+  },
+  "limits": {
+    "schema": "asr-runtime-acceptance/1",
+    "provider": "openai-codex",
+    "model": "gpt-6.1-sol",
+    "auth_mode": "subscription_oauth",
+    "billing_mode": "subscription",
+    "total_walltime_seconds": 120,
+    "turns": 12,
+    "tool_executions": 20,
+    "numerical_attempts": 2,
+    "paid_api_fallback": false,
+    "thinking": "high"
+  },
+  "aar_integration": "organization bridge only; pinned upstream researcher loop and Experiment ORM not launched",
+  "sessions": [
+    {
+      "runtime": "pi-rpc/1",
+      "provider": "openai-codex",
+      "model": "gpt-6.1-sol",
+      "status": "settled",
+      "native_session_id": "research_d0886d9018044f798272ab49bc3aeaa1",
+      "turns": 5,
+      "tool_executions": 4,
+      "duration_seconds": 34.96975400019437
+    },
+    {
+      "runtime": "pi-rpc/1",
+      "provider": "openai-codex",
+      "model": "gpt-6.1-sol",
+      "status": "settled",
+      "native_session_id": "research_d0886d9018044f798272ab49bc3aeaa1",
+      "turns": 2,
+      "tool_executions": 1,
+      "duration_seconds": 11.7422029171139
+    }
+  ],
+  "source_result_sha256": "9a5feb9879e71987e18aa6a631fbdea38a4b5f50fb379756818343c6ce1dcde1",
+  "evidence_root": "artifacts/p2-pi-subscription-20261102-03"
+}

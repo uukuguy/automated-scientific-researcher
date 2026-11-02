@@ -1,0 +1,114 @@
+{
+  "schema": "asr-subscription-interruption-evidence/1",
+  "project_id": "p2-subscription",
+  "research_run_id": "research_e6dd132adb1c452fa1d70d23a0e4d2ed",
+  "sessions": [
+    {
+      "runtime": "pi-rpc/1",
+      "runtime_version": "1.5.0",
+      "provider": "openai-codex",
+      "model": "gpt-6.1-sol",
+      "status": "interrupted",
+      "native_session_id": "research_e6dd132adb1c452fa1d70d23a0e4d2ed",
+      "turns": 9,
+      "tool_executions": 9,
+      "duration_seconds": 87.62121245800517
+    },
+    {
+      "runtime": "pi-rpc/1",
+      "runtime_version": "1.5.0",
+      "provider": "openai-codex",
+      "model": "gpt-6.1-sol",
+      "status": "settled",
+      "native_session_id": "research_e6dd132adb1c452fa1d70d23a0e4d2ed",
+      "turns": 3,
+      "tool_executions": 2,
+      "duration_seconds": 22.05169945792295
+    }
+  ],
+  "findings": [
+    {
+      "author": "researcher",
+      "created_at": "2026-11-02T14:14:23.642303+00:00",
+      "evidence": [
+        {
+          "execution_attempt_id": "attempt_910a5c86769f42b3be0f47bdfb00a67e",
+          "manifest_hash": "a16e0f85028feb471325b805a32fcac77392e4577344e34dfdad35c6b00e46fb",
+          "trial_id": "trial_dfff7a5a1e5f409fbb6802948d3dda37"
+        }
+      ],
+      "finding_id": "case118-newton-cap20-calibration",
+      "limitations": "Single fixed-pv-pq-single-slack smoke test; no comparison, minimum-iteration determination, repeatability, held-out generalization, feasibility, infeasibility, or novel-method discovery claim. Independent observations separately report six reactive-generation violations (IDs 8, 14, 15, 42, 45, 47) and 186 unassessed thermal limits. Equation validity does not establish operational feasibility. Actual Newton step count was not exposed in inspected state. Publication is a candidate author claim, not independent validation. research-note.md was written, but the snapshot request was rejected and no successful snapshot is recorded; recovery instruction requires immediate publication without additional work.",
+      "project_id": "p2-subscription",
+      "research_run_id": "research_e6dd132adb1c452fa1d70d23a0e4d2ed",
+      "revision": 1,
+      "statement": "In completed trial trial_dfff7a5a1e5f409fbb6802948d3dda37, the fixed case118 flat-start Newton reference with iterations=20 produced independently observed maximum mismatch 3.935784299266862e-13 pu, below the hypothesized 1e-6 pu threshold. ASR observations report preserved inputs and valid equations. This supports the hypothesis only for this bounded calibration run. Evidence manifest: a16e0f85028feb471325b805a32fcac77392e4577344e34dfdad35c6b00e46fb.",
+      "status": "candidate"
+    }
+  ],
+  "budget": {
+    "attempts": {
+      "limit": 2,
+      "spent": 1,
+      "reserved": 0,
+      "available": 1
+    },
+    "execution_ms": {
+      "limit": 30000,
+      "spent": 574,
+      "reserved": 0,
+      "available": 29426
+    },
+    "research_walltime_ms": {
+      "limit": 120000,
+      "spent": 110370,
+      "reserved": 0,
+      "available": 9630
+    },
+    "tool_executions": {
+      "limit": 20,
+      "spent": 11,
+      "reserved": 0,
+      "available": 9
+    },
+    "turns": {
+      "limit": 12,
+      "spent": 12,
+      "reserved": 0,
+      "available": 0
+    }
+  },
+  "same_trial_ids": true,
+  "process_exit_verified": true,
+  "sources": {
+    "result.json": "3f824528974ccfaa53f56b3bd929f6303fcfed958bf519789cf59082cac2ddea",
+    "result-recovery.json": "92fcff2fef39070e2255641c5ef58393bd05778169d5b11ac8f5edd92bb533fd",
+    "forced-interruption.json": "d9a25e9164300733ea8404a4ebd94d7251379aa06b82ab5146bd34b96b0b3479"
+  },
+  "tool_evidence": {
+    "skill_read": true,
+    "guidance_adopted": true,
+    "research_note_written": true,
+    "workspace_escape_rejected": true,
+    "model_snapshot_succeeded": false
+  },
+  "limits": {
+    "schema": "asr-runtime-acceptance/1",
+    "provider": "openai-codex",
+    "model": "gpt-6.1-sol",
+    "auth_mode": "subscription_oauth",
+    "billing_mode": "subscription",
+    "total_walltime_seconds": 120,
+    "turns": 12,
+    "tool_executions": 20,
+    "numerical_attempts": 2,
+    "paid_api_fallback": false,
+    "thinking": "high"
+  },
+  "billing": {
+    "mode": "subscription",
+    "actual_dollar_charge": null,
+    "model_reported_cost_is_estimate": true
+  },
+  "aar_integration": "organization bridge only; pinned upstream researcher loop and Experiment ORM not launched"
+}

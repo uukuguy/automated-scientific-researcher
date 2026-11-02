@@ -20,17 +20,17 @@
 - Human interaction: asynchronous guidance and versioned controls; Capstone scientific-research mode is the accepted workbench architecture; preparation is defined in `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md`.
 - Local upstream: `3th-party/automated-w2s-research/`, ignored by the parent repository; not yet integrated.
 
-- Budget preparation: local project reservations/settlement; no process reconciliation or admission integration.
+- Supervisor: fenced attempts, frozen request dispatch, external timeout and conservative process reconciliation.
 
-- Contract preparation: variable-policy JSON Schema and in-process SQLite revision/binding core; no authentication or full execution admission.
+- Control: authenticated local HTTP, reference-profile executable contracts, atomic admission, project budgets, command receipts and candidate findings.
 
 ## Open Problems (theme-level)
 
 - Uncalibrated numerical research contract and unverified AAR runtime adaptation.
-- Missing control API and generalized candidate execution; current reference environment is verified.
+- Local authenticated control API and reference execution supervision exist; generalized candidate execution remains unavailable.
 - Unconfirmed real-world input distribution, OOD definition, failure cases, and downstream task.
 - Formal evaluation policy and expanded operating conventions remain uncalibrated; the implemented reference uses fixed PV/PQ and one Slack.
-- Independent evaluation identity/isolation and runtime budget accounting remain unimplemented.
+- Independent evaluation isolation remains unimplemented; local runtime/attempt budget accounting exists.
 - Numerical image execution is pinned; APT rebuild sources and cross-machine image distribution remain unresolved.
 
 ## Key Files
@@ -85,3 +85,7 @@
 - `asr_service/references.py` — immutable scoped metadata registry; external asset verification remains pending.
 
 - `asr_service/admission.py` — local transactional preparation; mandatory owner gate has no AAR/auth/runtime adapter yet.
+
+- Research runtime: subscription-first replaceable adapters; pi/Codex baseline. omp/AAR capability base and separate power-grid scientific pack.
+- `docs/architecture/RESEARCHER-RUNTIMES.md` — runtime and capability boundaries.
+- `docs/validation/P2-SUBSCRIPTION.md` — bounded real model trajectory evidence and remaining limits.

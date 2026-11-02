@@ -102,6 +102,27 @@
 
 - Date: 2026-11-02. Status: accepted by user.
 - Decision: use replaceable coding-agent runtimes, primarily subscription authentication; add pi as lightweight baseline with Codex subscription support to verify locally.
-- Rationale: long-running API research costs are unsuitable as the default; user owns top-tier Claude/GPT/Grok subscriptions.
+- Rationale: long-running API research costs are unsuitable as the default; user has GPT/Grok subscriptions and expects Claude subscription shortly.
 - Boundary: preserve AAR research organization and ASR authoritative contracts/evidence; runtime session IDs remain separate. No silent paid API fallback. Subscription support must be verified per runtime/provider; unknown quota is not unlimited.
 - Supersedes: main design fixed-Claude-SDK initial implementation recommendation.
+
+## D013 — ASR capability base from omp and AAR
+
+- Date: 2026-11-02. Status: accepted by user.
+- Decision: combine omp tool-configuration guidance and pi native tools with AAR research methods, memory, shared findings and snapshots.
+- Rationale: a bare runtime lacks the configured coding/research environment needed for autonomous scientific work.
+- Boundary: curated versioned packs; no inherited global tools, hidden paid model consultation, or skill-based permission escalation. Tool-only smoke acceptance remains distinct from isolated coding capability.
+
+## D014 — Explicit power-grid scientific computing capability pack
+
+- Date: 2026-11-02. Status: accepted by user.
+- Decision: add a distinct executable scientific-computing domain pack alongside general coding/research and ASR system tools.
+- Coverage: cases/scenarios, sampling, reference and candidate solvers, diagnostics, independent electrical checks, comparisons and visualization.
+- Boundary: start from verified MATPOWER/Octave and Python checks; pending capabilities must remain explicit. A skill or tool name does not establish numerical correctness or isolation.
+
+## D015 — Preselected locked scientific environment
+
+- Date: 2026-11-02. Status: accepted by user.
+- Decision: keep MATPOWER/Octave reference and preselect pandapower with NumPy/SciPy, pandas/PyArrow, NetworkX, Matplotlib, Jupyter/ipykernel and pytest in a separate locked environment.
+- Rationale: a common executable scientific base reduces repeated setup and supports reproducible development.
+- Boundary: installed, numerically calibrated and formal-evaluation-approved are distinct states. Optional optimization/learning/dynamic toolchains remain task-specific.

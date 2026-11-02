@@ -21,12 +21,15 @@ The accepted architecture is detailed in [Minimum-loop design](../architecture/A
 
 ## Current evidence
 
-- P2 partial: variable-policy schema/defaults/semantics and local immutable revisions with explicit binding activation; 10 new tests (38 total). Full reference/budget admission, authentication, HTTP and AAR execution remain pending.
+- P2 implemented: authenticated local control API, complete pinned-reference contract validation, immutable revisions, atomic trial/budget/dispatch, commands, candidate findings, fenced numerical execution and conservative recovery.
+- P2 real subscription evidence: pi/Codex default gpt-6.1-sol/high produced one actual numerical trial and evidence-linked candidate finding; native-session reopen retained trial identity. See `docs/validation/P2-SUBSCRIPTION.md` and sanitized results. Clean reopen is not crash recovery.
+- P2 in progress: genuine researcher-process reconciliation, versioned omp/AAR/power-grid capability packs, and clear upstream AAR organization integration. Tool-only smoke does not prove arbitrary candidate coding isolation.
+- Runtime direction accepted: subscription-first replaceable coding agents, pi baseline. GPT/Grok available; Claude pending. Other runtime subscription support is verified before activation.
 
 - P0: `docs/status/DECISIONS.md` and the linked design.
 - P1: `docs/validation/P1-NUMERICAL-LAB.md` and `P1-REFERENCE-RESULTS.json`; 28 focused tests, real baseline/replay/truncated/timeout trials. Original preflight is historical discovery evidence.
-- Implementation slice: `docs/superpowers/plans/2026-11-02-container-lab.md`. The planned local reference slice is implemented and verified. Runtime database admission/budgets and the generalized candidate service belong to P2/P3.
-- Real reference power-flow trials have been demonstrated. No AAR runtime test or scientific improvement has been demonstrated. P2 starts with schema/control preparation; paid research requires an authorized configured budget.
+- Implementation slice: `docs/superpowers/plans/2026-11-02-container-lab.md`. The planned local reference slice is implemented and verified. Runtime database admission/budgets are implemented for the reference profile; generalized candidate service remains P2/P3 work.
+- Real reference power-flow trials have been demonstrated. A pi subscription-backed calibration trajectory is verified; the pinned upstream AAR loop/ORM and scientific improvement have not been demonstrated. Paid API research requires separate explicit authorization.
 
 ## Execution constraints
 
@@ -39,18 +42,3 @@ The accepted architecture is detailed in [Minimum-loop design](../architecture/A
 - A solver failure is unresolved, not proof of physical infeasibility.
 - Never treat author-supplied scores as independently verified results.
 - Real-case materials and downstream requirements remain open. Public prototype results do not establish business benefit.
-
-
-### P2 local budget primitive (2026-11-02)
-
-本地预算原语 `asr_service/budgets.py` 已实现项目级整数计量、事务预留、幂等结算及超额记账。执行退出由可信调用方声明，尚未连接进程核验、运行子额度、完整准入或 AAR；不能作为执行授权。
-
-- P2 budget preparation: atomic multidimension reservations can join an owning transaction; 44 tests pass. Trial admission and AAR remain pending.
-
-- P2 reference preparation: immutable project/kind-scoped JSON metadata registry with read-time hash verification; 47 combined tests pass. No external artifact or complete-contract admission claim.
-
-- P2 local admission preparation: atomic policy/reference checks, trial identities, budget bundle and event; 50 combined tests pass. Owner gate remains an unintegrated trusted callback; no real admission API or dispatch.
-
-- P2 recovery correction: authorized replay survives closed admission gates; unauthorized replay and new paused submissions are rejected. 51 combined tests pass.
-
-- P2 runtime direction: user accepted subscription-first replaceable coding agents and pi lightweight baseline; actual subscription-backed scientific trajectory remains required.
