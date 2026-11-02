@@ -36,6 +36,7 @@ class ControlTests(unittest.TestCase):
     def attach_exited_process(self,session):
         import subprocess,sys
         from integrations.runtimes.process import identify
+        self.service.begin_runtime_launch('human-secret','p','r',session['session_id'],session['epoch'],'worker')
         process=subprocess.Popen([sys.executable,'-c','import time;time.sleep(60)'],start_new_session=True)
         try:
             identity=identify(process.pid)
@@ -172,13 +173,13 @@ class ControlTests(unittest.TestCase):
     def test_finish_waits_for_runtime_exit_and_replay_updates(self):
         self.start()
         session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='runtime',runtime_identity=self.runtime_identity())
+        self.attach_exited_process(session)
         receipt=self.service.command('human-secret','p','r','finish',expected_revision=1,idempotency_key='finish')
         self.assertEqual(receipt['status'],'pending')
         self.service.command('human-secret','p','r','quota',expected_revision=2,idempotency_key='late-quota',payload={'state':'rate_limited'})
         self.assertEqual(self.service.get_run('human-secret','p','r')['state'],'finishing')
         with self.assertRaisesRegex(ValueError,'control_transition_pending'):
             self.service.command('human-secret','p','r','resume',expected_revision=3,idempotency_key='resume')
-        self.attach_exited_process(session)
         self.service.release_runtime('human-secret','p','r',session['session_id'],session['epoch'],'worker',execution_exited=True,actual_walltime_ms=12)
         self.assertEqual(self.service.get_run('human-secret','p','r')['state'],'completed')
         self.assertEqual(self.service.command('human-secret','p','r','finish',expected_revision=1,idempotency_key='finish')['status'],'applied')
@@ -212,6 +213,7 @@ class ControlTests(unittest.TestCase):
         self.start()
         trial=self.submit()
         session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='session',runtime_identity=self.runtime_identity())
+        self.service.begin_runtime_launch('human-secret','p','r',session['session_id'],session['epoch'],'worker')
         process=subprocess.Popen([sys.executable,'-c','import time;time.sleep(60)'],start_new_session=True)
         try:
             self.service.attach_runtime_process('human-secret','p','r',session['session_id'],session['epoch'],'worker',identify(process.pid))
@@ -234,6 +236,18 @@ class ControlTests(unittest.TestCase):
             self.assertNotEqual(next_session['session_id'],session['session_id'])
         finally:
             if process.poll() is None:process.kill();process.wait()
+
+    def test_prelaunch_failure_releases_only_before_launch_grant(self):
+        self.start()
+        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='setup-failure',runtime_identity=self.runtime_identity())
+        receipt=self.service.abort_runtime_prelaunch('human-secret','p','r',session['session_id'],session['epoch'],'worker',reason='No subscription credentials in isolated config')
+        self.assertEqual(receipt['state'],'exited')
+        self.assertEqual(self.service.budgets.balance('p','research_walltime_ms')['reserved'],0)
+        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='launch',runtime_identity=self.runtime_identity())
+        self.service.begin_runtime_launch('human-secret','p','r',session['session_id'],session['epoch'],'worker')
+        with self.assertRaisesRegex(ValueError,'runtime_launch_already_authorized'):
+            self.service.abort_runtime_prelaunch('human-secret','p','r',session['session_id'],session['epoch'],'worker',reason='Missing process identity')
+        self.assertGreater(self.service.budgets.balance('p','research_walltime_ms')['reserved'],0)
 
     def test_guidance_ack_distinguishes_delivery_and_adoption(self):
         self.start()

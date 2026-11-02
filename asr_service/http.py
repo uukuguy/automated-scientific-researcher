@@ -64,6 +64,10 @@ def make_server(service, *, host='127.0.0.1', port=8765):
                     result=service.create_run(token,project,**body)
                 elif self.command=='POST' and len(route)==3 and route[0]=='runs' and route[2]=='trials':
                     result=service.submit_trial(token,project,route[1],**body)
+                elif self.command=='POST' and len(route)==4 and route[0]=='runs' and route[2:] == ['runtime','launch']:
+                    result=service.begin_runtime_launch(token,project,route[1],**body)
+                elif self.command=='POST' and len(route)==4 and route[0]=='runs' and route[2:] == ['runtime','abort-prelaunch']:
+                    result=service.abort_runtime_prelaunch(token,project,route[1],**body)
                 elif self.command=='POST' and len(route)==4 and route[0]=='runs' and route[2:] == ['runtime','attach']:
                     result=service.attach_runtime_process(token,project,route[1],**body)
                 elif self.command=='POST' and len(route)==4 and route[0]=='runs' and route[2:] == ['runtime','reconcile']:

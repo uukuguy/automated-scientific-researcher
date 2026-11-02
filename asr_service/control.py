@@ -403,7 +403,7 @@ class ControlService(PolicyStore):
             if amount<=0: raise ControlError('budget_exhausted')
             session='session_'+uuid.uuid4().hex
             self.budgets.reserve_many_in_transaction(db,project,session,{'research_walltime_ms':amount})
-            record=dict(project_id=project,research_run_id=run,session_id=session,epoch=1,owner=owner,state='active',runtime_identity=runtime_identity,reserved_walltime_ms=amount,started_at=now(),process_identity=None)
+            record=dict(project_id=project,research_run_id=run,session_id=session,epoch=1,owner=owner,state='active',runtime_identity=runtime_identity,reserved_walltime_ms=amount,started_at=now(),process_identity=None,launch_state='prepared')
             db.execute('INSERT INTO asr_runtime_sessions VALUES (?,?,?,?,?)',(project,run,session,'active',encoded(record)))
             self._remember(db,project,'runtime:'+run,idempotency_key,payload,record)
             self._event(db,project,run,'runtime_claimed',**record)
@@ -487,6 +487,7 @@ class ControlService(PolicyStore):
             db.execute('BEGIN IMMEDIATE')
             session=self._session(db,project,run,session_id,epoch,owner)
             if session['state']!='active': raise ControlError('runtime_not_active')
+            if session.get('launch_state')!='launching': raise ControlError('runtime_launch_not_authorized')
             if session.get('process_identity') is not None and session['process_identity']!=identity: raise ControlError('process_identity_immutable')
             session['process_identity']=copy.deepcopy(identity)
             db.execute('UPDATE asr_runtime_sessions SET record=? WHERE session_id=?',(encoded(session),session_id))
@@ -571,3 +572,39 @@ class ControlService(PolicyStore):
             self._remember(db,project,'guidance_ack:'+run,idempotency_key,payload,ack)
             self._event(db,project,run,'guidance_acknowledged',**ack)
             return ack
+
+    def begin_runtime_launch(self, token, project, run, session_id, epoch, owner):
+        """Persist the sole launch grant immediately before the trusted Popen.
+
+        Once issued, missing process identity is uncertainty, never proof that
+        nothing launched. A repeated grant cannot authorize another process.
+        """
+        self._auth(token,project,{'human','supervisor'})
+        with self._connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            session=self._session(db,project,run,session_id,epoch,owner)
+            if session['state']!='active': raise ControlError('runtime_not_active')
+            if session.get('launch_state')!='prepared': raise ControlError('runtime_launch_already_authorized')
+            if not self.owning_gate(db,{'project_id':project,'research_run_id':run}): raise ControlError('admission_closed')
+            session.update(launch_state='launching',launch_authorized_at=now())
+            db.execute('UPDATE asr_runtime_sessions SET record=? WHERE session_id=?',(encoded(session),session_id))
+            self._event(db,project,run,'runtime_launch_authorized',session_id=session_id,epoch=epoch)
+            return session
+
+    def abort_runtime_prelaunch(self, token, project, run, session_id, epoch, owner, *, reason):
+        """Settle a setup rejection only when no launch grant was ever issued."""
+        self._auth(token,project,{'human','supervisor'})
+        if type(reason) is not str or not reason.strip(): raise ControlError('reason_required')
+        with self._connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            session=self._session(db,project,run,session_id,epoch,owner)
+            if session['state']=='exited' and session.get('launch_state')=='aborted': return session
+            if session['state']!='active' or session.get('launch_state')!='prepared' or session.get('process_identity') is not None: raise ControlError('runtime_launch_already_authorized')
+            receipt=dict(kind='no_launch_grant_issued',session_id=session_id,epoch=epoch,observed_at=now(),reason=reason)
+            session.update(state='exited',launch_state='aborted',actual_walltime_ms=0,execution_exited=True,exit_receipt=receipt,finished_at=now())
+            db.execute('UPDATE asr_budget_reservations SET actual=0 WHERE project=? AND attempt=? AND dimension=?',(project,session_id,'research_walltime_ms'))
+            db.execute('UPDATE asr_runtime_sessions SET state=?,record=? WHERE session_id=?',('exited',encoded(session),session_id))
+            self._event(db,project,run,'runtime_prelaunch_aborted',session_id=session_id,epoch=epoch,receipt=receipt)
+            from asr_supervisor.store import ExecutionStore
+            ExecutionStore.finalize_controls_in_transaction(db,project,run)
+            return session

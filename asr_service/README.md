@@ -102,7 +102,7 @@ session time including overrun, and releases unused reservation. Before any
 provider prompt, the runtime must call `attach_runtime_process` (HTTP POST
 `runs/{run}/runtime/attach`) to register its immutable host, process/group ID and
 OS birth identity. Control independently verifies this identity at attachment
-and independently verifies whole-group exit before accepting normal release;
+and independently verifies the registered group has exited before accepting normal release;
 a request Boolean cannot establish exit.
 
 After a controller crash, `reconcile_runtime` (HTTP POST
@@ -139,3 +139,18 @@ Statuses are `delivered`, `adopted`, and `deferred`; deferral requires a reason.
 Acknowledgements have immutable identities and events, and remain researcher
 statements rather than scientific validation. A persisted guidance command does
 not imply delivery or adoption.
+
+Claims begin in `launch_state: prepared`. After credential/version preflight,
+the trusted launcher calls `begin_runtime_launch` (HTTP POST
+`runs/{run}/runtime/launch`) immediately before spawning the process. This issues
+a single durable grant; repeating it cannot authorize another launch. Setup
+failure before that grant may call `abort_runtime_prelaunch` (HTTP POST
+`runs/{run}/runtime/abort-prelaunch`) with a reason to release the unused
+reservation. Once a launch grant exists, absent identity remains unresolved and
+cannot use this setup-failure path.
+
+Host process receipts establish exit of the registered process group. They do
+not establish containment of descendants that detach into another group; this
+researcher profile exposes bounded file tools and keeps numerical execution in
+the supervised container backend. Broader researcher shell privileges require
+a verified OS execution boundary before claiming complete subtree containment.
