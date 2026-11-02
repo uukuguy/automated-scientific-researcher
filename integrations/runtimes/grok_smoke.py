@@ -24,6 +24,17 @@ HINTS = {'startupHints':{'nonInteractive':True,'skipGitStatus':True,'skipProject
 PROMPT = 'Reply with exactly ASR_GROK_OK. Do not use tools.'
 
 
+def publish_result(output, result):
+    """Preserve existing evidence and require cleanup proof for success."""
+    if result.get('status') == 'passed' and result.get('owned_process_group_exit_verified') is not True:
+        result['status'] = 'cleanup_unconfirmed'
+    serialized = json.dumps(result, indent=2) + '\n'
+    # The early probe check is only a convenience; exclusive creation closes
+    # the race with another publisher while the native dialogue is running.
+    with output.open('x', encoding='utf-8') as stream:
+        stream.write(serialized)
+
+
 async def probe(output, proxy, expected_model=None):
     if output.exists(): raise ValueError('refusing to overwrite existing evidence')
     parsed=urlsplit(proxy)
@@ -155,7 +166,7 @@ async def probe(output, proxy, expected_model=None):
             result['owned_process_exit_code']=process.returncode
         temporary.cleanup()
         result.update(cancel_notification_sent=cancelled,server_request_methods=server_methods,stderr_line_count=stderr_lines,finished_at=datetime.now(timezone.utc).isoformat(),total_duration_seconds=round(time.monotonic()-started,3))
-        output.write_text(json.dumps(result,indent=2)+'\n')
+        publish_result(output, result)
     return result
 
 
