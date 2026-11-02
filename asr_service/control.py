@@ -96,7 +96,7 @@ class ControlService(PolicyStore):
         return json.loads(row[0])
 
     def _validate_contract(self, db, project, document):
-        required={'schema_version','objective','variable_policy','problem_ref','reference_ref','evaluation_ref','budget','execution_policy','intervention_policy','provenance'}
+        required={'schema_version','objective','variable_policy','problem_ref','reference_ref','evaluation_ref','budget','execution_policy','intervention_policy','provenance','runtime_policy'}
         if type(document) is not dict or set(document)!=required:
             raise ControlError('invalid_contract_fields')
         encoded(document)
@@ -115,10 +115,14 @@ class ControlService(PolicyStore):
         for field,kind in [('problem_ref','problem'),('reference_ref','reference'),('evaluation_ref','evaluation')]:
             reference=ReferenceStore.get_in_transaction(db,project,kind,doc[field])
             if reference != expected_refs[kind]: raise ControlError('unsupported_'+kind+'_profile')
-        if type(doc['budget']) is not dict or not {'attempts','execution_ms','model_calls'} <= set(doc['budget']): raise ControlError('invalid_budget')
-        if set(doc['budget'])-{'attempts','execution_ms','model_calls','model_microcurrency'}: raise ControlError('unsupported_budget_dimension')
+        if type(doc['budget']) is not dict or not {'attempts','execution_ms','research_walltime_ms','turns','tool_executions'} <= set(doc['budget']): raise ControlError('invalid_budget')
+        if set(doc['budget'])-{'attempts','execution_ms','research_walltime_ms','turns','tool_executions'}: raise ControlError('unsupported_budget_dimension')
         for amount in doc['budget'].values(): BudgetStore._amount(amount)
         if doc['budget']['attempts']<1 or doc['budget']['execution_ms']<1: raise ControlError('invalid_budget')
+        runtime=doc['runtime_policy']
+        if type(runtime) is not dict or runtime.get('billing_mode') not in ('subscription','paid_api'): raise ControlError('invalid_runtime_policy')
+        if runtime['billing_mode']=='subscription' and (runtime.get('auth_mode') not in ('subscription_oauth','subscription_cli') or runtime.get('paid_api_authorized',False)): raise ControlError('invalid_runtime_policy')
+        if runtime['billing_mode']=='paid_api' and (runtime.get('auth_mode')!='api_key' or runtime.get('paid_api_authorized') is not True): raise ControlError('paid_api_not_authorized')
         execution=doc['execution_policy']
         if type(execution) is not dict or set(execution)!={'researchers','candidate_interface','timeout_seconds','output_bytes','max_concurrency','retry_limit'}: raise ControlError('invalid_execution_policy')
         if execution['researchers']!=1 or execution['candidate_interface']!='asr-candidate/1' or execution['max_concurrency']!=1:
@@ -168,7 +172,7 @@ class ControlService(PolicyStore):
             if db.execute('SELECT 1 FROM asr_runs WHERE (project=? AND run=?) OR experiment_id=?',(project,run_id,experiment_id)).fetchone(): raise ControlError('run_mapping_conflict')
             contract=self._contract(db,project,contract_id,contract_revision)
             self._set_limits(db,project,contract['document']['budget'])
-            record=dict(project_id=project,research_run_id=run_id,experiment_id=experiment_id,contract_id=contract_id,contract_revision=contract_revision,control_revision=1,state='running',admission_open=True,health='ok',created_at=now())
+            record=dict(project_id=project,research_run_id=run_id,experiment_id=experiment_id,contract_id=contract_id,contract_revision=contract_revision,control_revision=1,state='running',admission_open=True,health='ok',quota_state=contract['document']['runtime_policy']['quota_state'],walltime_metered_ms=0,created_at=now())
             db.execute('INSERT INTO asr_runs VALUES (?,?,?,?)',(project,run_id,experiment_id,encoded(record)))
             self._remember(db,project,'create_run',idempotency_key,payload,record)
             self._event(db,project,run_id,'run_bound',**record)
@@ -184,13 +188,17 @@ class ControlService(PolicyStore):
             record['trials']=[dict(json.loads(body),dispatch_state=state) for state,body in db.execute('SELECT state,record FROM asr_dispatch WHERE project=? AND run=? ORDER BY rowid',(project,run))]
             commands=[json.loads(r[0]) for r in db.execute('SELECT record FROM asr_commands WHERE project=? AND run=? ORDER BY rowid',(project,run))]
             record['guidance']=[r for r in commands if r['kind']=='guidance']
+            if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='asr_executions'").fetchone():
+                for trial in record['trials']:
+                    execution=db.execute('SELECT record FROM asr_executions WHERE attempt=?',(trial['execution_attempt_id'],)).fetchone()
+                    trial['execution']=json.loads(execution[0]) if execution else None
             record['commands']=commands
             return record
 
     @staticmethod
     def owning_gate(db, dispatch):
         run=ControlService._run(db,dispatch['project_id'],dispatch['research_run_id'])
-        return run['state']=='running' and run['admission_open'] and run['health']=='ok'
+        return run['state']=='running' and run['admission_open'] and run['health']=='ok' and run.get('quota_state','unknown') in ('unknown','available')
 
     def submit_trial(self, token, project, run, *, request_key, variables, references, requested_budget):
         principal=self._auth(token,project,{'researcher','human'})
@@ -231,7 +239,7 @@ class ControlService(PolicyStore):
             return record
 
     def command(self, token, project, run, kind, *, expected_revision, idempotency_key, payload=None):
-        principal=self._auth(token,project,{'human'})
+        principal=self._auth(token,project,{'human','supervisor'} if kind=='quota' else {'human'})
         self._identity(run,idempotency_key);self._revision(expected_revision)
         payload={} if payload is None else payload
         request=[principal['subject'],kind,expected_revision,payload]
@@ -245,7 +253,13 @@ class ControlService(PolicyStore):
             scope='new_submissions_and_queued_dispatch'
             if kind in ('pause','resume'):
                 if payload: raise ControlError('invalid_payload')
+                if kind=='resume' and record.get('quota_state','unknown') not in ('unknown','available'): raise ControlError('provider_quota_unavailable')
                 record.update(state='paused' if kind=='pause' else 'running',admission_open=kind=='resume')
+            elif kind=='quota':
+                if set(payload)!={'state'} or payload['state'] not in ('unknown','available','exhausted','rate_limited'): raise ControlError('invalid_quota_state')
+                record['quota_state']=payload['state']
+                if payload['state'] in ('exhausted','rate_limited'): record.update(state='paused',admission_open=False)
+                scope='subsequent_submissions'
             elif kind=='guidance':
                 if set(payload)!={'text'} or type(payload['text']) is not str or not payload['text'].strip(): raise ControlError('invalid_guidance')
                 scope='next_submission'
@@ -253,7 +267,7 @@ class ControlService(PolicyStore):
                 if set(payload)!={'contract_id','revision'}: raise ControlError('invalid_payload')
                 contract=self._contract(db,project,payload['contract_id'],payload['revision'])
                 self._set_limits(db,project,contract['document']['budget'])
-                record.update(contract_id=payload['contract_id'],contract_revision=payload['revision'])
+                record.update(contract_id=payload['contract_id'],contract_revision=payload['revision'],quota_state=contract['document']['runtime_policy']['quota_state'])
                 scope='subsequent_submissions'
             else: raise ControlError('unsupported_command')
             record['control_revision']+=1
@@ -318,3 +332,43 @@ class ControlService(PolicyStore):
         with self._connect() as db:
             self._run(db,project,run)
             return [json.loads(row[0]) for row in db.execute('SELECT record FROM asr_findings WHERE project=? AND run=? ORDER BY finding_id,revision',(project,run))]
+
+    def admit_activity(self, token, project, run, *, kind, idempotency_key):
+        """Debit a finite runtime permit; retain elapsed time even on exhaustion.
+
+        The runtime must enforce remaining_walltime_ms while executing. Failed
+        turns/tools retain their already issued permit. No billing fallback.
+        """
+        principal=self._auth(token,project,{'human','supervisor'})
+        self._identity(run,idempotency_key)
+        if kind not in ('turn','tool_execution'): raise ControlError('invalid_activity_kind')
+        payload=[principal['subject'],kind]
+        exhausted=False
+        with self._connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            replay=self._replay(db,project,'activity:'+run,idempotency_key,payload)
+            if replay:return replay
+            record=self._run(db,project,run)
+            if not self.owning_gate(db,{'project_id':project,'research_run_id':run}): raise ControlError('admission_closed')
+            elapsed=max(0,int((datetime.now(timezone.utc)-datetime.fromisoformat(record['created_at'])).total_seconds()*1000))
+            walltime=max(0,elapsed-record['walltime_metered_ms'])
+            dimension='turns' if kind=='turn' else 'tool_executions'
+            activity='activity_'+uuid.uuid4().hex
+            # This is observed consumption, not a request for future execution.
+            # Actual overrun must survive rejection of the next activity.
+            db.execute('INSERT INTO asr_budget_reservations VALUES (?,?,?,?,?)',(project,activity,'research_walltime_ms',0,walltime))
+            record['walltime_metered_ms']=elapsed
+            remaining=self.budgets._balance(db,project,'research_walltime_ms')['available']
+            if remaining<=0 or self.budgets._balance(db,project,dimension)['available']<1:
+                exhausted=True
+                record.update(state='paused',admission_open=False)
+                self._event(db,project,run,'runtime_budget_exhausted',kind=kind)
+            else:
+                self.budgets.reserve_many_in_transaction(db,project,activity+'_permit',{dimension:1})
+                db.execute('UPDATE asr_budget_reservations SET actual=amount WHERE project=? AND attempt=?',(project,activity+'_permit'))
+                permit=dict(activity_id=activity,kind=kind,project_id=project,research_run_id=run,remaining_walltime_ms=remaining,created_at=now())
+                self._remember(db,project,'activity:'+run,idempotency_key,payload,permit)
+                self._event(db,project,run,'runtime_activity_admitted',**permit)
+            db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(record),project,run))
+        if exhausted: raise ControlError('budget_exhausted')
+        return permit

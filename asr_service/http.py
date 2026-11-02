@@ -64,6 +64,8 @@ def make_server(service, *, host='127.0.0.1', port=8765):
                     result=service.create_run(token,project,**body)
                 elif self.command=='POST' and len(route)==3 and route[0]=='runs' and route[2]=='trials':
                     result=service.submit_trial(token,project,route[1],**body)
+                elif self.command=='POST' and len(route)==3 and route[0]=='runs' and route[2]=='activities':
+                    result=service.admit_activity(token,project,route[1],**body)
                 elif self.command=='POST' and len(route)==3 and route[0]=='runs' and route[2]=='commands':
                     result=service.command(token,project,route[1],**body)
                 elif self.command=='POST' and len(route)==2 and route[0]=='references':

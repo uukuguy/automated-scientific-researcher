@@ -31,7 +31,7 @@ revisions, replay conflicts, paused admission and exhausted budgets.
 | GET `references/{kind}/{digest}` | Hash-verified frozen metadata |
 | GET `dispatch` | Trusted inspection of queued work whose run gate is open; does not claim a lease |
 
-Commands are `pause`, `resume`, `guidance` (`payload.text`), and `apply_contract`
+Commands are `pause`, `resume`, `quota` (`payload.state`), `guidance` (`payload.text`), and `apply_contract`
 (`payload.contract_id`, `payload.revision`). The command receipt's `applied` status
 means its specified gate or revision was durably applied. Pause closes new
 admission and queued dispatch; it permits in-flight attempts to finish. It does
@@ -78,9 +78,24 @@ publication cap. This cap is checked on publication, not a live disk quota.
 Attempts reserve exactly one attempt and their timeout in integer milliseconds;
 container startup/cleanup overhead can exceed that reservation and is retained
 as actual cost. Limits are project-wide; creating another run does not reset
-consumption. All dimensions, including explicitly zero authorized model calls,
-are supplied by the human contract. The service currently provides numerical
-admission, not a model provider billing interceptor.
+consumption. Required finite budget dimensions are `attempts`, `execution_ms`,
+`research_walltime_ms`, `turns` and `tool_executions`. The runtime supervisor
+calls `admit_activity` (HTTP POST `runs/{run}/activities` with `kind` and
+`idempotency_key`) before a turn or tool execution. Issued permits consume their
+count even on failure. Elapsed run walltime is charged at those boundaries; the
+runtime must enforce the returned `remaining_walltime_ms` during execution.
+This service is not a provider billing interceptor.
+
+Contracts require explicit `runtime_policy`: `provider`, `auth_mode`
+(`subscription_oauth`, `subscription_cli` or `api_key`), `billing_mode`
+(`subscription` or `paid_api`) and `quota_state` (`unknown`, `available`,
+`rate_limited` or `exhausted`). Subscription is the selected default; unknown
+provider quota permits work within local finite budgets. Rate limits/exhaustion
+pause subsequent admission; the adapter reports them via the CAS `quota`
+command rather than changing provider or billing mode. API billing requires
+`paid_api_authorized: true` in an explicitly published human contract. No
+automatic fallback to paid API mode exists. These declarations do not prove
+a particular SDK can use a provider subscription; adapters must verify that.
 
 Evidence-linked findings remain `candidate` even when a solver succeeded. They
 are not independent replication reports or scientific acceptance. A negative

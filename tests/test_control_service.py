@@ -29,9 +29,9 @@ class ControlTests(unittest.TestCase):
         policy = json.loads(Path('contracts/examples/powerflow-policy.json').read_text()) if Path('contracts/examples/powerflow-policy.json').exists() else json.loads(next(Path('contracts/examples').glob('*.json')).read_text())
         self.contract = dict(schema_version='asr-contract/1', objective={'question': 'Diagnose power flow', 'success_criteria': 'independent equation checks', 'scope': 'case118'},
             variable_policy=policy, problem_ref=self.refs['problem'], reference_ref=self.refs['reference'], evaluation_ref=self.refs['evaluation'],
-            budget={'attempts': 2, 'execution_ms': 10000, 'model_calls': 0},
+            budget={'attempts': 2, 'execution_ms': 10000, 'research_walltime_ms':3600000, 'turns':20, 'tool_executions':100},
             execution_policy={'researchers': 1, 'candidate_interface': 'asr-candidate/1', 'timeout_seconds': 5, 'output_bytes': 104857600, 'max_concurrency': 1, 'retry_limit': 0},
-            intervention_policy={'guidance_boundary': 'next_submission', 'pause': 'drain'}, provenance={'source': 'test'})
+            runtime_policy={'provider':'codex','auth_mode':'subscription_oauth','billing_mode':'subscription','quota_state':'available'}, intervention_policy={'guidance_boundary': 'next_submission', 'pause': 'drain'}, provenance={'source': 'test'})
 
     def start(self):
         self.service.publish_contract('human-secret', 'p', 'c', self.contract, expected_revision=0, idempotency_key='pub')
@@ -102,6 +102,43 @@ class ControlTests(unittest.TestCase):
         self.assertEqual(sum(r is not None for r in results),1)
         self.assertEqual(self.service.budgets.balance('p','attempts')['reserved'],2)
         self.assertEqual(len(self.service.get_run('human-secret','p','r')['trials']),2)
+
+    def test_unknown_subscription_quota_is_allowed_and_paid_api_requires_authorization(self):
+        self.contract['runtime_policy']['quota_state']='unknown'
+        self.start();self.submit()
+        paid=copy.deepcopy(self.contract)
+        paid['runtime_policy'].update(auth_mode='api_key',billing_mode='paid_api')
+        with self.assertRaisesRegex(ValueError,'paid_api_not_authorized'):
+            self.service.publish_contract('human-secret','p','c',paid,expected_revision=1,idempotency_key='api')
+        paid['runtime_policy']['paid_api_authorized']=True
+        published=self.service.publish_contract('human-secret','p','c',paid,expected_revision=1,idempotency_key='api-authorized')
+        self.assertEqual(published['revision'],2)
+        self.assertEqual(self.service.get_run('agent-secret','p','r')['contract']['document']['runtime_policy']['billing_mode'],'subscription')
+
+    def test_elapsed_walltime_overrun_is_retained_and_closes_admission(self):
+        from datetime import datetime,timedelta,timezone
+        self.start()
+        with self.service._connect() as db:
+            row=self.service._run(db,'p','r')
+            row['created_at']=(datetime.now(timezone.utc)-timedelta(hours=2)).isoformat()
+            db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(json.dumps(row),'p','r'))
+        with self.assertRaisesRegex(ValueError,'budget_exhausted'):
+            self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='late')
+        balance=self.service.budgets.balance('p','research_walltime_ms')
+        self.assertGreater(balance['spent'],balance['limit'])
+        self.assertFalse(self.service.get_run('human-secret','p','r')['admission_open'])
+
+    def test_subscription_quota_and_runtime_activity_admission(self):
+        self.start()
+        permit=self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='turn1')
+        self.assertEqual(permit['kind'],'turn')
+        self.assertEqual(self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='turn1'),permit)
+        self.assertEqual(self.service.budgets.balance('p','turns')['spent'],1)
+        self.service.command('human-secret','p','r','quota',expected_revision=1,idempotency_key='quota',payload={'state':'exhausted'})
+        with self.assertRaisesRegex(ValueError,'admission_closed'):self.submit()
+        with self.assertRaisesRegex(ValueError,'admission_closed'):
+            self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='turn2')
+        self.assertEqual(self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='turn1'),permit)
 
     def test_guidance_receipt_and_contract_switch_freeze_trials(self):
         self.start(); trial=self.submit()

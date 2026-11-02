@@ -13,7 +13,8 @@
     "budget",
     "execution_policy",
     "intervention_policy",
-    "provenance"
+    "provenance",
+    "runtime_policy"
   ],
   "properties": {
     "schema_version": {
@@ -217,7 +218,9 @@
       "required": [
         "attempts",
         "execution_ms",
-        "model_calls"
+        "research_walltime_ms",
+        "turns",
+        "tool_executions"
       ],
       "additionalProperties": false,
       "properties": {
@@ -231,12 +234,17 @@
           "minimum": 0,
           "maximum": 9223372036854775807
         },
-        "model_calls": {
+        "research_walltime_ms": {
           "type": "integer",
           "minimum": 0,
           "maximum": 9223372036854775807
         },
-        "model_microcurrency": {
+        "turns": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9223372036854775807
+        },
+        "tool_executions": {
           "type": "integer",
           "minimum": 0,
           "maximum": 9223372036854775807
@@ -286,6 +294,46 @@
     "provenance": {
       "type": "object",
       "minProperties": 1
+    },
+    "runtime_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "auth_mode",
+        "billing_mode",
+        "quota_state"
+      ],
+      "properties": {
+        "provider": {
+          "type": "string",
+          "minLength": 1
+        },
+        "auth_mode": {
+          "enum": [
+            "subscription_oauth",
+            "subscription_cli",
+            "api_key"
+          ]
+        },
+        "billing_mode": {
+          "enum": [
+            "subscription",
+            "paid_api"
+          ]
+        },
+        "quota_state": {
+          "enum": [
+            "unknown",
+            "available",
+            "exhausted",
+            "rate_limited"
+          ]
+        },
+        "paid_api_authorized": {
+          "type": "boolean"
+        }
+      }
     }
   }
 }
