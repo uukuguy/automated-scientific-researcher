@@ -14,3 +14,8 @@
 - 15:45 User accepted initial IEEE-118 research contract and minimal autonomous loop; recorded D002.
 - 15:45 Static AAR inspection identified run/trial distinction, between-session timeout checks and incomplete local recovery coverage.
 - 15:45 Wrote bounded AAR design; replaced provisional WP1–WP7 ledger with P0–P4; activated P1.
+- 15:46 Committed bounded research design and state to preserve agreed scope and reproducible delivery boundaries. [ef4abf2]
+- 16:28 Verified local OrbStack 2.2.4 and reachable Linux arm64 Docker Engine 29.8.2; no container smoke test run.
+- 16:57 Recorded user corrections: solver methods are research variables; users control defaults, boundaries and directions.
+- 16:57 Established docs/PROJECT-DESIGN.md as living design; aligned plans, instructions and historical redirect to prevent stale scope.
+- 16:58 Verified design links, status index, variable controls, supersession and instruction symlink; documentation whitespace check passed.

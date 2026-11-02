@@ -2,9 +2,9 @@
 
 ## Project Snapshot
 
-- Project: Automated Scientific Researcher — durable research system with power-grid OOD as its first research deliverable.
+- Project: Automated Scientific Researcher — durable research system with power-grid sampling and solver-method research as its first scientific deliverable.
 - Current branch: main
-- Theme-level focus: Bounded research autonomy, reproducible experiments and independent evaluation.
+- Theme-level focus: User-controlled research variables, reproducible experiments and independent evaluation.
 - Project route: managed
 - Canonical worklist: docs/plans/WORKLIST.md
 - Active work package: P1 — reproducible numerical trials and evidence
@@ -12,6 +12,8 @@
 ## Current Architecture
 
 - Project shell: Python >=3.12, with no declared dependencies or application code.
+- Current design: `docs/PROJECT-DESIGN.md`; sampling and solver methods are both configurable research variables.
+- Deployment: local OrbStack Docker Engine and Compose; no additional VM.
 - Research reference: `docs/IEEE118_OOD_Sample_Expansion_Task_v2_2.md`; accepted user decisions in `docs/status/DECISIONS.md` govern scope.
 - Planned numerical layer: canonical MATPOWER case, scenario generation, AC power flow, independent residual validation.
 - Planned research layer: adapt AAR for early single-researcher experiments; humans set direction and evaluation rules, researchers choose methods within scope.
@@ -42,7 +44,8 @@
 ### Implementation and specification anchors
 
 - `docs/plans/WORKLIST.md` — canonical package ledger and acceptance gates.
-- `docs/superpowers/specs/2026-11-02-bounded-aar-design.md` — initial system design and source mapping.
+- `docs/PROJECT-DESIGN.md` — canonical current design, research variables and source mapping.
+- `docs/superpowers/plans/2026-11-02-container-lab.md` — current numerical-environment implementation slice.
 - `pyproject.toml` — Python package metadata.
 - `.python-version` — Python 3.12 selection.
 - `docs/IEEE118_OOD_Sample_Expansion_Task_v2_2.md` — research scope, architecture, acceptance gates, and proposed scripts.

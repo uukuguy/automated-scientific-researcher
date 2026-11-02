@@ -37,4 +37,6 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 - `docs/plans/WORKLIST.md` — canonical packages and acceptance gates.
 - `docs/IEEE118_OOD_Sample_Expansion_Task_v2_2.md` — research objective and requirements.
 
-- `docs/superpowers/specs/2026-11-02-bounded-aar-design.md` — bounded research system design and implementation boundaries.
+- `docs/PROJECT-DESIGN.md` — canonical current design; read before implementation or design discussion.
+- `docs/superpowers/plans/2026-11-02-container-lab.md` — current numerical-environment implementation slice.
+- `docs/superpowers/specs/2026-11-02-bounded-aar-design.md` — historical redirect; not a separate design authority.
