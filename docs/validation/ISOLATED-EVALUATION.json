@@ -1,0 +1,583 @@
+{
+  "schema": "asr-isolated-evaluation-acceptance/1",
+  "checked_at": "2026-11-02T16:42:00.219661+00:00",
+  "docker_context": "orbstack",
+  "source_fixture": "environments/scientific/fixtures/matpower-case118/provenance.json",
+  "source_manifest_sha256": "67ae4be2965eb833c148a29cb2f12578116d11214ccebe79f2740cfeda6a62bd",
+  "trusted_original_input_sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+  "validator_sha256": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3",
+  "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+  "scope": "Frozen-material numerical recheck; no solver replication, generalization, Control publication or reservations.",
+  "diagnostics": "invalid_voltage and changed_fixed_load use explicitly synthetic corrupted copies, not admitted executions.",
+  "reports": {
+    "baseline": {
+      "evaluation_id": "f805e9ebfcb64fb9a1df18bffb1ca06a",
+      "manifest_sha256": "c409b40e267278e1b62e2830732187bac8162039bf785ef92a9c66cc415f65d0",
+      "source": {
+        "identity": {
+          "execution_attempt_id": "attempt_baseline",
+          "research_run_id": "r",
+          "trial_id": "trial_attempt_baseline"
+        },
+        "input_sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+        "manifest_sha256": "67ae4be2965eb833c148a29cb2f12578116d11214ccebe79f2740cfeda6a62bd",
+        "solution_sha256": "fef760807bf926816d26c7ade0152e9c735ac3c812bd04972cd454fab10a41c2"
+      },
+      "execution_status": "succeeded",
+      "execution_exited": true,
+      "exit_code": 0,
+      "result": {
+        "equation_valid": true,
+        "errors": [],
+        "input_preserved": true,
+        "max_mismatch_pu": 3.935784299266862e-13,
+        "operational_status": "violated",
+        "policy": "fixed-pv-pq-single-slack/1",
+        "thermal_limits_unassessed": 186,
+        "violations": [
+          {
+            "high": 24,
+            "id": 8,
+            "kind": "reactive_generation",
+            "low": -8,
+            "value": -14.274171532444697
+          },
+          {
+            "high": 42,
+            "id": 14,
+            "kind": "reactive_generation",
+            "low": -14,
+            "value": -16.28477473252564
+          },
+          {
+            "high": 24,
+            "id": 15,
+            "kind": "reactive_generation",
+            "low": -8,
+            "value": -20.827111730988882
+          },
+          {
+            "high": 9,
+            "id": 42,
+            "kind": "reactive_generation",
+            "low": -3,
+            "value": -13.956248186875492
+          },
+          {
+            "high": 40,
+            "id": 45,
+            "kind": "reactive_generation",
+            "low": -15,
+            "value": 75.42236358206829
+          },
+          {
+            "high": 23,
+            "id": 47,
+            "kind": "reactive_generation",
+            "low": -8,
+            "value": -18.334525252388048
+          }
+        ]
+      },
+      "mounts": [
+        {
+          "destination": "/evaluator",
+          "read_only": true
+        },
+        {
+          "destination": "/inputs",
+          "read_only": true
+        },
+        {
+          "destination": "/output",
+          "read_only": false
+        }
+      ],
+      "security": {
+        "NetworkMode": "none",
+        "ReadonlyRootfs": true,
+        "Privileged": false,
+        "CapDrop": [
+          "ALL"
+        ],
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Memory": 268435456,
+        "MemorySwap": 268435456,
+        "NanoCpus": 1000000000,
+        "PidsLimit": 32
+      },
+      "user": "65532:65532"
+    },
+    "isolation_probe": {
+      "evaluation_id": "96fade1d77d4407da1ca579df15a90d2",
+      "manifest_sha256": "7d148337b76862709b28cea05d9bb36f5c9a98cde07374031a1b8d5fa3051c71",
+      "source": {
+        "identity": {
+          "execution_attempt_id": "attempt_baseline",
+          "research_run_id": "r",
+          "trial_id": "trial_attempt_baseline"
+        },
+        "input_sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+        "manifest_sha256": "67ae4be2965eb833c148a29cb2f12578116d11214ccebe79f2740cfeda6a62bd",
+        "solution_sha256": "fef760807bf926816d26c7ade0152e9c735ac3c812bd04972cd454fab10a41c2"
+      },
+      "execution_status": "succeeded",
+      "execution_exited": true,
+      "exit_code": 0,
+      "result": {
+        "checks": {
+          "evaluator_readonly": true,
+          "external_network_blocked": true,
+          "input_readonly": true,
+          "no_auth_environment": true,
+          "no_candidate_workspace": true,
+          "no_docker_socket": true,
+          "no_readable_native_auth_files": true,
+          "nonroot": true,
+          "only_loopback_interface": true,
+          "rootfs_readonly": true
+        },
+        "kind": "isolation_probe",
+        "limit": "Probes cover this container configuration, not host processes or arbitrary candidate execution."
+      },
+      "mounts": [
+        {
+          "destination": "/evaluator",
+          "read_only": true
+        },
+        {
+          "destination": "/inputs",
+          "read_only": true
+        },
+        {
+          "destination": "/output",
+          "read_only": false
+        }
+      ],
+      "security": {
+        "NetworkMode": "none",
+        "ReadonlyRootfs": true,
+        "Privileged": false,
+        "CapDrop": [
+          "ALL"
+        ],
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Memory": 268435456,
+        "MemorySwap": 268435456,
+        "NanoCpus": 1000000000,
+        "PidsLimit": 32
+      },
+      "user": "65532:65532"
+    },
+    "timeout": {
+      "evaluation_id": "f5f5df31397f42ee84ff0fa77e495f6c",
+      "manifest_sha256": "a4e0558053b19427941001547d3c5700b37eac011875d5740926a7f0ff5e5660",
+      "source": {
+        "identity": {
+          "execution_attempt_id": "attempt_baseline",
+          "research_run_id": "r",
+          "trial_id": "trial_attempt_baseline"
+        },
+        "input_sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+        "manifest_sha256": "67ae4be2965eb833c148a29cb2f12578116d11214ccebe79f2740cfeda6a62bd",
+        "solution_sha256": "fef760807bf926816d26c7ade0152e9c735ac3c812bd04972cd454fab10a41c2"
+      },
+      "execution_status": "timed_out",
+      "execution_exited": true,
+      "exit_code": 0,
+      "result": null,
+      "mounts": [
+        {
+          "destination": "/evaluator",
+          "read_only": true
+        },
+        {
+          "destination": "/inputs",
+          "read_only": true
+        },
+        {
+          "destination": "/output",
+          "read_only": false
+        }
+      ],
+      "security": {
+        "NetworkMode": "none",
+        "ReadonlyRootfs": true,
+        "Privileged": false,
+        "CapDrop": [
+          "ALL"
+        ],
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Memory": 268435456,
+        "MemorySwap": 268435456,
+        "NanoCpus": 1000000000,
+        "PidsLimit": 32
+      },
+      "user": "65532:65532"
+    },
+    "invalid_voltage": {
+      "evaluation_id": "077075c47402478ea8503f4053dda13a",
+      "manifest_sha256": "639f5a2acb59647cfb80d296b8cbccdec1d1931668fe394af23ee43b8d63ff75",
+      "source": {
+        "identity": {
+          "execution_attempt_id": "synthetic_invalid_voltage",
+          "research_run_id": "synthetic_diagnostics",
+          "trial_id": "synthetic_invalid_voltage"
+        },
+        "input_sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+        "manifest_sha256": "93a2b042d9bf09f50cadc81fa9d049e4420700eb5bc29c70d879855db6e59022",
+        "solution_sha256": "11c0bc09200de37ba68d47cd8b295b0e0145b018f10ec2713a3c85745e4438f4"
+      },
+      "execution_status": "succeeded",
+      "execution_exited": true,
+      "exit_code": 0,
+      "result": {
+        "equation_valid": false,
+        "errors": [
+          "voltage setpoint at bus 1"
+        ],
+        "input_preserved": true,
+        "max_mismatch_pu": 0.2934438822938574,
+        "operational_status": "violated",
+        "policy": "fixed-pv-pq-single-slack/1",
+        "thermal_limits_unassessed": 186,
+        "violations": [
+          {
+            "high": 24,
+            "id": 8,
+            "kind": "reactive_generation",
+            "low": -8,
+            "value": -14.274171532444697
+          },
+          {
+            "high": 42,
+            "id": 14,
+            "kind": "reactive_generation",
+            "low": -14,
+            "value": -16.28477473252564
+          },
+          {
+            "high": 24,
+            "id": 15,
+            "kind": "reactive_generation",
+            "low": -8,
+            "value": -20.827111730988882
+          },
+          {
+            "high": 9,
+            "id": 42,
+            "kind": "reactive_generation",
+            "low": -3,
+            "value": -13.956248186875492
+          },
+          {
+            "high": 40,
+            "id": 45,
+            "kind": "reactive_generation",
+            "low": -15,
+            "value": 75.42236358206829
+          },
+          {
+            "high": 23,
+            "id": 47,
+            "kind": "reactive_generation",
+            "low": -8,
+            "value": -18.334525252388048
+          }
+        ]
+      },
+      "mounts": [
+        {
+          "destination": "/evaluator",
+          "read_only": true
+        },
+        {
+          "destination": "/inputs",
+          "read_only": true
+        },
+        {
+          "destination": "/output",
+          "read_only": false
+        }
+      ],
+      "security": {
+        "NetworkMode": "none",
+        "ReadonlyRootfs": true,
+        "Privileged": false,
+        "CapDrop": [
+          "ALL"
+        ],
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Memory": 268435456,
+        "MemorySwap": 268435456,
+        "NanoCpus": 1000000000,
+        "PidsLimit": 32
+      },
+      "user": "65532:65532"
+    },
+    "changed_fixed_load": {
+      "evaluation_id": "9b27fb32c26e4371ab0f0bcd6412fd0a",
+      "manifest_sha256": "c3b3a291ebd540c1def98cd1413307d10e40f7c6b61e57ed600c5f67ee2739e0",
+      "source": {
+        "identity": {
+          "execution_attempt_id": "synthetic_changed_fixed_load",
+          "research_run_id": "synthetic_diagnostics",
+          "trial_id": "synthetic_changed_fixed_load"
+        },
+        "input_sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+        "manifest_sha256": "3b72781469e4afd809d8cd8d4deb5fb05fb1c7fc89f261f4806287229dd58db7",
+        "solution_sha256": "50329d75b719635597f034ea66df45f4163ed951f678474cb61e6bb6dee77db8"
+      },
+      "execution_status": "succeeded",
+      "execution_exited": true,
+      "exit_code": 0,
+      "result": {
+        "equation_valid": false,
+        "errors": [
+          "fixed input changed"
+        ],
+        "input_preserved": false,
+        "max_mismatch_pu": 3.935784299266862e-13,
+        "operational_status": "violated",
+        "policy": "fixed-pv-pq-single-slack/1",
+        "thermal_limits_unassessed": 186,
+        "violations": [
+          {
+            "high": 24,
+            "id": 8,
+            "kind": "reactive_generation",
+            "low": -8,
+            "value": -14.274171532444697
+          },
+          {
+            "high": 42,
+            "id": 14,
+            "kind": "reactive_generation",
+            "low": -14,
+            "value": -16.28477473252564
+          },
+          {
+            "high": 24,
+            "id": 15,
+            "kind": "reactive_generation",
+            "low": -8,
+            "value": -20.827111730988882
+          },
+          {
+            "high": 9,
+            "id": 42,
+            "kind": "reactive_generation",
+            "low": -3,
+            "value": -13.956248186875492
+          },
+          {
+            "high": 40,
+            "id": 45,
+            "kind": "reactive_generation",
+            "low": -15,
+            "value": 75.42236358206829
+          },
+          {
+            "high": 23,
+            "id": 47,
+            "kind": "reactive_generation",
+            "low": -8,
+            "value": -18.334525252388048
+          }
+        ]
+      },
+      "mounts": [
+        {
+          "destination": "/evaluator",
+          "read_only": true
+        },
+        {
+          "destination": "/inputs",
+          "read_only": true
+        },
+        {
+          "destination": "/output",
+          "read_only": false
+        }
+      ],
+      "security": {
+        "NetworkMode": "none",
+        "ReadonlyRootfs": true,
+        "Privileged": false,
+        "CapDrop": [
+          "ALL"
+        ],
+        "SecurityOpt": [
+          "no-new-privileges"
+        ],
+        "Memory": 268435456,
+        "MemorySwap": 268435456,
+        "NanoCpus": 1000000000,
+        "PidsLimit": 32
+      },
+      "user": "65532:65532"
+    }
+  },
+  "acceptance_checks": {
+    "original_equations_valid": true,
+    "operating_limits_separate": true,
+    "isolation_probe_passed": true,
+    "invalid_voltage_rejected": true,
+    "changed_fixed_load_rejected": true,
+    "external_timeout_confirmed": true,
+    "all_execution_exits_confirmed": true
+  },
+  "actual_aar_trajectory05": {
+    "source_path": "artifacts/p2-aar-subscription-20261102-05/evidence/trial_12c71e92907c4b828427fe47f3bea45e/attempt_76b6ab8d3d094728928402ed8463c900",
+    "source_doc": "docs/validation/P2-AAR-RESULTS.json",
+    "source_unchanged": true,
+    "evidence_scope": "Actual retained model-selected one-iteration execution, rechecked with no new model or solver execution.",
+    "report_manifest_sha256": "a140acb6e7cf06016d36e4ddc0e67a674f47b2224f3af3ff540c89e6e56f5d4f",
+    "evaluation_id": "b036db6cff8b4c6289b602b9a9f1592d",
+    "source": {
+      "identity": {
+        "execution_attempt_id": "attempt_76b6ab8d3d094728928402ed8463c900",
+        "research_run_id": "research_13e46480ec3841b0bac1d7a6a2278194",
+        "trial_id": "trial_12c71e92907c4b828427fe47f3bea45e"
+      },
+      "input_sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+      "manifest_sha256": "96d70e599922c6f1aa9af49a0ffa328b4c3c74aee0b918649d540161abe36b6d",
+      "solution_sha256": "4f03e5a502b84fc0d808b87f8a6e21f1a8c1252c2f3d785362dacc6f83cc16b4"
+    },
+    "evaluator": {
+      "entrypoint_sha256": "5252a4e37adbe19a3d45f2d3bdd3fa513c8cff17a31e21631cf63c667509fd1f",
+      "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+      "policy": "fixed-pv-pq-single-slack/1",
+      "profile": "matpower-case118-flat/1",
+      "validator_sha256": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3"
+    },
+    "execution_status": "succeeded",
+    "execution_exited": true,
+    "result": {
+      "equation_valid": false,
+      "errors": [],
+      "input_preserved": true,
+      "max_mismatch_pu": 0.8253756289466181,
+      "operational_status": "violated",
+      "policy": "fixed-pv-pq-single-slack/1",
+      "thermal_limits_unassessed": 186,
+      "violations": [
+        {
+          "high": 15,
+          "id": 0,
+          "kind": "reactive_generation",
+          "low": -5,
+          "value": -8.82294172884012
+        },
+        {
+          "high": 24,
+          "id": 8,
+          "kind": "reactive_generation",
+          "low": -8,
+          "value": -19.081181011967693
+        },
+        {
+          "high": 42,
+          "id": 14,
+          "kind": "reactive_generation",
+          "low": -14,
+          "value": -23.835406306609535
+        },
+        {
+          "high": 24,
+          "id": 15,
+          "kind": "reactive_generation",
+          "low": -8,
+          "value": -50.58227457370917
+        },
+        {
+          "high": 9,
+          "id": 33,
+          "kind": "reactive_generation",
+          "low": -6,
+          "value": -12.753168240992423
+        },
+        {
+          "high": 23,
+          "id": 37,
+          "kind": "reactive_generation",
+          "low": -8,
+          "value": -12.069467934423002
+        },
+        {
+          "high": 9,
+          "id": 42,
+          "kind": "reactive_generation",
+          "low": -3,
+          "value": -19.887302515080687
+        },
+        {
+          "high": 40,
+          "id": 45,
+          "kind": "reactive_generation",
+          "low": -15,
+          "value": 73.67762822160603
+        },
+        {
+          "high": 23,
+          "id": 47,
+          "kind": "reactive_generation",
+          "low": -8,
+          "value": -25.469005366153155
+        }
+      ]
+    },
+    "limits": [
+      "Frozen-material numerical recheck only; candidate method was not rerun.",
+      "No held-out generalization or independent scientific claim assessment.",
+      "Standalone local execution; no Control authorization, Validation publication or budget reservations.",
+      "timeout_seconds bounds running polling; Docker setup and cleanup operations each allow an additional five seconds."
+    ],
+    "mounts": [
+      {
+        "destination": "/evaluator",
+        "read_only": true
+      },
+      {
+        "destination": "/inputs",
+        "read_only": true
+      },
+      {
+        "destination": "/output",
+        "read_only": false
+      }
+    ]
+  },
+  "timing_limit": "timeout_seconds bounds running polling only; each Docker setup/inspect/cleanup operation permits an additional five seconds. No hard total60second guarantee.",
+  "output_limit": "Docker metadata output is size-checked after subprocess capture, not a hard capture-memory cap; container logging disabled and only fixed trusted metadata commands used.",
+  "authority_limit": "Standalone local evaluator evidence only; no Control Validation publication, budget reservation/settlement, candidate-method replication, held-out generalization or new autonomous loop.",
+  "isolation_verified_by_control_service": false,
+  "local_raw_evidence": [
+    "data/isolated-evaluation-20261103-v2",
+    "artifacts/evaluation-actual05-20261103"
+  ],
+  "verification": {
+    "focused_command": "ASR_REAL_DOCKER=1 uv run python -m unittest tests.test_evaluation_replay -v",
+    "focused_tests": 12,
+    "focused_seconds": 2.06,
+    "combined_command": "uv run python -m unittest discover -s tests -v",
+    "combined_tests": 185,
+    "combined_skipped": 2,
+    "combined_seconds": 7.66,
+    "review_regressions": [
+      "Final manifest cannot relabel hashed negative output, source/evaluator identity or exit facts.",
+      "Missing or changed frozen tolerance or validator source is rejected.",
+      "Unknown create/reopen retains pending evidence and blocks automatic retry.",
+      "Interrupted publication recovers the recorded terminal outcome and same container.",
+      "Actual writable input/extra mount/credential environment/privilege/network/swap/logging/restart changes reject."
+    ]
+  }
+}
