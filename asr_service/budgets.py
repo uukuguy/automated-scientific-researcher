@@ -10,6 +10,14 @@ class BudgetError(ValueError):
     pass
 
 
+# Logical ledgers share the same authoritative reservation rows. Never sum
+# unlike units or move historical consumption to a second mutable store.
+LEDGER_DIMENSIONS = {
+    'model': frozenset({'research_walltime_ms', 'turns', 'tool_executions'}),
+    'compute': frozenset({'attempts', 'execution_ms'}),
+}
+
+
 class BudgetStore(PolicyStore):
     def __init__(self, path):
         # Reuse connection lifecycle, without initializing policy tables.
@@ -141,3 +149,37 @@ class BudgetStore(PolicyStore):
                 return
             db.execute('UPDATE asr_budget_reservations SET actual=? WHERE project=? AND attempt=? AND dimension=?',
                        (actual, project, attempt, dimension))
+
+    def ledger_snapshot(self, project):
+        """Consistent classified view; provider quota is not local budget balance."""
+        self._identity(project)
+        with self._connect() as db:
+            db.execute('BEGIN')
+            return self.ledger_snapshot_in_transaction(db, project)
+
+    @classmethod
+    def ledger_snapshot_in_transaction(cls, db, project):
+        """Join the owner's snapshot without resetting or duplicating legacy rows."""
+        cls._identity(project)
+        if not db.in_transaction:
+            raise BudgetError('transaction_required')
+        result = dict(schema_version='asr-logical-ledgers/1', model={}, compute={},
+                      unclassified={}, provider_quota={'state': 'unknown'})
+        for (dimension,) in db.execute(
+                'SELECT dimension FROM asr_budget_limits WHERE project=? ORDER BY dimension', (project,)):
+            ledger = next((name for name, dimensions in LEDGER_DIMENSIONS.items()
+                           if dimension in dimensions), 'unclassified')
+            result[ledger][dimension] = cls._balance(db, project, dimension)
+        return result
+
+    def reserve_ledgers(self, project, identity, *, model, compute):
+        """One atomic reservation across the two logical ledgers, no dispatch.
+
+        This trusted primitive does not authorize a runtime or compute backend.
+        Existing per-dimension reservations and settlement remain authoritative.
+        Tool counts meter researcher activity, not numerical execution cost.
+        """
+        for ledger, amounts in (('model', model), ('compute', compute)):
+            if type(amounts) is not dict or set(amounts) - LEDGER_DIMENSIONS[ledger]:
+                raise BudgetError('invalid_ledger_dimension')
+        self.reserve_many(project, identity, {**model, **compute})
