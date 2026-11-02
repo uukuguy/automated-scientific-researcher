@@ -14,7 +14,7 @@ User asked to continue while keeping PROJECT-DESIGN, AGENTS and README aligned. 
 
 ## Work state
 
-- Managed ledger: docs/plans/WORKLIST.md. P1 complete, P2 active.
+- Managed ledger: docs/plans/WORKLIST.md. P1 complete, P2 active. Implementation committed as 70195b5; subsequent P2 changes and state refresh are tracked by the journal.
 - powerflow_lab now contains independent Python electrical checks, local immutable evidence runner and fixed reference CLI.
 - 28 tests passed on Python 3.12.12. Real case118: 4 NR iterations, residual 3.935784299266862e-13 p.u.; six Q-limit violations and 186 unassessed branch thermal limits.
 - Duplicate request reuses attempt; fresh trial replay produced identical solutions. One-iteration solve was retained as nonconverged; 0.001-second timeout removed its container.
@@ -27,7 +27,7 @@ User asked to continue while keeping PROJECT-DESIGN, AGENTS and README aligned. 
 
 ## Immediate next action
 
-Start P2's finite local slice: implement machine-readable contracts and control admission with focused tests, using the detailed design and Capstone interface feedback. Preserve original trial IDs and evidence when attaching the local executor. No paid AAR session until budget and credentials are explicitly configured.
+P2 variable-policy slice is implemented: JSON Schema, default resolution, scope/role checks, immutable revision publication, optimistic activation and transactional events; 10 new tests, 38 total. Main design is now 0.8. Next implement complete problem/evaluation reference and budget admission, plus authenticated command envelopes, before connecting AAR or exposing HTTP. Preserve original trial IDs and evidence when attaching the local executor. No paid AAR session until budget and credentials are explicitly configured.
 
 ## Limits to preserve
 

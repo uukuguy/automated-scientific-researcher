@@ -4,4 +4,6 @@ version = "0.1.0"
 description = "Durable autonomous scientific research with reproducible power-flow experiments"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "jsonschema==4.26.0",
+]

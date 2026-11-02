@@ -32,3 +32,6 @@
 - 19:58 Verified MATPOWER 8.1/Octave 7.3 reference, independent residual, failure retention, replay, timeout cleanup and 28 tests; P1 complete.
 - 19:58 Aligned main design 0.7, AGENTS, README and package ledger; P2 active, no paid Agent run or public API.
 - 20:22 Independent review dispatch failed twice due to unavailable model; performed self-review and reran focused tests/evidence checks.
+- 20:22 Committed verified reference trials and evidence to establish the numerical foundation for AAR integration. [70195b5]
+- 20:24 Refreshed structural snapshot for P2 focus, implementation entrypoints and unresolved integration boundaries.
+- 20:39 Implemented variable-policy validation and immutable SQLite revisions/bindings; 38 tests passed; full execution admission remains pending.

@@ -1,0 +1,45 @@
+{
+  "schema_version": "asr-variable-policy/1",
+  "variables": {
+    "network": {
+      "type": "string",
+      "unit": "case_id",
+      "default": "case118",
+      "mode": "fixed",
+      "scope": "project",
+      "modifiable_by": [
+        "human"
+      ]
+    },
+    "iterations": {
+      "type": "integer",
+      "unit": "iterations",
+      "default": 20,
+      "mode": "bounded",
+      "allowed": {
+        "minimum": 1,
+        "maximum": 100
+      },
+      "scope": "trial",
+      "modifiable_by": [
+        "human",
+        "researcher"
+      ]
+    },
+    "solver": {
+      "type": "string",
+      "unit": "method_id",
+      "default": "newton_raphson",
+      "mode": "open",
+      "implementation": {
+        "interface": "asr-candidate/1:solver",
+        "execution_permission": "isolated-candidate"
+      },
+      "scope": "trial",
+      "modifiable_by": [
+        "human",
+        "researcher"
+      ]
+    }
+  }
+}

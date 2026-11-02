@@ -4,7 +4,7 @@
 
 - Project: Automated Scientific Researcher — durable research system with power-grid sampling and solver-method research as its first scientific deliverable.
 - Current branch: main
-- Theme-level focus: User-controlled research variables, reproducible experiments and independent evaluation.
+- Theme-level focus: Versioned research contracts, runtime control and AAR integration over verified numerical evidence.
 - Project route: managed
 - Canonical worklist: docs/plans/WORKLIST.md
 - Active work package: P2 — contract/control service and single-researcher integration
@@ -20,12 +20,16 @@
 - Human interaction: asynchronous guidance and versioned controls; Capstone scientific-research mode is the accepted workbench architecture; preparation is defined in `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md`.
 - Local upstream: `3th-party/automated-w2s-research/`, ignored by the parent repository; not yet integrated.
 
+- Contract preparation: variable-policy JSON Schema and in-process SQLite revision/binding core; no authentication or full execution admission.
+
 ## Open Problems (theme-level)
 
 - Uncalibrated numerical research contract and unverified AAR runtime adaptation.
 - Missing control API and generalized candidate execution; current reference environment is verified.
 - Unconfirmed real-world input distribution, OOD definition, failure cases, and downstream task.
-- Unfixed operating conventions and independent validation contract.
+- Formal evaluation policy and expanded operating conventions remain uncalibrated; the implemented reference uses fixed PV/PQ and one Slack.
+- Independent evaluation identity/isolation and runtime budget accounting remain unimplemented.
+- Numerical image execution is pinned; APT rebuild sources and cross-machine image distribution remain unresolved.
 
 ## Key Files
 
@@ -47,6 +51,15 @@
 - `docs/plans/WORKLIST.md` — canonical package ledger and acceptance gates.
 - `docs/PROJECT-DESIGN.md` — canonical current design, research variables and source mapping.
 - `docs/superpowers/plans/2026-11-02-container-lab.md` — current numerical-environment implementation slice.
+- `docs/architecture/ASR-MINIMUM-LOOP.md` — subordinate detailed design and control protocol candidate.
+- `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md` — workbench preparation contract.
+- `powerflow_lab/reference.py` — constrained Docker reference CLI.
+- `powerflow_lab/validation.py` — independent equation and operating checks.
+- `powerflow_lab/runner.py` — local idempotency and immutable attempt publication.
+- `tests/` — reference configuration, validator and evidence-runner checks.
+- `scripts/reference_pf.m` and `docker/` — numerical entrypoint and image recipes.
+- `compose.yaml` — direct reference debugging service.
+- `integrations/aar/upstream.json` — pinned upstream identity; adaptation not implemented.
 - `pyproject.toml` — Python package metadata.
 - `.python-version` — Python 3.12 selection.
 - `docs/IEEE118_OOD_Sample_Expansion_Task_v2_2.md` — research scope, architecture, acceptance gates, and proposed scripts.
@@ -64,3 +77,5 @@
 - `docs/validation/P1-NUMERICAL-LAB.md` — commands, fixed environment and measured limits.
 - `configs/numerical-environment.json` — executed image identity and source hashes.
 - `powerflow_lab/` — local reference runner, validator and evidence publication.
+
+- `asr_service/contracts.py` and `contracts/README.md` — variable validation and local revision repository.

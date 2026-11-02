@@ -1,6 +1,6 @@
 # Capstone 科学研究模式准备工作交接
 
-版本：0.3。日期：2026-11-02。交出方：Automated Scientific Researcher（下称 ASR）。接收方：Capstone 项目。
+版本：0.4。日期：2026-11-02。交出方：Automated Scientific Researcher（下称 ASR）。接收方：Capstone 项目。
 
 **请 Capstone 同步准备专属“科学研究”模式：先完成接入设计、可替换的服务适配器、模拟服务和最小工作台交互，再与 ASR 的真实研究及实验服务联调。** 当前不需要等待潮流环境完成，也不需要重建一套自主研究执行器。
 
@@ -178,3 +178,7 @@ Capstone 首次回交应包含：
 ASR 同步承担：数值环境与真实试验、AAR 适配、科研服务协议和执行端语义、独立评价路径，并提供同版本真实响应样例。两边接口变更同时更新协议版本、消费侧测试与本交接的相关条目。
 
 本文件是跨项目交付约定；研究目标与架构原则继续以 ASR 主设计为准。后续变更在本路径修订，保留 Git 历史，避免产生多份互相冲突的交接说明。
+
+## 变量配置准备补充
+
+ASR 已提供 `contracts/variable-policy.schema.json` 与 `contracts/examples/research-variables.json`，可用于 Capstone 表单/模拟适配。语义与限制见 [变量策略说明](../../contracts/README.md)。这是完整研究契约的子 schema，尚不具备预算、引用或执行授权；没有可调用的公共 ASR API。发布与切换的进程内核心已测试，但实际跨项目运行控制尚待集成。

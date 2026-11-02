@@ -9,7 +9,10 @@ research question, permitted changes, evaluation rules and resource budget.
 
 The repository has a verified local MATPOWER/Octave reference runner, independent
 Python electrical checks and immutable trial evidence. It has no operational ASR
-control API or integrated AAR loop yet. The fixed-PV/PQ baseline is a calibration
+control API or integrated AAR loop yet. Variable-policy validation and local SQLite
+revision/binding primitives exist in `asr_service/contracts.py`; they are not full
+contract admission or authentication. Use `uv sync --locked` and `uv run python -m
+unittest discover -s tests -v` for the combined suite. The fixed-PV/PQ baseline is a calibration
 profile, not a restriction on candidate-method research. See
 `docs/validation/P1-NUMERICAL-LAB.md` for evidence and limits. Check the worklist
 and code before reporting implementation status; update this paragraph when it changes.

@@ -46,3 +46,6 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 - `docs/architecture/ASR-MINIMUM-LOOP.md` — detailed minimum-loop design, interface candidate and acceptance mapping.
 
 - `docs/validation/P1-NUMERICAL-LAB.md` and `P1-REFERENCE-RESULTS.json` — P1 local numerical acceptance and remaining boundaries.
+
+- `docs/superpowers/plans/2026-11-02-contract-core.md` — P2 variable-policy slice and limits.
+- `contracts/README.md` — implemented variable sub-schema and local API.

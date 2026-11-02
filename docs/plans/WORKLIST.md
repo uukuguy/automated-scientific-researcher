@@ -21,6 +21,8 @@ The accepted architecture is detailed in [Minimum-loop design](../architecture/A
 
 ## Current evidence
 
+- P2 partial: variable-policy schema/defaults/semantics and local immutable revisions with explicit binding activation; 10 new tests (38 total). Full reference/budget admission, authentication, HTTP and AAR execution remain pending.
+
 - P0: `docs/status/DECISIONS.md` and the linked design.
 - P1: `docs/validation/P1-NUMERICAL-LAB.md` and `P1-REFERENCE-RESULTS.json`; 28 focused tests, real baseline/replay/truncated/timeout trials. Original preflight is historical discovery evidence.
 - Implementation slice: `docs/superpowers/plans/2026-11-02-container-lab.md`. The planned local reference slice is implemented and verified. Runtime database admission/budgets and the generalized candidate service belong to P2/P3.
