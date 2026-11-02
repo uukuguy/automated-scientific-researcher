@@ -85,3 +85,8 @@
 - 2026-11-03: User confirms local Codex/Grok login and actual coding; ASR protocol/tool/recovery acceptance remains separate.
 - 2026-11-03: c48ba1c connects shared documentation/literature tools and five curated skills; 141 tests pass, preserving bounded research capabilities.
 - 2026-11-03: Grok1.0.70 ACP handshake and cached authentication succeeded without inference; session load/cancel effects remain untested.
+- 2026-11-03: cdbddf1 aligns accepted research roles and native-runtime gates, preserving scientific authority and measured implementation limits.
+- 2026-11-03: 970c470 retains bounded Grok conversational timeout and verified cleanup without claiming model acceptance.
+- 2026-11-03: 3a2b0dc adds bounded Codex protocol and real subscription dialogue evidence; AAR binding remains separate.
+- 2026-11-03: 067c352 separates logical model/compute balances and atomic reservations without resetting legacy usage; eleven budget tests pass.
+- 2026-11-03: 630cc3e records evaluator-only immutable reports bound to frozen evidence, retaining negatives and separate validity axes.

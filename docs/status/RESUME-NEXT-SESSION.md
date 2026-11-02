@@ -35,3 +35,13 @@ Next: review/verify bounded Codex protocol foundation, record Grok capabilities,
 then connect native runtime to authenticated ASR tools and finite lifecycle
 accounting before any real research claim. No paid API fallback. Keep continuing
 P3 toward a real candidate-method trajectory and independent frozen replay.
+
+Active update: 3a2b0dc implements bounded Codex protocol foundation;12tests and
+actual one-prompt native subscription dialogue passed(gpt-6.1-sol/high,25.409s,
+reply ASR_CODEX_OK). Grok first realprompt timedout(970c470),cachedauth/session
+worked,ownedgroupcleaned; parent found macOS proxy127.0.0.1:7897 absent childenv;
+aar worker diagnosing network before retry. No unsupported success claims.
+067c352 implements logical budget views/crossledger atomicreserve preserving old
+rows;11budgettests pass. Control worker owns evaluatorValidationAPI plus ledger
+readprojection. Supervisor worker owns standalone isolated frozen-material
+recheck, no fullbudget integration or solverreplication claim. Root owns docs.

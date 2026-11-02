@@ -78,7 +78,7 @@ class ResearchBridge:
             validation=path/'validation.json'
             if validation.is_file():
                 observations.append(dict(trial_id=trial['trial_id'],manifest_hash=report['manifest_hash'],validation=json.loads(validation.read_text())))
-        return dict(run=run,hypotheses=self.service.hypotheses(self.researcher_token,self.project),findings=self.service.findings(self.researcher_token,self.project,self.run),observations=observations,snapshot_refs=self._snapshot_refs(),shared_findings=self.organization.forum(self.supervisor_token,self.project) if self.organization else [])
+        return dict(run=run,validations=self.service.validations(self.researcher_token,self.project,self.run),hypotheses=self.service.hypotheses(self.researcher_token,self.project),findings=self.service.findings(self.researcher_token,self.project,self.run),observations=observations,snapshot_refs=self._snapshot_refs(),shared_findings=self.organization.forum(self.supervisor_token,self.project) if self.organization else [])
 
     def _snapshot_refs(self):
         if not self.snapshots.exists(): return []

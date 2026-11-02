@@ -63,3 +63,4 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 - Native runtime implementation order and acceptance gates: `docs/architecture/RESEARCHER-RUNTIMES.md`, decisions D019–D020.
 - `docs/architecture/RESEARCH-ORGANIZATION-REFERENCES.md` — bounded DeepSeek and shared native-runtime reference analysis.
 - `docs/validation/NATIVE-RUNTIME-PROTOCOLS.md` — no-inference native protocol discovery and explicit remaining acceptance gates.
+- `docs/validation/CODEX-APP-SERVER-CONVERSATION.json` and `GROK-ACP-CONVERSATION.json` — actual bounded native dialog success and retained timeout, respectively.

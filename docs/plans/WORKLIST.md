@@ -49,8 +49,8 @@ The accepted architecture is detailed in [Minimum-loop design](../architecture/A
 ## P3 implementation order under D016
 
 1. Hypothesis revision and evidence relations: first local slice implemented with immutable revisions, optional frozen trial bindings, project checks, legacy replay, candidate author assessments and pi/AAR sharing. Interface tests exercise service reopen and opposing-evidence retention (A12); actual model-driven hypothesis revision and full trajectory remain outstanding.
-2. Orthogonal outcome and Validation lifecycle: record execution separately from experiment validity and claim assessment; restrict official validation writes to evaluator identity (A13).
-3. Two logical resource ledgers: preserve existing consumption through migration, atomically reserve model/compute dimensions, record unknown quota without silent fallback and test failure/recovery accounting (A14).
+2. Orthogonal outcome and Validation lifecycle: evaluator-only immutable report API and distinct experiment/equation/operating/replication/generalization/hypothesis axes implemented; original execution and candidate finding unchanged. Hash/identity checks and negative supersession are tested; evaluator attestations do not establish actual isolation or complete scientific validation (A13).
+3. Two logical resource ledgers: first view/reservation slice implemented in BudgetStore; existing consumption and unknown in-flight reservations remain unchanged, cross-ledger bundles are atomic, provider quota stays unknown. Provider observations and full failure/recovery system acceptance remain A14 work.
 4. Minimal isolated candidate execution and evaluator replay: enable one contract-permitted candidate-method slice with real code/input/resource isolation, then prove execution/data/logic independence with real frozen-material replay and deliberate invalid cases (A8/A9). Integrate a complete negative-or-positive research trajectory; mocks alone cannot close P3.
 
 ## Risk checks during P3

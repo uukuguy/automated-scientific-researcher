@@ -219,3 +219,11 @@ Grok ACP adapters follow pi; existing local login/coding is user-confirmed,
 ASR runtime acceptance remains distinct. Native thread/session/turn IDs never
 replace research/trial IDs. This is a prepared local handoff, not evidence of
 Capstone delivery or implementation.
+
+Implementation update: ASR now exposes immutable evaluator-only validation POST
+and project-readable GET at `/v1/projects/{project}/runs/{run}/validations`.
+Display separate assessment axes and evaluator-attested independence; do not
+convert `isolation_verified_by_service: false` into a verified badge. Negative
+superseded reports remain visible. Run reads add `resource_ledgers` alongside
+legacy budget; provider quota unknown is not zero or unlimited. This local
+contract update has not been delivered/accepted by Capstone.

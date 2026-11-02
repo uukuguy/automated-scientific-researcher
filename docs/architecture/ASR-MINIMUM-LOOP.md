@@ -102,7 +102,7 @@ Supervisor 是唯一持有容器管理能力的组件，可先以本机受信任
 
 FindingRevision 引用具体 hypothesis revision、trial/attempt/manifest 和 Validation ID；每项关系记录支持、反对或不确定及适用范围。反对证据不能被后续成功版本覆盖，缺失证据和实验无效不能转为假说被否定。Validation 的正式状态仅由 evaluator 身份写入；作者只能提交候选解释。后见解释明确记录观察发生在声明之前。
 
-执行状态、实验有效性、假说判断、发现复核状态是不同字段/记录，不能合成单一 outcome 枚举。当前实现 `asr_service/hypotheses.py` 的严格文档 schema、追加修订表、HTTP 发布/查询、trial 可选冻结绑定、作者证据关系与 pi 工具接入。旧请求幂等负载和原回执保持不变；旧 trial 的 legacy_unlinked 仅为读取投影。正式 Validation 状态和完整实验有效性结构仍待实现，不能把作者关系当作评价器判定。
+执行状态、实验有效性、假说判断、发现复核状态是不同字段/记录，不能合成单一 outcome 枚举。当前实现 `asr_service/hypotheses.py` 的严格文档 schema、追加修订表、HTTP 发布/查询、trial 可选冻结绑定、作者证据关系与 pi 工具接入。旧请求幂等负载和原回执保持不变；旧 trial 的 legacy_unlinked 仅为读取投影。正式 Validation 记录已新增 evaluator 专用发布/读取接口：精确绑定 terminal trial/attempt、manifest hash 和评价引用，验证原始产物 inventory，保存独立结果轴、报告 hash 及不可覆盖 supersedes 关系。身份、引用与字节校验不等于服务已证明 OS 隔离或结论为真；independence_basis 为 evaluator_attestation，isolation_verified_by_service 为 false。作者关系不能当作评价器判定；发现晋升、真实隔离和完整科学轨迹另行验收。
 
 ## 4 运行、控制与指导状态
 
@@ -173,6 +173,8 @@ schema 使用 `asr-candidate/1`。每个场景须带输入 hash；结果缺失�
 模型调用经有限调用数、输出限制、会话时限和费用估计门控；账单延迟或 SDK 内部重试须计入未结算风险，不承诺精确硬金额封顶。开发与独立评价分别结算，总成本均报告；预算耗尽时先关入口，已有预留允许在上限内完成，超时仍停止。
 
 模型与计算使用两个逻辑账本（D016），共享同一控制写入方。跨账本操作必须原子预留或全部拒绝；各计量维度独立，不把 token、秒与费用直接相加。订阅配额观测有来源、观测时间及 unknown/limited/exhausted 等语义，供应商观测与本地预算分开，不能因一次刷新覆盖已消耗记录。账本归属、结算幂等和恢复后保守预留须迁移验证。GPU 等未接入资源在准入中明确不支持，不能仅接受配置字段就宣称限额有效。
+
+已实现首个双逻辑账本切片：BudgetStore 对原权威 reservation 行提供 model（research_walltime_ms、turns、tool_executions）及 compute（attempts、execution_ms）一致快照，并支持跨组原子预留。历史消耗和在途预留不搬迁、不重置或重复计数；未知旧维度单列 unclassified，不自动授予新执行能力。provider_quota 保持 unknown，不能从本地剩余预算推断供应商订阅额度。此切片不等于供应商额度观测、GPU 计量或完整 A14 验收。
 
 ### 6.1 单执行权与恢复过程
 

@@ -48,8 +48,23 @@ Sources:
 
 ## Codex App Server
 
-Installed help exposes stdio app-server and local schema generation. Protocol
-foundation implementation/tests are in progress; live initialization results
-will be recorded after actual execution. Context7 /openai/codex was consulted;
-its exec-server results are excluded from app-server signatures. Local generated
-schema and official App Server docs govern implementation.
+Installed codex-cli 0.166.0 exposes stdio app-server and local schema generation.
+The bounded client in integrations/runtimes/codex_app_server.py passed 12 fake
+process tests, including immediate child exit during reader startup. Actual
+initialize/initialized/close completed with exit code 0 without inference.
+Context7 /openai/codex was consulted; exec-server signatures were excluded.
+
+User then explicitly requested actual model conversations. One Codex App Server
+prompt returned ASR_CODEX_OK with turn status completed in 25.409 seconds under
+45 seconds. Actual returned model gpt-6.1-sol, high reasoning, provider openai;
+account/read confirmed chatgpt type without retaining raw account data. Private
+HOME/CODEX_HOME/workspace excluded global configuration, plugins and MCP; shell
+was disabled. No tool attempt or API fallback occurred. Direct child exited 0.
+See CODEX-APP-SERVER-CONVERSATION.json. This is actual native dialogue acceptance,
+not ASR tool/admission integration or whole descendant execution containment.
+
+The corresponding Grok real prompt created a session with default grok-4.6 but
+timed out without assistant text. No tool/permission events; owned process group
+cleanup was verified, existing user process unchanged. Preserve this failure in
+GROK-ACP-CONVERSATION.json. Network/config investigation continues; never turn a
+successful cached-auth handshake into a claimed successful conversation.

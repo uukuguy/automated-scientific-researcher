@@ -213,3 +213,45 @@ projection carries these canonical links in `config.hypothesis_evidence` and
 preserves `status: candidate`. Prior finding revisions remain separate Forum
 records, including opposing claims; projection consistency checks reject altered
 links. This does not introduce a second Hypothesis authority in the upstream ORM.
+
+
+## Evaluator Validation records
+
+`POST /v1/projects/{project}/runs/{run}/validations` accepts
+`{validation_id,document,idempotency_key,supersedes?}` only from an operator-configured
+`evaluator` principal for that project. Researcher, human, supervisor and viewer
+roles cannot publish these reports. `GET` on the same route returns all immutable
+reports to authorized project readers. Supersession appends a new report for the
+same target and retains prior negative results.
+
+`document.target` binds trial_id, execution_attempt_id, manifest_hash and
+evaluation_ref. Publication checks actual terminal execution identity, frozen
+reference and current raw artifact inventory. The service computes report SHA256
+and publisher identity; neither can be supplied by the caller. The six separate
+assessment axes are experiment_validity, equation_validity, operating_checks,
+replication, generalization and hypothesis_assessment. Invalid/unassessed
+experiments cannot support/oppose hypotheses or support generalization.
+Hypothesis assessments require an exact version reference and explicit
+prospective/post_hoc timing; prospective requires the trial's frozen declaration.
+The strict document schema lives in `asr_service/validations.py`.
+
+`provenance` records method, execution/frozen-material/mathematical independence
+observations and limits. These are evaluator attestations: the control service
+verifies references and bytes, not OS containment or scientific truth. Stored
+`isolation_verified_by_service` remains false. Publication does not change the
+attempt's execution outcome or promote a candidate Finding. The isolated checker
+must separately supply actual execution evidence; calibration reports are not
+automatically migrated into independent validations.
+
+## Logical resource ledgers
+
+Run reads preserve the legacy flat `budget` and add `resource_ledgers`, in the
+same SQLite read transaction. Model activity contains research_walltime_ms,
+turns and tool_executions; compute contains attempts and execution_ms. Each
+retains its own units/limit/spent/reserved/available. No aggregate monetary total
+is fabricated. Unknown legacy dimensions appear under unclassified. Historical
+rows remain authoritative; no migration resets or duplicates consumption.
+Provider quota remains explicitly unknown here, independently of local balances
+and admission state. `BudgetStore.reserve_ledgers` provides atomic reservations
+across both logical groups; it is a trusted primitive, not a new public endpoint
+or permission to execute unsupported backends.
