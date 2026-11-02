@@ -13,3 +13,8 @@ Run checks with `uv sync --locked` and `uv run python -m unittest discover -s te
 The actor argument is a trusted in-process role assertion, **not authentication**. Public callers must not directly invoke these methods or supply their own trusted actor. Project grants, registered problem/evaluation references, complete budgets, capability checks, migrations and HTTP envelopes remain P2 work. An empty database may be initialized for local tests; no AAR production database was modified.
 
 The example is an editable template, not a newly imposed limit on all research. Capstone may consume the schema and examples to prepare forms; semantic checks remain authoritative on the server side. Do not advertise this sub-schema as the complete cross-project contract.
+
+
+### P2 local budget primitive (2026-11-02)
+
+本地预算原语 `asr_service/budgets.py` 已实现项目级整数计量、事务预留、幂等结算及超额记账。执行退出由可信调用方声明，尚未连接进程核验、运行子额度、完整准入或 AAR；不能作为执行授权。

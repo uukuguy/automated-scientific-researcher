@@ -20,6 +20,8 @@
 - Human interaction: asynchronous guidance and versioned controls; Capstone scientific-research mode is the accepted workbench architecture; preparation is defined in `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md`.
 - Local upstream: `3th-party/automated-w2s-research/`, ignored by the parent repository; not yet integrated.
 
+- Budget preparation: local project reservations/settlement; no process reconciliation or admission integration.
+
 - Contract preparation: variable-policy JSON Schema and in-process SQLite revision/binding core; no authentication or full execution admission.
 
 ## Open Problems (theme-level)
