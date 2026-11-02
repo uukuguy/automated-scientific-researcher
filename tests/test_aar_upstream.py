@@ -56,6 +56,24 @@ class UpstreamIntegrationTests(unittest.TestCase):
             with adapter.app.app_context():
                 worker._run_experiment(adapter.models.Experiment.query.one())
 
+    def test_forged_worker_receipt_and_unexpected_source_are_rejected_before_import(self):
+        import hashlib
+        worker=self.checkout/'w2s_research/web_ui/backend/worker.py'
+        receipt_path=self.checkout/'.asr-worker-patch.json'
+        original=worker.read_bytes();receipt_original=receipt_path.read_bytes()
+        try:
+            worker.write_bytes(original+b'\nraise RuntimeError("untrusted_worker_executed")\n')
+            receipt=json.loads(receipt_original)
+            receipt['patched_sha256']=hashlib.sha256(worker.read_bytes()).hexdigest()
+            receipt_path.write_text(json.dumps(receipt))
+            with self.assertRaisesRegex(ValueError,'worker_guard_patch_modified'):self.adapter()
+        finally:worker.write_bytes(original);receipt_path.write_bytes(receipt_original)
+        source=self.checkout/'w2s_research/config.py';original=source.read_bytes()
+        try:
+            source.write_bytes(original+b'\nraise RuntimeError("untrusted_config_executed")\n')
+            with self.assertRaisesRegex(ValueError,'unexpected_upstream_source_modified'):self.adapter()
+        finally:source.write_bytes(original)
+
     def test_failed_control_admission_rolls_back_actual_experiment_row(self):
         import copy
         adapter=self.adapter();self.start(adapter)

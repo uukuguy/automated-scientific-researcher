@@ -55,10 +55,15 @@ class UpstreamAdapter:
     def __init__(self, service, *, checkout):
         from flask import Flask
         self.service=service;self.checkout=Path(checkout).resolve()
-        receipt=json.loads((self.checkout/'.asr-worker-patch.json').read_text())
-        worker=self.checkout/'w2s_research/web_ui/backend/worker.py'
-        patch=Path(__file__).with_name('upstream_worker.patch')
-        if receipt['patch_sha256']!=hashlib.sha256(patch.read_bytes()).hexdigest() or receipt['patched_sha256']!=hashlib.sha256(worker.read_bytes()).hexdigest(): raise ValueError('worker_guard_patch_modified')
+        from .prepare_upstream import verify_worker_patch
+        from .source_integrity import verify_source_tree
+        verify_worker_patch(self.checkout)
+        allowed={'w2s_research/web_ui/backend/worker.py'}
+        if (self.checkout/'.asr-loop-patch.json').exists():
+            from .loop_patch import verify_loop_patch
+            verify_loop_patch(self.checkout)
+            allowed.update({'w2s_research/research_loop/agent.py','w2s_research/research_loop/tools/findings_sync.py'})
+        verify_source_tree(self.checkout,allowed_changes=allowed)
         self.models=_load_models(self.checkout)
         self.app=Flask('asr-aar-'+str(id(self)))
         self.app.config.update(ASR_MODE=True,SQLALCHEMY_DATABASE_URI='sqlite:///'+str(service.path.resolve()),SQLALCHEMY_TRACK_MODIFICATIONS=False)
@@ -119,8 +124,9 @@ class UpstreamAdapter:
 
     def legacy_worker(self):
         """Actual guarded upstream class; ASR app cannot start its scheduler."""
+        from .prepare_upstream import verify_worker_patch
+        verify_worker_patch(self.checkout)
         source=self.checkout/'w2s_research/web_ui/backend/worker.py'
-        if 'ASR mode disables the legacy experiment worker' not in source.read_text():raise ValueError('worker_guard_patch_required')
         # Bind its absolute models import to the same actual mapped classes.
         sys.modules['w2s_research.web_ui.backend.models']=self.models
         spec=importlib.util.spec_from_file_location('asr_guarded_legacy_worker_'+str(id(self)),source)
