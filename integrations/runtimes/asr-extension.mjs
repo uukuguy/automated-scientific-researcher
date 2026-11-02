@@ -8,6 +8,12 @@ export default function(pi) {
   const endpoint = process.env.ASR_BRIDGE_URL;
   const token = process.env.ASR_BRIDGE_TOKEN;
   const fatal = () => process.exit(75);
+  let declaredSkills=[];
+  try {
+    declaredSkills=process.env.ASR_SKILL_PATHS ? JSON.parse(process.env.ASR_SKILL_PATHS) : (process.env.ASR_SKILL_PATH ? [process.env.ASR_SKILL_PATH] : []);
+    if(!Array.isArray(declaredSkills)||declaredSkills.length>32||declaredSkills.some(path=>typeof path!=='string'||!path.startsWith('/'))||new Set(declaredSkills).size!==declaredSkills.length) fatal();
+  } catch { fatal(); }
+  const skillPaths=new Set(declaredSkills);
   const watchdog=setTimeout(() => {
     if(process.env.ASR_OWNED_PROCESS_GROUP==='1') process.kill(-process.pid,'SIGKILL');
     else fatal();
@@ -37,7 +43,9 @@ export default function(pi) {
       await bridge('permit', {kind:'tool_execution'}, event.toolCallId);
       if(event.toolName!=='asr') {
         try { const input=event.input.path || '.';
-          const safe=(event.toolName==='read' && input===process.env.ASR_SKILL_PATH) ? process.env.ASR_SKILL_PATH : workspacePath(process.env.ASR_WORKSPACE,input,event.toolName); event.input.path=safe; return; }
+          const safe=(event.toolName==='read' && skillPaths.has(input)) ? input : workspacePath(process.env.ASR_WORKSPACE,input,event.toolName);
+          if(event.toolName!=='read' && skillPaths.has(safe)) throw new Error('Frozen skills are read-only');
+          event.input.path=safe; return; }
         catch { return {block:true,reason:'Only ordinary ASCII paths inside the research workspace are allowed; symlinks and metadata paths are forbidden.'}; }
       }
     } catch { fatal(); }

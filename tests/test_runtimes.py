@@ -110,10 +110,12 @@ class CapabilityPackTests(unittest.TestCase):
     def fixture(self, root):
         import shutil
         source=Path('integrations/runtimes')
-        target=root/'skills'/'scientific-reasoning'/'SKILL.md';target.parent.mkdir(parents=True)
-        shutil.copyfile(source/'skills'/'scientific-reasoning'/'SKILL.md',target)
+        pack=json.loads((source/'capabilities.json').read_text())
+        for skill in pack['skills']:
+            target=root/skill['path'];target.parent.mkdir(parents=True,exist_ok=True)
+            shutil.copyfile(source/skill['path'],target)
         manifest=root/'capabilities.json';shutil.copyfile(source/'capabilities.json',manifest)
-        return manifest,target
+        return manifest,root/pack['skills'][0]['path']
 
     def test_changed_skill_is_rejected_before_any_pi_process(self):
         from unittest.mock import patch
