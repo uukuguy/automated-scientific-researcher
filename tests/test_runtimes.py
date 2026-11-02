@@ -102,3 +102,41 @@ class OrphanDeadlineTests(unittest.TestCase):
         p=subprocess.Popen(['node','--input-type=module','-e',code],env=env,start_new_session=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
         p.communicate(timeout=3)
         self.assertEqual(p.returncode,-9)
+
+class CapabilityPackTests(unittest.TestCase):
+    def fixture(self, root):
+        import shutil
+        source=Path('integrations/runtimes')
+        target=root/'skills'/'scientific-reasoning'/'SKILL.md';target.parent.mkdir(parents=True)
+        shutil.copyfile(source/'skills'/'scientific-reasoning'/'SKILL.md',target)
+        manifest=root/'capabilities.json';shutil.copyfile(source/'capabilities.json',manifest)
+        return manifest,target
+
+    def test_changed_skill_is_rejected_before_any_pi_process(self):
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as d:
+            manifest,skill=self.fixture(Path(d));skill.write_text('tampered skill')
+            runtime=PiRuntime(model='test',capabilities_path=manifest)
+            with patch('integrations.runtimes.pi.subprocess.check_output') as version,patch('integrations.runtimes.pi.subprocess.Popen') as spawn:
+                with self.assertRaisesRegex(RuntimeFailure,'skill_hash_mismatch'):
+                    runtime.run(workspace=Path(d),config_dir=Path(d),session_id='run1',prompt='test',limits=Limits(1,1,1),bridge_url='http://localhost:1',bridge_token='test')
+                version.assert_not_called();spawn.assert_not_called()
+
+    def test_changed_version_or_skill_path_is_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            manifest,skill=self.fixture(Path(d));original=json.loads(manifest.read_text())
+            for changed in ('version','path'):
+                body=json.loads(json.dumps(original))
+                if changed=='version':body['runtime_version']='unexpected'
+                else:body['skills'][0]['path']='../../outside.md'
+                manifest.write_text(json.dumps(body))
+                with self.assertRaises(RuntimeFailure):PiRuntime(model='test',capabilities_path=manifest).preflight_capabilities()
+
+    def test_verified_manifest_hash_is_recorded_in_result(self):
+        import hashlib
+        with tempfile.TemporaryDirectory() as d:
+            manifest,skill=self.fixture(Path(d))
+            helper=RuntimeTests()
+            exe=helper.fake(d,[{'type':'agent_settled'}])
+            result=PiRuntime(model='test',executable=exe,capabilities_path=manifest).run(workspace=Path(d),config_dir=Path(d),session_id='run1',prompt='test',limits=Limits(1,1,1),bridge_url='http://localhost:1',bridge_token='test')
+            self.assertEqual(result['capability_pack_sha256'],hashlib.sha256(manifest.read_bytes()).hexdigest())

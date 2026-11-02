@@ -1,10 +1,11 @@
-"""Replaceable subscription runtime using pi 1.0.0's documented JSONL RPC.
+"""Replaceable subscription runtime using pi 1.5.0's documented JSONL RPC.
 
 This adapter owns one bounded session, never a research scheduler. OS isolation
 for arbitrary coding tools belongs to the execution supervisor, not this module.
 """
 from dataclasses import dataclass
 import json
+import hashlib
 import math
 import os
 from pathlib import Path
@@ -54,33 +55,72 @@ def prepare_oauth(source: Path, config_dir: Path):
 class PiRuntime:
     provider='openai-codex'
 
-    def __init__(self, *, executable='pi', model, thinking='high', expected_version='1.5.0'):
+    def __init__(self, *, executable='pi', model, thinking='high', expected_version='1.5.0', capabilities_path=None):
         if not isinstance(model,str) or not model or ':' in model or '/' in model:
             raise ValueError('explicit_codex_model_id_required')
         self.executable=executable
         self.model=model
         self.thinking=thinking
         self.expected_version=expected_version
+        self.capabilities_path=Path(capabilities_path or Path(__file__).with_name('capabilities.json'))
+
+    def preflight_capabilities(self):
+        try:
+            raw=self.capabilities_path.read_bytes()
+            pack=json.loads(raw)
+            if not isinstance(pack,dict):raise RuntimeFailure('invalid_capability_pack')
+            if pack.get('schema')!='asr-research-capability-pack/1' or pack.get('runtime_protocol')!='pi-rpc/1':
+                raise RuntimeFailure('capability_pack_schema_mismatch')
+            if pack.get('runtime_version')!=self.expected_version:
+                raise RuntimeFailure('capability_pack_version_mismatch')
+            if pack.get('ambient_resources') is not False:
+                raise RuntimeFailure('ambient_capabilities_forbidden')
+            skills=pack.get('skills',[])
+            if not isinstance(skills,list) or len(skills)!=1 or not isinstance(skills[0],dict) or skills[0].get('id')!='scientific-reasoning/1' or skills[0].get('path')!='skills/scientific-reasoning/SKILL.md':
+                raise RuntimeFailure('capability_skill_path_mismatch')
+            skill_path=self.capabilities_path.parent/skills[0]['path']
+            if any(path.is_symlink() for path in (skill_path,skill_path.parent,skill_path.parent.parent)):
+                raise RuntimeFailure('capability_skill_symlink_forbidden')
+            skill=skill_path.read_bytes()
+            if hashlib.sha256(skill).hexdigest()!=skills[0].get('sha256'):
+                raise RuntimeFailure('capability_skill_hash_mismatch')
+            expected=['pi.read','pi.edit','pi.write','pi.grep','pi.find','pi.ls']
+            if pack.get('coding_tools')!=expected or set(pack.get('tools',[]))!={'asr.state','asr.submit_trial','asr.publish_finding','asr.snapshot','asr.ack_guidance'}:
+                raise RuntimeFailure('capability_tool_inventory_mismatch')
+            return dict(sha256=hashlib.sha256(raw).hexdigest(),pack=pack,skill=skill,skill_sha256=skills[0]['sha256'])
+        except (OSError,ValueError,TypeError,KeyError) as error:
+            raise RuntimeFailure('invalid_capability_pack') from error
 
     def run(self, *, workspace, config_dir, session_id, prompt, limits, bridge_url, bridge_token, on_event=None, should_stop=None,on_process=None,on_launch=None):
         if not re.fullmatch(r'[A-Za-z0-9](?:[A-Za-z0-9_.-]*[A-Za-z0-9])?',session_id):
             raise ValueError('invalid_native_session_id')
+        capabilities=self.preflight_capabilities()
         version=subprocess.check_output([self.executable,'--version'],text=True,timeout=10).strip()
         if version!=self.expected_version: raise RuntimeFailure('runtime_version_mismatch')
         workspace=Path(workspace).resolve(); config_dir=Path(config_dir).resolve()
         sessions=config_dir/'sessions'; sessions.mkdir(exist_ok=True)
         extension=Path(__file__).with_name('asr-extension.mjs').resolve()
+        # Freeze the verified skill bytes so a source edit between preflight and
+        # model read cannot silently change the capability used by this session.
+        skill_dir=config_dir/'capabilities'/capabilities['skill_sha256']
+        skill_dir.mkdir(parents=True,exist_ok=True,mode=0o700)
+        frozen_skill=skill_dir/'SKILL.md'
+        if frozen_skill.exists():
+            if frozen_skill.read_bytes()!=capabilities['skill']: raise RuntimeFailure('frozen_skill_corrupt')
+        else:
+            fd=os.open(frozen_skill,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o400)
+            with os.fdopen(fd,'wb') as stream:stream.write(capabilities['skill'])
         # Allowlist avoids ambient paid credentials and arbitrary shell startup hooks.
         env={k:os.environ[k] for k in ('PATH','HOME','TMPDIR','LANG','LC_ALL','SSL_CERT_FILE','SSL_CERT_DIR','HTTPS_PROXY','HTTP_PROXY','NO_PROXY') if k in os.environ}
         env['GIT_CEILING_DIRECTORIES']=str(workspace.parent)
         env['ASR_WORKSPACE']=str(workspace)
         env['ASR_OWNED_PROCESS_GROUP']='1'
-        env['ASR_SKILL_PATH']=str(Path(__file__).with_name('skills')/'scientific-reasoning'/'SKILL.md')
+        env['ASR_SKILL_PATH']=str(frozen_skill)
         env.update(PI_CODING_AGENT_DIR=str(config_dir),PI_OFFLINE='1',ASR_BRIDGE_URL=bridge_url,ASR_BRIDGE_TOKEN=bridge_token,
                    ASR_MAX_TURNS=str(limits.turns),ASR_MAX_TOOLS=str(limits.tool_executions),ASR_DEADLINE_MS=str(int((time.time()+limits.walltime_seconds)*1000)))
         argv=[self.executable,'--mode','rpc','--provider',self.provider,'--model',self.model,'--thinking',self.thinking,
               '--session-id',session_id,'--session-dir',str(sessions),'--no-extensions','--extension',str(extension),
-              '--no-skills','--skill',str(Path(__file__).with_name('skills')/'scientific-reasoning'/'SKILL.md'),'--no-prompt-templates','--no-context-files','--tools','asr,read,write,edit,grep,find,ls']
+              '--no-skills','--skill',str(frozen_skill),'--no-prompt-templates','--no-context-files','--tools','asr,read,write,edit,grep,find,ls']
         if on_launch: on_launch()
         process=subprocess.Popen(argv,cwd=workspace,env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
         records=queue.Queue(); stderr=[]
@@ -159,6 +199,6 @@ class PiRuntime:
             for stream in (process.stdout,process.stderr): stream.close()
             if process.stdin and not process.stdin.closed: process.stdin.close()
         if process.returncode==75 and status=='interrupted': status='gate_closed'
-        return dict(runtime='pi-rpc/1',runtime_version=version,provider=self.provider,model=self.model,status=status,session=state,
+        return dict(runtime='pi-rpc/1',runtime_version=version,capability_pack_sha256=capabilities['sha256'],capability_pack_id=capabilities['pack']['id'],provider=self.provider,model=self.model,status=status,session=state,
                     native_session_id=session_id,settled=settled,turns=turns,tool_executions=tools,
                     duration_seconds=time.monotonic()-started,assistant_messages=assistant,exit_code=process.returncode)

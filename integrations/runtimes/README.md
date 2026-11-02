@@ -75,3 +75,10 @@ model omitted snapshot paths; that failed call is retained and argument help now
 explains the required paths. Domain toolkit availability is explicit in
 `domain-powergrid.json`; unavailable sampling/novel solver/comparison capabilities
 return unsupported rather than silently using the reference.
+
+Before any pi invocation, preflight enforces the capability schema, runtime
+version, explicit skill ID/path/content hash and native tool inventory. The
+verified skill bytes are frozen under the private runtime directory, and session
+results record `capability_pack_sha256` and `capability_pack_id`. A changed skill,
+manifest version or path fails before spawning pi. Historical acceptance04
+artifacts predate this enforcement and are preserved unchanged.
