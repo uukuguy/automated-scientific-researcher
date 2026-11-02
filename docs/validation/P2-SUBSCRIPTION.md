@@ -80,6 +80,6 @@ preserved; future acceptance metadata is corrected separately.
 Hypothesis revisions and complete subscription-quota accounting are not yet
 first-class services. Independent evaluation isolation, arbitrary candidate
 execution, formal replication and generalization remain outside these measured
-P2 capabilities. Design review is recorded in main design §13.1.
+P2 capabilities. The subsequent accepted requirements are D016 and main design §§6.1,8,9; they do not change this historical acceptance scope.
 
 Final source review rejected forged patch receipts; deterministic pinned-source verification now runs before upstream imports. Parent reran109 combined tests successfully and5 scientific-environment tests successfully. No new model invocation was used for these integrity fixes.

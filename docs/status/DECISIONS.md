@@ -126,3 +126,13 @@
 - Decision: keep MATPOWER/Octave reference and preselect pandapower with NumPy/SciPy, pandas/PyArrow, NetworkX, Matplotlib, Jupyter/ipykernel and pytest in a separate locked environment.
 - Rationale: a common executable scientific base reduces repeated setup and supports reproducible development.
 - Boundary: installed, numerically calibrated and formal-evaluation-approved are distinct states. Optional optimization/learning/dynamic toolchains remain task-specific.
+
+## D016 — Scientific outcomes, hypothesis lineage, evaluator independence and resource ledgers
+
+- Date: 2026-11-02. Status: accepted by user after the four-point assessment.
+- Decision: preserve analyzable failure evidence; separate execution, experiment validity, hypothesis assessment and finding validation. Unsupported is not refuted; invalid experiments cannot establish refutation. Scientific negative results are not infrastructure retries.
+- Decision: immutable Hypothesis revisions bind frozen trials to predictions, scope and criteria. Changed hypotheses/methods retain lineage; findings link supporting, opposing and inconclusive evidence with independent Validation. Post-hoc interpretation is explicit. Runtime sessions are not research identity.
+- Decision: verify execution, frozen-data and mathematical independence separately. Existing independent electrical checks do not establish evaluator isolation.
+- Decision: two logical ledgers for model/subscription use and experimental compute, with one Control authority and atomic admission under project policy. Unknown quota stays unknown; local limits still apply. No automatic paid API fallback; no implicit GPU enforcement or per-step approvals.
+- Rationale: prevent retry-driven success narratives, self-grading, loss of scientific history across runtimes and hidden cost transfers.
+- Supersedes: the proposed status of main design former §13.1. Current requirements live in §§6.1,8,9; detailed mechanisms and tests belong to P3. P2's historical measured acceptance is unchanged.

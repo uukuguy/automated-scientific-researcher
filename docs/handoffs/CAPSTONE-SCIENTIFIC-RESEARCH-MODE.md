@@ -181,8 +181,14 @@ ASR 同步承担：数值环境与真实试验、AAR 适配、科研服务协议
 
 ## 变量配置准备补充
 
-ASR 已提供 `contracts/variable-policy.schema.json` 与 `contracts/examples/research-variables.json`，可用于 Capstone 表单/模拟适配。语义与限制见 [变量策略说明](../../contracts/README.md)。这是完整研究契约的子 schema，尚不具备预算、引用或执行授权；没有可调用的公共 ASR API。发布与切换的进程内核心已测试，但实际跨项目运行控制尚待集成。
+ASR 已提供 `contracts/variable-policy.schema.json` 与 `contracts/examples/research-variables.json`，可用于 Capstone 表单/模拟适配。语义与限制见 [变量策略说明](../../contracts/README.md)。这是完整研究契约的子 schema，尚不具备预算、引用或执行授权；本机认证控制 API 已实现（见 asr_service/README.md），实际跨项目运行控制尚待联调。
 
 ### Subscription-first runtime alignment (2026-11-02)
 
 Researcher runtimes are replaceable; pi with Codex subscription is the lightweight baseline. Claude SDK is no longer mandatory. AAR remains the research organization adapter, ASR owns durable run/trial/evidence IDs. Runtime credentials stay outside candidate execution and persisted event payloads. Explicit subscription mode has no automatic paid API fallback; quota limits pause new work and preserve recovery. Provider support is verified individually.
+
+### Scientific trust alignment — D016 (2026-11-02)
+
+Accepted ASR requirements: distinguish execution, experiment validity, hypothesis assessment and finding validation; expose immutable hypothesis revisions and supporting/opposing/inconclusive evidence; keep research identity separate from runtime sessions. Display model/subscription and experimental-compute budgets separately, including unknown quota. Never promote an author claim to formal validation or merge scientific negative results into automatic error retries.
+
+These are P3 implementation targets, not currently available wire fields. Capstone should prepare projections and align versioned protocol changes when ASR schemas land; no duplicate authoritative hypothesis or budget ledger. This update is prepared in ASR only, not evidence of delivery, acceptance or implementation in Capstone.
