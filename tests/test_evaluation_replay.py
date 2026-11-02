@@ -207,4 +207,3 @@ class RealDockerReplayTests(unittest.TestCase):
             self.assertEqual(timed['execution_status'], 'timed_out')
             self.assertTrue(timed['execution_exited'])
             self.assertIsNone(timed['result'])
-
