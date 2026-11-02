@@ -341,3 +341,7 @@ kind 集合：`create_project`、`validate_contract`、`publish_contract`、`app
 `asr_service/admission.py` 已提供本地准入准备事务：核对显式 policy ID/revision 和项目引用，原子保存 trial/attempt 身份、预算束和事件；重复请求复用身份。必填可信 owner_gate 承担认证、外部运行门控、完整契约和产物/能力检查，当前没有真实适配。queued 记录仅为准备意图，无领取/派发/租约；不得用于真实执行授权。
 
 本地准入准备接口将必填 `authorize` 与 `owner_gate` 分开：每次请求先校验访问权限；已受理的相同请求直接返回原回执，新请求才检查运行门控。暂停后恢复丢失响应不会创建新试验或再次预留预算。两种回调仍需真实服务适配。
+
+### Subscription-first runtime alignment (2026-11-02)
+
+Researcher runtimes are replaceable; pi with Codex subscription is the lightweight baseline. Claude SDK is no longer mandatory. AAR remains the research organization adapter, ASR owns durable run/trial/evidence IDs. Runtime credentials stay outside candidate execution and persisted event payloads. Explicit subscription mode has no automatic paid API fallback; quota limits pause new work and preserve recovery. Provider support is verified individually.

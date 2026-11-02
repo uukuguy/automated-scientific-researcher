@@ -1,34 +1,11 @@
 # Live Session Checkpoint
 
-> Updated: 2026-11-02 20:20 (Asia/Shanghai). **Session remains active — not a final handoff.**
+> Updated: 2026-11-02 21:49 (Asia/Shanghai). Session remains active — not a final handoff.
 
-## Current intent
+P2 remains active. User explicitly requested complete-package progress, not repeated small-slice stops. User confirmed replaceable subscription-first coding-agent runtimes and pi baseline; this supersedes fixed Claude SDK recommendation (D012).
 
-User asked to continue while keeping PROJECT-DESIGN, AGENTS and README aligned. Completed P1 local numerical acceptance and updated main design to 0.7, detailed design to 0.2 and Capstone handoff to 0.3. Main design remains the canonical entry.
+Control and supervisor implementations committed (aaf99e0, d9eb0f0, 6883158). Local HTTP bearer ACL, reference-profile contracts, atomic admission and budgets, durable commands/findings, fenced execution and reconciliation exist. Real Docker baseline/truncated/timeout/interrupted recovery evidence is under data/p2-supervisor-reference-20261102. Full runtime-neutral integration review is ongoing.
 
-## Confirmed scope
+pi1.0.0 installed; local auth metadata confirms openai-codex OAuth without revealing secrets. Runtime worker implements curated pi RPC adapter and ASR tools; no model call yet. Authorized bounded subscription acceptance plan: 120 seconds, 12 provider turns, 20 tools, 2 numerical attempts. No paid API fallback. Parent must verify actual model-driven hypothesis/trial/finding and persistent recovery before P2 closure.
 
-- Durable research infrastructure, with power-grid sampling and solver methods both open research variables.
-- Human-controlled contracts, evaluation and budgets; Capstone is the accepted human workbench, AAR the initial researcher.
-- OrbStack Docker/Compose without an extra VM; no paid model run without configured authorized budget.
-
-## Work state
-
-- Managed ledger: docs/plans/WORKLIST.md. P1 complete, P2 active. Implementation committed as 70195b5; subsequent P2 changes and state refresh are tracked by the journal.
-- powerflow_lab now contains independent Python electrical checks, local immutable evidence runner and fixed reference CLI.
-- 28 tests passed on Python 3.12.12. Real case118: 4 NR iterations, residual 3.935784299266862e-13 p.u.; six Q-limit violations and 186 unassessed branch thermal limits.
-- Duplicate request reuses attempt; fresh trial replay produced identical solutions. One-iteration solve was retained as nonconverged; 0.001-second timeout removed its container.
-- Evidence: docs/validation/P1-NUMERICAL-LAB.md and P1-REFERENCE-RESULTS.json; raw immutable artifacts under ignored data/trials/.
-- Execution environment identity is in configs/numerical-environment.json. Local final image: sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831. APT rebuild is not snapshot-pinned; rebuild requires a new record and revalidation.
-- Complete archive: .cache/matpower-8.1.container.tar.gz (hash in config). Older matpower-8.1.tar.gz and matpower-8.1.complete.tar.gz are partial failed downloads; do not use.
-- AAR revision and selected file hashes in integrations/aar/upstream.json. No root license file was found; check terms before redistributing adapted upstream. No upstream changes or runtime launches occurred.
-- No research process or experiment container remains from this task. Docker images and ignored evidence are retained.
-- Capstone source was not modified. Its preparation lane remains independent; no downstream completion inferred.
-
-## Immediate next action
-
-P2 variable-policy slice is implemented: JSON Schema, default resolution, scope/role checks, immutable revision publication, optimistic activation and transactional events; 10 new tests, 38 total. Main design is now 0.8. Next implement complete problem/evaluation reference and budget admission, plus authenticated command envelopes, before connecting AAR or exposing HTTP. Preserve original trial IDs and evidence when attaching the local executor. No paid AAR session until budget and credentials are explicitly configured.
-
-## Limits to preserve
-
-Local runner is trusted reference-only, with no runtime disk quota, database budget ledger or public API. Unknown pending execution blocks automatic retry; generalized reconciliation is future work. P3 independent identity/evaluation isolation has not passed. Fixed-PV/PQ calibration is not a restriction on candidate research or a formal OOD protocol.
+In flight: runtime adapter implementation; control/supervisor review. Shared design/readme/instructions are being reconciled by parent; preserve all working changes. Snapshot/reference backend does not support arbitrary candidate implementations yet. Cross-project Capstone integration and independent evaluation isolation remain unverified.

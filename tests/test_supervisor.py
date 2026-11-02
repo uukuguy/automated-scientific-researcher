@@ -135,3 +135,34 @@ class SupervisorExecutionTests(ExecutionStoreTests):
         with sqlite3.connect(self.path) as db:
             db.execute('INSERT INTO asr_dispatch VALUES (?,?,?,?,?,?,?)',('d2','p','r','t2','b','queued','{}'))
         with self.assertRaises(LeaseError): self.store.claim('b','two')
+
+    def test_stop_receipt_waits_for_runtime_exit_and_replay_updates(self):
+        claimed=self.store.claim('a','owner')
+        with sqlite3.connect(self.path) as db:
+            db.executescript('CREATE TABLE asr_runtime_sessions(project,run,session_id,state,record); CREATE TABLE asr_commands(project,run,command_id PRIMARY KEY,record); CREATE TABLE asr_requests(project,scope,request_key,payload,record);')
+            db.execute('INSERT INTO asr_runtime_sessions VALUES (?,?,?,?,?)',('p','r','s','active','{}'))
+            receipt={'command_id':'stop1','kind':'stop','status':'pending','payload':{}}
+            db.execute('INSERT INTO asr_commands VALUES (?,?,?,?)',('p','r','stop1',json.dumps(receipt)))
+            db.execute('INSERT INTO asr_requests VALUES (?,?,?,?,?)',('p','command:r','key','[]',json.dumps(receipt)))
+            db.execute('UPDATE asr_runs SET record=?',(json.dumps({'state':'stopping','admission_open':False}),))
+        self.store.report('a',claimed['epoch'],'owner',{'execution_exited':True,'status':'cancelled','manifest_hash':'abc','usage':{'execution_ms':5}})
+        with sqlite3.connect(self.path) as db:
+            self.assertEqual(json.loads(db.execute('SELECT record FROM asr_runs').fetchone()[0])['state'],'stopping')
+            self.assertEqual(json.loads(db.execute('SELECT record FROM asr_commands').fetchone()[0])['status'],'pending')
+            db.execute("UPDATE asr_runtime_sessions SET state='exited'")
+            ExecutionStore.finalize_controls_in_transaction(db,'p','r')
+            self.assertEqual(json.loads(db.execute('SELECT record FROM asr_runs').fetchone()[0])['state'],'stopped')
+            self.assertEqual(json.loads(db.execute('SELECT record FROM asr_commands').fetchone()[0])['status'],'applied')
+            self.assertEqual(json.loads(db.execute('SELECT record FROM asr_requests').fetchone()[0])['status'],'applied')
+
+    def test_cancel_completion_race_receipt_reports_real_outcome(self):
+        claimed=self.store.claim('a','owner')
+        with sqlite3.connect(self.path) as db:
+            db.execute('CREATE TABLE asr_commands(project,run,command_id PRIMARY KEY,record)')
+            receipt={'command_id':'cancel1','kind':'cancel_trial','status':'pending','payload':{'trial_id':'t'}}
+            db.execute('INSERT INTO asr_commands VALUES (?,?,?,?)',('p','r','cancel1',json.dumps(receipt)))
+        self.store.report('a',claimed['epoch'],'owner',{'execution_exited':True,'status':'succeeded','manifest_hash':'abc','usage':{'execution_ms':5}})
+        with sqlite3.connect(self.path) as db:
+            receipt=json.loads(db.execute('SELECT record FROM asr_commands').fetchone()[0])
+        self.assertEqual(receipt['status'],'applied')
+        self.assertEqual(receipt['effective_outcome'],'succeeded')

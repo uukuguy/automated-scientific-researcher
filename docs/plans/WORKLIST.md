@@ -52,3 +52,5 @@ The accepted architecture is detailed in [Minimum-loop design](../architecture/A
 - P2 local admission preparation: atomic policy/reference checks, trial identities, budget bundle and event; 50 combined tests pass. Owner gate remains an unintegrated trusted callback; no real admission API or dispatch.
 
 - P2 recovery correction: authorized replay survives closed admission gates; unauthorized replay and new paused submissions are rejected. 51 combined tests pass.
+
+- P2 runtime direction: user accepted subscription-first replaceable coding agents and pi lightweight baseline; actual subscription-backed scientific trajectory remains required.

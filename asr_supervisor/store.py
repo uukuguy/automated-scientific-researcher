@@ -174,7 +174,56 @@ class ExecutionStore(PolicyStore):
             self._event(db,r,'artifact_published')
             self._event(db,r,'budget_updated')
             db.execute('UPDATE asr_dispatch SET state=? WHERE id=?',(report['status'],r['dispatch_id']))
+            self.finalize_controls_in_transaction(db,r['project'],r['run'])
             return r
+
+    @staticmethod
+    def finalize_controls_in_transaction(db, project, run_id):
+        """Finish receipts only from reconciled execution facts in this transaction.
+
+        A research runtime is independent of numerical attempts. An uncertain
+        runtime keeps a stop/finish pending even after every trial has exited.
+        """
+        terminal={'succeeded','failed','cancelled','timed_out','interrupted'}
+        states=dict(db.execute('SELECT trial,state FROM asr_dispatch WHERE project=? AND run=?',(project,run_id)))
+        tables={row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        runtime_active=False
+        if 'asr_runtime_sessions' in tables:
+            runtime_active=db.execute("SELECT 1 FROM asr_runtime_sessions WHERE project=? AND run=? AND state!='exited' LIMIT 1",(project,run_id)).fetchone() is not None
+        all_exited=not runtime_active and all(state in terminal for state in states.values())
+        row=db.execute('SELECT record FROM asr_runs WHERE project=? AND run=?',(project,run_id)).fetchone()
+        if row is None: return
+        run=json.loads(row[0])
+        target={'stopping':'stopped','finishing':'completed'}.get(run['state'])
+        if target and all_exited:
+            run.update(state=target,admission_open=False)
+            db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(run),project,run_id))
+            db.execute('INSERT INTO asr_events(project,run,record) VALUES (?,?,?)',
+                       (project,run_id,encoded(dict(type='run_state_changed',state=target,created_at=datetime.now(timezone.utc).isoformat()))))
+        if 'asr_commands' not in tables: return
+        for command_id,body in db.execute('SELECT command_id,record FROM asr_commands WHERE project=? AND run=?',(project,run_id)).fetchall():
+            receipt=json.loads(body)
+            if receipt.get('status')!='pending': continue
+            kind=receipt.get('kind')
+            outcome=None
+            if kind=='cancel_trial':
+                outcome=states.get(receipt.get('payload',{}).get('trial_id'))
+                if outcome not in terminal: continue
+            elif kind in ('stop','finish'):
+                expected='stopped' if kind=='stop' else 'completed'
+                if not all_exited or run['state']!=expected: continue
+                outcome=expected
+            else: continue
+            receipt.update(status='applied',effective_outcome=outcome)
+            db.execute('UPDATE asr_commands SET record=? WHERE command_id=?',(encoded(receipt),command_id))
+            # Idempotent request replay returns the current receipt, not the
+            # original pending snapshot from before process reconciliation.
+            if 'asr_requests' in tables:
+                for rowid,cached in db.execute('SELECT rowid,record FROM asr_requests WHERE project=? AND scope=?',(project,'command:'+run_id)).fetchall():
+                    if json.loads(cached).get('command_id')==command_id:
+                        db.execute('UPDATE asr_requests SET record=? WHERE rowid=?',(encoded(receipt),rowid))
+            db.execute('INSERT INTO asr_events(project,run,record) VALUES (?,?,?)',
+                       (project,run_id,encoded(dict(type='command_updated',command_id=command_id,status='applied',effective_outcome=outcome,created_at=datetime.now(timezone.utc).isoformat()))))
 
     def reservations(self, record):
         with self._connect() as db:

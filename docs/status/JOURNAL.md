@@ -35,3 +35,21 @@
 - 20:22 Committed verified reference trials and evidence to establish the numerical foundation for AAR integration. [70195b5]
 - 20:24 Refreshed structural snapshot for P2 focus, implementation entrypoints and unresolved integration boundaries.
 - 20:39 Implemented variable-policy validation and immutable SQLite revisions/bindings; 38 tests passed; full execution admission remains pending.
+- 20:40 Committed variable-policy validation and revision storage to establish shared contract semantics for Capstone and AAR. [afb8c83]
+- 20:53 User approved final session handoff; saved RESUME with P2 active, verified evidence and next admission/authentication work.
+
+- 21:01 Verified local budget concurrency, durable reservations, settlement and overrun accounting; combined suite passed 42 tests.
+- 21:01 Added durable budget reservations and settlement to prevent concurrent project overspending. [baef852]
+- 21:16 Verified atomic budget bundles, exact replay and shared transaction rollback; combined suite passed 44 tests.
+- 21:16 Added atomic budget bundles to support future transactional trial admission. [ba9c8e0]
+- 21:19 Verified scoped immutable metadata references and corruption rejection; combined suite passed 47 tests.
+- 21:19 Added frozen scoped metadata references to support future contract admission. [f1f0266]
+- 21:26 Verified atomic local admission preparation, rejection rollback and replay identity; combined suite passed 50 tests.
+- 21:26 Added atomic trial preparation to keep identities, budgets and events consistent. [6a2b5df]
+- 21:27 Separated replay authorization from admission gating; paused recovery regression and all 51 tests passed.
+- 21:28 Preserved authorized request replay after pause to recover lost responses without new reservations. [6f2bfd0]
+
+- 21:44 Added fenced supervision and conservative reconciliation to preserve execution identity, evidence and failure costs. [d9eb0f0]
+- 21:46 User accepted replaceable subscription-first runtimes and pi baseline; superseded fixed Claude SDK recommendation.
+- 21:49 Authenticated control adds durable admission, commands and evidence-linked findings for runtime-neutral execution. [aaf99e0]
+- 21:49 Subscription policies add finite turn/tool permits and quota gates without silent paid API fallback. [6883158]

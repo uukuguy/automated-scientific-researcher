@@ -97,3 +97,11 @@
 - Baseline is equation-valid but has six reactive-limit violations and 186 unassessed thermal limits. It is not claimed operationally feasible.
 - Fixed image identity and package inventory support local execution replay; APT rebuild sources are not snapshot-pinned. Local file-lock evidence runner is not the future database admission/budget service.
 - P1 reference acceptance is complete; P2 is active. Candidate methods remain open, and unsupported operating policies require explicit adapters and validation.
+
+## D012 — Replaceable subscription-first researcher runtimes
+
+- Date: 2026-11-02. Status: accepted by user.
+- Decision: use replaceable coding-agent runtimes, primarily subscription authentication; add pi as lightweight baseline with Codex subscription support to verify locally.
+- Rationale: long-running API research costs are unsuitable as the default; user owns top-tier Claude/GPT/Grok subscriptions.
+- Boundary: preserve AAR research organization and ASR authoritative contracts/evidence; runtime session IDs remain separate. No silent paid API fallback. Subscription support must be verified per runtime/provider; unknown quota is not unlimited.
+- Supersedes: main design fixed-Claude-SDK initial implementation recommendation.

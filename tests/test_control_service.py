@@ -115,30 +115,46 @@ class ControlTests(unittest.TestCase):
         self.assertEqual(published['revision'],2)
         self.assertEqual(self.service.get_run('agent-secret','p','r')['contract']['document']['runtime_policy']['billing_mode'],'subscription')
 
-    def test_elapsed_walltime_overrun_is_retained_and_closes_admission(self):
-        from datetime import datetime,timedelta,timezone
+    def test_runtime_reserves_walltime_exclusively_and_settles_only_after_exit(self):
         self.start()
-        with self.service._connect() as db:
-            row=self.service._run(db,'p','r')
-            row['created_at']=(datetime.now(timezone.utc)-timedelta(hours=2)).isoformat()
-            db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(json.dumps(row),'p','r'))
-        with self.assertRaisesRegex(ValueError,'budget_exhausted'):
-            self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='late')
-        balance=self.service.budgets.balance('p','research_walltime_ms')
-        self.assertGreater(balance['spent'],balance['limit'])
-        self.assertFalse(self.service.get_run('human-secret','p','r')['admission_open'])
+        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='session')
+        with self.assertRaisesRegex(ValueError,'runtime_already_active'):
+            self.service.claim_runtime('human-secret','p','r','other',idempotency_key='other')
+        self.assertEqual(self.service.budgets.balance('p','research_walltime_ms')['reserved'],3600000)
+        self.assertTrue(self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='session')['replayed'])
+        with self.assertRaisesRegex(ValueError,'execution_not_reconciled'):
+            self.service.release_runtime('human-secret','p','r',session['session_id'],session['epoch'],'worker',execution_exited=False,actual_walltime_ms=500)
+        self.service.release_runtime('human-secret','p','r',session['session_id'],session['epoch'],'worker',execution_exited=True,actual_walltime_ms=500)
+        self.assertEqual(self.service.budgets.balance('p','research_walltime_ms')['spent'],500)
+        self.assertEqual(self.service.budgets.balance('p','research_walltime_ms')['reserved'],0)
 
     def test_subscription_quota_and_runtime_activity_admission(self):
         self.start()
-        permit=self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='turn1')
+        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='session')
+        identity=dict(session_id=session['session_id'],epoch=session['epoch'],owner='worker')
+        permit=self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='turn1',**identity)
         self.assertEqual(permit['kind'],'turn')
-        self.assertEqual(self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='turn1'),permit)
+        self.assertEqual(self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='turn1',**identity),permit)
         self.assertEqual(self.service.budgets.balance('p','turns')['spent'],1)
         self.service.command('human-secret','p','r','quota',expected_revision=1,idempotency_key='quota',payload={'state':'exhausted'})
         with self.assertRaisesRegex(ValueError,'admission_closed'):self.submit()
         with self.assertRaisesRegex(ValueError,'admission_closed'):
-            self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='turn2')
-        self.assertEqual(self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='turn1'),permit)
+            self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='turn2',**identity)
+        self.assertEqual(self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='turn1',**identity),permit)
+
+    def test_unsupported_effective_defaults_cannot_be_ignored(self):
+        bad=copy.deepcopy(self.contract)
+        bad['variable_policy']['variables']['load_scale']={'type':'number','unit':'ratio','default':2,'mode':'fixed','scope':'project','modifiable_by':['human']}
+        with self.assertRaisesRegex(ValueError,'capability_unavailable'):
+            self.service.publish_contract('human-secret','p','c',bad,expected_revision=0,idempotency_key='bad')
+
+    def test_stop_cancels_unstarted_work_and_settles_only_unstarted_cost(self):
+        self.start();self.submit()
+        receipt=self.service.command('human-secret','p','r','stop',expected_revision=1,idempotency_key='stop')
+        self.assertEqual(receipt['status'],'applied')
+        self.assertEqual(self.service.get_run('human-secret','p','r')['state'],'stopped')
+        self.assertEqual(self.service.budgets.balance('p','attempts')['reserved'],0)
+        self.assertEqual(self.service.budgets.balance('p','attempts')['spent'],0)
 
     def test_guidance_receipt_and_contract_switch_freeze_trials(self):
         self.start(); trial=self.submit()
@@ -185,10 +201,19 @@ class FindingsTests(unittest.TestCase):
         from asr_supervisor.store import ExecutionStore
         execution=ExecutionStore(self.service.path)
         claimed=execution.claim(trial['execution_attempt_id'],'worker')
-        execution.report(trial['execution_attempt_id'],claimed['epoch'],'worker',{'execution_exited':True,'status':'failed','manifest_hash':'a'*64,'usage':{'attempts':1,'execution_ms':10}})
+        from powerflow_lab.runner import _inventory,digest
+        evidence=Path(self.tmp.name)/'evidence';evidence.mkdir()
+        (evidence/'log.txt').write_text('negative result')
+        manifest={'trial_id':trial['trial_id'],'execution_attempt_id':trial['execution_attempt_id'],'status':'failed','artifacts':_inventory(evidence)}
+        (evidence/'manifest.json').write_text(json.dumps(manifest))
+        execution.report(trial['execution_attempt_id'],claimed['epoch'],'worker',{'execution_exited':True,'status':'failed','manifest_hash':digest(evidence/'manifest.json'),'evidence_path':str(evidence),'usage':{'attempts':1,'execution_ms':10}})
         finding=self.service.publish_finding('agent-secret','p','r',**kwargs)
         self.assertEqual(finding['status'],'candidate')
         self.assertEqual(self.service.publish_finding('agent-secret','p','r',**kwargs),finding)
         self.assertEqual(self.service.findings('agent-secret','p','r'),[finding])
+        (evidence/'log.txt').write_text('tampered')
+        kwargs.update(finding_id='f2',idempotency_key='finding2')
+        with self.assertRaisesRegex(ValueError,'evidence_unavailable'):
+            self.service.publish_finding('agent-secret','p','r',**kwargs)
 
 if __name__ == '__main__': unittest.main()

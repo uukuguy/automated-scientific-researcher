@@ -8,12 +8,12 @@ solver methods, including new methods and combinations. The user controls the
 research question, permitted changes, evaluation rules and resource budget.
 
 The repository has a verified local MATPOWER/Octave reference runner, independent
-Python electrical checks and immutable trial evidence. It has no operational ASR
-control API or integrated AAR loop yet. Variable-policy validation and local SQLite
-revision/binding primitives exist in `asr_service/contracts.py`; they are not full
-contract admission or authentication. Local project budget reservations and settlement
-exist in `asr_service/budgets.py`; execution reconciliation and admission integration
-remain unimplemented. Use `uv sync --locked` and `uv run python -m
+Python electrical checks and immutable trial evidence. Local authenticated control
+and a fenced execution supervisor support the pinned reference profile, durable
+commands, budgets and recovery. The model-driven researcher loop remains under
+integration; do not claim P2 complete without actual subscription-backed execution.
+Researcher runtimes are replaceable and subscription-first; pi is the lightweight
+baseline. Paid API fallback requires separate explicit authorization. Use `uv sync --locked` and `uv run python -m
 unittest discover -s tests -v` for the combined suite. The fixed-PV/PQ baseline is a calibration
 profile, not a restriction on candidate-method research. See
 `docs/validation/P1-NUMERICAL-LAB.md` for evidence and limits. Check the worklist
