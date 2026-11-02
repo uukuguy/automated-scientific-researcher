@@ -50,3 +50,5 @@ The accepted architecture is detailed in [Minimum-loop design](../architecture/A
 - P2 reference preparation: immutable project/kind-scoped JSON metadata registry with read-time hash verification; 47 combined tests pass. No external artifact or complete-contract admission claim.
 
 - P2 local admission preparation: atomic policy/reference checks, trial identities, budget bundle and event; 50 combined tests pass. Owner gate remains an unintegrated trusted callback; no real admission API or dispatch.
+
+- P2 recovery correction: authorized replay survives closed admission gates; unauthorized replay and new paused submissions are rejected. 51 combined tests pass.

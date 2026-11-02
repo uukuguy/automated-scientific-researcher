@@ -27,7 +27,8 @@ class AdmissionTests(unittest.TestCase):
 
     def submit(self, key='request', **changes):
         args = dict(project='p', run='run', request_key=key, policy_id='policy', policy_revision=1,
-                    references=self.refs, requested_budget={'cpu_ms': 60}, owner_gate=self.gate)
+                    references=self.refs, requested_budget={'cpu_ms': 60}, owner_gate=self.gate,
+                    authorize=lambda *args: True)
         args.update(changes)
         return self.store.admit(**args)
 
@@ -57,3 +58,12 @@ class AdmissionTests(unittest.TestCase):
         recovered = AdmissionStore(self.path)
         self.assertEqual(recovered.pending('p'), [first])
         self.assertEqual(self.budgets.balance('p', 'cpu_ms')['reserved'], 60)
+
+    def test_replay_after_pause_requires_authorization_but_not_open_gate(self):
+        first = self.submit()
+        self.gate = lambda *args: False
+        self.assertEqual(self.submit(authorize=lambda *args: True), first)
+        with self.assertRaises(AdmissionError):
+            self.submit('new', authorize=lambda *args: True)
+        with self.assertRaises(AdmissionError):
+            self.submit(authorize=lambda *args: False)

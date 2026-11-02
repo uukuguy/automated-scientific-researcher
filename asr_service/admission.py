@@ -1,6 +1,7 @@
 """Local transactional admission preparation, not a public execution service.
 
-The trusted owner_gate must authenticate/authorize the caller, verify the
+The trusted authorize callback checks caller access on every request.
+The owner_gate must verify the
 external run's active/open/healthy state, assets, full contract and supported
 capabilities using the supplied transaction. No default gate is provided.
 This module creates no research runs, starts no processes and grants no leases.
@@ -33,7 +34,7 @@ class AdmissionStore(PolicyStore):
             ''')
 
     def admit(self, *, project, run, request_key, policy_id, policy_revision, references,
-              requested_budget, owner_gate):
+              requested_budget, owner_gate, authorize):
         self._identity(project, run, request_key, policy_id)
         self._revision(policy_revision)
         if type(references) is not dict or set(references) != {
@@ -43,14 +44,16 @@ class AdmissionStore(PolicyStore):
         with self._connect() as db:
             db.execute('BEGIN IMMEDIATE')
             # Authorization is also required for replays to avoid data leaks.
-            if owner_gate(db, project, run) is not True:
-                raise AdmissionError('owner_gate_rejected')
+            if authorize(db, project, run) is not True:
+                raise AdmissionError('forbidden')
             prior = db.execute('SELECT payload,record FROM asr_admission_requests WHERE project=? AND run=? AND request_key=?',
                                (project, run, request_key)).fetchone()
             if prior:
                 if prior[0] != payload:
                     raise AdmissionError('idempotency_conflict')
                 return json.loads(prior[1])
+            if owner_gate(db, project, run) is not True:
+                raise AdmissionError('owner_gate_rejected')
             row = db.execute('SELECT record FROM asr_policy_bindings WHERE project=? AND run_id=?',
                              (project, run)).fetchone()
             if row is None:
