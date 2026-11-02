@@ -84,7 +84,10 @@ as actual cost. Limits are project-wide; creating another run does not reset
 consumption. Required finite budget dimensions are `attempts`, `execution_ms`,
 `research_walltime_ms`, `turns` and `tool_executions`. The runtime supervisor
 first calls `claim_runtime` (HTTP POST `runs/{run}/runtime/claim`) with an owner
-and idempotency key. This exclusively binds one unresolved session per run and
+and idempotency key plus `runtime_identity` containing the exact contracted
+provider/model/auth/billing tuple. A mismatch is rejected; a contract changing
+that tuple requires a new session before further runtime activities. This
+exclusively binds one unresolved session per run and
 atomically reserves its bounded walltime against the project. Another run cannot
 use that reservation. A replay returns `replayed: true`; it never authorizes
 launching a second process. Recover the original process before proceeding.
@@ -95,12 +98,25 @@ and `owner`. Issued permits consume their count even on failure. The runtime
 must enforce the returned `remaining_walltime_ms` during execution. After actual
 process exit, `release_runtime` (HTTP POST `runs/{run}/runtime/release`) records
 `execution_exited: true` and measured `actual_walltime_ms`, settles real elapsed
-session time including overrun, and releases unused reservation. Unknown
-execution retains the reservation and session identity. Setup and paused gaps
+session time including overrun, and releases unused reservation. Before any
+provider prompt, the runtime must call `attach_runtime_process` (HTTP POST
+`runs/{run}/runtime/attach`) to register its immutable host, process/group ID and
+OS birth identity. Control independently verifies this identity at attachment
+and independently verifies whole-group exit before accepting normal release;
+a request Boolean cannot establish exit.
+
+After a controller crash, `reconcile_runtime` (HTTP POST
+`runs/{run}/runtime/reconcile`) takes `session_id`, `expected_epoch`, new `owner`
+and optional `terminate`. It fences old writers before checking the registered
+OS identity. It never grants a replacement launch. Verified group exit settles
+conservative elapsed session time; missing, mismatched or still-active identity
+leaves the reservation held, records uncertainty and closes admission. Resume
+requires explicit control after successful reconciliation. Unknown execution
+retains the reservation and session identity. Setup and paused gaps
 outside sessions are not billed as runtime consumption.
 This service is not a provider billing interceptor.
 
-Contracts require explicit `runtime_policy`: `provider`, `auth_mode`
+Contracts require explicit `runtime_policy`: `provider`, `model`, `auth_mode`
 (`subscription_oauth`, `subscription_cli` or `api_key`), `billing_mode`
 (`subscription` or `paid_api`) and `quota_state` (`unknown`, `available`,
 `rate_limited` or `exhausted`). Subscription is the selected default; unknown
@@ -115,3 +131,11 @@ Evidence-linked findings remain `candidate` even when a solver succeeded. They
 are not independent replication reports or scientific acceptance. A negative
 trial can support a finding. Independent replication and held-out evaluation
 remain separate work.
+
+Guidance begins with `delivery_status: undelivered`. The active fenced runtime
+can call `ack_guidance` (HTTP POST `runs/{run}/guidance/{command_id}`) with
+`session_id`, `epoch`, `owner`, `status`, `reason`, and `idempotency_key`.
+Statuses are `delivered`, `adopted`, and `deferred`; deferral requires a reason.
+Acknowledgements have immutable identities and events, and remain researcher
+statements rather than scientific validation. A persisted guidance command does
+not imply delivery or adoption.

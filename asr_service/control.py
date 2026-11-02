@@ -305,6 +305,7 @@ class ControlService(PolicyStore):
             record['control_revision']+=1
             db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(record),project,run))
             receipt=dict(command_id='command_'+uuid.uuid4().hex,kind=kind,project_id=project,research_run_id=run,author=principal['subject'],payload=payload,status=status,effective_scope=scope,control_revision=record['control_revision'],created_at=now())
+            if kind=='guidance': receipt.update(delivery_status='undelivered',acknowledgements=[])
             db.execute('INSERT INTO asr_commands VALUES (?,?,?,?)',(project,run,receipt['command_id'],encoded(receipt)))
             self._remember(db,project,'command:'+run,idempotency_key,request,receipt)
             self._event(db,project,run,'command_applied' if status=='applied' else 'command_received',**receipt)
@@ -380,17 +381,21 @@ class ControlService(PolicyStore):
             self._run(db,project,run)
             return [json.loads(row[0]) for row in db.execute('SELECT record FROM asr_findings WHERE project=? AND run=? ORDER BY finding_id,revision',(project,run))]
 
-    def claim_runtime(self, token, project, run, owner, *, idempotency_key, requested_walltime_ms=None):
+    def claim_runtime(self, token, project, run, owner, *, idempotency_key, runtime_identity, requested_walltime_ms=None):
         """Reserve a single bounded external runtime; never launch on replay."""
         principal=self._auth(token,project,{'human','supervisor'})
         self._identity(run,owner,idempotency_key)
-        payload=[principal['subject'],owner,requested_walltime_ms]
+        payload=[principal['subject'],owner,requested_walltime_ms,runtime_identity]
         with self._connect() as db:
             db.execute('BEGIN IMMEDIATE')
             replay=self._replay(db,project,'runtime:'+run,idempotency_key,payload)
             if replay:
                 row=db.execute('SELECT record FROM asr_runtime_sessions WHERE session_id=?',(replay['session_id'],)).fetchone()
                 return dict(json.loads(row[0]),replayed=True)
+            record=self._run(db,project,run)
+            policy=self._contract(db,project,record['contract_id'],record['contract_revision'])['document']['runtime_policy']
+            expected_identity={k:policy[k] for k in ('provider','model','auth_mode','billing_mode')}
+            if runtime_identity!=expected_identity: raise ControlError('runtime_binding_conflict')
             if not self.owning_gate(db,{'project_id':project,'research_run_id':run}): raise ControlError('admission_closed')
             if db.execute("SELECT 1 FROM asr_runtime_sessions WHERE project=? AND run=? AND state!='exited'",(project,run)).fetchone(): raise ControlError('runtime_already_active')
             amount=self.budgets._balance(db,project,'research_walltime_ms')['available'] if requested_walltime_ms is None else requested_walltime_ms
@@ -398,7 +403,7 @@ class ControlService(PolicyStore):
             if amount<=0: raise ControlError('budget_exhausted')
             session='session_'+uuid.uuid4().hex
             self.budgets.reserve_many_in_transaction(db,project,session,{'research_walltime_ms':amount})
-            record=dict(project_id=project,research_run_id=run,session_id=session,epoch=1,owner=owner,state='active',reserved_walltime_ms=amount,started_at=now())
+            record=dict(project_id=project,research_run_id=run,session_id=session,epoch=1,owner=owner,state='active',runtime_identity=runtime_identity,reserved_walltime_ms=amount,started_at=now(),process_identity=None)
             db.execute('INSERT INTO asr_runtime_sessions VALUES (?,?,?,?,?)',(project,run,session,'active',encoded(record)))
             self._remember(db,project,'runtime:'+run,idempotency_key,payload,record)
             self._event(db,project,run,'runtime_claimed',**record)
@@ -406,6 +411,7 @@ class ControlService(PolicyStore):
 
     @staticmethod
     def _session(db,project,run,session_id,epoch,owner):
+        if type(epoch) is not int or epoch<1: raise ControlError('stale_runtime_epoch')
         row=db.execute('SELECT record FROM asr_runtime_sessions WHERE project=? AND run=? AND session_id=?',(project,run,session_id)).fetchone()
         if not row: raise ControlError('runtime_not_found')
         record=json.loads(row[0])
@@ -417,13 +423,21 @@ class ControlService(PolicyStore):
         if execution_exited is not True: raise ControlError('execution_not_reconciled')
         BudgetStore._amount(actual_walltime_ms)
         with self._connect() as db:
+            session=self._session(db,project,run,session_id,epoch,owner)
+        if session['state']=='exited':
+            if session['actual_walltime_ms']!=actual_walltime_ms: raise ControlError('idempotency_conflict')
+            return session
+        from integrations.runtimes.process import verify_process_exit
+        if not session.get('process_identity'): raise ControlError('process_identity_required')
+        exit_receipt=verify_process_exit(session['process_identity'],terminate=False)
+        with self._connect() as db:
             db.execute('BEGIN IMMEDIATE')
             session=self._session(db,project,run,session_id,epoch,owner)
             if session['state']=='exited':
                 if session['actual_walltime_ms']!=actual_walltime_ms: raise ControlError('idempotency_conflict')
                 return session
             db.execute('UPDATE asr_budget_reservations SET actual=? WHERE project=? AND attempt=? AND dimension=?',(actual_walltime_ms,project,session_id,'research_walltime_ms'))
-            session.update(state='exited',actual_walltime_ms=actual_walltime_ms,execution_exited=True,finished_at=now())
+            session.update(state='exited',actual_walltime_ms=actual_walltime_ms,execution_exited=True,exit_receipt=exit_receipt,finished_at=now())
             db.execute('UPDATE asr_runtime_sessions SET state=?,record=? WHERE session_id=?',('exited',encoded(session),session_id))
             record=self._run(db,project,run)
             if self.budgets._balance(db,project,'research_walltime_ms')['available']<=0 and record['state']=='running':
@@ -447,6 +461,9 @@ class ControlService(PolicyStore):
             replay=self._replay(db,project,'activity:'+run,idempotency_key,payload)
             if replay:return replay
             if session['state']!='active': raise ControlError('runtime_not_active')
+            running=self._run(db,project,run)
+            policy=self._contract(db,project,running['contract_id'],running['contract_revision'])['document']['runtime_policy']
+            if session['runtime_identity']!={k:policy[k] for k in ('provider','model','auth_mode','billing_mode')}: raise ControlError('runtime_binding_conflict')
             if not self.owning_gate(db,{'project_id':project,'research_run_id':run}): raise ControlError('admission_closed')
             elapsed=max(0,int((datetime.now(timezone.utc)-datetime.fromisoformat(session['started_at'])).total_seconds()*1000))
             remaining=session['reserved_walltime_ms']-elapsed
@@ -459,3 +476,98 @@ class ControlService(PolicyStore):
             self._remember(db,project,'activity:'+run,idempotency_key,payload,permit)
             self._event(db,project,run,'runtime_activity_admitted',**permit)
             return permit
+
+    def attach_runtime_process(self, token, project, run, session_id, epoch, owner, identity):
+        self._auth(token,project,{'human','supervisor'})
+        from integrations.runtimes.process import identify
+        if type(identity) is not dict or identify(identity.get('pid'))!=identity:
+            raise ControlError('process_identity_mismatch')
+        if identity.get('pid')!=identity.get('pgid'): raise ControlError('process_group_required')
+        with self._connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            session=self._session(db,project,run,session_id,epoch,owner)
+            if session['state']!='active': raise ControlError('runtime_not_active')
+            if session.get('process_identity') is not None and session['process_identity']!=identity: raise ControlError('process_identity_immutable')
+            session['process_identity']=copy.deepcopy(identity)
+            db.execute('UPDATE asr_runtime_sessions SET record=? WHERE session_id=?',(encoded(session),session_id))
+            self._event(db,project,run,'runtime_process_attached',session_id=session_id,epoch=epoch,identity=identity)
+            return session
+
+    def reconcile_runtime(self, token, project, run, session_id, expected_epoch, owner, *, terminate=False):
+        """Fence old ownership before independently checking the registered OS group.
+
+        Unknown/mismatched identity retains its reservation and closes admission.
+        Reconciliation grants inspection/termination, never a second launch.
+        """
+        self._auth(token,project,{'human','supervisor'})
+        self._identity(owner)
+        if type(expected_epoch) is not int or expected_epoch<1: raise ControlError('stale_runtime_epoch')
+        with self._connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            row=db.execute('SELECT record FROM asr_runtime_sessions WHERE project=? AND run=? AND session_id=?',(project,run,session_id)).fetchone()
+            if not row: raise ControlError('runtime_not_found')
+            session=json.loads(row[0])
+            if session['epoch']!=expected_epoch: raise ControlError('stale_runtime_epoch')
+            if session['state']=='exited': return session
+            session.update(epoch=expected_epoch+1,owner=owner,state='reconciling')
+            db.execute('UPDATE asr_runtime_sessions SET state=?,record=? WHERE session_id=?',('reconciling',encoded(session),session_id))
+            running=self._run(db,project,run)
+            running.update(health='reconciling',admission_open=False)
+            db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(running),project,run))
+            self._event(db,project,run,'runtime_reconciliation_started',session_id=session_id,epoch=session['epoch'])
+        try:
+            from integrations.runtimes.process import verify_process_exit
+            if not session.get('process_identity'): raise ControlError('process_identity_required')
+            receipt=verify_process_exit(session['process_identity'],terminate=terminate)
+        except (ValueError,RuntimeError,OSError) as exc:
+            with self._connect() as db:
+                db.execute('BEGIN IMMEDIATE')
+                current=self._session(db,project,run,session_id,session['epoch'],owner)
+                current.update(state='uncertain',reconciliation_error=str(exc))
+                db.execute('UPDATE asr_runtime_sessions SET state=?,record=? WHERE session_id=?',('uncertain',encoded(current),session_id))
+                self._event(db,project,run,'runtime_reconciliation_uncertain',session_id=session_id,epoch=session['epoch'],reason=str(exc))
+            raise
+        elapsed=max(0,int((datetime.now(timezone.utc)-datetime.fromisoformat(session['started_at'])).total_seconds()*1000))
+        result=self.release_runtime(token,project,run,session_id,session['epoch'],owner,execution_exited=True,actual_walltime_ms=elapsed)
+        with self._connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            running=self._run(db,project,run)
+            unresolved_numerical=False
+            if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='asr_executions'").fetchone():
+                for body, in db.execute('SELECT record FROM asr_executions'):
+                    execution=json.loads(body)
+                    if execution['project']==project and execution['run']==run and execution.get('report') is None and execution['state'] in ('interrupted','reconciling'):
+                        unresolved_numerical=True
+            if not unresolved_numerical: running['health']='ok'
+            db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(running),project,run))
+            result['reconciliation_receipt']=receipt
+            db.execute('UPDATE asr_runtime_sessions SET record=? WHERE session_id=?',(encoded(result),session_id))
+            self._event(db,project,run,'runtime_reconciled',session_id=session_id,epoch=result['epoch'],receipt=receipt)
+        return result
+
+    def ack_guidance(self, token, project, run, command_id, *, session_id, epoch, owner,
+                     status, reason, idempotency_key):
+        principal=self._auth(token,project,{'human','supervisor','researcher'})
+        self._identity(command_id,idempotency_key)
+        if status not in ('delivered','adopted','deferred') or type(reason) is not str or (status=='deferred' and not reason.strip()): raise ControlError('invalid_guidance_ack')
+        payload=[principal['subject'],command_id,session_id,epoch,owner,status,reason]
+        with self._connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            session=self._session(db,project,run,session_id,epoch,owner)
+            replay=self._replay(db,project,'guidance_ack:'+run,idempotency_key,payload)
+            if replay:return replay
+            if session['state']!='active': raise ControlError('runtime_not_active')
+            row=db.execute('SELECT record FROM asr_commands WHERE project=? AND run=? AND command_id=?',(project,run,command_id)).fetchone()
+            if not row: raise ControlError('command_not_found')
+            command=json.loads(row[0])
+            if command['kind']!='guidance': raise ControlError('not_guidance')
+            if status=='delivered' and command.get('delivery_status') in ('adopted','deferred'): raise ControlError('ack_regression')
+            ack=dict(acknowledgement_id='ack_'+uuid.uuid4().hex,command_id=command_id,session_id=session_id,epoch=epoch,status=status,reason=reason,author=principal['subject'],created_at=now())
+            command.update(delivery_status=status,acknowledgements=command.get('acknowledgements',[])+[ack])
+            db.execute('UPDATE asr_commands SET record=? WHERE command_id=?',(encoded(command),command_id))
+            for scope,key,body in db.execute('SELECT scope,request_key,record FROM asr_requests WHERE project=? AND scope=?',(project,'command:'+run)).fetchall():
+                if json.loads(body).get('command_id')==command_id:
+                    db.execute('UPDATE asr_requests SET record=? WHERE project=? AND scope=? AND request_key=?',(encoded(command),project,scope,key))
+            self._remember(db,project,'guidance_ack:'+run,idempotency_key,payload,ack)
+            self._event(db,project,run,'guidance_acknowledged',**ack)
+            return ack

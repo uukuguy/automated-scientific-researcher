@@ -64,6 +64,12 @@ def make_server(service, *, host='127.0.0.1', port=8765):
                     result=service.create_run(token,project,**body)
                 elif self.command=='POST' and len(route)==3 and route[0]=='runs' and route[2]=='trials':
                     result=service.submit_trial(token,project,route[1],**body)
+                elif self.command=='POST' and len(route)==4 and route[0]=='runs' and route[2:] == ['runtime','attach']:
+                    result=service.attach_runtime_process(token,project,route[1],**body)
+                elif self.command=='POST' and len(route)==4 and route[0]=='runs' and route[2:] == ['runtime','reconcile']:
+                    result=service.reconcile_runtime(token,project,route[1],**body)
+                elif self.command=='POST' and len(route)==4 and route[0]=='runs' and route[2]=='guidance':
+                    result=service.ack_guidance(token,project,route[1],route[3],**body)
                 elif self.command=='POST' and len(route)==4 and route[0]=='runs' and route[2:] == ['runtime','claim']:
                     result=service.claim_runtime(token,project,route[1],**body)
                 elif self.command=='POST' and len(route)==4 and route[0]=='runs' and route[2:] == ['runtime','release']:

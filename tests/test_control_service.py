@@ -31,7 +31,19 @@ class ControlTests(unittest.TestCase):
             variable_policy=policy, problem_ref=self.refs['problem'], reference_ref=self.refs['reference'], evaluation_ref=self.refs['evaluation'],
             budget={'attempts': 2, 'execution_ms': 10000, 'research_walltime_ms':3600000, 'turns':20, 'tool_executions':100},
             execution_policy={'researchers': 1, 'candidate_interface': 'asr-candidate/1', 'timeout_seconds': 5, 'output_bytes': 104857600, 'max_concurrency': 1, 'retry_limit': 0},
-            runtime_policy={'provider':'codex','auth_mode':'subscription_oauth','billing_mode':'subscription','quota_state':'available'}, intervention_policy={'guidance_boundary': 'next_submission', 'pause': 'drain'}, provenance={'source': 'test'})
+            runtime_policy={'model':'gpt-6.1-sol','provider':'codex','auth_mode':'subscription_oauth','billing_mode':'subscription','quota_state':'available'}, intervention_policy={'guidance_boundary': 'next_submission', 'pause': 'drain'}, provenance={'source': 'test'})
+
+    def attach_exited_process(self,session):
+        import subprocess,sys
+        from integrations.runtimes.process import identify
+        process=subprocess.Popen([sys.executable,'-c','import time;time.sleep(60)'],start_new_session=True)
+        try:
+            identity=identify(process.pid)
+            self.service.attach_runtime_process('human-secret','p','r',session['session_id'],session['epoch'],'worker',identity)
+        finally: process.terminate();process.wait()
+
+    def runtime_identity(self):
+        return {k:self.contract['runtime_policy'][k] for k in ('provider','model','auth_mode','billing_mode')}
 
     def start(self):
         self.service.publish_contract('human-secret', 'p', 'c', self.contract, expected_revision=0, idempotency_key='pub')
@@ -117,20 +129,21 @@ class ControlTests(unittest.TestCase):
 
     def test_runtime_reserves_walltime_exclusively_and_settles_only_after_exit(self):
         self.start()
-        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='session')
+        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='session',runtime_identity=self.runtime_identity())
         with self.assertRaisesRegex(ValueError,'runtime_already_active'):
-            self.service.claim_runtime('human-secret','p','r','other',idempotency_key='other')
+            self.service.claim_runtime('human-secret','p','r','other',idempotency_key='other',runtime_identity=self.runtime_identity())
         self.assertEqual(self.service.budgets.balance('p','research_walltime_ms')['reserved'],3600000)
-        self.assertTrue(self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='session')['replayed'])
+        self.assertTrue(self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='session',runtime_identity=self.runtime_identity())['replayed'])
         with self.assertRaisesRegex(ValueError,'execution_not_reconciled'):
             self.service.release_runtime('human-secret','p','r',session['session_id'],session['epoch'],'worker',execution_exited=False,actual_walltime_ms=500)
+        self.attach_exited_process(session)
         self.service.release_runtime('human-secret','p','r',session['session_id'],session['epoch'],'worker',execution_exited=True,actual_walltime_ms=500)
         self.assertEqual(self.service.budgets.balance('p','research_walltime_ms')['spent'],500)
         self.assertEqual(self.service.budgets.balance('p','research_walltime_ms')['reserved'],0)
 
     def test_subscription_quota_and_runtime_activity_admission(self):
         self.start()
-        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='session')
+        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='session',runtime_identity=self.runtime_identity())
         identity=dict(session_id=session['session_id'],epoch=session['epoch'],owner='worker')
         permit=self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='turn1',**identity)
         self.assertEqual(permit['kind'],'turn')
@@ -158,13 +171,14 @@ class ControlTests(unittest.TestCase):
 
     def test_finish_waits_for_runtime_exit_and_replay_updates(self):
         self.start()
-        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='runtime')
+        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='runtime',runtime_identity=self.runtime_identity())
         receipt=self.service.command('human-secret','p','r','finish',expected_revision=1,idempotency_key='finish')
         self.assertEqual(receipt['status'],'pending')
         self.service.command('human-secret','p','r','quota',expected_revision=2,idempotency_key='late-quota',payload={'state':'rate_limited'})
         self.assertEqual(self.service.get_run('human-secret','p','r')['state'],'finishing')
         with self.assertRaisesRegex(ValueError,'control_transition_pending'):
             self.service.command('human-secret','p','r','resume',expected_revision=3,idempotency_key='resume')
+        self.attach_exited_process(session)
         self.service.release_runtime('human-secret','p','r',session['session_id'],session['epoch'],'worker',execution_exited=True,actual_walltime_ms=12)
         self.assertEqual(self.service.get_run('human-secret','p','r')['state'],'completed')
         self.assertEqual(self.service.command('human-secret','p','r','finish',expected_revision=1,idempotency_key='finish')['status'],'applied')
@@ -178,6 +192,52 @@ class ControlTests(unittest.TestCase):
         from asr_supervisor.store import ExecutionStore,LeaseError
         trial=self.service.get_run('human-secret','p','r')['trials'][0]
         with self.assertRaises(LeaseError):ExecutionStore(self.service.path).claim(trial['execution_attempt_id'],'worker')
+
+    def test_runtime_binding_and_unknown_reconciliation_are_fenced(self):
+        self.start()
+        wrong=self.runtime_identity();wrong['model']='other'
+        with self.assertRaisesRegex(ValueError,'runtime_binding_conflict'):
+            self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='bad-model',runtime_identity=wrong)
+        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='session',runtime_identity=self.runtime_identity())
+        with self.assertRaisesRegex(ValueError,'process_identity_required'):
+            self.service.reconcile_runtime('human-secret','p','r',session['session_id'],session['epoch'],'recovery')
+        self.assertGreater(self.service.budgets.balance('p','research_walltime_ms')['reserved'],0)
+        self.assertFalse(self.service.get_run('human-secret','p','r')['admission_open'])
+        with self.assertRaisesRegex(ValueError,'stale_runtime_epoch'):
+            self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='old',session_id=session['session_id'],epoch=session['epoch'],owner='worker')
+
+    def test_reconciliation_terminates_registered_process_before_settlement(self):
+        import subprocess,sys
+        from integrations.runtimes.process import identify
+        self.start()
+        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='session',runtime_identity=self.runtime_identity())
+        process=subprocess.Popen([sys.executable,'-c','import time;time.sleep(60)'],start_new_session=True)
+        try:
+            self.service.attach_runtime_process('human-secret','p','r',session['session_id'],session['epoch'],'worker',identify(process.pid))
+            with self.assertRaisesRegex(RuntimeError,'process_still_active'):
+                self.service.release_runtime('human-secret','p','r',session['session_id'],session['epoch'],'worker',execution_exited=True,actual_walltime_ms=0)
+            recovered=self.service.reconcile_runtime('human-secret','p','r',session['session_id'],session['epoch'],'recovery',terminate=True)
+            self.assertEqual(recovered['state'],'exited')
+            self.assertEqual(recovered['epoch'],2)
+            self.assertTrue(recovered['exit_receipt']['execution_exited'])
+            self.assertEqual(self.service.budgets.balance('p','research_walltime_ms')['reserved'],0)
+            self.assertGreater(self.service.budgets.balance('p','research_walltime_ms')['spent'],0)
+            process.wait(timeout=3)
+        finally:
+            if process.poll() is None:process.kill();process.wait()
+
+    def test_guidance_ack_distinguishes_delivery_and_adoption(self):
+        self.start()
+        guidance=self.service.command('human-secret','p','r','guidance',expected_revision=1,idempotency_key='g',payload={'text':'Test sensitivity'})
+        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='session',runtime_identity=self.runtime_identity())
+        identity=dict(session_id=session['session_id'],epoch=session['epoch'],owner='worker')
+        ack=self.service.ack_guidance('agent-secret','p','r',guidance['command_id'],status='delivered',reason='',idempotency_key='delivered',**identity)
+        self.assertEqual(ack['status'],'delivered')
+        self.assertEqual(self.service.ack_guidance('agent-secret','p','r',guidance['command_id'],status='delivered',reason='',idempotency_key='delivered',**identity),ack)
+        self.service.ack_guidance('agent-secret','p','r',guidance['command_id'],status='deferred',reason='Need baseline first',idempotency_key='defer',**identity)
+        current=self.service.get_run('human-secret','p','r')['guidance'][0]
+        self.assertEqual(current['delivery_status'],'deferred')
+        self.assertEqual(len(current['acknowledgements']),2)
 
     def test_guidance_receipt_and_contract_switch_freeze_trials(self):
         self.start(); trial=self.submit()

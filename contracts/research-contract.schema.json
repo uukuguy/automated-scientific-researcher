@@ -302,7 +302,8 @@
         "provider",
         "auth_mode",
         "billing_mode",
-        "quota_state"
+        "quota_state",
+        "model"
       ],
       "properties": {
         "provider": {
@@ -332,6 +333,10 @@
         },
         "paid_api_authorized": {
           "type": "boolean"
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
         }
       }
     }
