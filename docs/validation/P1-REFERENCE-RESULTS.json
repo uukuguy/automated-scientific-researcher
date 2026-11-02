@@ -1,0 +1,220 @@
+{
+  "schema": "asr-p1-verification/1",
+  "environment": {
+    "schema": "asr-numerical-environment/1",
+    "matpower_version": "8.1",
+    "archive_url": "https://codeload.github.com/MATPOWER/matpower/tar.gz/refs/tags/8.1",
+    "archive_sha256": "5f08ced1a32e8d0d658ee54b73678c7364a899bae479882f2bc419e91442b69f",
+    "case_sha256": "bc2e6f22b4b9e776572885ee4b50e4f4ab2ee0c5577e9126e86d906f14c4b5f7",
+    "base_image": "python:3.12-slim-bookworm@sha256:593bd06efe90efa80dc4eee3948be7c0fde4134606dd40d8dd8dbcade98e669c",
+    "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+    "architecture": "arm64",
+    "octave_version": "7.3.0",
+    "package_inventory_sha256": "bf8ee04cf670163780a2937466e00ec91d9b77112cc2fa55fc76f1f866155166",
+    "reference_script_sha256": "438430557c383beb171fd0b40d1e1a04877824e142d56ae897c41d300b33153f",
+    "rebuild_note": "APT repositories are not snapshot-pinned. Execute by the recorded image ID; a rebuild must be revalidated and get a new environment record."
+  },
+  "source_hashes": {
+    "validation.py": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3",
+    "runner.py": "bbc307a89da9cd71d96bdf2ddcf104df4bef5f5fe7fc148afad245b6592f902e",
+    "reference.py": "cd2a98a5135ac5461bd028948a6e3b998e4d9b218e2b22c83bb69b0dced5587c"
+  },
+  "unit_tests": 28,
+  "case_size": {
+    "bus": 118,
+    "gen": 54,
+    "branch": 186
+  },
+  "baseline_solver": {
+    "solver_success": true,
+    "iterations": 4,
+    "solver_elapsed_seconds": 0.008314847946166992,
+    "matpower_version": {
+      "Name": "MATPOWER",
+      "Version": "8.1",
+      "Release": "",
+      "Date": "12-Jul-2025"
+    },
+    "octave_version": "7.3.0",
+    "policy": "fixed-pv-pq-single-slack/1",
+    "initialization": "flat",
+    "max_iterations": 20,
+    "pf_tolerance_pu": 1e-10
+  },
+  "baseline_validation": {
+    "input_preserved": true,
+    "equation_valid": true,
+    "max_mismatch_pu": 3.935784299266862e-13,
+    "operational_status": "violated",
+    "thermal_limits_unassessed": 186,
+    "violations": [
+      {
+        "kind": "reactive_generation",
+        "id": 8,
+        "value": -14.274171532444697,
+        "low": -8,
+        "high": 24
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 14,
+        "value": -16.28477473252564,
+        "low": -14,
+        "high": 42
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 15,
+        "value": -20.827111730988882,
+        "low": -8,
+        "high": 24
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 42,
+        "value": -13.956248186875492,
+        "low": -3,
+        "high": 9
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 45,
+        "value": 75.42236358206829,
+        "low": -15,
+        "high": 40
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 47,
+        "value": -18.334525252388048,
+        "low": -8,
+        "high": 23
+      }
+    ],
+    "errors": [],
+    "policy": "fixed-pv-pq-single-slack/1"
+  },
+  "checks": {
+    "duplicate_same_attempt": true,
+    "fresh_replay_identical_solution": true,
+    "corrupted_voltage_rejected": true,
+    "changed_input_rejected": true,
+    "timeout_container_removed": true
+  },
+  "truncated_solver": {
+    "solver_success": false,
+    "iterations": 1,
+    "solver_elapsed_seconds": 0.005506038665771484,
+    "matpower_version": {
+      "Name": "MATPOWER",
+      "Version": "8.1",
+      "Release": "",
+      "Date": "12-Jul-2025"
+    },
+    "octave_version": "7.3.0",
+    "policy": "fixed-pv-pq-single-slack/1",
+    "initialization": "flat",
+    "max_iterations": 1,
+    "pf_tolerance_pu": 1e-10
+  },
+  "truncated_validation": {
+    "input_preserved": true,
+    "equation_valid": false,
+    "max_mismatch_pu": 0.8253756289466181,
+    "operational_status": "violated",
+    "thermal_limits_unassessed": 186,
+    "violations": [
+      {
+        "kind": "reactive_generation",
+        "id": 0,
+        "value": -8.82294172884012,
+        "low": -5,
+        "high": 15
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 8,
+        "value": -19.081181011967693,
+        "low": -8,
+        "high": 24
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 14,
+        "value": -23.835406306609535,
+        "low": -14,
+        "high": 42
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 15,
+        "value": -50.58227457370917,
+        "low": -8,
+        "high": 24
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 33,
+        "value": -12.753168240992423,
+        "low": -6,
+        "high": 9
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 37,
+        "value": -12.069467934423002,
+        "low": -8,
+        "high": 23
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 42,
+        "value": -19.887302515080687,
+        "low": -3,
+        "high": 9
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 45,
+        "value": 73.67762822160603,
+        "low": -15,
+        "high": 40
+      },
+      {
+        "kind": "reactive_generation",
+        "id": 47,
+        "value": -25.469005366153155,
+        "low": -8,
+        "high": 23
+      }
+    ],
+    "errors": [],
+    "policy": "fixed-pv-pq-single-slack/1"
+  },
+  "trials": {
+    "baseline": {
+      "trial_id": "6bd6ebd130b24878726f12f972d470d37aab363e8633abe47a7d8f52fb2f1f74",
+      "attempt_id": "0001_03797955645b44faa0c61397fd080982",
+      "status": "succeeded",
+      "manifest_sha256": "ea18dd8f9edb8f2b408a2b381e694914ea16f3a1e7dc00dd141578407a4639a8"
+    },
+    "replay": {
+      "trial_id": "dd63e2ec16dbfb501a730974c7916ce80f8d1152f4f9fb9c78847705b6b8c242",
+      "attempt_id": "0001_71d4d1cd21d94ee6a7f53e84b9af1cd4",
+      "status": "succeeded",
+      "manifest_sha256": "562cbb559981935885d5afa3b4b5fc786e43f4a5155bc5f55300f352284771e1"
+    },
+    "truncated": {
+      "trial_id": "a21c06413d581b420df307fababbfd22fbbe3e50bb766cab5addc961bc92e553",
+      "attempt_id": "0001_10627082538a40bc9345cdbc782dfbac",
+      "status": "succeeded",
+      "manifest_sha256": "cb803eef3611af7171c37e21b67a084dbe1448362bc2ea9edb2356b2b2c72eca"
+    },
+    "timeout": {
+      "trial_id": "a48304d54ece365c45c5c00714e670658684dbf34a5817c51745bb228a05f9dd",
+      "attempt_id": "0001_09d9698b923b433fb9b340290db49a90",
+      "status": "timed_out",
+      "manifest_sha256": "54b4df844fbd86be684a3b03c3cec72b8bca804a04c36a0115f809353ffbaf10"
+    }
+  }
+}

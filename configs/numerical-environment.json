@@ -1,0 +1,14 @@
+{
+  "schema": "asr-numerical-environment/1",
+  "matpower_version": "8.1",
+  "archive_url": "https://codeload.github.com/MATPOWER/matpower/tar.gz/refs/tags/8.1",
+  "archive_sha256": "5f08ced1a32e8d0d658ee54b73678c7364a899bae479882f2bc419e91442b69f",
+  "case_sha256": "bc2e6f22b4b9e776572885ee4b50e4f4ab2ee0c5577e9126e86d906f14c4b5f7",
+  "base_image": "python:3.12-slim-bookworm@sha256:593bd06efe90efa80dc4eee3948be7c0fde4134606dd40d8dd8dbcade98e669c",
+  "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+  "architecture": "arm64",
+  "octave_version": "7.3.0",
+  "package_inventory_sha256": "bf8ee04cf670163780a2937466e00ec91d9b77112cc2fa55fc76f1f866155166",
+  "reference_script_sha256": "438430557c383beb171fd0b40d1e1a04877824e142d56ae897c41d300b33153f",
+  "rebuild_note": "APT repositories are not snapshot-pinned. Execute by the recorded image ID; a rebuild must be revalidated and get a new environment record."
+}

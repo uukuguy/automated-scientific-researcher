@@ -10,17 +10,17 @@ Technical behavior: [Minimum-loop design](../../architecture/ASR-MINIMUM-LOOP.md
 
 ## Deliverables and verification
 
-- [ ] Pin base-image digest and MATPOWER archive checksum; build native arm64 image. Record installed package versions.
-- [ ] `tests/test_validation.py`: analytic two-bus reference, deliberately perturbed voltage, changed load, non-finite values, tap/shunt physics and missing thermal limits.
-- [ ] `powerflow_lab/validation.py`: construct admittance independently from branch data; verify full nodal balance, fixed input settings and operating constraints.
-- [ ] `scripts/reference_pf.m`: export effective input, output, iteration count and solver version; keep verbose solver logs.
-- [ ] `powerflow_lab/runner.py`: immutable attempt directories, request identity, process timeout, code/input hashes, atomic terminal manifests and replay.
-- [ ] `tests/test_runner.py`: duplicate requests, changed requests, retained failure, artifact tampering and replay behavior.
-- [ ] `compose.yaml`: read-only root, dropped capabilities, offline runtime, CPU/memory limits, explicit result mount.
-- [ ] Run real case118; verify sizes, solver convergence and independently computed residual. Reject modified voltage and modified input fixtures.
-- [ ] Repeat completed request without new attempt; replay into a fresh trial and compare electrical outputs.
-- [ ] Run a deliberately truncated Newton solve; retain failure and logs.
-- [ ] Document commands, measured results, limitations and accepted solver-research scope.
+- [x] Pin base-image digest and MATPOWER archive checksum; build native arm64 image. Record installed package versions.
+- [x] `tests/test_validation.py`: analytic two-bus reference, deliberately perturbed voltage, changed load, non-finite values, tap/shunt physics and missing thermal limits.
+- [x] `powerflow_lab/validation.py`: construct admittance independently from branch data; verify full nodal balance, fixed input settings and operating constraints.
+- [x] `scripts/reference_pf.m`: export effective input, output, iteration count and solver version; keep verbose solver logs.
+- [x] `powerflow_lab/runner.py`: immutable attempt directories, request identity, process timeout, code/input hashes, atomic terminal manifests and replay.
+- [x] `tests/test_runner.py`: duplicate requests, changed requests, retained failure, artifact tampering and replay behavior.
+- [x] `compose.yaml`: read-only root, dropped capabilities, offline runtime, CPU/memory limits, explicit result mount.
+- [x] Run real case118; verify sizes, solver convergence and independently computed residual. Reject modified voltage and modified input fixtures.
+- [x] Repeat completed request without new attempt; replay into a fresh trial and compare electrical outputs.
+- [x] Run a deliberately truncated Newton solve; retain failure and logs.
+- [x] Document commands, measured results, limitations and accepted solver-research scope.
 
 ## Test contract
 
@@ -36,3 +36,7 @@ A terminal execution status is separate from scientific validation. A failed ref
 ## Execution order
 
 Write and run validator tests before implementation. Build the numerical image while developing the runner. Run runner failure-path tests before real integration. Finish with actual reference, failed-solve and replay evidence. No unit test substitutes for a numerical smoke test.
+
+## Verified scope and limits
+
+Evidence: [P1 numerical lab](../../validation/P1-NUMERICAL-LAB.md). All listed reference-slice deliverables have been exercised. The executor is local and trusted; generalized candidate execution, runtime disk quotas, database budget admission and active-process reconciliation remain P2/P3 work. Dependency package inventory and final image ID are recorded; APT rebuild sources are not snapshot-pinned.

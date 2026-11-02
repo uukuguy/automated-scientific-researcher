@@ -28,3 +28,7 @@
 - 19:16 Committed Capstone handoff and accepted workbench boundaries to enable parallel preparation. [c09f643]
 - 19:37 Detailed minimum-loop contracts, control, execution, budgets, evidence, recovery and interfaces; aligned AGENTS, README and Capstone handoff.
 - 19:38 Reviewed minimum-loop consistency; verified document links, JSON examples, table continuity, instruction symlink and whitespace.
+- 19:38 Committed detailed ASR design and repository guidance to make implementation boundaries and current maturity explicit. [af6da2c]
+- 19:58 Verified MATPOWER 8.1/Octave 7.3 reference, independent residual, failure retention, replay, timeout cleanup and 28 tests; P1 complete.
+- 19:58 Aligned main design 0.7, AGENTS, README and package ledger; P2 active, no paid Agent run or public API.
+- 20:22 Independent review dispatch failed twice due to unavailable model; performed self-review and reran focused tests/evidence checks.

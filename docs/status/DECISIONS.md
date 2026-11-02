@@ -88,3 +88,12 @@
 - Technical choices: extend the AAR local database behind one control writer; separate admission, execution and verification; preserve explicit contract application, budget reservations, immutable evidence and process reconciliation.
 - The detailed control protocol remains an integration candidate until Capstone alignment and executable schema validation. Scientific parameters require baseline calibration; actual resource amounts require configuration.
 - Rationale: close behavioral gaps before implementation without presenting design, simulated interaction or unfinished tests as a working research system.
+
+## D011 — Verified reference profile and P1 acceptance
+
+- Date: 2026-11-02. Status: measured implementation boundary under the accepted P1 plan; not a formal scientific evaluation protocol.
+- Reference: MATPOWER 8.1 / Octave 7.3.0, native arm64, flat initialization, fixed PV/PQ, one reference bus, no Q-limit switching.
+- Evidence: 28 focused tests plus real baseline, duplicate submission, fresh replay, truncated solve and timeout cleanup in `docs/validation/P1-NUMERICAL-LAB.md`.
+- Baseline is equation-valid but has six reactive-limit violations and 186 unassessed thermal limits. It is not claimed operationally feasible.
+- Fixed image identity and package inventory support local execution replay; APT rebuild sources are not snapshot-pinned. Local file-lock evidence runner is not the future database admission/budget service.
+- P1 reference acceptance is complete; P2 is active. Candidate methods remain open, and unsupported operating policies require explicit adapters and validation.

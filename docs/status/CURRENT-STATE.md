@@ -7,15 +7,15 @@
 - Theme-level focus: User-controlled research variables, reproducible experiments and independent evaluation.
 - Project route: managed
 - Canonical worklist: docs/plans/WORKLIST.md
-- Active work package: P1 — reproducible numerical trials and evidence
+- Active work package: P2 — contract/control service and single-researcher integration
 
 ## Current Architecture
 
-- Project shell: Python >=3.12, with no declared dependencies or application code; validator tests are an unfinished draft.
+- Local numerical implementation: Python >=3.12 standard-library validator/runner; MATPOWER/Octave in a pinned arm64 Docker image.
 - Current design: `docs/PROJECT-DESIGN.md`; detailed behavior: `docs/architecture/ASR-MINIMUM-LOOP.md`. Sampling and solver methods are configurable research variables.
 - Deployment: local OrbStack Docker Engine and Compose; no additional VM.
 - Research reference: `docs/IEEE118_OOD_Sample_Expansion_Task_v2_2.md`; accepted user decisions in `docs/status/DECISIONS.md` govern scope.
-- Planned numerical layer: canonical MATPOWER case, scenario generation, AC power flow, independent residual validation.
+- Implemented numerical slice: fixed case118 reference, independent residual/operating checks, immutable local trial evidence; generalized scenarios and candidate execution remain planned.
 - Planned research layer: adapt AAR for early single-researcher experiments; humans set direction and evaluation rules, researchers choose methods within scope.
 - Human interaction: asynchronous guidance and versioned controls; Capstone scientific-research mode is the accepted workbench architecture; preparation is defined in `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md`.
 - Local upstream: `3th-party/automated-w2s-research/`, ignored by the parent repository; not yet integrated.
@@ -23,7 +23,7 @@
 ## Open Problems (theme-level)
 
 - Uncalibrated numerical research contract and unverified AAR runtime adaptation.
-- Missing canonical case, solver environment, and verified baseline.
+- Missing control API and generalized candidate execution; current reference environment is verified.
 - Unconfirmed real-world input distribution, OOD definition, failure cases, and downstream task.
 - Unfixed operating conventions and independent validation contract.
 
@@ -58,3 +58,9 @@
 2. Read the canonical worklist for package scope and acceptance.
 3. Run `git status --short` and `git log --oneline -5`.
 4. Read AGENTS.md if its contents change; do not assume memory files auto-load.
+
+## Verification entry
+
+- `docs/validation/P1-NUMERICAL-LAB.md` — commands, fixed environment and measured limits.
+- `configs/numerical-environment.json` — executed image identity and source hashes.
+- `powerflow_lab/` — local reference runner, validator and evidence publication.

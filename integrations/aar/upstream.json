@@ -1,0 +1,12 @@
+{
+  "schema": "asr-upstream-pin/1",
+  "local_checkout": "3th-party/automated-w2s-research",
+  "revision": "79a0562fa1a2c246048ed7c009f3684907987b05",
+  "files": {
+    "pyproject.toml": "8c68a2cedbf9269b4cdd7fbe9afaf145761e792f13d78a437c7226075a2178a4",
+    "w2s_research/research_loop/agent.py": "982799a83ba15b4a2839e6f30356636fb50a10e62b6c9a86d9929303d10bc75b",
+    "w2s_research/web_ui/backend/models.py": "2e16899f46059bcc5ae971e8a5b6f46dd7e909b67ac8de7bdab0ce1bfd5d23a1"
+  },
+  "license_status": "No repository-root license file found in the pinned tree; confirm terms before redistributing adapted upstream code.",
+  "integration_status": "source pinned only; no upstream patches or runtime launched"
+}

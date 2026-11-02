@@ -1,0 +1,18 @@
+# Direct reference debugging. Use python -m powerflow_lab.reference for manifests.
+services:
+  reference:
+    image: ${ASR_NUMERICAL_IMAGE:-asr-matpower:8.1}
+    network_mode: none
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
+    mem_limit: 1g
+    cpus: 1
+    user: "${ASR_UID:-1000}:${ASR_GID:-1000}"
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=128m
+    environment:
+      ASR_MAX_IT: "${ASR_MAX_IT:-20}"
+    volumes:
+      - ${ASR_OUTPUT_DIR:-./data/manual}:/output

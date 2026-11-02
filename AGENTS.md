@@ -7,10 +7,12 @@ Its first scientific application explores power-grid sampling and power-flow
 solver methods, including new methods and combinations. The user controls the
 research question, permitted changes, evaluation rules and resource budget.
 
-The repository currently contains design, project state and an unfinished
-validator test draft. No verified numerical baseline, operational ASR API or
-integrated AAR loop has been delivered. Check the worklist and code before
-reporting implementation status; update this paragraph when that changes.
+The repository has a verified local MATPOWER/Octave reference runner, independent
+Python electrical checks and immutable trial evidence. It has no operational ASR
+control API or integrated AAR loop yet. The fixed-PV/PQ baseline is a calibration
+profile, not a restriction on candidate-method research. See
+`docs/validation/P1-NUMERICAL-LAB.md` for evidence and limits. Check the worklist
+and code before reporting implementation status; update this paragraph when it changes.
 
 ## Read before work
 
@@ -75,7 +77,7 @@ license. Store reproducible patches and preparation scripts in tracked
 Verify changes with focused checks. Numerical claims need real numerical tests;
 autonomous-research claims need actual model-driven execution. Mock tests only
 prove the interface and orchestration behavior they exercise. Preserve the
-unfinished tests unless explicitly changing their contract as part of the task.
+existing tests unless explicitly changing their contract as part of the task.
 
 ## Durable alignment
 

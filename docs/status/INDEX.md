@@ -15,7 +15,7 @@ Register each new status file here. Register archive buckets as one row per buck
 | `RESUME-NEXT-SESSION.md` | 🟢 active | Session recovery point. |
 | `INDEX.md` | 🟢 active | File catalog. |
 | `DECISIONS.md` | 🟢 active | Accepted scope, interaction principles and Capstone architecture; protocol details remain draft. |
-| `BOOTSTRAP-PREFLIGHT.md` | 🟢 active | Dated WP1 environment evidence; recheck before setup. |
+| `BOOTSTRAP-PREFLIGHT.md` | 🟡 decision history | Initial environment discovery; current numerical evidence is in docs/validation/P1-NUMERICAL-LAB.md. |
 
 ## Decision history
 
@@ -44,3 +44,5 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 - `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md` — Capstone preparation tasks, proposed service contract and acceptance boundaries.
 
 - `docs/architecture/ASR-MINIMUM-LOOP.md` — detailed minimum-loop design, interface candidate and acceptance mapping.
+
+- `docs/validation/P1-NUMERICAL-LAB.md` and `P1-REFERENCE-RESULTS.json` — P1 local numerical acceptance and remaining boundaries.
