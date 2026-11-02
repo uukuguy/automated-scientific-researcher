@@ -80,6 +80,50 @@ class BudgetStore(PolicyStore):
             db.execute('INSERT INTO asr_budget_reservations VALUES (?,?,?,?,NULL)',
                        (project, attempt, dimension, amount))
 
+    def reserve_many(self, project, attempt, amounts):
+        """Reserve a complete dimension bundle atomically."""
+        with self._connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            self.reserve_many_in_transaction(db, project, attempt, amounts)
+
+    def reserve_many_in_transaction(self, db, project, attempt, amounts):
+        """Join the owner's transaction; never commit it or dispatch execution.
+
+        db must target this store's database and hold a write transaction.
+        The caller owns rollback on errors. A savepoint also prevents partial
+        reservations if the caller catches an error and commits other work.
+        """
+        self._identity(project, attempt)
+        if not db.in_transaction:
+            raise BudgetError('transaction_required')
+        if type(amounts) is not dict or not amounts:
+            raise BudgetError('invalid_amounts')
+        for dimension, amount in amounts.items():
+            self._identity(dimension)
+            self._amount(amount)
+        db.execute('SAVEPOINT asr_budget_bundle')
+        try:
+            # Obtain the SQLite write lock before reading current balances.
+            db.execute('UPDATE asr_budget_limits SET amount=amount WHERE 0')
+            prior = dict(db.execute(
+                'SELECT dimension,amount FROM asr_budget_reservations WHERE project=? AND attempt=?',
+                (project, attempt)))
+            if prior:
+                if prior != amounts:
+                    raise BudgetError('idempotency_conflict')
+            else:
+                for dimension, amount in amounts.items():
+                    if self._balance(db, project, dimension)['available'] < amount:
+                        raise BudgetError('budget_exhausted')
+                db.executemany('INSERT INTO asr_budget_reservations VALUES (?,?,?,?,NULL)',
+                               [(project, attempt, dimension, amount)
+                                for dimension, amount in amounts.items()])
+        except BaseException:
+            db.execute('ROLLBACK TO asr_budget_bundle')
+            db.execute('RELEASE asr_budget_bundle')
+            raise
+        db.execute('RELEASE asr_budget_bundle')
+
     def settle(self, project, attempt, dimension, actual, *, execution_exited):
         self._identity(project, attempt, dimension)
         self._amount(actual)

@@ -407,3 +407,5 @@ Capstone 架构文档将其问题驱动的 enterprise research mode 标为已接
 ### P2 local budget primitive (2026-11-02)
 
 本地预算原语 `asr_service/budgets.py` 已实现项目级整数计量、事务预留、幂等结算及超额记账。执行退出由可信调用方声明，尚未连接进程核验、运行子额度、完整准入或 AAR；不能作为执行授权。
+
+预算原语新增 `reserve_many` 与 `reserve_many_in_transaction`：多维额度原子预留、完整请求重放校验，可加入拥有者事务；尚未实现完整 trial 准入。事务调用方必须使用同一数据库，并负责 trial/事件/派发意图及认证。

@@ -57,3 +57,27 @@ class BudgetTests(unittest.TestCase):
         self.store.reserve('p', 'a', 'cpu_ms', 60)
         with self.assertRaises(BudgetError):
             self.store.set_limit('p', 'cpu_ms', 59)
+
+    def test_multidimension_failure_rolls_back(self):
+        self.store.set_limit('p', 'calls', 1)
+        with self.assertRaises(BudgetError):
+            self.store.reserve_many('p', 'a', {'cpu_ms': 60, 'calls': 2})
+        self.assertEqual(self.store.balance('p', 'cpu_ms')['reserved'], 0)
+        self.store.reserve_many('p', 'a', {'cpu_ms': 60, 'calls': 1})
+        self.store.reserve_many('p', 'a', {'calls': 1, 'cpu_ms': 60})
+        with self.assertRaises(BudgetError):
+            self.store.reserve_many('p', 'a', {'cpu_ms': 60})
+
+    def test_owner_transaction_rolls_back_budget_and_trial(self):
+        import sqlite3
+        with sqlite3.connect(self.path) as db:
+            db.execute('CREATE TABLE trials (id TEXT)')
+            db.execute('BEGIN IMMEDIATE')
+            db.execute("INSERT INTO trials VALUES ('a')")
+            self.store.reserve_many_in_transaction(db, 'p', 'a', {'cpu_ms': 50})
+            db.rollback()
+            self.assertEqual(db.execute('SELECT count(*) FROM trials').fetchone()[0], 0)
+        self.assertEqual(self.store.balance('p', 'cpu_ms')['reserved'], 0)
+        with sqlite3.connect(self.path) as db:
+            with self.assertRaises(BudgetError):
+                self.store.reserve_many_in_transaction(db, 'p', 'a', {'cpu_ms': 50})
