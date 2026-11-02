@@ -31,11 +31,14 @@ revisions, replay conflicts, paused admission and exhausted budgets.
 | GET `references/{kind}/{digest}` | Hash-verified frozen metadata |
 | GET `dispatch` | Trusted inspection of queued work whose run gate is open; does not claim a lease |
 
-Commands are `pause`, `resume`, `quota` (`payload.state`), `guidance` (`payload.text`), and `apply_contract`
+Commands are `stop`, `finish`, `cancel_trial` (`payload.trial_id`), `pause`, `resume`, `quota` (`payload.state`), `guidance` (`payload.text`), and `apply_contract`
 (`payload.contract_id`, `payload.revision`). The command receipt's `applied` status
 means its specified gate or revision was durably applied. Pause closes new
 admission and queued dispatch; it permits in-flight attempts to finish. It does
-not claim that a process stopped. Guidance is available at the next submission
+not claim that a process stopped. Stop requests termination; finish drains already
+active work and cancels unstarted numerical work. Both remain pending while any
+numerical attempt or runtime session is unresolved. Terminal receipts preserve
+the actual result when completion wins a cancellation race. Guidance is available at the next submission
 boundary; its receipt does not claim researcher acknowledgement or adoption.
 
 The control service does not create or schedule an agent runtime. An external
@@ -80,10 +83,21 @@ container startup/cleanup overhead can exceed that reservation and is retained
 as actual cost. Limits are project-wide; creating another run does not reset
 consumption. Required finite budget dimensions are `attempts`, `execution_ms`,
 `research_walltime_ms`, `turns` and `tool_executions`. The runtime supervisor
-calls `admit_activity` (HTTP POST `runs/{run}/activities` with `kind` and
-`idempotency_key`) before a turn or tool execution. Issued permits consume their
-count even on failure. Elapsed run walltime is charged at those boundaries; the
-runtime must enforce the returned `remaining_walltime_ms` during execution.
+first calls `claim_runtime` (HTTP POST `runs/{run}/runtime/claim`) with an owner
+and idempotency key. This exclusively binds one unresolved session per run and
+atomically reserves its bounded walltime against the project. Another run cannot
+use that reservation. A replay returns `replayed: true`; it never authorizes
+launching a second process. Recover the original process before proceeding.
+
+Before a turn/tool the supervisor calls `admit_activity` (HTTP POST
+`runs/{run}/activities`) with `kind`, `idempotency_key`, `session_id`, `epoch`,
+and `owner`. Issued permits consume their count even on failure. The runtime
+must enforce the returned `remaining_walltime_ms` during execution. After actual
+process exit, `release_runtime` (HTTP POST `runs/{run}/runtime/release`) records
+`execution_exited: true` and measured `actual_walltime_ms`, settles real elapsed
+session time including overrun, and releases unused reservation. Unknown
+execution retains the reservation and session identity. Setup and paused gaps
+outside sessions are not billed as runtime consumption.
 This service is not a provider billing interceptor.
 
 Contracts require explicit `runtime_policy`: `provider`, `auth_mode`

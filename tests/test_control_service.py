@@ -156,6 +156,27 @@ class ControlTests(unittest.TestCase):
         self.assertEqual(self.service.budgets.balance('p','attempts')['reserved'],0)
         self.assertEqual(self.service.budgets.balance('p','attempts')['spent'],0)
 
+    def test_finish_waits_for_runtime_exit_and_replay_updates(self):
+        self.start()
+        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='runtime')
+        receipt=self.service.command('human-secret','p','r','finish',expected_revision=1,idempotency_key='finish')
+        self.assertEqual(receipt['status'],'pending')
+        with self.assertRaisesRegex(ValueError,'control_transition_pending'):
+            self.service.command('human-secret','p','r','resume',expected_revision=2,idempotency_key='resume')
+        self.service.release_runtime('human-secret','p','r',session['session_id'],session['epoch'],'worker',execution_exited=True,actual_walltime_ms=12)
+        self.assertEqual(self.service.get_run('human-secret','p','r')['state'],'completed')
+        self.assertEqual(self.service.command('human-secret','p','r','finish',expected_revision=1,idempotency_key='finish')['status'],'applied')
+
+    def test_apply_exhausted_quota_closes_queued_dispatch(self):
+        self.start();self.submit()
+        bad=copy.deepcopy(self.contract);bad['runtime_policy']['quota_state']='exhausted'
+        self.service.publish_contract('human-secret','p','c',bad,expected_revision=1,idempotency_key='exhausted')
+        self.service.command('human-secret','p','r','apply_contract',expected_revision=1,idempotency_key='apply-exhausted',payload={'contract_id':'c','revision':2})
+        self.assertEqual(self.service.pending_dispatch('human-secret','p'),[])
+        from asr_supervisor.store import ExecutionStore,LeaseError
+        trial=self.service.get_run('human-secret','p','r')['trials'][0]
+        with self.assertRaises(LeaseError):ExecutionStore(self.service.path).claim(trial['execution_attempt_id'],'worker')
+
     def test_guidance_receipt_and_contract_switch_freeze_trials(self):
         self.start(); trial=self.submit()
         receipt=self.service.command('human-secret','p','r','guidance',expected_revision=1,idempotency_key='g',payload={'text':'Try sensitivity analysis'})
