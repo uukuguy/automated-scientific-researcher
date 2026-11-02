@@ -83,3 +83,5 @@
 - `asr_service/contracts.py` and `contracts/README.md` — variable validation and local revision repository.
 
 - `asr_service/references.py` — immutable scoped metadata registry; external asset verification remains pending.
+
+- `asr_service/admission.py` — local transactional preparation; mandatory owner gate has no AAR/auth/runtime adapter yet.

@@ -337,3 +337,5 @@ kind 集合：`create_project`、`validate_contract`、`publish_contract`、`app
 预算原语新增 `reserve_many` 与 `reserve_many_in_transaction`：多维额度原子预留、完整请求重放校验，可加入拥有者事务；尚未实现完整 trial 准入。事务调用方必须使用同一数据库，并负责 trial/事件/派发意图及认证。
 
 本地 `asr_service/references.py` 提供按项目和类型隔离的不可变 JSON 元数据引用，读取时复核内容 hash，并支持在拥有者事务中查询。注册是可信内部操作，不验证外部产物可用性、科学协议完整性或身份权限；完整 trial 准入仍未实现。
+
+`asr_service/admission.py` 已提供本地准入准备事务：核对显式 policy ID/revision 和项目引用，原子保存 trial/attempt 身份、预算束和事件；重复请求复用身份。必填可信 owner_gate 承担认证、外部运行门控、完整契约和产物/能力检查，当前没有真实适配。queued 记录仅为准备意图，无领取/派发/租约；不得用于真实执行授权。

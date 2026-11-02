@@ -48,3 +48,5 @@ The accepted architecture is detailed in [Minimum-loop design](../architecture/A
 - P2 budget preparation: atomic multidimension reservations can join an owning transaction; 44 tests pass. Trial admission and AAR remain pending.
 
 - P2 reference preparation: immutable project/kind-scoped JSON metadata registry with read-time hash verification; 47 combined tests pass. No external artifact or complete-contract admission claim.
+
+- P2 local admission preparation: atomic policy/reference checks, trial identities, budget bundle and event; 50 combined tests pass. Owner gate remains an unintegrated trusted callback; no real admission API or dispatch.
