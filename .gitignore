@@ -1,0 +1,29 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+3th-party/
+/data/
+tmp/
+.cloud/
+.codex/
+.env
+.DS_Store
+
+# Local persistent gateway cache
+.cache/
+
+# Local browser verification artifacts
+.playwright-cli/
+
+# Browser verification screenshots (selected evidence is saved under docs/validation/)
+output/playwright/
+
+# Local deployed gateway configuration and credentials
+/runtime/
