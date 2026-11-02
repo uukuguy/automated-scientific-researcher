@@ -53,3 +53,23 @@
 - 21:46 User accepted replaceable subscription-first runtimes and pi baseline; superseded fixed Claude SDK recommendation.
 - 21:49 Authenticated control adds durable admission, commands and evidence-linked findings for runtime-neutral execution. [aaf99e0]
 - 21:49 Subscription policies add finite turn/tool permits and quota gates without silent paid API fallback. [6883158]
+- 21:59 Fenced runtime sessions and verified finding evidence preserve bounded recovery and truthful controls. [3b30f56]
+- 21:59 Preserved pending termination during concurrent provider quota updates. [fe02025]
+- 21:59 User clarified GPT/Grok subscriptions available, Claude pending; use existing pi/Codex defaults and verify other runtimes first.
+- 22:01 Subscription probes retained: missing proxy then expired OAuth access; no trials/findings, no API fallback.
+- 22:04 Default Codex OAuth completed real trial/finding and native-session reopen; seven turns, zero outstanding reservations. [452f40f]
+- 22:09 User accepted omp/AAR capability base and separate power-grid scientific tools; documented implemented versus pending capabilities.
+- 22:17 Verified researcher exit and guidance acknowledgements support fenced runtime recovery. [e1c9552]
+- 22:17 Reopened control reconciles process exit while retaining trial identity and blocking stale ownership. [3a137ea]
+- 22:17 Persisted launch grants distinguish unused preflight reservations from unknown execution. [72e7ce6]
+- 22:17 User approved isolated locked scientific stack including pandapower; cross-calibration implementation started.
+- 22:21 Verified interrupted pi1.5 research resumed original trial and published finding; reservations settled, workspace escape rejected. [1c13a48]
+- 22:24 Aligned accepted subscription/scientific capability design and sanitized actual interruption evidence. [1b4457b]
+- 22:24 Verify and freeze capability packs before launch to reject runtime and skill drift. [1ae8194]
+- 22:32 Context7 plus installed-source checks identified pi hook input mutation and separate provider retry configuration.
+
+- 22:34 Pinned scientific tools and calibrated pandapower against frozen MATPOWER evidence to expose conversion differences. [6908771]
+
+- 2026-11-02: Independently verified actual AAR trajectory05 numerical manifest plus13 artifact hashes and successful notebook snapshot; sanitized P2-AAR-RESULTS.json preserves negative numerical outcome, actual loop/ORM mapping and stale provenance correction. Latest four scientific-trust suggestions assessed in PROJECT-DESIGN §13.1 as recommendations with explicit implementation gaps, not assumed user decisions.
+- 2026-11-02: a32c6e7 integrates actual AAR Experiment/Finding ORM; 4803334 verifies pinned worker bytes before imports, rejecting forged receipts and unrelated source modifications. Parent final optional-AAR suite109 passed4.859s; scientific environment5 passed4.50s. Read-only source review reports no remaining high-impact finding. P2 bounded reference-profile acceptance closed using real03/04/05 trajectories; P3 independent verification is active.
+- 2026-11-02: 50ebd04 adapts actual AAR research ownership to fenced pi sessions and verifies pinned dependencies before imports, including stale bytecode removal; final worker suite109 passed5.137s and fresh prepared-loop loading passed without a model call. P2 source and evidence closure complete.

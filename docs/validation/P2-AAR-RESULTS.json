@@ -1,0 +1,259 @@
+{
+  "schema": "asr-subscription-acceptance-result/1",
+  "project_id": "p2-subscription",
+  "research_run_id": "research_13e46480ec3841b0bac1d7a6a2278194",
+  "external_experiment_id": "aar-experiment:1",
+  "findings": [
+    {
+      "author": "researcher",
+      "created_at": "2026-11-02T14:35:17.503540+00:00",
+      "evidence": [
+        {
+          "execution_attempt_id": "attempt_76b6ab8d3d094728928402ed8463c900",
+          "manifest_hash": "96d70e599922c6f1aa9af49a0ffa328b4c3c74aee0b918649d540161abe36b6d",
+          "trial_id": "trial_12c71e92907c4b828427fe47f3bea45e"
+        }
+      ],
+      "finding_id": "case118-one-iteration-insufficient-research13",
+      "limitations": "Candidate author claim based on one smoke test, not a formal independent validation of the finding. Execution success is not solver convergence. No default-20 or higher-cap comparison, replication, held-out generalization, feasibility/infeasibility conclusion, or novel-method discovery. Operating violations describe a non-equation-valid iterate; 186 thermal limits remain unassessed. Evidence manifest 96d70e599922c6f1aa9af49a0ffa328b4c3c74aee0b918649d540161abe36b6d; attempt attempt_76b6ab8d3d094728928402ed8463c900.",
+      "project_id": "p2-subscription",
+      "research_run_id": "research_13e46480ec3841b0bac1d7a6a2278194",
+      "revision": 1,
+      "statement": "In trial_12c71e92907c4b828427fe47f3bea45e, case118 fixed-PV/PQ flat-start Newton with iterations=1 completed execution, but independent validation found maximum mismatch 0.8253756289466181 pu versus tolerance 1e-7 pu, equation_valid=false and input_preserved=true. This supports my hypothesis that one iteration is insufficient for this calibration instance. Separately, the returned iterate had nine reactive-generation violations and 186 thermal limits unassessed. Research note was snapshotted as 7df6d2ad0c2656c5ac81702364484c3c74c8534fe5da2b6f4561690733778030 before publication.",
+      "status": "candidate"
+    }
+  ],
+  "budget": {
+    "attempts": {
+      "limit": 2,
+      "spent": 1,
+      "reserved": 0,
+      "available": 1
+    },
+    "execution_ms": {
+      "limit": 30000,
+      "spent": 649,
+      "reserved": 0,
+      "available": 29351
+    },
+    "research_walltime_ms": {
+      "limit": 120000,
+      "spent": 58324,
+      "reserved": 0,
+      "available": 61676
+    },
+    "tool_executions": {
+      "limit": 20,
+      "spent": 8,
+      "reserved": 0,
+      "available": 12
+    },
+    "turns": {
+      "limit": 12,
+      "spent": 9,
+      "reserved": 0,
+      "available": 3
+    }
+  },
+  "same_trial_ids_after_reopen": true,
+  "billing": {
+    "mode": "subscription",
+    "actual_dollar_charge": null,
+    "model_reported_cost_is_estimate": true
+  },
+  "limits": {
+    "schema": "asr-runtime-acceptance/1",
+    "provider": "openai-codex",
+    "model": "gpt-6.1-sol",
+    "auth_mode": "subscription_oauth",
+    "billing_mode": "subscription",
+    "total_walltime_seconds": 120,
+    "turns": 12,
+    "tool_executions": 20,
+    "numerical_attempts": 2,
+    "paid_api_fallback": false,
+    "thinking": "high"
+  },
+  "aar_integration": "actual pinned AutonomousAgentLoop and Experiment/Finding ORM",
+  "runtime_sessions": [
+    {
+      "runtime": "pi-rpc/1",
+      "runtime_version": "1.5.0",
+      "capability_pack_sha256": "17180d42ceae8135348402ea25b136a01f045133d53c77b37feba47b6b18d15a",
+      "capability_pack_id": "powerflow-calibration-smoke/1",
+      "provider": "openai-codex",
+      "model": "gpt-6.1-sol",
+      "status": "settled",
+      "native_session_id": "research_13e46480ec3841b0bac1d7a6a2278194",
+      "settled": true,
+      "turns": 7,
+      "tool_executions": 7,
+      "duration_seconds": 48.3295507079456,
+      "exit_code": 0,
+      "aar_loop": {
+        "owner": "w2s_research.research_loop.agent.AutonomousAgentLoop.run",
+        "summary": {
+          "run_id": "research_13e46480ec3841b0bac1d7a6a2278194",
+          "idea_uid": "p2-subscription",
+          "idea_name": "p2-subscription",
+          "sessions": 1,
+          "duration_seconds": 48.688002824783325,
+          "stop_reason": "session_limit"
+        },
+        "patch": {
+          "schema": "asr-aar-loop-patch/1",
+          "upstream_revision": "79a0562fa1a2c246048ed7c009f3684907987b05",
+          "source_sha256": "982799a83ba15b4a2839e6f30356636fb50a10e62b6c9a86d9929303d10bc75b",
+          "patched_sha256": "ec156e9f3b7b44d6964dbebc15f93f15f5fcdab21a49213f145aa5a941bdf161",
+          "findings_sync_sha256": "87618d6892a3d2d894aa26b10e26a0369b65ff42c4004fee9c79b4f3e57d235e"
+        }
+      }
+    },
+    {
+      "runtime": "pi-rpc/1",
+      "runtime_version": "1.5.0",
+      "capability_pack_sha256": "17180d42ceae8135348402ea25b136a01f045133d53c77b37feba47b6b18d15a",
+      "capability_pack_id": "powerflow-calibration-smoke/1",
+      "provider": "openai-codex",
+      "model": "gpt-6.1-sol",
+      "status": "settled",
+      "native_session_id": "research_13e46480ec3841b0bac1d7a6a2278194",
+      "settled": true,
+      "turns": 2,
+      "tool_executions": 1,
+      "duration_seconds": 9.287100207991898,
+      "exit_code": 0,
+      "aar_loop": {
+        "owner": "w2s_research.research_loop.agent.AutonomousAgentLoop.run",
+        "summary": {
+          "run_id": "research_13e46480ec3841b0bac1d7a6a2278194",
+          "idea_uid": "p2-subscription",
+          "idea_name": "p2-subscription",
+          "sessions": 1,
+          "duration_seconds": 9.846136093139648,
+          "stop_reason": "session_limit"
+        },
+        "patch": {
+          "schema": "asr-aar-loop-patch/1",
+          "upstream_revision": "79a0562fa1a2c246048ed7c009f3684907987b05",
+          "source_sha256": "982799a83ba15b4a2839e6f30356636fb50a10e62b6c9a86d9929303d10bc75b",
+          "patched_sha256": "ec156e9f3b7b44d6964dbebc15f93f15f5fcdab21a49213f145aa5a941bdf161",
+          "findings_sync_sha256": "87618d6892a3d2d894aa26b10e26a0369b65ff42c4004fee9c79b4f3e57d235e"
+        }
+      }
+    }
+  ],
+  "trial": {
+    "trial_id": "trial_12c71e92907c4b828427fe47f3bea45e",
+    "execution_attempt_id": "attempt_76b6ab8d3d094728928402ed8463c900",
+    "variables": {
+      "iterations": 1,
+      "network": "case118",
+      "solver": "newton_raphson"
+    },
+    "dispatch_state": "succeeded",
+    "manifest_sha256": "96d70e599922c6f1aa9af49a0ffa328b4c3c74aee0b918649d540161abe36b6d",
+    "validation": {
+      "input_preserved": true,
+      "equation_valid": false,
+      "max_mismatch_pu": 0.8253756289466181,
+      "operational_status": "violated",
+      "thermal_limits_unassessed": 186,
+      "violations": [
+        {
+          "kind": "reactive_generation",
+          "id": 0,
+          "value": -8.82294172884012,
+          "low": -5,
+          "high": 15
+        },
+        {
+          "kind": "reactive_generation",
+          "id": 8,
+          "value": -19.081181011967693,
+          "low": -8,
+          "high": 24
+        },
+        {
+          "kind": "reactive_generation",
+          "id": 14,
+          "value": -23.835406306609535,
+          "low": -14,
+          "high": 42
+        },
+        {
+          "kind": "reactive_generation",
+          "id": 15,
+          "value": -50.58227457370917,
+          "low": -8,
+          "high": 24
+        },
+        {
+          "kind": "reactive_generation",
+          "id": 33,
+          "value": -12.753168240992423,
+          "low": -6,
+          "high": 9
+        },
+        {
+          "kind": "reactive_generation",
+          "id": 37,
+          "value": -12.069467934423002,
+          "low": -8,
+          "high": 23
+        },
+        {
+          "kind": "reactive_generation",
+          "id": 42,
+          "value": -19.887302515080687,
+          "low": -3,
+          "high": 9
+        },
+        {
+          "kind": "reactive_generation",
+          "id": 45,
+          "value": 73.67762822160603,
+          "low": -15,
+          "high": 40
+        },
+        {
+          "kind": "reactive_generation",
+          "id": 47,
+          "value": -25.469005366153155,
+          "low": -8,
+          "high": 23
+        }
+      ],
+      "errors": [],
+      "policy": "fixed-pv-pq-single-slack/1"
+    }
+  },
+  "snapshot": {
+    "id": 1,
+    "commit_id": "7df6d2ad0c2656c5ac81702364484c3c74c8534fe5da2b6f4561690733778030",
+    "files_snapshot": [
+      {
+        "path": "research-note.md",
+        "sha256": "a44193a00bf5b65a90d14ca9060e01af39a12823bd8a877abf89765b60f2cc93",
+        "size": 2370
+      }
+    ],
+    "asr_revision": 1
+  },
+  "forum": [
+    {
+      "id": 1,
+      "finding_type": "snapshot",
+      "asr_finding_id": "snapshot:7df6d2ad0c2656c5ac81702364484c3c74c8534fe5da2b6f4561690733778030",
+      "asr_revision": 1
+    },
+    {
+      "id": 2,
+      "finding_type": "result",
+      "asr_finding_id": "case118-one-iteration-insufficient-research13",
+      "asr_revision": 1
+    }
+  ],
+  "evidence_integrity": "All published numerical artifact hashes and snapshot files verified against manifests.",
+  "historical_metadata_correction": "Frozen contract provenance.organization retained a pre-integration description. Actual loop owner, Experiment mapping and Finding rows establish upstream integration; original contract was not rewritten."
+}

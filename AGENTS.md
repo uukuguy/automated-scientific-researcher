@@ -10,11 +10,14 @@ research question, permitted changes, evaluation rules and resource budget.
 The repository has a verified local MATPOWER/Octave reference runner, independent
 Python electrical checks and immutable trial evidence. Local authenticated control
 and a fenced execution supervisor support the pinned reference profile, durable
-commands, budgets and recovery. The model-driven researcher loop remains under
-integration; do not claim P2 complete without actual subscription-backed execution.
+commands, budgets and recovery. The pinned AAR loop and Experiment/Finding ORM have actual subscription-backed
+pi/Codex evidence, including a negative numerical outcome and notebook snapshot.
+See docs/validation/P2-SUBSCRIPTION.md for measured scope; arbitrary candidate
+execution and independent evaluation isolation remain unverified.
 Researcher runtimes are replaceable and subscription-first; pi is the lightweight
 baseline. Paid API fallback requires separate explicit authorization. Use `uv sync --locked` and `uv run python -m
-unittest discover -s tests -v` for the combined suite. The fixed-PV/PQ baseline is a calibration
+unittest discover -s tests -v` for the base suite. Add `--extra aar` to `uv run`
+for the actual upstream integration tests. The fixed-PV/PQ baseline is a calibration
 profile, not a restriction on candidate-method research. See
 `docs/validation/P1-NUMERICAL-LAB.md` for evidence and limits. Check the worklist
 and code before reporting implementation status; update this paragraph when it changes.

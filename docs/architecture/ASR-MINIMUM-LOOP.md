@@ -1,6 +1,8 @@
 # ASR 最小研究闭环详细设计
 
-版本：0.2，2026-11-02。状态：整体为技术设计；P1 本机参考实验、独立验证和证据切片已实现，见主设计 §4.1。控制服务/AAR 尚未实现；跨项目协议待 Capstone 对齐，正式科学参数待校准。
+版本：0.3，2026-11-02。状态：P1 参考实验与 P2 本机控制/监督、pi 订阅轨迹及中断恢复已有验证；实际 AAR 组织适配和科学环境仍在集成。跨项目协议待 Capstone 对齐，正式科学参数待校准。
+
+实现入口：`asr_service/README.md`、`asr_supervisor/README.md`、`integrations/runtimes/README.md`。本文目标协议与当前本机路由并不完全相同；不能以设计路径宣称端点存在。真实订阅验收见 `docs/validation/P2-SUBSCRIPTION.md`。
 
 本文件细化 [项目主设计](../PROJECT-DESIGN.md) §4–§10，覆盖单课题、单研究员、真实实验、人类介入、独立复核和中断恢复。主设计仍是唯一总入口；本文负责实现边界和行为，不复制项目目标或维护进度。对总体原则的改变必须回到主设计和决策记录。
 
@@ -330,18 +332,6 @@ kind 集合：`create_project`、`validate_contract`、`publish_contract`、`app
 新技术选择是本轮的实现设计，不冒充已运行验证或用户逐项确认。实施反馈如改变职责或研究边界，先更新主设计；仅修正字段/错误码等细节时同步本文件、Schema、Capstone 交接和契约样例。
 
 
-### P2 local budget primitive (2026-11-02)
+### Runtime and capability alignment
 
-本地预算原语 `asr_service/budgets.py` 已实现项目级整数计量、事务预留、幂等结算及超额记账。执行退出由可信调用方声明，尚未连接进程核验、运行子额度、完整准入或 AAR；不能作为执行授权。
-
-预算原语新增 `reserve_many` 与 `reserve_many_in_transaction`：多维额度原子预留、完整请求重放校验，可加入拥有者事务；尚未实现完整 trial 准入。事务调用方必须使用同一数据库，并负责 trial/事件/派发意图及认证。
-
-本地 `asr_service/references.py` 提供按项目和类型隔离的不可变 JSON 元数据引用，读取时复核内容 hash，并支持在拥有者事务中查询。注册是可信内部操作，不验证外部产物可用性、科学协议完整性或身份权限；完整 trial 准入仍未实现。
-
-`asr_service/admission.py` 已提供本地准入准备事务：核对显式 policy ID/revision 和项目引用，原子保存 trial/attempt 身份、预算束和事件；重复请求复用身份。必填可信 owner_gate 承担认证、外部运行门控、完整契约和产物/能力检查，当前没有真实适配。queued 记录仅为准备意图，无领取/派发/租约；不得用于真实执行授权。
-
-本地准入准备接口将必填 `authorize` 与 `owner_gate` 分开：每次请求先校验访问权限；已受理的相同请求直接返回原回执，新请求才检查运行门控。暂停后恢复丢失响应不会创建新试验或再次预留预算。两种回调仍需真实服务适配。
-
-### Subscription-first runtime alignment (2026-11-02)
-
-Researcher runtimes are replaceable; pi with Codex subscription is the lightweight baseline. Claude SDK is no longer mandatory. AAR remains the research organization adapter, ASR owns durable run/trial/evidence IDs. Runtime credentials stay outside candidate execution and persisted event payloads. Explicit subscription mode has no automatic paid API fallback; quota limits pause new work and preserve recovery. Provider support is verified individually.
+已确认可替换、订阅优先研究员运行时，以 pi/Codex 为默认；omp+AAR 工具基座与独立电网科学工具包按版本装配。当前原生文件工具和科研 skill 有路径边界与 hash 校验，任意 shell/候选代码执行仍需 OS 隔离能力验收。具体支持状态见 [研究员运行时](RESEARCHER-RUNTIMES.md)，不能以工具清单代替数值或隔离验证。

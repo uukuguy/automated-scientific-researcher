@@ -52,4 +52,8 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 
 - `docs/architecture/RESEARCHER-RUNTIMES.md` — accepted subscription-first runtime boundary and provider verification states.
 
-- `docs/validation/P2-SUBSCRIPTION.md` and `P2-SUBSCRIPTION-RESULTS.json` — real subscription model trajectory and explicit acceptance limits.
+- `docs/validation/P2-SUBSCRIPTION.md` and `P2-SUBSCRIPTION-RESULTS.json`, `P2-INTERRUPTION-RESULTS.json`, `P2-AAR-RESULTS.json` — real subscription, interruption and actual upstream AAR trajectories with explicit acceptance limits.
+
+- `docs/validation/SDK-PROTOTYPES.md` — Context7 and installed-version SDK interface verification.
+
+- `docs/validation/PANDAPOWER-CALIBRATION.md` — locked scientific environment, IEEE118 cross-calibration and raw conversion differences.

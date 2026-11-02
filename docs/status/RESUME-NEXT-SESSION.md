@@ -1,11 +1,15 @@
 # Live Session Checkpoint
 
-> Updated: 2026-11-02 21:49 (Asia/Shanghai). Session remains active — not a final handoff.
+> Updated: 2026-11-02. Active-session recovery point, not a final handoff.
 
-P2 remains active. User explicitly requested complete-package progress, not repeated small-slice stops. User confirmed replaceable subscription-first coding-agent runtimes and pi baseline; this supersedes fixed Claude SDK recommendation (D012).
+P2 bounded reference-profile single-researcher loop is complete; P3 independent verification is active. User requested uninterrupted P2 completion and most recently asked assessment of four scientific-trust suggestions. Main design §13.1 records recommendations, distinctions and gaps; do not label them accepted user decisions or implemented features.
 
-Control and supervisor implementations committed (aaf99e0, d9eb0f0, 6883158). Local HTTP bearer ACL, reference-profile contracts, atomic admission and budgets, durable commands/findings, fenced execution and reconciliation exist. Real Docker baseline/truncated/timeout/interrupted recovery evidence is under data/p2-supervisor-reference-20261102. Full runtime-neutral integration review is ongoing.
+Accepted D012–015 remain subscription-first replaceable runtimes, pi/Codex default, omp+AAR curated base, separate grid toolkit and locked scientific stack. No silent API fallback. GPT/Grok subscriptions available, Claude pending; only pi/Codex actual integration has model acceptance.
 
-pi1.0.0 installed; local auth metadata confirms openai-codex OAuth without revealing secrets. Runtime worker implements curated pi RPC adapter and ASR tools; no model call yet. Authorized bounded subscription acceptance plan: 120 seconds, 12 provider turns, 20 tools, 2 numerical attempts. No paid API fallback. Parent must verify actual model-driven hypothesis/trial/finding and persistent recovery before P2 closure.
+Actual05 uses pinned AAR AutonomousAgentLoop + Experiment/Finding ORM, pi1.5 default gpt-6.1-sol/high. One-iteration negative numerical outcome, successful notebook snapshot, candidate finding, same-session clean reopen;9turns8tools58324ms under120000, one attempt649ms, no reserves.04 separately proves forced process interruption and recovery without duplicate numerical work. Sanitized docs/validation/P2-*; private artifacts remain ignored. Frozen05 provenance had stale pre-integration label; corrected interpretation appended, original unchanged.
 
-In flight: runtime adapter implementation; control/supervisor review. Shared design/readme/instructions are being reconciled by parent; preserve all working changes. Snapshot/reference backend does not support arbitrary candidate implementations yet. Cross-project Capstone integration and independent evaluation isolation remain unverified.
+Source-integrity review fixed mutable-receipt trust: derive transforms from pinned blobs and tracked patches; verify physical imported tree before import. Parent final combined109 tests passed; scientific5 passed, real pandapower cross-calibration documented. Latest control4803334 and AAR loop50ebd04; final worker109 tests also passed after bytecode-cache hardening. Parent documentation records closure. No additional paid/model calls required.
+
+Remaining: P3 isolated evaluator/replay, arbitrary candidate-code containment, formal Validation lifecycle; Hypothesis versions/outcome axes/two logical quota ledgers need design alignment from current discussion. Existing dimension budgets and frozen evidence are not equivalent to these complete services. Context7 SDK verification docs/validation/SDK-PROTOTYPES.md records exact installed-version checks and fixed pi tool_call mutation semantics.
+
+Unexpected eda79aa captured concurrent changes; origin unproven, no credentials tracked. Preserve history. Use worklist and git log for current commits, do not rerun accepted model experiments gratuitously.

@@ -1,6 +1,6 @@
 # P2 subscription acceptance evidence
 
-Date: 2026-11-02. P2 remains active pending remaining acceptance gaps.
+Date: 2026-11-02. P2 bounded single-researcher acceptance is complete; P3 independent evaluation remains active.
 Machine-readable sanitized result: [P2-SUBSCRIPTION-RESULTS.json](P2-SUBSCRIPTION-RESULTS.json).
 
 ## Real execution verified
@@ -27,7 +27,7 @@ Do not publish private OAuth configuration or native session transcripts without
 
 This is a tool-only calibration trajectory, not candidate coding or scientific improvement.
 The numerical supervisor separately verified interruption recovery, but clean native-session reopening is not researcher-process crash reconciliation.
-AAR organization bridge is implemented; pinned upstream researcher loop and Experiment ORM were not launched.
+For trajectory03, pinned upstream researcher loop and Experiment ORM were not launched; trajectory05 below separately closes this integration gap.
 Full arbitrary-code researcher isolation, independent evaluation isolation and Capstone interop remain separate unverified capabilities.
 
 ## Updated pi1.5 interruption trajectory (04)
@@ -52,3 +52,34 @@ Registered process-group exit is verified with OS birth identity; this is not
 containment of arbitrary detached descendants. The supported profile has native
 file tools and ASR service tools, no shell. Arbitrary code execution requires a
 separate OS/container containment profile before it can be enabled.
+
+## Actual upstream AAR trajectory (05)
+
+[Sanitized result](P2-AAR-RESULTS.json) records the pinned upstream
+AutonomousAgentLoop.run as outer owner, actual Experiment ORM mapping and two
+actual Finding rows (workspace snapshot and numerical candidate finding).
+The original loop bounded two invocations at one session each; reopening kept
+the same run/native-session/trial identities. This is clean reopen evidence;
+forced interruption evidence remains trajectory04 above.
+
+The researcher chose iterations=1 and predicted insufficient Newton convergence.
+Execution completed, while independent equations failed: maximum residual
+0.8253756289466181 p.u. against1e-7. This supports the stated insufficiency
+hypothesis for this instance; it does not establish infeasibility or a new method.
+Nine reactive violations concern a non-equation-valid iterate;186 thermal limits
+remain unassessed. The researcher retained this outcome, wrote and successfully
+snapshotted research-note.md, then published a candidate with explicit limits.
+
+The two sessions used9 turns,8 tools and58324ms of120000ms; one numerical attempt
+charged649ms. All reservations were released. Parent verification checked all13
+published numerical artifact hashes and the snapshot manifest/file hash.
+Frozen contract provenance.organization retained an obsolete pre-integration
+label; actual loop and ORM records establish what ran. The original evidence is
+preserved; future acceptance metadata is corrected separately.
+
+Hypothesis revisions and complete subscription-quota accounting are not yet
+first-class services. Independent evaluation isolation, arbitrary candidate
+execution, formal replication and generalization remain outside these measured
+P2 capabilities. Design review is recorded in main design §13.1.
+
+Final source review rejected forged patch receipts; deterministic pinned-source verification now runs before upstream imports. Parent reran109 combined tests successfully and5 scientific-environment tests successfully. No new model invocation was used for these integrity fixes.

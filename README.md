@@ -19,7 +19,7 @@ ASR 构建可持续运行、可恢复、可复核的自动化科研系统。人�
 
 总体架构、研究变量和人机交互原则已确认；最小闭环详细设计与 Capstone 准备交接已形成。总体协议仍需跨项目对齐；本机实现接口见 [控制服务](asr_service/README.md)，尚未完成 Capstone 联调。
 
-P1 本机数值切片已完成：MATPOWER 8.1 / Octave 7.3.0 的 IEEE-118 参考实验、独立 Python 方程验证、不可覆盖的证据、并发幂等、失败保留和重放均已有运行证据。当前进入 **P2：契约、控制服务与单研究员接入**；已实现变量策略 schema、语义校验和本地修订/绑定核心，已新增本机认证控制 API 与执行监督，真实智能体研究闭环仍在集成。运行时采用订阅优先、可替换设计，pi 为轻量基准。
+P1 本机数值切片已完成：MATPOWER 8.1 / Octave 7.3.0 的 IEEE-118 参考实验、独立 Python 方程验证、不可覆盖的证据、并发幂等、失败保留和重放均已有运行证据。**P2 的受限参考 profile 单研究员闭环已完成，下一包为 P3 独立复核与系统验收**；已实现变量策略 schema、语义校验和本地修订/绑定核心，已新增本机认证控制 API 与执行监督，真实 AAR/订阅研究员已完成参考实验、笔记快照、候选发现及同会话恢复，见 [P2 验收](docs/validation/P2-SUBSCRIPTION.md)。任意候选执行和独立评价隔离尚未验收。运行时采用订阅优先、可替换设计，pi 为轻量基准。
 
 参考基线在 4 次迭代后达到约 `3.94e-13 p.u.` 残差，但有 6 处无功越限，186 条支路热限额未评估，因此不宣称运行可行。详见 [P1 验收记录](docs/validation/P1-NUMERICAL-LAB.md)。
 
@@ -54,3 +54,5 @@ uv run python -m powerflow_lab.reference --key my-baseline
 变量策略子契约与本地 API 说明见 [contracts/README.md](contracts/README.md)。测试数量与验收以本次实际运行及工作清单为准；变量策略通过校验不等于获得执行授权。
 
 本机服务与运行恢复见 [控制服务说明](asr_service/README.md) 和 [执行监督说明](asr_supervisor/README.md)。订阅凭据只供研究员运行时使用；不传入数值候选容器，且不会自动回退到 API 计费。
+
+科学计算环境与 pandapower 交叉校准见 [科学环境](environments/scientific/README.md) 和 [数值校准报告](docs/validation/PANDAPOWER-CALIBRATION.md)。该环境独立锁定，Notebook 工具通过 `--group notebooks` 启用。
