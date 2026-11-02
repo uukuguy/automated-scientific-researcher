@@ -206,16 +206,18 @@ class ControlTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'stale_runtime_epoch'):
             self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='old',session_id=session['session_id'],epoch=session['epoch'],owner='worker')
 
-    def test_reconciliation_terminates_registered_process_before_settlement(self):
+    def test_reopened_control_reconciles_process_and_preserves_trial_identity(self):
         import subprocess,sys
         from integrations.runtimes.process import identify
         self.start()
+        trial=self.submit()
         session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='session',runtime_identity=self.runtime_identity())
         process=subprocess.Popen([sys.executable,'-c','import time;time.sleep(60)'],start_new_session=True)
         try:
             self.service.attach_runtime_process('human-secret','p','r',session['session_id'],session['epoch'],'worker',identify(process.pid))
             with self.assertRaisesRegex(RuntimeError,'process_still_active'):
                 self.service.release_runtime('human-secret','p','r',session['session_id'],session['epoch'],'worker',execution_exited=True,actual_walltime_ms=0)
+            self.service=ControlService(self.service.path,credentials=self.service.credentials)
             recovered=self.service.reconcile_runtime('human-secret','p','r',session['session_id'],session['epoch'],'recovery',terminate=True)
             self.assertEqual(recovered['state'],'exited')
             self.assertEqual(recovered['epoch'],2)
@@ -223,6 +225,13 @@ class ControlTests(unittest.TestCase):
             self.assertEqual(self.service.budgets.balance('p','research_walltime_ms')['reserved'],0)
             self.assertGreater(self.service.budgets.balance('p','research_walltime_ms')['spent'],0)
             process.wait(timeout=3)
+            with self.assertRaisesRegex(ValueError,'stale_runtime_epoch'):
+                self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='stale',session_id=session['session_id'],epoch=session['epoch'],owner='worker')
+            self.assertEqual(self.submit(),trial)
+            self.assertEqual(len(self.service.get_run('human-secret','p','r')['trials']),1)
+            self.service.command('human-secret','p','r','resume',expected_revision=1,idempotency_key='resume-recovered')
+            next_session=self.service.claim_runtime('human-secret','p','r','new-worker',idempotency_key='new-session',runtime_identity=self.runtime_identity())
+            self.assertNotEqual(next_session['session_id'],session['session_id'])
         finally:
             if process.poll() is None:process.kill();process.wait()
 
