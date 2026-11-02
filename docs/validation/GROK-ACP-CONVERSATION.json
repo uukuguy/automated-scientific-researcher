@@ -1,0 +1,50 @@
+{
+  "schema": "asr-grok-acp-conversation/1",
+  "started_at": "2026-11-02T16:18:14.142476+00:00",
+  "runtime": "grok-acp",
+  "runtime_version": "1.0.70",
+  "runtime_build": "f50904eaee6c",
+  "protocol_version": 1,
+  "model": "grok-4.6",
+  "requested_reply": "ASR_GROK_OK",
+  "reply": "",
+  "status": "timed_out",
+  "prompt_count": 1,
+  "tool_call_count": 0,
+  "permission_request_count": 0,
+  "billing": {
+    "authentication_method": "cached_token",
+    "api_key_environment_present": false,
+    "paid_api_fallback": false,
+    "actual_charge": null,
+    "remaining_subscription_quota": null
+  },
+  "limits": {
+    "total_walltime_seconds": 45,
+    "model_prompts": 1,
+    "research_tools": false,
+    "client_fs": false,
+    "client_terminal": false
+  },
+  "notes": [
+    "Native cached authentication acceptance does not establish invoice or subscription quota.",
+    "No model reasoning, credentials, authentication responses, or raw transcripts are saved."
+  ],
+  "advertised_auth_methods": [
+    "cached_token",
+    "grok.com"
+  ],
+  "cached_token_authentication_succeeded": true,
+  "native_session_id": "01a19d0d-fc3b-7c41-bc6a-017dbbec9139",
+  "model_selection": "session-advertised default; no model change requested",
+  "prompt_started_at": "2026-11-02T16:18:21.963344+00:00",
+  "failed_method": "session/prompt",
+  "failure_reason": "bounded_stage_timeout",
+  "cancel_notification_sent": true,
+  "owned_process_group_exit_verified": true,
+  "owned_process_exit_code": -9,
+  "existing_user_leader_unchanged": true,
+  "stderr_line_count": 2,
+  "finished_at": "2026-11-02T16:18:54.244803+00:00",
+  "total_duration_seconds": 40.102
+}
