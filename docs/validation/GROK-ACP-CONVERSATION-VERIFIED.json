@@ -1,0 +1,64 @@
+{
+  "schema": "asr-grok-acp-conversation/1",
+  "started_at": "2026-11-02T16:35:30.637645+00:00",
+  "runtime": "grok-acp",
+  "runtime_version": "grok 1.0.70 (f50904eaee6c) [stable]",
+  "status": "passed",
+  "requested_reply": "ASR_GROK_OK",
+  "prompt_count": 1,
+  "tool_call_count": 0,
+  "permission_request_count": 0,
+  "billing": {
+    "authentication_method": "cached_token",
+    "api_key_environment_present": false,
+    "paid_api_fallback": false,
+    "actual_charge": null,
+    "remaining_subscription_quota": null
+  },
+  "limits": {
+    "total_walltime_seconds": 45,
+    "model_prompts": 1,
+    "research_tools": false,
+    "client_fs": false,
+    "client_terminal": false
+  },
+  "correction": "Explicit operator-configured HTTP(S)_PROXY; no native model override",
+  "expected_model": "grok-4.7",
+  "prior_failure": "GROK-ACP-CONVERSATION.json",
+  "prior_model_observation": "GROK-ACP-CONVERSATION-PROXY.json",
+  "notes": [
+    "Native dialogue only, not AAR or scientific acceptance.",
+    "Credentials, authentication responses, thoughts and raw transcripts are not retained."
+  ],
+  "anonymous_connectivity": [
+    {
+      "route": "direct",
+      "exit_code": 28,
+      "http_status_connect_total": "000 0.000000 3.005311"
+    },
+    {
+      "route": "configured_proxy",
+      "exit_code": 0,
+      "http_status_connect_total": "404 0.000401 0.403480"
+    }
+  ],
+  "protocol_version": 1,
+  "advertised_auth_methods": [
+    "cached_token",
+    "grok.com"
+  ],
+  "cached_token_authentication_succeeded": true,
+  "native_session_id": "01a19d1d-c377-7521-bfc4-4ef2d4b5290e",
+  "model": "grok-4.7",
+  "model_selection": "session-advertised default; no model change requested",
+  "selection_rationale": "Use actual session-advertised default, explicitly checked against expected_model when supplied; no provider or billing fallback.",
+  "terminal_stop_reason": "end_turn",
+  "reply": "ASR_GROK_OK",
+  "owned_process_group_exit_verified": true,
+  "owned_process_exit_code": -9,
+  "cancel_notification_sent": false,
+  "server_request_methods": [],
+  "stderr_line_count": 0,
+  "finished_at": "2026-11-02T16:35:40.702225+00:00",
+  "total_duration_seconds": 10.065
+}

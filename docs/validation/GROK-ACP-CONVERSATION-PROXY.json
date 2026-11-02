@@ -1,0 +1,60 @@
+{
+  "schema": "asr-grok-acp-conversation/1",
+  "started_at": "2026-11-02T16:32:27.291024+00:00",
+  "runtime": "grok-acp",
+  "runtime_version": "grok 1.0.70 (f50904eaee6c) [stable]",
+  "status": "failed",
+  "requested_reply": "ASR_GROK_OK",
+  "prompt_count": 0,
+  "tool_call_count": 0,
+  "permission_request_count": 0,
+  "billing": {
+    "authentication_method": "cached_token",
+    "api_key_environment_present": false,
+    "paid_api_fallback": false,
+    "actual_charge": null,
+    "remaining_subscription_quota": null
+  },
+  "limits": {
+    "total_walltime_seconds": 45,
+    "model_prompts": 1,
+    "research_tools": false,
+    "client_fs": false,
+    "client_terminal": false
+  },
+  "correction": "Explicit operator-configured HTTP(S)_PROXY; native model unchanged",
+  "prior_failure": "GROK-ACP-CONVERSATION.json",
+  "notes": [
+    "Native dialogue only, not AAR or scientific acceptance.",
+    "Credentials, authentication responses, thoughts and raw transcripts are not retained."
+  ],
+  "anonymous_connectivity": [
+    {
+      "route": "direct",
+      "exit_code": 28,
+      "http_status_connect_total": "000 0.000000 3.002066"
+    },
+    {
+      "route": "configured_proxy",
+      "exit_code": 0,
+      "http_status_connect_total": "404 0.000282 0.427124"
+    }
+  ],
+  "protocol_version": 1,
+  "advertised_auth_methods": [
+    "cached_token",
+    "grok.com"
+  ],
+  "cached_token_authentication_succeeded": true,
+  "native_session_id": "01a19d1a-f4c8-7191-b0aa-922050d9ce8f",
+  "model": "grok-4.7",
+  "model_selection": "session-advertised default; no model change requested",
+  "error_category": "RuntimeError",
+  "owned_process_group_exit_verified": true,
+  "owned_process_exit_code": -9,
+  "cancel_notification_sent": true,
+  "server_request_methods": [],
+  "stderr_line_count": 0,
+  "finished_at": "2026-11-02T16:32:33.133193+00:00",
+  "total_duration_seconds": 5.842
+}
