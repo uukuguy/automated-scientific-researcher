@@ -68,3 +68,24 @@ timed out without assistant text. No tool/permission events; owned process group
 cleanup was verified, existing user process unchanged. Preserve this failure in
 GROK-ACP-CONVERSATION.json. Network/config investigation continues; never turn a
 successful cached-auth handshake into a claimed successful conversation.
+
+## Grok inference route correction and successful dialogue
+
+Anonymous connectivity to cli-chat-proxy.grok.com timed out directly; the
+operator's existing local HTTP proxy reached the endpoint (HTTP404 at root,
+which proves reachability, not model success). Explicit HTTP(S)_PROXY was absent
+from the first isolated child. Codex's successful smoke had already supplied
+this proxy explicitly; it does not establish automatic system-proxy discovery.
+
+The first proxy-enabled Grok session advertised grok-4.7 instead of the earlier
+grok-4.6 default. The model guard stopped before any prompt. Preserve that
+observation in GROK-ACP-CONVERSATION-PROXY.json. The user did not pin 4.6; the
+subsequent check explicitly accepted and verified the actual 4.7 default.
+
+GROK-ACP-CONVERSATION-VERIFIED.json records the successful single prompt:
+ASR_GROK_OK, end_turn, 10.065 seconds, zero tool/permission events, cached_token
+subscription authentication with no API fallback, owned process-group exit
+verified. No actual charge or remaining subscription quota is inferred.
+`integrations/runtimes/grok_smoke.py` preserves a repeatable explicitly invoked
+single-prompt diagnostic; it is not a Grok/AAR runtime adapter. No further model
+calls are needed to establish this dialogue check.

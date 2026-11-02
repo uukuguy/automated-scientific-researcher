@@ -19,7 +19,7 @@ Exactly one package is active. Status records evidence, not elapsed time.
 
 ## Design and parallel preparation
 
-The accepted architecture is detailed in [Minimum-loop design](../architecture/ASR-MINIMUM-LOOP.md). Its reference-profile control/admission, budget reservations, immutable publication and fenced recovery mechanisms have P1/P2 evidence; general candidate execution and P3 scientific-trust additions remain unimplemented. Acceptance IDs A1–A14 map to P1–P4. Capstone owns its separate C0–C4 preparation lane; no Capstone completion is inferred here.
+The accepted architecture is detailed in [Minimum-loop design](../architecture/ASR-MINIMUM-LOOP.md). Its reference-profile control/admission, budget reservations, immutable publication and fenced recovery mechanisms have P1/P2 evidence; general candidate execution remains unimplemented; P3 now includes hypothesis lineage, evaluator report identity, logical ledger views and standalone isolated material recheck. Acceptance IDs A1–A14 map to P1–P4. Capstone owns its separate C0–C4 preparation lane; no Capstone completion is inferred here.
 
 ## Current evidence
 
@@ -51,7 +51,7 @@ The accepted architecture is detailed in [Minimum-loop design](../architecture/A
 1. Hypothesis revision and evidence relations: first local slice implemented with immutable revisions, optional frozen trial bindings, project checks, legacy replay, candidate author assessments and pi/AAR sharing. Interface tests exercise service reopen and opposing-evidence retention (A12); actual model-driven hypothesis revision and full trajectory remain outstanding.
 2. Orthogonal outcome and Validation lifecycle: evaluator-only immutable report API and distinct experiment/equation/operating/replication/generalization/hypothesis axes implemented; original execution and candidate finding unchanged. Hash/identity checks and negative supersession are tested; evaluator attestations do not establish actual isolation or complete scientific validation (A13).
 3. Two logical resource ledgers: first view/reservation slice implemented in BudgetStore; existing consumption and unknown in-flight reservations remain unchanged, cross-ledger bundles are atomic, provider quota stays unknown. Provider observations and full failure/recovery system acceptance remain A14 work.
-4. Minimal isolated candidate execution and evaluator replay: enable one contract-permitted candidate-method slice with real code/input/resource isolation, then prove execution/data/logic independence with real frozen-material replay and deliberate invalid cases (A8/A9). Integrate a complete negative-or-positive research trajectory; mocks alone cannot close P3.
+4. Isolated frozen-material evaluator implemented and verified with actual Docker mounts/probes, negative inputs, timeout/recovery and actual retained AAR trajectory05. A real evaluator-only HTTP report was appended to the original run without changing trials/findings. Remaining: integrate evaluation reservations and receipt publication into Control; implement one contract-permitted candidate-code slice and actual method replication, then complete a model-driven hypothesis/revision/validation trajectory (A8/A9/A12–A14). Frozen-material recheck alone cannot close P3.
 
 ## Risk checks during P3
 

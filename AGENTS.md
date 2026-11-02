@@ -13,7 +13,9 @@ and a fenced execution supervisor support the pinned reference profile, durable
 commands, budgets and recovery. The pinned AAR loop and Experiment/Finding ORM have actual subscription-backed
 pi/Codex evidence, including a negative numerical outcome and notebook snapshot.
 See docs/validation/P2-SUBSCRIPTION.md for measured scope; arbitrary candidate
-execution and independent evaluation isolation remain unverified.
+execution remains unverified. A standalone isolated frozen-material evaluator has
+real Docker evidence, including the retained AAR negative outcome; its Control
+budget integration and candidate-code replication remain incomplete.
 Researcher runtimes are replaceable and subscription-first; pi is the lightweight
 baseline. Paid API fallback requires separate explicit authorization. Use `uv sync --locked` and `uv run python -m
 unittest discover -s tests -v` for the base suite. Add `--extra aar` to `uv run`

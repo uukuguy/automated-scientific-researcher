@@ -1,0 +1,57 @@
+{
+  "schema": "asr-p3-actual-validation-publication/1",
+  "validation": {
+    "author": "asr-isolated-material-evaluator",
+    "author_role": "evaluator",
+    "created_at": "2026-11-02T16:46:42.747821+00:00",
+    "document": {
+      "assessments": {
+        "equation_validity": "invalid",
+        "experiment_validity": "unassessed",
+        "generalization": "unassessed",
+        "hypothesis_assessment": "unassessed",
+        "operating_checks": "violated",
+        "replication": "unassessed"
+      },
+      "provenance": {
+        "independence": {
+          "execution": "observed",
+          "frozen_materials": "observed",
+          "mathematics": "observed"
+        },
+        "limits": [
+          "Only fixed-pv-pq-single-slack/1 numerical material is rechecked. Experimental design and hypothesis assessment remain unassessed.",
+          "Original solver/candidate method was not rerun; no independent replication or held-out generalization claim.",
+          "Nine reactive-generation violations; 186 thermal ratings remain unassessed.",
+          "Execution/mount/probe evidence is in docs/validation/ISOLATED-EVALUATION.json; service records evaluator attestation, not an independently enforced isolation flag.",
+          "Local development recheck, outside Control execution reservation integration; historical trial costs are unchanged.",
+          "Evaluator artifact artifacts/evaluation-actual05-20261103/evidence/c96cd7af845717f8f5914c89ffd8ae3913c4e5b24216d061d018dabb2f835ce3/manifest.json sha256=a140acb6e7cf06016d36e4ddc0e67a674f47b2224f3af3ff540c89e6e56f5d4f"
+        ],
+        "method": "Pinned independent Python frozen-material checker in restricted OrbStack container; evaluator manifest SHA256 a140acb6e7cf06016d36e4ddc0e67a674f47b2224f3af3ff540c89e6e56f5d4f"
+      },
+      "summary": "Actual AAR trajectory05 retains original input; independent residual 0.8253756289466181 p.u. exceeds 1e-7. Equation invalid; no scientific finding promotion.",
+      "target": {
+        "evaluation_ref": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+        "execution_attempt_id": "attempt_76b6ab8d3d094728928402ed8463c900",
+        "manifest_hash": "96d70e599922c6f1aa9af49a0ffa328b4c3c74aee0b918649d540161abe36b6d",
+        "trial_id": "trial_12c71e92907c4b828427fe47f3bea45e"
+      }
+    },
+    "hypothesis_ref": null,
+    "independence_basis": "evaluator_attestation",
+    "isolation_verified_by_service": false,
+    "project_id": "p2-subscription",
+    "research_run_id": "research_13e46480ec3841b0bac1d7a6a2278194",
+    "schema_version": "asr-validation/1",
+    "sha256": "49b03a0fb85a8e707d95b464d04327ff0239ed86aedbeab91e0b951d3893ee51",
+    "supersedes": null,
+    "validation_id": "validation_b036db6cff8b4c6289b602b9a9f1592d"
+  },
+  "evaluator_manifest_sha256": "a140acb6e7cf06016d36e4ddc0e67a674f47b2224f3af3ff540c89e6e56f5d4f",
+  "evidence_source_unchanged": true,
+  "run_trial_finding_counts_unchanged": true,
+  "http_post_get_and_idempotent_replay": true,
+  "service_reopen_verified": true,
+  "no_new_model_or_solver_execution": true,
+  "scope": "Post-hoc frozen-material numerical Validation publication; no candidate-code replication or scientific claim acceptance"
+}

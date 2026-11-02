@@ -357,3 +357,21 @@ kind 集合：`create_project`、`validate_contract`、`publish_contract`、`app
 ### Native runtime protocol adapters (D019/D020)
 
 Codex App Server and Grok ACP retain distinct wire protocols behind ASR lifecycle semantics. Role requirements and capability negotiation precede launch. Persist ASR run/session/epoch separately from native thread/session/turn IDs; preserve raw typed events as well as normalized projections. A prompt receipt, completed turn, cancellation receipt and verified execution exit are separate facts. Reconcile ambiguous in-flight work before retry or reservation release. The protocol foundation does not itself implement ASR tool permits or prove candidate/evaluator isolation. See RESEARCHER-RUNTIMES.md for staged acceptance.
+
+### 已验证的独立材料复核切片
+
+`asr_evaluation.Replay` 只接受固定 case118 原始 JSON hash、固定 validator hash
+和 1e-7 阈值的 terminal managed evidence。逐文件校验后只读复制数据和可信代码，
+独立输出目录；启动和恢复发布前核对真实 Docker inspect。只读/无网络/非 root
+探针、负例、超时及中断发布恢复已有真实 Docker 测试。最终摘要必须由已冻结
+job/request/output/exit/outcome 派生一致，不能单改摘要将负结果标为成功。
+
+实际 AAR trajectory05 的冻结解已重算：原输入保持，残差0.8253756289466181，
+方程无效，9处无功越限、186热限额未评估。通过真实 evaluator HTTP POST/GET
+追加到原数据库，幂等和服务重开已验证；不修改旧试验与候选发现。完整记录见
+ISOLATED-EVALUATION.json 和 P3-ACTUAL05-VALIDATION.json。
+
+这是材料复核而非候选代码重跑；研究设计、假说、复现与泛化判定仍未评估。
+Standalone 执行尚未接入 Control 预算预留/结算；报告发布不追补历史执行成本，
+也不把服务的 isolation_verified_by_service 改成 true。完整 P3 仍需候选代码
+隔离、评价执行准入与实际模型驱动的新科研轨迹。

@@ -45,9 +45,9 @@ findings. It must not rerun experiments merely to rebuild conversation context.
 | Runtime | Role | Verified basis | Remaining verification |
 |---|---|---|---|
 | pi + openai-codex OAuth | Lightweight baseline | Actual pi 1.5 bounded AAR trajectory, interruption/reopen and evidence in P2 reports | Arbitrary candidate coding isolation and P3 scientific acceptance |
-| Codex App Server | First native adapter | User confirms local login and actual coding; installed CLI exposes app-server | ASR protocol, tool integration, bounded subscription trajectory and recovery |
+| Codex App Server | First native adapter | Actual native one-prompt dialogue gpt-6.1-sol/high via installed0.166.0; bounded protocol client/tests | ASR tool/budget binding, research trajectory and recovery |
 | Claude Code / Agent SDK | AAR upstream runtime family | Upstream uses Claude Agent SDK; official SDK has tool/session/hooks capabilities | Supported subscription use for the selected deployment; ASR adapter |
-| Grok Build ACP | Next native adapter | User confirms local login and actual coding; installed CLI exposes agent stdio | ASR capability negotiation, tools, bounded subscription trajectory and recovery |
+| Grok Build ACP | Next native adapter | Actual ACP cached-auth dialogue grok-4.7 via installed1.0.70 with explicit proxy | Production adapter, ASR tools/budget binding, research trajectory and recovery |
 
 These are distinct verification states, not claims of equal feature support.
 Primary sources checked 2026-11-02:
@@ -315,3 +315,5 @@ separately. Cross-calibrate pandapower against the original MATPOWER input/model
 policy before comparing results; retain independent equation checks. Additional
 optimization, ML, symbolic, distribution or dynamic packages belong to explicit
 optional environments, not automatic installation by a researcher.
+
+Native dialogue evidence and retained Grok route/default-model failures: [NATIVE-RUNTIME-PROTOCOLS](../validation/NATIVE-RUNTIME-PROTOCOLS.md). Native dialogue does not establish ASR research integration.

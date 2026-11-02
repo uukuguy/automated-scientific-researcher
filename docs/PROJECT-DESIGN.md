@@ -113,7 +113,7 @@ Capstone 只持有交互和展示投影。讨论转成明确目标、任务、�
 
 当前校准 profile 为 `fixed-pv-pq-single-slack/1`：连通网络、单参考节点、恒功率负荷、固定拓扑、不做 Q 限值 PV/PQ 切换；平启动 NR 仅为参考。原输入中固定量保持不变，允许求解所需的 Slack 有功及 PV/Slack 无功变化，仍单独检查其运行限值。缺少支路限额维持未评估。此 profile 是已实现能力，不收窄用户可研究的方法范围；超出当前实现的控制政策须新增适配与验证。
 
-本地 runner 以文件锁及原子 manifest 提供单机证据入口。`asr_service.control` 已提供本机 bearer 认证、完整参考 profile 契约、原子准入与预算、控制回执和候选发现；`asr_supervisor` 已提供执行租约、代次隔离、外部超时与恢复对账。公共端点以 `asr_service/README.md` 为实现依据，真实 AAR/订阅研究员已完成受限参考实验、快照、候选发现和会话重开；尚未完成 Capstone 联调。未知在途执行保留预算并阻止自动重跑。当前受限容器只运行固定参考脚本，不能据此声称任意候选执行或独立评价隔离已通过验收。
+本地 runner 以文件锁及原子 manifest 提供单机证据入口。`asr_service.control` 已提供本机 bearer 认证、完整参考 profile 契约、原子准入与预算、控制回执和候选发现；`asr_supervisor` 已提供执行租约、代次隔离、外部超时与恢复对账。公共端点以 `asr_service/README.md` 为实现依据，真实 AAR/订阅研究员已完成受限参考实验、快照、候选发现和会话重开；尚未完成 Capstone 联调。未知在途执行保留预算并阻止自动重跑。实验执行仍只支持固定参考脚本，任意候选执行尚未验收。另有独立 Docker 冻结材料评价切片：校验实际挂载/资源/权限后，使用只读原始输入与验证代码重算冻结解；保留负面结果并通过 evaluator 接口追加报告。该切片不等于候选方法重跑或评价预算已纳入 Control。见 [隔离复核证据](validation/ISOLATED-EVALUATION.json) 和 [实际报告发布](validation/P3-ACTUAL05-VALIDATION.json)。
 
 独立科学环境 `environments/scientific/` 已锁定并安装首批工具；pandapower 与冻结 IEEE118 MATPOWER 结果完成同模型/同初值校准。原始转换矩阵的限值与顺序差异被保留，独立检查始终使用原问题。详见 [科学环境校准](validation/PANDAPOWER-CALIBRATION.md)。这不是新执行后端或正式泛化验收。
 

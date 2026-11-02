@@ -90,3 +90,10 @@
 - 2026-11-03: 3a2b0dc adds bounded Codex protocol and real subscription dialogue evidence; AAR binding remains separate.
 - 2026-11-03: 067c352 separates logical model/compute balances and atomic reservations without resetting legacy usage; eleven budget tests pass.
 - 2026-11-03: 630cc3e records evaluator-only immutable reports bound to frozen evidence, retaining negatives and separate validity axes.
+- 2026-11-03: a1868cd exposes immutable evaluator reports to researchers without write authority and documents separated scientific outcomes and resource ledgers.
+- 2026-11-03: 1895c32 verifies native Grok dialogue through explicit proxy, preserving prior failures and preventing API fallback.
+- 2026-11-03: 1c55964 protects native dialogue evidence from overwrites and requires verified process cleanup before success.
+- 2026-11-03: Parent combined185 tests passed (two Docker opt-ins skipped); explicit real Docker12 passed, including negative checks and publication recovery.
+- 2026-11-03: Published actual05 isolated negative recheck via evaluator HTTP; replay/reopen verified, original evidence and run/trial/finding counts unchanged.
+- 00:50 Added isolated frozen-material checks to validate retained numerical evidence without promoting author claims. [7555f3b]
+- 00:51 Removed evaluator test trailing whitespace to keep owned changes clean. [45f3a8a]

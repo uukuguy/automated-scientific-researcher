@@ -1,47 +1,75 @@
 # Live Session Checkpoint
 
-> Updated: 2026-11-03. Active recovery checkpoint, not a final handoff.
+> Updated: 2026-11-03. Active recovery point, not a final handoff or P3 closure.
 
-P2 bounded actual AAR/pi single-researcher closure is complete; P3 independent
-validation remains active. Preserve prior actual03/04/05 evidence and scientific
-limits: fixed reference only, negative result valid, no arbitrary candidate-code
-isolation or independent evaluator containment yet. Hypothesis revision/frozen
-trial bindings and author evidence relations implemented; formal Validation and
-dual logical ledgers remain P3 work. See WORKLIST and P2 reports.
+## Current intent
 
-User accepted three-layer organization: Research Organizer (Super Agent) faces
-humans/Capstone and coordinates; Research Leads retain autonomous scientific
-reasoning and direct cross-review; Workers perform concrete tasks. D019 separates
-role capability contracts from runtime bindings. P5 is future scope; proposed
-1 organizer/2 leads/2 shared workers/1 experiment is not deployed configuration.
+The user requested uninterrupted native Codex/Grok dialogue checks followed by
+mainline work. Both dialogue checks are complete. P2 bounded AAR/pi acceptance
+remains complete; P3 is active. No permission question is pending. Preserve
+negative results and frozen evidence. Never infer unlimited subscription quota
+or fall back to a paid API.
 
-D020: keep pi baseline, implement native Codex App Server first, Grok ACP next.
-User confirms BOTH logged in locally and used for actual coding; do not reauth.
-ASR protocol/tool/budget/recovery acceptance is still required. Existing AAR
-worker owns codex_app_server.py and its tests; control worker investigates Grok
-ACP with no inference. Root owns canonical docs and integration. No model runs
-were started for this protocol slice. Do not treat client handshake as scientific
-acceptance or expose auth/native transcripts in reports.
+## Verified work
 
-Shared tools complete: c48ba1c connects bounded Context7/Crossref to pi /3 pack;
-five skills load through hash-verified frozen files. Prior worker commits62328c8,
-0be5aa1,1710952 preserve skill provenance, Crossref and multi-skill loader. Latest
-parent optional-AAR suite141 passed6.577s. Actual anonymous Context7 and Crossref
-network checks plus installed pi five-skill parser passed, no model inference.
-See TOOL-PACK.md. /2 requires historical adapter, not silent network expansion.
+- Codex App Server: 3a2b0dc adds the bounded protocol client and 12 tests. Actual
+  gpt-6.1-sol/high returned ASR_CODEX_OK in 25.409 seconds, with ChatGPT auth,
+  no tools and child exit 0.
+- Grok ACP: 1895c32 adds the diagnostic and actual grok-4.7 dialogue evidence:
+  ASR_GROK_OK, end_turn, 10.065 seconds, no tools, owned process group exited.
+  1c55964 makes evidence publication exclusive and success depend on exit proof.
+- Grok's first isolated child lacked the existing local proxy. Direct inference
+  connectivity timed out; proxy 127.0.0.1:7897 reached the endpoint. Preserve the
+  first timeout and the zero-prompt guard observation: the connected service
+  advertised default 4.7 instead of 4.6. No further model calls are needed.
+- c48ba1c and earlier skill commits supply five frozen, hash-verified skills and
+  bounded Context7/Crossref tools through pi pack /3. Network clients were checked;
+  exact Context7 served version remains unverified. No general MCP/Claude binding.
+- 067c352 gives model/compute ledger views and atomic bundles over existing rows.
+  Legacy usage remains unchanged; provider quota is unknown, not a local balance.
+- 630cc3e adds evaluator-only immutable Validation records, exact evidence checks,
+  separate scientific axes and retained negative history. a1868cd lets researchers
+  read those reports through state, without publication authority.
+- 7555f3b and 45f3a8a add standalone fixed-profile Docker material rechecks.
+  Actual read-only mounts, network/nonroot probes, invalid input/voltage cases,
+  timeout and interrupted publication recovery passed. Derived manifest fields
+  must match hashed raw outputs, request, job, exit inspection and outcome.
+- Actual AAR trajectory05 was rechecked in isolation: original input preserved,
+  mismatch 0.8253756289466181, equations invalid, nine Q violations and 186 thermal
+  ratings unassessed. Source IDs/hashes remain unchanged. See ISOLATED-EVALUATION.json.
+- Root appended that result to the original05 database via real evaluator HTTP.
+  POST/GET, idempotency and service reopen passed; run/trial/finding counts did
+  not change. See P3-ACTUAL05-VALIDATION.json. Experimental design, hypothesis,
+  replication and generalization remain unassessed. Control's isolation flag
+  remains false; the external report hash is a textual provenance link.
+- Final parent suite: 185 tests in 7.933 seconds, with two Docker opt-ins skipped.
+  The explicit Docker suite passed all 12 checks. Reviewers cleared known blockers.
 
-Uncommitted root documentation aligns D018–D020 and runtime acceptance lane.
-Next: review/verify bounded Codex protocol foundation, record Grok capabilities,
-then connect native runtime to authenticated ASR tools and finite lifecycle
-accounting before any real research claim. No paid API fallback. Keep continuing
-P3 toward a real candidate-method trajectory and independent frozen replay.
+## Accepted architecture
 
-Active update: 3a2b0dc implements bounded Codex protocol foundation;12tests and
-actual one-prompt native subscription dialogue passed(gpt-6.1-sol/high,25.409s,
-reply ASR_CODEX_OK). Grok first realprompt timedout(970c470),cachedauth/session
-worked,ownedgroupcleaned; parent found macOS proxy127.0.0.1:7897 absent childenv;
-aar worker diagnosing network before retry. No unsupported success claims.
-067c352 implements logical budget views/crossledger atomicreserve preserving old
-rows;11budgettests pass. Control worker owns evaluatorValidationAPI plus ledger
-readprojection. Supervisor worker owns standalone isolated frozen-material
-recheck, no fullbudget integration or solverreplication claim. Root owns docs.
+D019 names the human-facing Super Agent Research Organizer. Research Leads retain
+scientific autonomy and direct cross-review; Workers perform concrete tasks.
+Role capability profiles are separate from runtime bindings. D020 retains pi,
+then adds native Codex and Grok. Dialogue acceptance does not establish their AAR
+tool/budget integration. P5 is not deployed; proposed concurrency 1/2/2/1 is not
+a permanent limit. Capstone handoffs are prepared locally, not confirmed delivered.
+
+## Next mainline work
+
+1. Integrate evaluator admission, resource reservations, execution identity and
+   report artifacts into Control. Standalone Replay currently has local pending
+   recovery, but no Control budget or execution authentication boundary.
+2. Add one contract-permitted candidate-code profile with actual OS isolation and
+   immutable snapshots, then rerun the candidate method separately. Material
+   rechecking is not solver replication.
+3. Complete a model-driven hypothesis → candidate → experiment → revision →
+   finding → independent validation trajectory using verified pi. Check A12–A14
+   and budget recovery before closing P3. Native Codex/Grok require ASR tool and
+   permit bindings before substituting for pi.
+4. Provider quota observations and machine-resolved evaluator artifact references
+   remain open; unknown values stay unknown.
+
+Credentials and sessions remain in private ignored artifacts. Do not print them
+or repeat accepted model checks unnecessarily. The actual05 database now contains
+an appended Validation; its original trial and evidence remain immutable. Consult
+JOURNAL and Git for the final documentation commit. No background model work remains.

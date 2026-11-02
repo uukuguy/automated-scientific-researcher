@@ -26,11 +26,11 @@
 
 ## Open Problems (theme-level)
 
-- D016 requires immutable hypothesis evolution, separate scientific outcome semantics, three-layer evaluator independence and model/compute ledgers; local hypothesis revision/binding/author-evidence APIs exist; evaluator-only immutable attestations and logical model/compute views exist; full scientific lifecycle, evaluator isolation and provider quota observation remain incomplete.
+- D016 requires immutable hypothesis evolution, separate scientific outcome semantics, three-layer evaluator independence and model/compute ledgers; local hypothesis revision/binding/author-evidence APIs exist; evaluator-only immutable attestations and logical model/compute views exist; a standalone frozen-material evaluator has actual isolation evidence; full scientific lifecycle, evaluator budget integration and provider quota observation remain incomplete.
 - Local authenticated control API and reference execution supervision exist; generalized candidate execution remains unavailable.
 - Unconfirmed real-world input distribution, OOD definition, failure cases, and downstream task.
 - Formal evaluation policy and expanded operating conventions remain uncalibrated; the implemented reference uses fixed PV/PQ and one Slack.
-- Independent evaluation isolation remains unimplemented; local runtime/attempt budget accounting exists.
+- Standalone fixed-profile material evaluation runs in a verified restricted Docker container; arbitrary candidate-code isolation, candidate replication and evaluator Control-budget integration remain incomplete.
 - Numerical image execution is pinned; APT rebuild sources and cross-machine image distribution remain unresolved.
 
 ## Key Files
@@ -83,6 +83,8 @@
 - `asr_service/contracts.py` and `contracts/README.md` — variable validation and local revision repository.
 
 - `asr_service/references.py` — immutable scoped metadata registry and content-addressed bundles.
+- `asr_service/validations.py` — evaluator-only immutable reports with orthogonal scientific assessment axes.
+- `asr_evaluation/` — standalone isolated fixed-profile frozen-material recheck and conservative recovery.
 
 - `asr_service/admission.py` — local transactional preparation; control.py owns authenticated run admission.
 
