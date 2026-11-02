@@ -81,3 +81,5 @@
 - `powerflow_lab/` — local reference runner, validator and evidence publication.
 
 - `asr_service/contracts.py` and `contracts/README.md` — variable validation and local revision repository.
+
+- `asr_service/references.py` — immutable scoped metadata registry; external asset verification remains pending.

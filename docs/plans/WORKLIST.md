@@ -46,3 +46,5 @@ The accepted architecture is detailed in [Minimum-loop design](../architecture/A
 本地预算原语 `asr_service/budgets.py` 已实现项目级整数计量、事务预留、幂等结算及超额记账。执行退出由可信调用方声明，尚未连接进程核验、运行子额度、完整准入或 AAR；不能作为执行授权。
 
 - P2 budget preparation: atomic multidimension reservations can join an owning transaction; 44 tests pass. Trial admission and AAR remain pending.
+
+- P2 reference preparation: immutable project/kind-scoped JSON metadata registry with read-time hash verification; 47 combined tests pass. No external artifact or complete-contract admission claim.
