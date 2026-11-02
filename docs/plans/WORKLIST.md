@@ -14,6 +14,8 @@ Exactly one package is active. Status records evidence, not elapsed time.
 | P2 | AAR single-researcher loop. Apply user-controlled variable contracts to domain prompt/tools, findings and snapshots; enforce external stopping and recovery. | complete | P1 | Real research session calls numerical tools, submits evidence-linked findings, survives interruption without losing completed trial identities or budget. |
 | P3 | Independent verification and system acceptance, including D016 hypothesis lineage, scientific outcome semantics and model/compute ledgers. Isolate evaluation and replay frozen evidence. | active | P2 | Separate replay report, failed validation cases, process-recovery checks and one complete research trajectory. A supported negative result is acceptable; A12–A14 verify hypothesis history, outcome separation and resource accounting. |
 | P4 | First scientific deliverable: sample-generation, solver-method or joint research. Freeze evaluation contract; compare candidates and replicate on held-out families. | pending | P3 | Equal-budget comparisons, separate equation/operational validity, defined coverage proxies, reproducible methods and independent evidence; report null results honestly. |
+| P5 | Three-layer organization: Capstone-facing Research Organizer (Super Agent), multiple AAR Research Leads and task Workers (D018). | pending | P3, P4 | Cross-direction coordination and science guidance remain distinct; unique task ownership, same-budget comparison, independent validation and authoritative Control ledger preserved. |
+
 
 ## Design and parallel preparation
 
@@ -56,3 +58,11 @@ The accepted architecture is detailed in [Minimum-loop design](../architecture/A
 - Highest: scientific trust. Inspect failure denominators, original-problem preservation, evaluator independence, exposed evaluation data and claim scope. Do not promote a metric improvement into a scientific finding.
 - High: AAR coupling. Audit active prompt/tools/loop overrides and tracked patch size; keep upstream W2S/PGR task goals out of ASR contracts.
 - High: infrastructure replacing research. Every P3 slice must serve the single-researcher hypothesis → candidate method → experiment → revision → finding → independent replay trajectory. Current reference-only iteration experiments do not prove candidate-method autonomy. No speculative multi-agent/distributed/plugin-platform work.
+
+## Accepted native-runtime integration lane (D020)
+
+Keep P3 active and preserve pi acceptance. User confirmed existing local Codex
+and Grok login/coding on 2026-11-03. Codex App Server precedes Grok ACP: bounded
+protocol foundation → ASR tool/budget binding → actual interruption/recovery and
+research acceptance. Detailed files and gates are in RESEARCHER-RUNTIMES.md.
+Protocol-only tests do not close the scientific trajectory or activate P5.

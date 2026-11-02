@@ -1,6 +1,6 @@
 # ASR 最小研究闭环详细设计
 
-版本：0.3，2026-11-02。状态：P1 参考实验与 P2 本机控制/监督、pi 订阅轨迹及中断恢复已有验证；实际 AAR 组织适配和科学环境仍在集成。跨项目协议待 Capstone 对齐，正式科学参数待校准。
+版本：0.3，2026-11-02。状态：P1 参考实验与 P2 本机控制/监督、pi 订阅轨迹及中断恢复已有验证；实际 pinned AAR loop/ORM 和科学环境已完成受限验收；P3 独立验证仍在实现。跨项目协议待 Capstone 对齐，正式科学参数待校准。
 
 实现入口：`asr_service/README.md`、`asr_supervisor/README.md`、`integrations/runtimes/README.md`。本文目标协议与当前本机路由并不完全相同；不能以设计路径宣称端点存在。真实订阅验收见 `docs/validation/P2-SUBSCRIPTION.md`。
 
@@ -18,7 +18,7 @@
 |---|---|---|
 | ASR API/control | 扩展 AAR 后端，提供版本化 HTTP 接口；唯一数据库写入服务 | 契约、运行、命令、预算、实验索引、事件与验证记录 |
 | Supervisor | 受信任的执行管理进程，管理带身份标签的容器、租约与超时；经 API 报告 | 自身运行日志；通过受权限限制的内部接口提交执行事实 |
-| AAR researcher | 受限容器，Claude SDK 会话与研究工具，工作区可写 | 研究工作区、候选代码、笔记和候选发现；不写权威数据库 |
+| AAR researcher | 受限容器，可替换 Runtime 会话与研究工具，工作区可写 | 研究工作区、候选代码、笔记和候选发现；不写权威数据库 |
 | Candidate runner | 按 attempt 启动的容器，执行冻结候选及输入 | 本 attempt 的临时输出目录 |
 | Validator/replicator | 独立受限进程/容器读取冻结材料，候选执行与验证再次隔离 | 独立验证产物，经可信发布流程登记 |
 | Capstone | 独立应用，通过后端适配 ASR | 对话、草稿和可重建投影；不直接写 ASR 表或访问 Docker |
@@ -351,3 +351,7 @@ kind 集合：`create_project`、`validate_contract`、`publish_contract`、`app
 ### Runtime and capability alignment
 
 已确认可替换、订阅优先研究员运行时，以 pi/Codex 为默认；omp+AAR 工具基座与独立电网科学工具包按版本装配。当前原生文件工具和科研 skill 有路径边界与 hash 校验，任意 shell/候选代码执行仍需 OS 隔离能力验收。具体支持状态见 [研究员运行时](RESEARCHER-RUNTIMES.md)，不能以工具清单代替数值或隔离验证。
+
+### Native runtime protocol adapters (D019/D020)
+
+Codex App Server and Grok ACP retain distinct wire protocols behind ASR lifecycle semantics. Role requirements and capability negotiation precede launch. Persist ASR run/session/epoch separately from native thread/session/turn IDs; preserve raw typed events as well as normalized projections. A prompt receipt, completed turn, cancellation receipt and verified execution exit are separate facts. Reconcile ambiguous in-flight work before retry or reservation release. The protocol foundation does not itself implement ASR tool permits or prove candidate/evaluator isolation. See RESEARCHER-RUNTIMES.md for staged acceptance.

@@ -136,3 +136,35 @@
 - Decision: two logical ledgers for model/subscription use and experimental compute, with one Control authority and atomic admission under project policy. Unknown quota stays unknown; local limits still apply. No automatic paid API fallback; no implicit GPU enforcement or per-step approvals.
 - Rationale: prevent retry-driven success narratives, self-grading, loss of scientific history across runtimes and hidden cost transfers.
 - Supersedes: the proposed status of main design former §13.1. Current requirements live in §§6.1,8,9; detailed mechanisms and tests belong to P3. P2's historical measured acceptance is unchanged.
+
+## D017 — Scientific director and Capstone (superseded role split)
+
+- Date: 2026-11-02. Status: superseded by D018 after the user separated the human-facing Super Agent from multiple scientific direction leads. Earlier interpretation combined those responsibilities.
+- Decision: Research Director reasons about scientific direction, hypotheses, complementary tasks, evidence conflicts and synthesis; typically delegates candidate implementation and experiments. Reuse AAR research loops and collaboration rather than build a separate competing scheduler.
+- Decision: Capstone owns human interaction/projections. ASR Control retains authoritative contracts, budget, permissions and receipts; direct human stop remains available. The director cannot self-approve evaluation or increase authorized resources.
+- Rationale: single-researcher acceptance establishes a foundation, not the long-term ceiling. Multi-researcher coordination should improve science, not merely route messages.
+- Boundary: future capability, not deployed. Preserve current P3 scope; assess DeepSeek's Super-agent design for useful patterns without committing to its runtime or replacing AAR.
+
+## D018 — Research Orchestrator, multiple Research Leads and Research Workers
+
+- Date: 2026-11-02. Status: user-confirmed three-layer responsibility split. Role terminology uses Research Orchestrator (研究统筹), Research Lead (方向负责人) and Research Worker (研究执行者); Super Agent remains the architectural name.
+- Decision: Super Agent communicates with humans through Capstone and coordinates the AAR research organization across directions. It is not the sole scientific mentor.
+- Decision: multiple Research Leads belong inside AAR, guiding direction-level science, critiquing hypotheses/designs and synthesizing evidence. Workers perform concrete retrieval, implementation, experiments, debugging and review. Preserve unique task/run ownership and use AAR collaboration primitives.
+- Boundary: one ASR Control authority for authorization, budgets and receipts; independent evaluator owns formal validation. Capstone and every agent hold projections or author interpretations, not duplicate ledgers or self-approved scientific claims.
+- Supersedes: D017's merged mentor/human-facing coordinator. Current single-researcher implementation and P3 acceptance are unchanged; P5 carries the future three-layer organization.
+
+## D019 — Research Organizer and role/runtime separation
+
+- Date: 2026-11-03. Status: accepted in user discussion.
+- Research Organizer (研究组织者) replaces D018's Research Orchestrator role name; Super Agent remains the architectural name.
+- Research Leads retain former autonomous researchers' scientific reasoning and may delegate concrete tasks. Leads can directly discuss and cross-review; the organizer is not a mandatory message relay.
+- Separate role capability contracts (responsibility, tools, skills, actions, outputs, budget, communication) from runtime bindings (implementation, provider/model, authentication/billing and recovery). Same runtime may serve multiple isolated roles. Reject missing required capabilities; no silent fallback.
+- Bound global concurrency and discussion costs before scaling. Initial 1 organizer/2 leads/2 shared concurrent workers/1 experiment remains a proposed calibration configuration, not deployed behavior. Preserve P3 single-researcher scope.
+
+## D020 — Native Codex App Server followed by Grok Build ACP
+
+- Date: 2026-11-03. Status: accepted; user confirms both local agents are logged in and have performed coding.
+- Preserve verified pi/Codex baseline; implement Codex App Server first and Grok ACP next, through their native programmatic protocols. Keep native reasoning/tool loops instead of rebuilding them around raw model APIs.
+- Existing login/coding use is user-confirmed availability, not ASR tool/lifecycle acceptance. Reuse login without reauthentication; inspect no secret payloads. Subscription mode must exclude API fallback.
+- Acceptance proceeds through bounded protocol, session, tool/approval, interruption/recovery and finally model-driven research evidence. Native session identity stays separate from ASR research and execution identities. Cancellation receipt alone does not prove process/remote work exit.
+- Supersedes generic 'Native Codex/Grok' candidate wording with concrete adapter choices; does not close P3 or deploy P5.

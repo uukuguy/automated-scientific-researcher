@@ -192,3 +192,30 @@ Researcher runtimes are replaceable; pi with Codex subscription is the lightweig
 Accepted ASR requirements: distinguish execution, experiment validity, hypothesis assessment and finding validation; expose immutable hypothesis revisions and supporting/opposing/inconclusive evidence; keep research identity separate from runtime sessions. Display model/subscription and experimental-compute budgets separately, including unknown quota. Never promote an author claim to formal validation or merge scientific negative results into automatic error retries.
 
 These are P3 implementation targets, not currently available wire fields. Capstone should prepare projections and align versioned protocol changes when ASR schemas land; no duplicate authoritative hypothesis or budget ledger. This update is prepared in ASR only, not evidence of delivery, acceptance or implementation in Capstone.
+
+### Three-layer research organization — D018 (2026-11-02)
+
+This replaces the earlier merged mentor/interaction interpretation in D017.
+Capstone connects humans to the Research Organizer (研究组织者; architecture name
+Super Agent). It captures overall intent, coordinates the AAR organization across
+directions and reports progress/decisions. It is not the direction-level mentor.
+
+Inside AAR, multiple Research Leads guide hypotheses, experimental design and
+evidence synthesis for their respective directions. Research Workers perform
+specific search, coding, experiment, debugging and review tasks. Projections must
+distinguish overall conversation, direction, task owner, research run and runtime
+session; do not collapse all identities into a single chat thread or agent ID.
+
+Human changes become explicit target/version/Control receipts. Conversation alone
+does not authorize evaluation or budget changes. Direct pause/stop bypasses agent
+availability. Scientific judgments remain distinct from independent Validation.
+These are future P5 requirements, not deployed roles or evidence of cross-project
+delivery. Reuse AAR organization; do not create another Capstone scheduler/ledger.
+
+D019/D020 update: display role (Research Organizer/Research Lead/Worker) separately
+from runtime/provider/model and tool-pack identity. Leads retain autonomous
+scientific responsibility and direct cross-review. Native Codex App Server and
+Grok ACP adapters follow pi; existing local login/coding is user-confirmed,
+ASR runtime acceptance remains distinct. Native thread/session/turn IDs never
+replace research/trial IDs. This is a prepared local handoff, not evidence of
+Capstone delivery or implementation.

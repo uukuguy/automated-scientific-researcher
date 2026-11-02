@@ -78,3 +78,10 @@
 - 2026-11-02: 207f7ec records accepted D016 requirements to govern P3 implementation. User requests continued work and risk review; prioritize scientific trust and one real candidate-method research trajectory, not speculative platform expansion.
 - 2026-11-02: 223fcf3 persists immutable hypothesis revisions and frozen author evidence links while preserving legacy trial replay and counterevidence. Parent wires pi hypothesis tools/state and version2 scientific pack; full119 tests passed, final4 ORM and2 bridge tests passed. Read-only review found no blocker; no model execution was used for this slice.
 - 2026-11-02: Documented shared skill sources versus runtime-specific loaders/credentials, Context7 optional backend, and selected debugging/review/deep-literature capabilities. These selections are not claims that new MCP servers or third-party skills were installed.
+- 2026-11-02: 28a96e4 exposes durable hypotheses through pi and documents shared capabilities to preserve research history across runtimes.
+- 23:26 Added bounded Crossref metadata search with safe failures to support literature discovery without model calls. [0be5aa1]
+
+- 2026-11-03: Accepted Research Organizer naming, autonomous direction leads, role/runtime separation and Codex App Server then Grok ACP.
+- 2026-11-03: User confirms local Codex/Grok login and actual coding; ASR protocol/tool/recovery acceptance remains separate.
+- 2026-11-03: c48ba1c connects shared documentation/literature tools and five curated skills; 141 tests pass, preserving bounded research capabilities.
+- 2026-11-03: Grok1.0.70 ACP handshake and cached authentication succeeded without inference; session load/cancel effects remain untested.

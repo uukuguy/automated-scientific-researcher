@@ -25,11 +25,10 @@ from unrestricted code; arbitrary coding execution remains unavailable.
 `prepare_oauth` copies only `openai-codex` OAuth into a private config directory,
 keeps refreshed tokens there across reopen, and does not modify the user's auth
 store. Ambient API keys, skills, extensions, project context, provider switching
-and shell tools are disabled. One versioned scientific-reasoning skill is loaded
-explicitly; it contains methodological guidance and no API calls. Native pi
+and shell tools are disabled. Five versioned skills are loaded explicitly: scientific-reasoning, systematic-debugging, code-review, verification-before-completion and deep-research. They contain method guidance and no hidden model calls. Native pi
 read/edit/write/grep/find/ls tools are reused with path guards rooted in the
-research workspace, excluding symlinks, host paths and Git/pi metadata. An exact
-read-only exception permits the curated skill file. `find` is deterministic glob
+research workspace, excluding symlinks, host paths and Git/pi metadata. Exact
+read-only exceptions permit the frozen declared skill files. `find` is deterministic glob
 search, not OMP semantic model search. Do not publish that private directory or session
 transcript: both may contain sensitive data. The runtime returns model-reported
 usage; dollar cost metadata is an estimate, not a subscription invoice.
