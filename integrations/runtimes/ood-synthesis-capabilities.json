@@ -1,0 +1,70 @@
+{
+  "schema": "asr-research-capability-pack/1",
+  "id": "ood-study-synthesis/1",
+  "status": "Post-test interpretation only; all experiment execution tools removed",
+  "runtime_protocol": "pi-rpc/1",
+  "runtime_version": "1.5.0",
+  "authentication": "openai-codex subscription_oauth only",
+  "skills": [
+    {
+      "id": "scientific-reasoning/2",
+      "path": "skills/scientific-reasoning/SKILL.md",
+      "sha256": "eae8c5709306206ee31e97219f33a30c8adb0cba63e2311f6afa65bd7794a66c"
+    },
+    {
+      "id": "systematic-debugging/1",
+      "path": "skills/systematic-debugging/SKILL.md",
+      "sha256": "ed07642cd7eefd8062eb4b4bc6da9fedf7a1014d60e473d225eef55c64146f3a"
+    },
+    {
+      "id": "code-review/1",
+      "path": "skills/code-review/SKILL.md",
+      "sha256": "f579ba418163f380c8ab3290a45a790300ead845ea236bb575ad0aca4763fed0"
+    },
+    {
+      "id": "verification-before-completion/1",
+      "path": "skills/verification-before-completion/SKILL.md",
+      "sha256": "88067fa4c862228008e93112a8d060c2ffe2c4ac007046f839138b56ff53d418"
+    },
+    {
+      "id": "deep-research/1",
+      "path": "skills/deep-research/SKILL.md",
+      "sha256": "08b8deb9d6e0a9a963d597052514a2c5f4aa88536c6dc90ac5f8b0a524871e36"
+    }
+  ],
+  "tools": [
+    "asr.state",
+    "asr.publish_hypothesis",
+    "asr.publish_finding",
+    "asr.snapshot",
+    "asr.ack_guidance"
+  ],
+  "hooks": [
+    "before_provider_request: turn permit",
+    "tool_call: tool permit"
+  ],
+  "dependencies": [
+    "pi 1.5.0",
+    "node >=22.19",
+    "ASR ControlService",
+    "Docker reference supervisor"
+  ],
+  "ambient_resources": false,
+  "coding_tools": [
+    "pi.read",
+    "pi.edit",
+    "pi.write",
+    "pi.grep",
+    "pi.find",
+    "pi.ls"
+  ],
+  "isolation_claim": "Scientific jobs use verified offline non-root read-only containers. Research runtime requires a separately verified private-material filesystem boundary.",
+  "limits": "Effective Control contract; no built-in model or compute allowance",
+  "future_runtime_translation": "versioned curated skills, tools and dependencies; never implicitly enable home resources",
+  "coding_execution": {
+    "tool": "none",
+    "status": "unavailable",
+    "requires": "A new independent research protocol before further experimentation"
+  },
+  "domain_pack": "p3-domain-powergrid.json"
+}

@@ -153,3 +153,11 @@
 - 11:32 Prepared measured simulated client and actual AAR intake, preserving hypotheses and separating delegation from experimental completion. [76b8c98]
 
 - 2026-11-03: Verified Control-admitted OOD analysis, labels and fixed training: 304 core tests, 13 scientific tests, four real Docker checks.
+
+- 2026-11-03: Added governed isolated OOD experiments so AAR can analyze, label and retrain without bypassing evidence or budgets. [809bdf7]
+
+- 2026-11-03: Resumed original AAR run under recorded development contract revision2; researcher independently reproduced frozen baseline training.
+
+- 2026-11-03: Preserved two live-run interruptions; fixed queue backpressure and request-only deferral; AAR completed704 labels and nine augmentation fits.
+
+- 2026-11-03: AAR froze ten fitted models and prospective h3 before final testing; independent evaluator and snapshot gates verified.

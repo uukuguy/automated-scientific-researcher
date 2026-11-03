@@ -8,6 +8,8 @@ PROFILE_TOOLS = {
     'ood-project-intake/1': frozenset({'asr.state','asr.publish_hypothesis','asr.snapshot','asr.ack_guidance'}),
     'ood-study-development/1': frozenset({'asr.state','asr.publish_hypothesis','asr.publish_finding',
                                         'asr.snapshot','asr.ack_guidance','asr.submit_study'}),
+    'ood-study-synthesis/1': frozenset({'asr.state','asr.publish_hypothesis','asr.publish_finding',
+                                      'asr.snapshot','asr.ack_guidance'}),
     'powerflow-readonly-finalization/1': frozenset({'asr.state'}),
 }
 PROFILE_CODING_TOOLS={profile:['pi.read','pi.edit','pi.write','pi.grep','pi.find','pi.ls'] for profile in PROFILE_TOOLS}

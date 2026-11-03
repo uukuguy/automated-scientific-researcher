@@ -114,9 +114,9 @@ compute allowance. New jobs require a separately admitted successor contract.
 
 | Limit | Purpose and sufficiency | Exceedance and recovery |
 |---|---|---|
-| 64 proposals per label batch | Bound raw evidence, solve latency and cancellation loss; real full-batch test passes within 60s | Structured admission block before any solve; retain task and explicitly resume with smaller requests |
+| 64 proposals per label batch | Bound raw evidence, solve latency and cancellation loss; real full-batch test passes within 60s | Structured admission block before any solve; retain task and continue with smaller requests |
 | 300s maximum worker walltime, further reduced by contract | Stop stalled author code/solver; tested at 60s for 64 labels and 1s for timeout | Stop owned container, retain stream/events, publish timeout receipt and actual elapsed cost; no automatic retry |
-| 64KiB analysis source, 12 input trial references | Bound request size/dependency fan-in; sufficient for one generator and baseline plus nine fits plus two probe batches | Detailed admission block and recoverable pause; source and original trials retained |
+| 64KiB analysis source, 12 input trial references | Bound request size/dependency fan-in; sufficient for one generator and baseline plus nine fits plus two probe batches | Detailed deferred-request receipt; source and original trials retained, research remains active |
 | 16MiB frozen input and 16MiB combined stdout/stderr | Bound trusted collector memory and evidence size; 64 raw labels fit comfortably | Input admission block or externally stopped output overflow; retain bounded raw prefix and diagnostic, never report success |
 | 1GiB RAM, one CPU, 64 PIDs, 128MiB temporary storage | Offline single-worker resource isolation; actual labeling/fitting/analysis pass | Docker resource limits remain enforced; OOM flag becomes explicit diagnostic. PID/temp exhaustion surfaces process/worker error, not an inferred scientific failure |
 | `sample_proposals` ledger | Prevent a batched job from hiding dozens of solve permissions behind one attempt | Reserve whole batch before dispatch; charge whole admitted count conservatively after launch even on timeout; retain completed/failed rows separately. Unstarted cancellation releases all |
@@ -128,3 +128,33 @@ Limits combine: 12 dependencies do not guarantee that their raw rows fit within
 16MiB. A large combined analysis must request fewer inputs or a reviewed profile
 revision. Conservative proposal charges are permits, not a claim that every
 reserved solve completed. Actual attempts and partial raw events remain distinct.
+
+### Actual P4 recovery findings
+
+The first development continuation hit the native256-record pending queue after
+1,971 consumed events, despite only about1MiB of recorded traffic. This was a
+producer/consumer burst, not exhausted research budget. The adapter now applies
+bounded backpressure within the existing256-record/16MiB capacities, records peak
+occupancy/wait counts, and polls only authenticated run state instead of loading
+all trial evidence for every token delta. A full-queue EOF is delivered rather
+than silently lost. Individual oversize records, total event count and walltime
+still produce explicit limit receipts. Regression tests cover burst preservation,
+EOF and hard caps. The actual recovery completed all704 requested labels and nine
+augmentation fits without another transport-cap event; original failure cost is
+retained.
+
+A subsequent22-input analysis exceeded the12-reference request cap. The previous
+policy paused the whole run, closing its next provider permit. This was too broad:
+request-shape limits now record `action=request_deferred` without closing research
+admission, so the researcher can split the analysis. Project budget exhaustion
+still pauses with a receipt. No numerical allowance, queue capacity or dependency
+cap was raised, and no accepted label/training job was rerun during recovery.
+
+Independent final scoring allows at most10 fitted-model references and one frozen
+protocol. Raw payload retains the16MiB cap; final execution is at most60seconds
+within remaining compute balance. A distinct controller-only capability locks
+all subsequent study submissions, even if an old development contract is reapplied.
+Failed final execution can only retry its identical frozen protocol after exit is
+reconciled; completed release cannot be repeated with new models. Synthesis exposes
+no experiment tools and caps its session at180seconds/25turns/50tools, bounded by
+remaining historical balances rather than a new model allowance.

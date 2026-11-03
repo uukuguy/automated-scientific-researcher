@@ -73,8 +73,8 @@ class StudyAdmissionTests(unittest.TestCase):
         self.assertTrue(error.exception.details['recoverable'])
         self.assertEqual(error.exception.details['limit'], 64)
         state=self.service.get_run('human-secret','p','r')
-        self.assertEqual(state['state'],'paused')
-        self.service.command('human-secret','p','r','resume',expected_revision=state['control_revision'],idempotency_key='resume')
+        self.assertEqual(state['state'],'running')
+        self.assertEqual(state['budget_blocks'][-1]['action'],'request_deferred')
         self.admit()
         with self.assertRaisesRegex(ValueError, 'prior label/probe'):
             self.service.submit_study('agent-secret','p','r',request_key='probe',

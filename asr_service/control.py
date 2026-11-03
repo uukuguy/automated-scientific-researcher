@@ -38,8 +38,10 @@ def records_budget_block(method):
     def guarded(self,token,project,run,*args,**kwargs):
         try:return method(self,token,project,run,*args,**kwargs)
         except ValueError as error:
-            if getattr(error,'code',str(error)) in ('budget_exhausted','admission_closed','candidate_revision_limit','candidate_timeout_limit','study_batch_limit','study_source_limit','study_dependency_limit','study_payload_limit','study_timeout_limit'):
-                block=self._record_budget_block(token,project,run,method.__name__,args,kwargs,getattr(error,'details',None))
+            code=getattr(error,'code',str(error))
+            request_limits={'study_batch_limit','study_source_limit','study_dependency_limit','study_payload_limit','study_timeout_limit'}
+            if code in {'budget_exhausted','admission_closed','candidate_revision_limit','candidate_timeout_limit'}|request_limits:
+                block=self._record_budget_block(token,project,run,method.__name__,args,kwargs,getattr(error,'details',None),pause=code not in request_limits)
                 if block:error.details=dict(block['budget'],block_id=block['block_id'],recoverable=True)
             raise
     return guarded
@@ -138,9 +140,12 @@ class ControlService(PolicyStore):
             'reference': {'profile':'matpower-reference/1','image_id':baseline['image_id']},
             'evaluation': {'profile':'powerflow-independent/1','validator_sha256':baseline['source_hashes']['validation.py'],'tolerance_pu':1e-7},
         }
-        if isinstance(doc['provenance'],dict) and doc['provenance'].get('capability_profile')=='ood-study-development/1':
+        if isinstance(doc['provenance'],dict) and doc['provenance'].get('capability_profile') in ('ood-study-development/1','ood-study-confirmation/1'):
             from .study import expected_references
             expected_refs=expected_references(doc['provenance'].get('study'))
+            if doc['provenance']['capability_profile']=='ood-study-confirmation/1':
+                from .ood_final import evaluation_reference
+                expected_refs['evaluation']=evaluation_reference(doc['provenance'].get('final'))
             if type(doc['budget']) is not dict or 'sample_proposals' not in doc['budget']: raise ControlError('invalid_budget')
             if effective.get('solver','newton_raphson')!='newton_raphson' or effective.get('iterations',20)!=20:
                 raise ControlError('capability_unavailable')
@@ -256,6 +261,12 @@ class ControlService(PolicyStore):
         no_debt=all(BudgetStore._balance(db,dispatch['project_id'],dimension)['available']>=0 for dimension, in db.execute('SELECT dimension FROM asr_budget_limits WHERE project=?',(dispatch['project_id'],)))
         return run['state']=='running' and run['admission_open'] and run['health']=='ok' and run.get('quota_state','unknown') in ('unknown','available') and no_debt
 
+    def runtime_stop_requested(self, token, project, run):
+        """Small authenticated poll; token deltas do not need the full evidence ledger."""
+        self._auth(token,project,{'human','supervisor'})
+        with self._connect() as db:
+            return self._run(db,project,run)['state'] in ('stopping','stopped','failed','finishing','finished')
+
     @staticmethod
     def refresh_run_health(db,project,run):
         """A settled component cannot clear uncertainty owned by another component."""
@@ -287,6 +298,11 @@ class ControlService(PolicyStore):
         return running
 
     @records_budget_block
+    def submit_ood_final(self, token, project, run, **arguments):
+        from .ood_final import submit
+        return submit(self,token,project,run,**arguments)
+
+    @records_budget_block
     def submit_study(self, token, project, run, **arguments):
         from .study import submit
         return submit(self, token, project, run, **arguments)
@@ -304,10 +320,11 @@ class ControlService(PolicyStore):
             if replay:return replay
             running=self._run(db,project,run)
             frozen_hypothesis=self._hypothesis_ref(db,project,hypothesis_ref) if hypothesis_ref is not None else None
+            if running.get('study_final_lock'):raise ControlError('final_protocol_frozen')
             if not self.owning_gate(db,{'project_id':project,'research_run_id':run}): raise ControlError('admission_closed')
             contract=self._contract(db,project,running['contract_id'],running['contract_revision'])
             doc=contract['document']
-            if doc['provenance'].get('capability_profile')=='ood-study-development/1': raise ControlError('capability_unavailable')
+            if doc['provenance'].get('capability_profile') in ('ood-study-development/1','ood-study-confirmation/1'): raise ControlError('capability_unavailable')
             # Revalidate frozen reference availability in the same owning transaction.
             self._validate_contract(db,project,doc)
             if type(variables) is not dict: raise ControlError('invalid_variables')
@@ -794,7 +811,7 @@ class ControlService(PolicyStore):
         from .validations import validations
         return validations(self,token,project,run)
 
-    def _record_budget_block(self,token,project,run,operation,args,request,budget):
+    def _record_budget_block(self,token,project,run,operation,args,request,budget,*,pause=True):
         principal=self._auth(token,project,{'human','researcher','supervisor'})
         with self._connect() as db:
             db.execute('BEGIN IMMEDIATE')
@@ -806,13 +823,14 @@ class ControlService(PolicyStore):
                         budget=dict(dimension=dimension,**balance,requested=request.get('requested_budget',{}).get(dimension,0))
                         break
             if budget is None:return None  # Human pause/quota closure is not a budget claim.
-            if running['state']=='running':
-                running.update(state='paused',admission_open=False,control_revision=running['control_revision']+1)
-            else:running['admission_open']=False
+            if pause:
+                if running['state']=='running':
+                    running.update(state='paused',admission_open=False,control_revision=running['control_revision']+1)
+                else:running['admission_open']=False
             block=dict(block_id='block_'+uuid.uuid4().hex,operation=operation,
                 request_key=request.get('request_key',request.get('idempotency_key')),
                 request=copy.deepcopy(dict(request,positional_arguments=list(args))),budget=copy.deepcopy(budget),
-                recoverable=True,author=principal['subject'],created_at=now())
+                recoverable=True,action='research_paused' if pause else 'request_deferred',author=principal['subject'],created_at=now())
             self._event(db,project,run,'budget_admission_blocked',**block)
             db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(running),project,run))
             return block

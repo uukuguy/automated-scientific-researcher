@@ -22,7 +22,7 @@ MAX_OUTPUT_BYTES = 16 * 1024 * 1024
 PREFIX = b'ASR_OOD_EVENT_V1:'
 
 
-def frozen_payload(path, sha256):
+def frozen_payload(path, sha256, *, operations=('label','fit','analysis')):
     path = Path(path)
     fd=os.open(path,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
     with os.fdopen(fd,'rb') as stream:
@@ -38,13 +38,15 @@ def frozen_payload(path, sha256):
         raise ValueError('study payload hash mismatch')
     value = json.loads(body)
     canonical(value)  # Reject NaN/Infinity even though json.loads accepts them.
-    if set(value) != {'request', 'materials'} or value['request'].get('operation') not in ('label', 'fit', 'analysis'):
+    if set(value) != {'request', 'materials'} or value['request'].get('operation') not in operations:
         raise ValueError('unsupported study payload')
     return body
 
 
 class StudyBackend(CandidateBackend):
     output_bytes = MAX_OUTPUT_BYTES
+    profile = PROFILE
+    operations = ('label','fit','analysis')
 
     def __init__(self, image_id):
         super().__init__()
@@ -55,25 +57,25 @@ class StudyBackend(CandidateBackend):
     def validate_request(self, request):
         if set(request) != {'profile', 'image_id', 'payload_path', 'payload_sha256', 'timeout_seconds'}:
             raise ValueError('invalid study execution request')
-        if request['profile'] != PROFILE or request['image_id'] != self.image_id:
+        if request['profile'] != self.profile or request['image_id'] != self.image_id:
             raise ValueError('study image/profile mismatch')
         timeout = request['timeout_seconds']
         if type(timeout) not in (int, float) or not math.isfinite(timeout) or not 0 < timeout <= 300:
             raise ValueError('study timeout must be finite in (0,300] seconds')
-        frozen_payload(request['payload_path'], request['payload_sha256'])
+        frozen_payload(request['payload_path'], request['payload_sha256'],operations=self.operations)
 
-    @staticmethod
-    def identity(record):
+    @classmethod
+    def identity(cls, record):
         request = record['dispatch']['execution_request']
         return dict(backend='docker-study', name='asr-managed-' + record['attempt'],
                     labels={'asr.attempt': record['attempt'], 'asr.trial': record['trial'],
                             'asr.run': record['run'], 'asr.epoch': str(record['epoch']),
-                            'asr.profile': PROFILE, 'asr.payload': request['payload_sha256']})
+                            'asr.profile': cls.profile, 'asr.payload': request['payload_sha256']})
 
     def create(self, record, path, request):
         self.validate_request(request)
         identity = self.identity(record)
-        (path / 'study-input.json').write_bytes(frozen_payload(request['payload_path'], request['payload_sha256']))
+        (path / 'study-input.json').write_bytes(frozen_payload(request['payload_path'], request['payload_sha256'],operations=self.operations))
         (path / 'study-input.json').chmod(0o444)
         arguments = ['create', '--name', identity['name'], '--network', 'none', '--read-only',
                      '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges', '--user', '65532:65532',

@@ -1,0 +1,18 @@
+{
+  "schema": "asr-study-resources/1",
+  "budget_totals": {
+    "attempts": 40,
+    "execution_ms": 2400000,
+    "sample_proposals": 768,
+    "research_walltime_ms": 1500000,
+    "turns": 140,
+    "tool_executions": 300
+  },
+  "session_limits": {"walltime_seconds": 1200, "turns": 100, "tool_executions": 200},
+  "job_timeout_seconds": 60,
+  "purpose": "Continue the same simulated-client research run using existing Codex subscription and local offline compute. No API spending or final-test release.",
+  "basis": "Researcher requested 704 labels and 10 fits. 768 proposal permits allow one additional 64-row diagnostic/recovery batch while retaining all failures. Forty jobs allow 12 label batches, 10 fits and 18 analysis jobs. A real 64-row label/fit pipeline passes its 60-second job bounds. Model totals add 20 minutes, 100 turns and 200 tools to the original intake limits; previous consumption is retained.",
+  "exceedance": "Preserve native journal, hypotheses, trial identities, partial raw events and all costs. Pause recoverably; no automatic budget increase or unbounded session restart.",
+  "paid_api_authorized": false,
+  "paid_api_fallback": false
+}

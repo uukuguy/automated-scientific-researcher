@@ -199,7 +199,9 @@ class PiRuntime:
         if on_launch: on_launch()
         process=subprocess.Popen(argv,cwd=workspace,env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
         records=queue.Queue(maxsize=self.max_pending_records); stderr=[]
-        stream_lock=threading.Lock();queued_bytes=0;stream_failure=[]
+        stream_lock=threading.Condition();queued_bytes=0;stream_failure=[]
+        reader_stop=threading.Event()
+        flow=dict(peak_pending_records=0,peak_buffer_bytes=0,backpressure_waits=0)
         def read_stdout():
             nonlocal queued_bytes
             count=0
@@ -213,7 +215,15 @@ class PiRuntime:
                     with stream_lock:
                         if len(line)>self.max_message_bytes:failed('protocol_message_bytes',self.max_message_bytes,len(line));return
                         if count>self.max_records:failed('protocol_records',self.max_records,count);return
-                        if queued_bytes+len(line)>self.max_buffer_bytes:failed('protocol_buffer_bytes',self.max_buffer_bytes,queued_bytes+len(line));return
+                        # Capacity limits protect retained memory, not event
+                        # arrival rate. Slow the pipe producer until the consumer
+                        # drains; never discard an ordinary burst of token events.
+                        if len(line)>self.max_buffer_bytes:failed('protocol_buffer_bytes',self.max_buffer_bytes,len(line));return
+                        while records.full() or queued_bytes+len(line)>self.max_buffer_bytes:
+                            if reader_stop.is_set() or time.monotonic()>=runtime_deadline:return
+                            flow['backpressure_waits']+=1
+                            stream_lock.wait(timeout=.05)
+                        if reader_stop.is_set():return
                         try:
                             record=json.loads(line)
                             if not isinstance(record,dict):record={'type':'protocol_error'}
@@ -221,9 +231,13 @@ class PiRuntime:
                         try:records.put_nowait((record,len(line)))
                         except queue.Full:failed('protocol_pending_records',self.max_pending_records,self.max_pending_records+1);return
                         queued_bytes+=len(line)
+                        flow['peak_pending_records']=max(flow['peak_pending_records'],records.qsize())
+                        flow['peak_buffer_bytes']=max(flow['peak_buffer_bytes'],queued_bytes)
             finally:
-                try:records.put_nowait((None,0))
-                except queue.Full:pass
+                with stream_lock:
+                    while records.full() and not reader_stop.is_set() and time.monotonic()<runtime_deadline:
+                        stream_lock.wait(timeout=.05)
+                    if not records.full():records.put_nowait((None,0))
         def drain_stderr():
             while True:
                 line=process.stderr.read(4096)
@@ -260,6 +274,7 @@ class PiRuntime:
                 except queue.Empty: continue
                 with stream_lock:
                     queued_bytes-=consumed
+                    stream_lock.notify_all()
                     failure=stream_failure[0] if stream_failure else None
                 if failure:
                     status='limit_reached';limit(*failure,'Native transport cap reached; retain the session prefix and inspect state before recovery.');break
@@ -299,6 +314,8 @@ class PiRuntime:
                     if status=='interrupted': status='settled'
                     break
         finally:
+            reader_stop.set()
+            with stream_lock:stream_lock.notify_all()
             # Reap the process group even after a settled RPC response. Closing
             # stdin alone can leave descendant tools running after a timeout.
             if process.poll() is None:
@@ -326,7 +343,7 @@ class PiRuntime:
         return dict(runtime='pi-rpc/1',runtime_version=version,capability_pack_sha256=capabilities['sha256'],capability_pack_id=capabilities['pack']['id'],capability_skills=frozen_skills,provider=self.provider,model=self.model,status=status,session=state,
                     native_session_id=session_id,settled=settled,turns=turns,tool_executions=tools,
                     duration_seconds=time.monotonic()-started,assistant_messages=assistant,exit_code=process.returncode,
-                    limit_observations=limit_observations,cleanup=cleanup,
+                    limit_observations=limit_observations,cleanup=cleanup,protocol_flow=flow,
                     protocol_caps=dict(message_bytes=self.max_message_bytes,buffer_bytes=self.max_buffer_bytes,pending_records=self.max_pending_records,records=self.max_records,abort_grace_ms=math.ceil(self.abort_grace_seconds*1000)),
                     recovery=dict(native_session_id=session_id,native_session_file=(state or {}).get('sessionFile'),
                         pending_tools=list(pending_tools.values()),instruction='Read authoritative state before retrying; reuse accepted request keys and reconcile uncertain execution.'))

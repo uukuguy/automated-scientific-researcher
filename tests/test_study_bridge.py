@@ -28,5 +28,12 @@ class StudyBridgeTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'unsupported_bridge_operation'):
                 self.bridge.call(operation,{},'unsupported')
 
+    def test_synthesis_profile_removes_all_experiment_tools(self):
+        from integrations.runtimes.capability_inventory import PROFILE_TOOLS
+        pack=PiRuntime(model='gpt-6.1-sol',capabilities_path=Path('integrations/runtimes/ood-synthesis-capabilities.json')).preflight_capabilities()
+        self.assertEqual(pack['pack']['id'],'ood-study-synthesis/1')
+        self.assertNotIn('asr.submit_study',PROFILE_TOOLS['ood-study-synthesis/1'])
+        self.assertIn('asr.publish_finding',PROFILE_TOOLS['ood-study-synthesis/1'])
+
 
 if __name__=='__main__':unittest.main()

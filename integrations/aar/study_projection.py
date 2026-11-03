@@ -39,8 +39,10 @@ def project_state(bridge, run):
             if (path / 'study-output-error.json').exists():
                 item['output_error'] = json.loads((path / 'study-output-error.json').read_text())
         trials.append(item)
-    return dict(projection='ood-study-development/1', run={key: run[key] for key in
+    return dict(projection=bridge.capability_profile, run={key: run[key] for key in
         ('project_id', 'research_run_id', 'state', 'health', 'control_revision', 'contract', 'budget', 'guidance', 'limit_events') if key in run},
         trials=trials, hypotheses=bridge.service.hypotheses(bridge.researcher_token, bridge.project),
         findings=bridge.service.findings(bridge.researcher_token, bridge.project, bridge.run), snapshot_refs=bridge._snapshot_refs(),
-        boundary='Development only. Author analysis and development scores do not establish unseen-test performance.')
+        boundary=('Frozen final evaluator results are available; further experimentation is closed. Author interpretation remains distinct from independent scoring.'
+                  if bridge.capability_profile=='ood-study-synthesis/1' else
+                  'Development only. Author analysis and development scores do not establish unseen-test performance.'))

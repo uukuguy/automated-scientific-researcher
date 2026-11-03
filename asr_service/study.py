@@ -19,6 +19,14 @@ from asr_supervisor.study import PROFILE, MAX_PAYLOAD_BYTES
 CAPABILITY = 'ood-study-development/1'
 
 
+class StudyRequestError(ControlError):
+    """Safe fixed validation explanations, without echoing author code or data."""
+    def __init__(self,reason):
+        super().__init__('invalid_study_request')
+        self.args=(reason,)
+        self.details=dict(reason=reason,recoverable=True,scope='request',task_retained=True)
+
+
 def check_limit(code, dimension, limit, requested):
     if requested > limit:
         raise BudgetError(code, details=dict(dimension=dimension, limit=limit, spent=0, reserved=0,
@@ -44,15 +52,15 @@ def public_materials(config):
     root = Path(config['public_directory'])
     manifest_path = root / 'manifest.json'
     if root.is_symlink() or manifest_path.is_symlink() or digest(manifest_path) != config['public_manifest_sha256']:
-        raise ValueError('client material manifest changed')
+        raise StudyRequestError('client material manifest changed')
     manifest = json.loads(manifest_path.read_text())
     if manifest.get('schema') != 'asr-client-package/1':
-        raise ValueError('unsupported client material manifest')
+        raise StudyRequestError('unsupported client material manifest')
     result = {}
     for name in ('case', 'train', 'id_dev', 'diagnostic'):
         path = root / (name + '.json')
         if path.is_symlink() or digest(path) != manifest['files'].get(path.name):
-            raise ValueError('client material changed: ' + name)
+            raise StudyRequestError('client material changed: ' + name)
         result[name] = json.loads(path.read_text())
     return result
 
@@ -60,7 +68,7 @@ def public_materials(config):
 def coordinate(x):
     if (type(x) is not list or len(x) != 3 or
         any(type(v) not in (int, float) or not math.isfinite(v) or not .7 <= v <= 1.6 for v in x)):
-        raise ValueError('three finite coordinates in [0.7,1.6] required')
+        raise StudyRequestError('three finite coordinates in [0.7,1.6] required')
     return tuple(float(v) for v in x)
 
 
@@ -99,6 +107,7 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
         if replay:
             return replay
         running = service._run(db, project, run)
+        if running.get('study_final_lock'):raise ControlError('final_protocol_frozen')
         if not service.owning_gate(db, {'project_id': project, 'research_run_id': run}):
             raise ControlError('admission_closed')
         hypothesis = service._hypothesis_ref(db, project, hypothesis_ref)
@@ -108,26 +117,26 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
             raise ControlError('capability_unavailable')
         config = doc['provenance']['study']
         if type(timeout_seconds) is not int or timeout_seconds <= 0:
-            raise ValueError('study timeout exceeds admitted execution policy')
+            raise StudyRequestError('study timeout exceeds admitted execution policy')
         check_limit('study_timeout_limit','study_timeout_seconds',min(300,doc['execution_policy']['timeout_seconds']),timeout_seconds)
         materials = public_materials(config)
         dependencies = []
         proposed = 0
         if type(request) is not dict:
-            raise ValueError('study request must be an object')
+            raise StudyRequestError('study request must be an object')
         operation = request.get('operation')
         if operation == 'label':
             if set(request) != {'operation', 'purpose', 'coordinates'} or request['purpose'] not in ('augmentation', 'probe'):
-                raise ValueError('invalid label request')
+                raise StudyRequestError('invalid label request')
             if type(request['coordinates']) is not list or not request['coordinates']:
-                raise ValueError('label batch requires 1..64 proposals; split larger batches')
+                raise StudyRequestError('label batch requires 1..64 proposals; split larger batches')
             check_limit('study_batch_limit','study_batch_samples',64,len(request['coordinates']))
             points = [coordinate(x) for x in request['coordinates']]
             if len(set(points)) != len(points):
-                raise ValueError('duplicate proposed coordinates')
+                raise StudyRequestError('duplicate proposed coordinates')
             exposed = {coordinate(r['x']) for name in ('train', 'id_dev', 'diagnostic') for r in materials[name]}
             if any(point in exposed for point in points):
-                raise ValueError('proposal duplicates original training/development data')
+                raise StudyRequestError('proposal duplicates original training/development data')
             # A fresh probe must remain separate from training acquisition.
             # Reuse an existing label trial as a dependency rather than silently
             # relabelling its coordinates under a different role.
@@ -139,18 +148,18 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
                     previous = json.loads(frozen_payload(frozen['payload_path'], frozen['payload_sha256']))
                     exposed.update(coordinate(x) for x in previous['request']['coordinates'])
             if any(point in exposed for point in points):
-                raise ValueError('proposal duplicates a prior label/probe trial; preserve original purpose and evidence')
+                raise StudyRequestError('proposal duplicates a prior label/probe trial; preserve original purpose and evidence')
             proposed = len(points)
             materials = {'case': materials['case']}
             worker_request = request
             variables = dict(operation=operation, purpose=request['purpose'])
         elif operation == 'analysis':
             if set(request) != {'operation', 'source', 'input_trials'} or type(request['source']) is not str or not request['source']:
-                raise ValueError('analysis requires main(data) source, at most 65536 UTF-8 bytes')
+                raise StudyRequestError('analysis requires main(data) source, at most 65536 UTF-8 bytes')
             check_limit('study_source_limit','study_source_bytes',65536,len(request['source'].encode()))
             ids = request['input_trials']
             if type(ids) is not list or any(type(x) is not str for x in ids) or len(set(ids)) != len(ids):
-                raise ValueError('analysis accepts at most 12 distinct completed input trials')
+                raise StudyRequestError('analysis accepts at most 12 distinct completed input trials')
             check_limit('study_dependency_limit','study_input_trials',12,len(ids))
             materials['trials'] = {}
             for trial_id in ids:
@@ -161,10 +170,10 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
             variables = dict(operation=operation)
         elif operation == 'fit':
             if set(request) != {'operation', 'augmentation_trials'} or type(request['augmentation_trials']) is not list:
-                raise ValueError('fit requires augmentation trial references only')
+                raise StudyRequestError('fit requires augmentation trial references only')
             ids = request['augmentation_trials']
             if any(type(x) is not str for x in ids) or len(set(ids)) != len(ids):
-                raise ValueError('fit accepts at most 12 distinct label batches (768 proposals)')
+                raise StudyRequestError('fit accepts at most 12 distinct label batches (768 proposals)')
             check_limit('study_dependency_limit','study_input_trials',12,len(ids))
             materials['augmentation'] = []
             for trial_id in ids:
@@ -183,12 +192,12 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
         root = service.path.parent / 'asr-artifacts' / 'study' / hashlib.sha256(project.encode()).hexdigest()
         for parent in (root.parent.parent, root.parent, root):
             if parent.is_symlink():
-                raise ValueError('unsafe study artifact directory')
+                raise StudyRequestError('unsafe study artifact directory')
         root.mkdir(parents=True, exist_ok=True, mode=0o700)
         path = root / (sha + '.json')
         if path.exists() or path.is_symlink():
             if path.is_symlink() or path.stat().st_nlink != 1 or path.read_bytes() != body:
-                raise ValueError('study artifact conflict')
+                raise StudyRequestError('study artifact conflict')
         else:
             fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o444)
             with os.fdopen(fd, 'wb') as stream:

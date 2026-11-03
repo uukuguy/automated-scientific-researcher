@@ -13,6 +13,8 @@ SOURCES = (
     'research_projects/ood_augmentation/worker.py',
     'environments/scientific/calibrate.py',
     'powerflow_lab/validation.py',
+    'asr_evaluation/ood_metrics.py',
+    'asr_evaluation/ood_worker.py',
 )
 
 

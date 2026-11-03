@@ -115,7 +115,7 @@ class ResearchBridge:
 
     def state(self):
         run=self.service.get_run(self.researcher_token,self.project,self.run)
-        if self.capability_profile=='ood-study-development/1':
+        if self.capability_profile in ('ood-study-development/1','ood-study-synthesis/1'):
             from .study_projection import project_state
             return project_state(self,run)
         if self.capability_profile=='powerflow-readonly-finalization/1':

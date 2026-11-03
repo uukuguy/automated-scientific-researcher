@@ -57,7 +57,7 @@ successor resource contract before actual AAR execution. Do not reset prior
 216397ms,11turns,21tools. User continues to authorize advancing the simulated
 project on subscriptions/local compute; finite limits must be recorded explicitly,
 with their measured purpose and recovery rather than inferred unlimited scope.
-The real intake run has NOT resumed yet, remains paused with zero compute budget.
+The same actual AAR run is NOW RUNNING under contract revision2. Process tool session29412; log artifacts/p4-intake-001/study-launch-001.log; per-session events under study-*/native-events.jsonl. Do not start another owner. Baseline fit trial_6e19bad026b94c24b339eb7525ba18f1 succeeded. Recorded limits file integrations/runtimes/ood-study-limits.json: model total1500000ms/140turns/300tools,40 jobs/2400000ms,768 proposal permits; prior consumption retained. The current session caps at1200s/100turns/200tools; no automatic extension.
 Then implement frozen final-test release/independent performance evaluation;
 P4 requires actual researcher experiments and supported findings, not these tests.
 Keep the client private root and all controller/evidence material denied to pi.
@@ -68,5 +68,44 @@ Keep the client private root and all controller/evidence material denied to pi.
 four real Docker tests pass:64 labels plus baseline/augmentation fit, isolated
 analysis, timeout, output overflow. No leftover owned study containers. Bridge
 profile preflight and original client integrity verified. Details are in
-`docs/validation/P4-DEVELOPMENT-TOOLS.json`. Development slice pending commit;
-prior simulated client/intake is commit76b8c98. No new model run has occurred.
+`docs/validation/P4-DEVELOPMENT-TOOLS.json`. Development slice committed as809bdf7;
+prior simulated client/intake is commit76b8c98. A new same-run model session is active as described above. Continuation launcher and its two tests are not yet committed.
+
+## Newest live checkpoint (supersedes earlier session pointers)
+
+Development slice is809bdf7. Current uncommitted work adds same-run continuation,
+backpressure recovery, request-limit deferral, independent final evaluator and
+final/synthesis launchers. Do not revert these files. Actual continuation1 failed
+at256 pending records, baseline fit retained. Continuation2 completed704 labels
+and nine augmented fits, then22-input analysis exceeded12 and paused. Both costs
+retained; no model/compute cap increased. Fixed queue backpressure plus small stop
+poll; fixed request-size errors to defer only the request. Recovery guidance is
+recorded. Continuation3 is NOW ACTIVE via exec session14782; log study-launch-003.log.
+At last check31 succeeded trials,704 proposal permits consumed, all ten original
+fits retained. Native producer output contains encrypted provider reasoning;
+inspect event types/public text only, never print full native message objects.
+
+Overall model total remains1500000ms,40jobs,768proposals; before current active
+session historical model consumption772986ms. Current session reserves727014ms.
+No automatic budget extension. Track remaining time before synthesis.
+
+Independent final code is implemented and tested (tests/test_ood_final*,
+asr_evaluation/ood_{metrics,worker,backend}.py, asr_service/ood_final.py).
+Image artifacts/p4-final-image-002/manifest.json:
+sha256:cd5dc68c73d6c397c838dff732111ee72d90bb5161243690ca3d12ea06a90012.
+Real final Docker engineering test used PUBLIC training rows as artificial test
+samples; actual private test remains unopened by research/evaluation. Final CLI
+requires BOTH FINAL-TEST-PROPOSAL.md/json in one actual matching AAR snapshot,
+replays the selected fixed training in a new container first, then publishes a
+controller-only confirmation contract and admits one immutable final protocol.
+Run integrations.runtimes.ood_finalize dry first, then --execute-frozen-evaluation
+when AAR is paused/exited and proposals exist. No new budget needed; use remaining
+compute. After independent result, run ood_study --synthesis-only using the same
+root/client/image002 development manifest/checkout/proxy; it exposes no experiments,
+uses remaining model balance, and preserves an evidence-linked final report/finding.
+Then inspect claims, finish Control and sync actual AAR lifecycle, publish sanitized
+evidence and update P4 status honestly. Private rows stay in denied controller paths.
+
+Most recent full suite before final frontend additions:311 passed/skipped19;
+focused final math/admission3, final snapshot1, real final Docker1 passed. Re-run
+combined suite and changed Docker profiles before final completion claims.

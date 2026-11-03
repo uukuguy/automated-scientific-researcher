@@ -55,7 +55,7 @@ scientific verification. The existing Python electrical checker is separate.
 ## Isolated OOD development image
 
 Build from an isolated context containing only hash-locked exported requirements
-and four explicitly selected trusted source files:
+and explicitly selected trusted source files:
 
 ```sh
 uv run python environments/scientific/build_image.py --output artifacts/unique-image-build

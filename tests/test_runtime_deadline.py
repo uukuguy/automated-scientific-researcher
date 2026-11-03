@@ -97,8 +97,7 @@ console.log('UNSAFE_NEXT_REQUEST');'''
     def test_record_count_pending_count_and_buffer_caps_are_explicit(self):
         from test_runtimes import RuntimeTests
         cases=[({'max_records':1},'protocol_records'),
-               ({'max_pending_records':1},'protocol_pending_records'),
-               ({'max_buffer_bytes':2048},'protocol_buffer_bytes')]
+               ({'max_buffer_bytes':1024},'protocol_buffer_bytes')]
         for options,expected in cases:
             with self.subTest(expected=expected),tempfile.TemporaryDirectory() as directory:
                 exe=RuntimeTests().fake(directory,[{'type':'fixture','padding':'x'*1500}]*8)
@@ -108,6 +107,39 @@ console.log('UNSAFE_NEXT_REQUEST');'''
                     on_event=lambda event:time.sleep(.02) if event.get('type')=='fixture' else None)
                 self.assertEqual(result['status'],'limit_reached')
                 self.assertEqual(result['limit_observations'][0]['kind'],expected)
+
+    def test_burst_uses_bounded_backpressure_without_losing_records(self):
+        from test_runtimes import RuntimeTests
+        with tempfile.TemporaryDirectory() as directory:
+            records=[{'type':'fixture','index':i,'padding':'x'*1500} for i in range(20)]
+            exe=RuntimeTests().fake(directory,records+[{'type':'agent_settled'}])
+            received=[]
+            def consume(event):
+                if event.get('type')=='fixture':
+                    received.append(event['index']);time.sleep(.01)
+            result=PiRuntime(executable=exe,model='test',max_pending_records=2,max_buffer_bytes=4096).run(
+                workspace=Path(directory),config_dir=Path(directory),session_id='burst',prompt='fixture',
+                limits=Limits(3,1,1),bridge_url='http://localhost:1',bridge_token='fixture',on_event=consume)
+            self.assertEqual(result['status'],'settled')
+            self.assertEqual(received,list(range(20)))
+            self.assertLessEqual(result['protocol_flow']['peak_pending_records'],2)
+            self.assertLessEqual(result['protocol_flow']['peak_buffer_bytes'],4096)
+            self.assertGreater(result['protocol_flow']['backpressure_waits'],0)
+
+    def test_eof_after_full_queue_is_observed_without_waiting_for_deadline(self):
+        from test_runtimes import RuntimeTests
+        with tempfile.TemporaryDirectory() as directory:
+            exe=RuntimeTests().fake(directory,[{'type':'fixture','index':i} for i in range(8)])
+            path=Path(exe);path.write_text(path.read_text()+'  sys.exit(0)\n')
+            received=[]
+            def consume(event):
+                if event.get('type')=='fixture':received.append(event['index']);time.sleep(.01)
+            result=PiRuntime(executable=exe,model='test',max_pending_records=1).run(
+                workspace=Path(directory),config_dir=Path(directory),session_id='eof',prompt='fixture',
+                limits=Limits(3,1,1),bridge_url='http://localhost:1',bridge_token='fixture',on_event=consume)
+            self.assertEqual(result['status'],'interrupted')
+            self.assertEqual(received,list(range(8)))
+            self.assertLess(result['duration_seconds'],1)
 
 
 if __name__=='__main__':unittest.main()

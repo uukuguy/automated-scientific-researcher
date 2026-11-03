@@ -46,6 +46,9 @@ def verify_label(case, row):
 def execute(request, materials, emit):
     operation = request.get('operation')
     case = materials['case']
+    if operation == 'final':
+        from asr_evaluation.ood_worker import execute as independent_evaluation
+        return independent_evaluation(request,materials)
     if operation == 'analysis':
         if set(request) != {'operation', 'source'} or type(request['source']) is not str or not 0 < len(request['source'].encode()) <= 65536:
             raise ValueError('analysis requires at most 65536 UTF-8 source bytes')

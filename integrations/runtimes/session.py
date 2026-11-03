@@ -40,7 +40,7 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
                 absolute_deadline=session_engine_deadline(limits,claim['reserved_walltime_ms'],started),
                 on_launch=lambda: service.begin_runtime_launch(bridge.supervisor_token,bridge.project,bridge.run,claim['session_id'],claim['epoch'],owner),
                 on_process=lambda identity: service.attach_runtime_process(bridge.supervisor_token,bridge.project,bridge.run,claim['session_id'],claim['epoch'],owner,identity),
-                should_stop=lambda: service.get_run(bridge.supervisor_token,bridge.project,bridge.run)['state'] in ('stopping','stopped','failed','finishing','finished'))
+                should_stop=lambda: service.runtime_stop_requested(bridge.supervisor_token,bridge.project,bridge.run))
         exited=True
         result['runtime_claim']=claim
         for observation in result.get('limit_observations',[]):record_event(observation,False)
