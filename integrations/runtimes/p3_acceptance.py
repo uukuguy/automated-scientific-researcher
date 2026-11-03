@@ -27,6 +27,7 @@ from integrations.aar.upstream_adapter import UpstreamAdapter
 from powerflow_lab.reference import make_request
 from .pi import Limits, PiRuntime
 from .process import identify
+from .environment import reject_api_key_settings
 
 HERE=Path(__file__).resolve().parent
 REPO=HERE.parents[1]
@@ -54,11 +55,12 @@ def source_provenance():
 
 def preflight(checkout, oauth_source):
     settings=json.loads((Path.home()/'.pi/agent/settings.json').read_text())
+    reject_api_key_settings(settings,runtime='pi',provider='openai-codex')
     if settings.get('defaultProvider')!='openai-codex':raise ValueError('default_codex_subscription_required')
     model=settings['defaultModel'];thinking=settings.get('defaultThinkingLevel','high')
     runtime=PiRuntime(model=model,thinking=thinking,capabilities_path=HERE/'p3-capabilities.json')
     pack=runtime.preflight_capabilities()
-    version=subprocess.check_output([runtime.executable,'--version'],text=True,timeout=3).strip()
+    version=subprocess.check_output([runtime.executable,'--version'],text=True,timeout=3,env=runtime.environment).strip()
     if version!=runtime.expected_version:raise ValueError('pi_version_drift')
     auth=json.loads(Path(oauth_source).read_text())
     if auth.get('openai-codex',{}).get('type')!='oauth':raise ValueError('subscription_oauth_required')

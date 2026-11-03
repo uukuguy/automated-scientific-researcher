@@ -16,6 +16,7 @@ import subprocess
 import threading
 import time
 from .capability_inventory import PROFILE_TOOLS
+from .environment import COMMON_ENVIRONMENT,build_environment,reject_api_key_settings
 
 
 class RuntimeFailure(RuntimeError):
@@ -47,6 +48,7 @@ def prepare_oauth(source: Path, config_dir: Path):
     auth=data.get('openai-codex',{})
     if auth.get('type') != 'oauth':
         raise RuntimeFailure('codex_subscription_oauth_required')
+    reject_api_key_settings(auth,runtime='pi',provider='openai-codex')
     fd=os.open(target,os.O_WRONLY|os.O_CREAT|os.O_TRUNC,0o600)
     os.fchmod(fd,0o600)
     with os.fdopen(fd,'w') as stream: json.dump({'openai-codex':auth},stream)
@@ -56,7 +58,7 @@ def prepare_oauth(source: Path, config_dir: Path):
 class PiRuntime:
     provider='openai-codex'
 
-    def __init__(self, *, executable='pi', model, thinking='high', expected_version='1.5.0', capabilities_path=None):
+    def __init__(self, *, executable='pi', model, thinking='high', expected_version='1.5.0', capabilities_path=None, environment=None):
         if not isinstance(model,str) or not model or ':' in model or '/' in model:
             raise ValueError('explicit_codex_model_id_required')
         self.executable=executable
@@ -64,6 +66,7 @@ class PiRuntime:
         self.thinking=thinking
         self.expected_version=expected_version
         self.capabilities_path=Path(capabilities_path or Path(__file__).with_name('capabilities.json'))
+        self.environment=build_environment(COMMON_ENVIRONMENT,runtime='pi',provider=self.provider,overrides=environment)
 
     def preflight_capabilities(self):
         try:
@@ -124,7 +127,7 @@ class PiRuntime:
         if not re.fullmatch(r'[A-Za-z0-9](?:[A-Za-z0-9_.-]*[A-Za-z0-9])?',session_id):
             raise ValueError('invalid_native_session_id')
         capabilities=self.preflight_capabilities()
-        version=subprocess.check_output([self.executable,'--version'],text=True,timeout=10).strip()
+        version=subprocess.check_output([self.executable,'--version'],text=True,timeout=10,env=self.environment).strip()
         if version!=self.expected_version: raise RuntimeFailure('runtime_version_mismatch')
         workspace=Path(workspace).resolve(); config_dir=Path(config_dir).resolve()
         sessions=config_dir/'sessions'; sessions.mkdir(exist_ok=True)
@@ -147,7 +150,7 @@ class PiRuntime:
                     stream.write(skill['content']);stream.flush();os.fsync(stream.fileno())
             frozen_skills.append(dict(id=skill['id'],name=skill['name'],path=skill['path'],sha256=skill['sha256'],frozen_path=str(frozen_skill)))
         # Allowlist avoids ambient paid credentials and arbitrary shell startup hooks.
-        env={k:os.environ[k] for k in ('PATH','HOME','TMPDIR','LANG','LC_ALL','SSL_CERT_FILE','SSL_CERT_DIR','HTTPS_PROXY','HTTP_PROXY','NO_PROXY') if k in os.environ}
+        env=build_environment(COMMON_ENVIRONMENT,runtime='pi',provider=self.provider,inherited=self.environment)
         env['GIT_CEILING_DIRECTORIES']=str(workspace.parent)
         env['ASR_WORKSPACE']=str(workspace)
         env['ASR_OWNED_PROCESS_GROUP']='1'

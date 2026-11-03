@@ -18,6 +18,7 @@ import signal
 import subprocess
 import threading
 import time
+from .environment import COMMON_ENVIRONMENT,build_environment
 
 
 class AppServerClosed(RuntimeError):
@@ -42,11 +43,9 @@ class AppServerRemoteError(RuntimeError):
 _UNSET = object()
 
 
-def subscription_environment():
+def subscription_environment(overrides=None):
     """Preserve native login location/proxy, exclude ambient paid API credentials."""
-    allowed = ('PATH', 'HOME', 'CODEX_HOME', 'TMPDIR', 'LANG', 'LC_ALL',
-               'SSL_CERT_FILE', 'SSL_CERT_DIR', 'HTTPS_PROXY', 'HTTP_PROXY', 'NO_PROXY')
-    return {key: os.environ[key] for key in allowed if key in os.environ}
+    return build_environment((*COMMON_ENVIRONMENT,'CODEX_HOME'),runtime='codex',provider='openai',overrides=overrides)
 
 
 def _positive_seconds(value):
@@ -74,7 +73,7 @@ class CodexAppServerClient:
     def __init__(self, *, cwd, command=None, walltime_seconds=30, request_timeout=5,
                  server_request_mode='reject', allow_model_turns=False,
                  max_message_bytes=1048576, max_events=256, max_buffer_bytes=8388608,
-                 max_messages=4096, max_pending_requests=32):
+                 max_messages=4096, max_pending_requests=32, environment=None):
         _positive_seconds(walltime_seconds); _positive_seconds(request_timeout)
         for limit in (max_message_bytes, max_events, max_buffer_bytes, max_messages, max_pending_requests):
             if type(limit) is not int or limit < 1: raise ValueError('positive integer transport limits required')
@@ -109,7 +108,7 @@ class CodexAppServerClient:
         ]
         if not isinstance(argv, (list, tuple)) or not argv or any(not isinstance(x, str) or not x for x in argv):
             raise ValueError('explicit executable argument list required')
-        self.process = subprocess.Popen(argv, cwd=Path(cwd).resolve(), env=subscription_environment(),
+        self.process = subprocess.Popen(argv, cwd=Path(cwd).resolve(), env=subscription_environment(environment),
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
         for stream in (self.process.stdin, self.process.stdout, self.process.stderr):
             os.set_blocking(stream.fileno(), False)

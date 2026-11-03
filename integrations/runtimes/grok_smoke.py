@@ -18,10 +18,18 @@ import tempfile
 import time
 from urllib.parse import urlsplit
 from integrations.runtimes.process import identify, verify_process_exit
+from .environment import COMMON_ENVIRONMENT,build_environment
 
 
 HINTS = {'startupHints':{'nonInteractive':True,'skipGitStatus':True,'skipProjectLayout':True}}
 PROMPT = 'Reply with exactly ASR_GROK_OK. Do not use tools.'
+
+
+def grok_environment(home,grok_home,proxy,*,inherited=None,environment=None):
+    allowed=(*COMMON_ENVIRONMENT,'GROK_HOME')
+    env=build_environment(allowed,runtime='grok',provider='grok',inherited=inherited,overrides=environment)
+    return build_environment(allowed,runtime='grok',provider='grok',inherited=env,
+        overrides=dict(HOME=str(home),GROK_HOME=str(grok_home),HTTP_PROXY=proxy,HTTPS_PROXY=proxy,NO_PROXY='127.0.0.1,localhost'))
 
 
 def publish_result(output, result):
@@ -35,18 +43,19 @@ def publish_result(output, result):
         stream.write(serialized)
 
 
-async def probe(output, proxy, expected_model=None):
+async def probe(output, proxy, expected_model=None,environment=None):
     if output.exists(): raise ValueError('refusing to overwrite existing evidence')
     parsed=urlsplit(proxy)
     if parsed.scheme not in ('http','https') or not parsed.hostname or parsed.username or parsed.password:
         raise ValueError('explicit credential-free HTTP proxy URL required')
     binary=shutil.which('grok')
     if not binary:raise RuntimeError('native Grok executable unavailable')
+    initial_env=build_environment((*COMMON_ENVIRONMENT,'GROK_HOME'),runtime='grok',provider='grok',overrides=environment)
     source=Path(os.environ.get('GROK_HOME',str(Path.home()/'.grok')))/'auth.json'
     if not source.is_file() or source.stat().st_size>1048576:raise RuntimeError('existing cached native authentication required')
     started=time.monotonic();deadline=started+42
     result=dict(schema='asr-grok-acp-conversation/1',started_at=datetime.now(timezone.utc).isoformat(),
-        runtime='grok-acp',runtime_version=subprocess.check_output([binary,'--version'],text=True,timeout=3).strip(),
+        runtime='grok-acp',runtime_version=subprocess.check_output([binary,'--version'],text=True,timeout=3,env=initial_env).strip(),
         status='not_completed',requested_reply='ASR_GROK_OK',prompt_count=0,tool_call_count=0,permission_request_count=0,
         billing={'authentication_method':'cached_token','api_key_environment_present':False,'paid_api_fallback':False,'actual_charge':None,'remaining_subscription_quota':None},
         limits={'total_walltime_seconds':45,'model_prompts':1,'research_tools':False,'client_fs':False,'client_terminal':False},
@@ -115,9 +124,7 @@ async def probe(output, proxy, expected_model=None):
         root=Path(temporary.name);home=root/'home';grok_home=home/'.grok';grok_home.mkdir(parents=True,mode=0o700);workspace=root/'workspace';workspace.mkdir()
         descriptor=os.open(grok_home/'auth.json',os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
         with os.fdopen(descriptor,'wb') as stream:stream.write(source.read_bytes())
-        allowed=('PATH','TMPDIR','LANG','LC_ALL','SSL_CERT_FILE','SSL_CERT_DIR')
-        env={key:os.environ[key] for key in allowed if key in os.environ}
-        env.update(HOME=str(home),GROK_HOME=str(grok_home),HTTP_PROXY=proxy,HTTPS_PROXY=proxy,NO_PROXY='127.0.0.1,localhost')
+        env=grok_environment(home,grok_home,proxy,inherited=initial_env)
         command=[binary,'--no-auto-update','--no-subagents','--disable-web-search','--permission-mode','dontAsk','--deny','*','--leader-socket',str(root/'leader.sock'),'agent','--no-leader','stdio']
         process=await asyncio.create_subprocess_exec(*command,cwd=workspace,env=env,stdin=asyncio.subprocess.PIPE,stdout=asyncio.subprocess.PIPE,stderr=asyncio.subprocess.PIPE,start_new_session=True,limit=1048576)
         identity=identify(process.pid);stderr_task=asyncio.create_task(drain_stderr())
