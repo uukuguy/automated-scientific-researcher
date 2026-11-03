@@ -120,6 +120,10 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
         if doc['provenance'].get('capability_profile') != CAPABILITY:
             raise ControlError('capability_unavailable')
         config = doc['provenance']['study']
+        from . import paired_sampling
+        paired_policy=doc['provenance'].get('paired_sampling')
+        paired_sampling.check_run(db,project,run,paired_policy)
+        pairing=None
         if type(timeout_seconds) is not int or timeout_seconds <= 0:
             raise StudyRequestError('study timeout exceeds admitted execution policy')
         check_limit('study_timeout_limit','study_timeout_seconds',min(300,doc['execution_policy']['timeout_seconds']),timeout_seconds)
@@ -130,7 +134,8 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
             raise StudyRequestError('study request must be an object')
         operation = request.get('operation')
         if operation == 'label':
-            if set(request) != {'operation', 'purpose', 'coordinates'} or request['purpose'] not in ('augmentation', 'probe'):
+            pairing=paired_sampling.label_binding(db,project,run,paired_policy,request)
+            if set(request)-({'paired_batch'} if pairing else set()) != {'operation', 'purpose', 'coordinates'} or request['purpose'] not in ('augmentation', 'probe'):
                 raise StudyRequestError('invalid label request')
             if type(request['coordinates']) is not list or not request['coordinates']:
                 raise StudyRequestError('label batch requires 1..64 proposals; split larger batches')
@@ -150,12 +155,13 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
                 if frozen.get('profile') == PROFILE and prior['variables'].get('operation') == 'label':
                     from asr_supervisor.study import frozen_payload
                     previous = json.loads(frozen_payload(frozen['payload_path'], frozen['payload_sha256']))
-                    exposed.update(coordinate(x) for x in previous['request']['coordinates'])
+                    if not paired_sampling.shared_pair(pairing,prior.get('paired_sampling')):
+                        exposed.update(coordinate(x) for x in previous['request']['coordinates'])
             if any(point in exposed for point in points):
                 raise StudyRequestError('proposal duplicates a prior label/probe trial; preserve original purpose and evidence')
             proposed = len(points)
             materials = {'case': materials['case']}
-            worker_request = request
+            worker_request = {key:request[key] for key in ('operation','purpose','coordinates')}
             variables = dict(operation=operation, purpose=request['purpose'])
         elif operation == 'analysis':
             if set(request) != {'operation', 'source', 'input_trials'} or type(request['source']) is not str or not request['source']:
@@ -180,6 +186,7 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
                 raise StudyRequestError('fit accepts at most 12 distinct label batches (768 proposals)')
             check_limit('study_dependency_limit','study_input_trials',12,len(ids))
             materials['augmentation'] = []
+            pairing=paired_sampling.fit_binding(db,project,run,paired_policy,ids)
             for trial_id in ids:
                 material, reference = completed_material(db, project, run, trial_id)
                 if material['variables'] != {'operation': 'label', 'purpose': 'augmentation'}:
@@ -219,6 +226,7 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
                       hypothesis_ref=hypothesis, hypothesis_linkage='linked', dependencies=dependencies,
                       proposal_accounting='Conservative permits: all admitted proposals charged once execution starts; partial results retained.')
         if task_binding is not None:record['organization_task']=task_binding
+        if pairing is not None:record['paired_sampling']=pairing
         db.execute('INSERT INTO asr_dispatch VALUES (?,?,?,?,?,?,?)', (attempt, project, run, trial, attempt, 'queued', encoded(record)))
         service._remember(db, project, 'study:' + run, request_key, payload, record)
         service._event(db, project, run, 'trial_admitted', trial_id=trial, execution_attempt_id=attempt, profile=PROFILE)

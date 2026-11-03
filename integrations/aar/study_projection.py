@@ -11,6 +11,7 @@ def project_state(bridge, run):
     trials = []
     for trial in run['trials']:
         item = {key: trial[key] for key in ('trial_id', 'execution_attempt_id', 'dispatch_state', 'variables', 'hypothesis_ref')}
+        if 'paired_sampling' in trial:item['paired_sampling']=trial['paired_sampling']
         binding=trial.get('organization_task')
         if binding:
             item['organization_task']=dict(subject=binding['subject'],operation=binding['operation'],

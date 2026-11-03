@@ -47,6 +47,21 @@ def records_budget_block(method):
     return guarded
 
 
+def records_contract_budget_block(method):
+    """Keep rejected proposed budgets after rollback, without pausing existing runs."""
+    @wraps(method)
+    def guarded(self, token, project, contract_id, *args, **kwargs):
+        try:
+            return method(self, token, project, contract_id, *args, **kwargs)
+        except (ControlError, BudgetError) as error:
+            if error.code in ('paired_budget_insufficient', 'study_batch_limit'):
+                with self._connect() as db:
+                    self._event(db, project, None, 'contract_budget_rejected',
+                        contract_id=contract_id, details=error.details)
+            raise
+    return guarded
+
+
 class ControlService(PolicyStore):
     def __init__(self, path, *, credentials):
         self.path = Path(path)
@@ -186,10 +201,16 @@ class ControlService(PolicyStore):
         if type(execution['retry_limit']) is not int or execution['retry_limit']<0: raise ControlError('invalid_execution_policy')
         if doc['intervention_policy']!={'guidance_boundary':'next_submission','pause':'drain'}: raise ControlError('capability_unavailable')
         if type(doc['provenance']) is not dict or not doc['provenance']: raise ControlError('invalid_provenance')
+        if 'paired_sampling' in doc['provenance']:
+            if doc['provenance'].get('capability_profile') not in ('ood-study-development/1','ood-study-confirmation/1'):
+                raise ControlError('paired_profile_unavailable')
+            from .paired_sampling import validate
+            validate(doc['provenance']['paired_sampling'],doc['budget'])
         if execution['output_bytes']!=104857600 or execution['retry_limit']!=0 or execution['timeout_seconds']>3600: raise ControlError('capability_unavailable')
         if next(CONTRACT_VALIDATOR.iter_errors(doc),None) is not None: raise ControlError('invalid_contract_schema')
         return doc
 
+    @records_contract_budget_block
     def publish_contract(self, token, project, contract_id, document, *, expected_revision, idempotency_key):
         principal=self._auth(token,project,{'human'})
         self._identity(contract_id,idempotency_key);self._revision(expected_revision)

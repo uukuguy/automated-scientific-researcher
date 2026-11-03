@@ -420,3 +420,18 @@ per-member runtime directories, bounded model reservations and explicit tasks.
 This does not grant paid usage, new experimental budget, hidden-test access or
 parallel execution. Real task-bound container success/failure has engineering
 evidence; a model-driven scientific trajectory using this profile is not yet verified.
+
+### Frozen paired sampling (2026-11-04)
+
+Optional contract provenance `paired_sampling` uses schema
+`asr-paired-sampling/1`, proposal_sha256, purpose=augmentation,
+charging=each_slot_no_retries and groups mapping IDs to blocks/arms. Blocks map
+names to unique coordinate lists; arms map names to ordered block-name lists.
+Study label requests add `paired_batch={group_id,arm_id}` and must match the
+frozen expansion exactly. Dispatch and evidence retain protocol hash and slots.
+Sharing is limited to distinct arms of the same group, charged per solve.
+Failed/cancelled arms cannot be replenished. A fit accepts one arm or baseline.
+Publication budget rejection is recorded without pausing existing runs. Changed
+protocols are rejected at new submission after the first paired dispatch.
+See [engineering verification](../validation/P5-PAIRED-ADAPTER.md); this does not
+authorize the team's proposed full experiment or establish scientific benefit.

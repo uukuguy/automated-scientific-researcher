@@ -215,3 +215,7 @@
 - 2026-11-03: Verified354 tests (22 skips), two real container cases and30 archived engineering files; no model or research-budget use.
 
 - 2026-11-03: Identified paired-study cross-arm reuse conflict with existing deduplication; preserve leakage controls pending explicit frozen protocol adaptation.
+
+- 2026-11-03: Bound scientific experiments to explicit role tasks so ownership and failures survive execution and recovery. [6a04b18]
+
+- 2026-11-04: Paired admission and prototype adapter verified; 344 tests passed,23 skipped; real container recovery preserves floating-point failure evidence.

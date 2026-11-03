@@ -64,6 +64,8 @@ class Supervisor:
                       execution_exited=True,artifacts=publication_inventory(path))
         if 'organization_task' in record['dispatch']:
             manifest['organization_task']=record['dispatch']['organization_task']
+        if 'paired_sampling' in record['dispatch']:
+            manifest['paired_sampling']=record['dispatch']['paired_sampling']
         if (path/'resource-events.json').exists():
             manifest['resource_events']=json.loads((path/'resource-events.json').read_text())
         elif (path/'limit-trigger.json').exists():
@@ -81,6 +83,8 @@ class Supervisor:
             raise ValueError('manifest identity mismatch')
         if manifest.get('organization_task')!=record['dispatch'].get('organization_task'):
             raise ValueError('manifest organization binding mismatch')
+        if manifest.get('paired_sampling')!=record['dispatch'].get('paired_sampling'):
+            raise ValueError('manifest paired sampling mismatch')
         if manifest['artifacts']!=publication_inventory(final): raise ValueError('evidence corrupt')
         report={k:manifest[k] for k in ('trial_id','execution_attempt_id','status','usage','usage_estimated','execution_exited')}
         report.update(manifest_hash=digest(final/'manifest.json'),evidence_path=str(final))

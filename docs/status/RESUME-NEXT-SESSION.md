@@ -1,6 +1,6 @@
 # Live Session Checkpoint
 
-> Updated: 2026-11-03. P5 remains active; no live model process remains.
+> Updated: 2026-11-04. P5 remains active; no live model process remains.
 
 ## Intent and verified boundary
 
@@ -66,13 +66,28 @@ See docs/validation/P5-TASK-EXECUTION.md. Independent reviewer model remained
 unavailable from prior attempt; this slice has local inspection/tests, not a
 claimed independent model review.
 
-Next: source/receipt adapters and explicit paired-coordinate protocol. Team's
-3584-slot design is a proposal, not current compute authority. Its repeated
-cross-arm coordinates conflict with existing study deduplication: do not simply
-remove that leakage guard. Define frozen reuse identity, sample purposes and
-charge policy, implement genuine expected-input/label adapters and test the
-team prototype before a new model-driven scientific run. New evaluation assets
-are needed; P4 finals are known development evidence.
+## Paired sampling slice
+
+Frozen paired_sampling contract, per-arm admission, explicit sharing and separate
+charging implemented. Protocol/slot bindings reach manifests and projections;
+failures/cancellations cannot replenish slots; fits cannot pool arms. Rejected
+proposed budget has durable detailed event without pausing existing runs.
+Preserved exact team prototype in research_projects/paired_acquisition;
+native_adapter independently reconstructs inputs, checks targets and equations,
+and retains negative outcomes/operational limits. Real two-arm Docker fixture
+runs adapter ingestion with input hashes saved before solves; one-arm fit129rows.
+Evidence artifacts/p5-paired-execution-checks-002; first failed adapter fixture001
+retained (cross-Python residual rounding; independent verdicts now govern); validation P5-PAIRED-ADAPTER.md.
+
+Regression367 tests:344pass,23skip; /tmp/asr-paired-final-tests.log.
+Real Docker final1/1pass; extension syntax checked.
+
+Next: complete full-arm training-manifest and actual model-receipt binding,
+then integrate the adapter into task-bound organization execution. All trusted
+contract/source pins must be frozen from authoritative configuration; fixture
+placeholders are not production pins. Team's3584-slot design remains a proposal,
+not compute authority. No new model calls; no P4/design-run reopening. Fresh
+hidden evaluation assets are still needed for new science. P5 remains active.
 
 ## P4 anchors
 
@@ -85,6 +100,6 @@ No new novelty/real-industrial/generalization claim follows from P5 design work.
 
 ## Workspace
 
-Pilot/auth changes committed as2564854. New task-bound execution slice ready for commit; inspect git status. No active native model owner.
+Pilot/auth changes committed as2564854. Task-bound execution slice committed as6a04b18; paired sampling/adapter work is the current uncommitted slice. No active native model owner.
 Recovery logs /tmp/asr-p5-organization-001-resumed.log and
 /tmp/asr-p5-organization-001-network-recovery.log. Preserve ignored evidence.
