@@ -79,6 +79,16 @@ class ControlService(PolicyStore):
             initialize_candidates(db);initialize_quotas(db)
             from .evaluation_jobs import initialize as initialize_evaluations
             initialize_evaluations(db)
+            from .organization import initialize as initialize_organization
+            initialize_organization(db)
+
+    def change_organization(self, token, project, run, **arguments):
+        from .organization import change
+        return change(self, token, project, run, **arguments)
+
+    def organization_records(self, token, project, run, **arguments):
+        from .organization import records
+        return records(self, token, project, run, **arguments)
 
     def _auth(self, token, project, roles=None):
         principal = None

@@ -294,3 +294,48 @@ from a human or supervisor. Unknown/stale observations do not clear a known
 blocked provider; future timestamps are bounded. Availability does not reopen
 admission automatically. Local finite balances remain authoritative, and neither
 quota observations nor contract replacement enable API fallback.
+
+## Versioned research organization (P5 foundation)
+
+GET/POST `/v1/projects/{project}/runs/{run}/organization` uses the existing bearer
+and project authorization. POST fields: `kind`, `entity_id`, `expected_revision`,
+`idempotency_key`, `document`. Every accepted mutation appends a revision in the
+same SQLite database and an event in the existing event stream. Replay returns
+its original receipt; a changed payload with the same key is rejected.
+
+| kind | document | authority |
+|---|---|---|
+| policy (`entity_id=capacity`) | max_active_leads, max_active_workers (positive integers) | human |
+| member (entity ID is authenticated subject) | role: organizer/lead/worker, enabled: boolean | human |
+| direction | title, question, owner, status: proposed/active/paused/closed, rationale, evidence_trial_ids | organizer; Leads may propose and revise their own proposed directions |
+| task | direction_id, assignee, title, instructions, status: assigned/in_progress/completed/cancelled, result, evidence_trial_ids | organizer/owning Lead assigns; assignee starts and resolves in-progress work |
+| message | recipients (explicit member subjects), text, evidence_trial_ids | registered participants |
+
+Human authority can manage organization records, but cannot fabricate an assignee's
+in-progress completion acknowledgement through this API. Active tasks must resolve
+before changing their direction's objective/owner, pausing/closing the direction,
+or disabling/retyping the assignee. Messages are immutable. Empty evidence lists
+are valid for prospective plans and nonnumerical tasks; supplied trial references
+must resolve to terminal published execution identities in this run. Such links
+are not independent scientific validation or a fresh file-integrity attestation.
+
+GET query parameters: `after` (sequence cursor, default0), `limit` (default100,
+maximum500). Returns `records`, `next_after`, `has_more`; reconstruct latest state
+by entity/revision, follow all pages, retain earlier revisions. Team history is
+shared among authorized members; recipients express intended discussion targets,
+not confidentiality, automatic notification or delivery acknowledgements.
+
+A paused research run permits discussion and in-progress result preservation,
+but not new task starts/assignments or active direction changes. A closed run only
+permits exact replay/read. Capacity and64KiB document failures produce durable
+request_deferred events with limits, request identity/hash and recovery guidance;
+no research cancellation, budget reset or automatic retry occurs.
+
+This is a coordination record plane. Member-role ACL applies to these organization
+operations; it does not retrofit role isolation onto all legacy researcher APIs.
+The new bridge profile grants no numerical/evaluator operations. Task claims do
+not launch processes or prove they exited. Runtime identity/budget binding and
+actual multi-role AAR execution are the next slice, with the existing single-owner
+runtime guard preserved meanwhile. Split/merge can be represented by new/closed
+directions and rationale; atomic multi-direction lineage operations are not yet
+implemented. No new model budget or autonomous-organization claim follows.

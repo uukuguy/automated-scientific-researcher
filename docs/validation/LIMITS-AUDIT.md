@@ -183,3 +183,32 @@ sufficient for this science result, but insufficient for fully autonomous report
 publication with these recoveries; it is not a production default. Future long
 runs need measured context monitoring and an explicit publication/cleanup reserve,
 not silent retries, truncation, allowance increases or paid fallback.
+
+### P5 organization record limits (foundation only)
+
+- Human-published `policy/capacity` sets positive max_active_leads and
+  max_active_workers. There is no implicit default/compute grant. The suggested
+  initial2/2 is a small organization experiment, not proven production capacity.
+  Count distinct owners of active directions and worker assignees of in-progress
+  tasks; limits constrain these declarations, not unimplemented runtime launch.
+  Same-transaction checks prevent simultaneous requests exceeding capacity.
+- A member cannot hold two in-progress tasks. This prevents ambiguous execution
+  ownership in the first serial-per-member model; contention returns
+  member_already_working. Ownership/revision conflicts retain original work.
+- Each document is at most65,536 UTF-8 JSON bytes: enough for an assignment,
+  explanation and evidence identities, not bulk code/data. Oversize requests
+  create an organization_request_deferred event with requested/limit, record/key,
+  content hash and artifact-based recovery; nothing is silently truncated.
+- History pages default100, maximum500 records, bounding database/response work.
+  At the document cap a maximum page can still approach32MiB plus envelopes; this
+  is not a recommended model-context size. Callers may choose smaller pages.
+  next_after/has_more explicitly expose remaining records. Overlarge page requests
+  record a recoverable rejection and leave all history intact.
+- No new timing/retry limit or model budget is introduced. Existing transport and
+  runtime limits still apply. Actual long-session context behavior remains a P5
+  runtime-binding concern; paginated records alone do not solve context exhaustion.
+
+Tests cover concurrent direction activation, duplicate task claims, capacity
+rejection/restart, document and page boundaries, role spoofing, terminal history,
+HTTP authentication and explicit bridge capability gates. No actual multi-role
+model execution is claimed by these checks.

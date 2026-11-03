@@ -48,6 +48,10 @@ class ResearchBridge:
         if operation=='permit':
             result=s.admit_activity(self.supervisor_token,p,r,kind=arguments['kind'],idempotency_key=key,**self.runtime_identity)
             self.permits.append(result); return result
+        if operation=='organization_records':
+            return s.organization_records(t,p,r,**arguments)
+        if operation=='organization_change':
+            return s.change_organization(t,p,r,idempotency_key=key,**arguments)
         if operation=='state':
             return self.state()
         if operation=='freeze_candidate':
@@ -114,6 +118,14 @@ class ResearchBridge:
                     snapshot_sha256=snapshot['snapshot_sha256'],code_sha256=digest)
 
     def state(self):
+        if self.capability_profile=='research-organization/1':
+            history=self.service.organization_records(self.researcher_token,self.project,self.run)
+            run=self.service.get_run(self.researcher_token,self.project,self.run)
+            contract=run['contract']['document']
+            return dict(projection=self.capability_profile,
+                run={key:run[key] for key in ('project_id','research_run_id','state','health','control_revision','contract_revision','budget')},
+                objective=contract['objective'],runtime_policy=contract['runtime_policy'],organization=history,
+                boundary='Organization records only; follow history pages. No role execution or scientific validation is implied.')
         run=self.service.get_run(self.researcher_token,self.project,self.run)
         if self.capability_profile in ('ood-study-development/1','ood-study-synthesis/1'):
             from .study_projection import project_state

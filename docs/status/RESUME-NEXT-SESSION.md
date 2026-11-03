@@ -57,9 +57,40 @@ rejection and only copies the aggregate report to researcher workspace.
 
 ## Immediate continuation
 
-Current session is finishing documentation/review and committing P4 closeout.
-Prior implementation commits809bdf7,54c8341 are preserved. Inspect git status
-and newest journal before repeating work. After commit, P5 remains the next
+P4 closeout is committed as62b14f4. Prior implementation commits809bdf7,54c8341
+are preserved. Only post-commit journal/checkpoint bookkeeping remains unstaged.
+Inspect git status and newest journal before repeating work. P5 remains the next
 worklist package; its scope needs the accepted D018 role/runtime/tool boundaries,
 not a second scheduler or budget ledger. Capstone handoff was updated locally;
 no delivery, integration or acceptance by Capstone is implied.
+
+
+## Latest accepted clarification
+
+D027: Organizer proposes directions from the problem/evidence; at most two active
+Lead slots does not prescribe two topics. Leads may propose reorganization within
+authorization. The supplied two-layer sample-generation diagram is a human candidate,
+not an implemented or P4-agent-invented architecture. Team may modify/reject it.
+P5 scope/sequence is in docs/plans/P5-RESEARCH-ORGANIZATION.md; implementation and
+new model-run budgets remain pending. Plain-language guide now includes this boundary.
+
+
+## P5 implementation checkpoint (supersedes earlier P5-pending notes)
+
+P5 is active. Implemented asr_service/organization.py in the existing Control DB:
+policy/member/direction/task/message revisions, authenticated author identity,
+optimistic revisions/idempotency, same-transaction capacities, unique task claim,
+blocked live task reassignment/objective changes, immutable discussions, paginated
+history and durable limit rejection. HTTP GET/POST runs/{run}/organization and
+research-organization/1 bridge/profile are connected.12 focused tests pass;330
+combined core/AAR tests pass with20 environment skips. Final compact state projection
+was added afterward and its focused checks passed. No scientific/model runs launched.
+
+Important: record-plane membership is not role isolation on legacy APIs. New bridge
+profile grants no experiments. Task results are claims, not process exit proof.
+Existing one-active-runtime-per-run guard is unchanged. Next implement role/session
+binding, per-role capability checks and stop/recovery using the SAME budget/owner
+ledger; then actual AAR organization acceptance with recorded finite allowance.
+Do not describe this foundation as an operational autonomous multi-agent team.
+Current staged/unstaged files also include the user-requested plain-language guide
+and D027 accepted-design documentation from previous turns; all are task-owned.

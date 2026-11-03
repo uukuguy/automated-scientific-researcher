@@ -212,3 +212,13 @@
 - Decision: the development agent prepares a concrete simulated client project, with a trainable target, original data, measured OOD weakness and criteria, then delegates scientific work to ASR. Do not keep asking the human to supply a detailed project or conduct the research as the developer.
 - Boundary: client preparation and infrastructure are developer work; scientific diagnosis, hypotheses and augmentation choices belong to the AAR researcher. A synthetic project is not evidence of real-client benefit. Intake is not completion.
 - Implementation: real numerical client materials and actual subscription AAR intake are verified; two hypotheses and a snapshot exist. Zero-compute intake is paused pending supported training/labeling/evaluation capabilities. All initial connection failure costs remain charged.
+
+
+## D027 — Autonomous direction formation and research architecture (2026-11-03)
+
+- Decision: The Research Organizer proposes directions from the client question and evidence; Leads discuss and may propose creation, splitting, merging or closure. Developers do not prescribe scientific departments. Changes within the effective authorization proceed autonomously; scope/budget/permission changes require the corresponding human authorization.
+- Capacity is separate from scientific structure: an initial suggestion of at most two active Leads is not two required topics. One initial diagnostic direction and additional queued directions are valid. Record rationale, evidence, ownership and resource effects of organizational changes.
+- The supplied two-layer sample-generation diagram is a human-provided candidate architecture, not ASR core infrastructure or a verified P4 autonomous invention. The team may adopt, change or reject it. Two method layers need not map to two Leads.
+- P5 must assess autonomous problem decomposition and project-code construction as well as coordination and scientific utility. Keep governing execution/evidence/evaluation boundaries fixed. Do not declare a difficult-solver layer necessary merely because it is drawn; P4 did not establish that need.
+- Rationale: Predetermined directions would prevent testing the Organizer's scientific decomposition capability and could force an unnecessary architecture.
+- Clarifies D018 role responsibilities and concurrency suggestions; preserves D019/D020 role/runtime separation and D025/D026 client-task boundaries. No implementation or new model budget is claimed by this decision.

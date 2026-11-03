@@ -14,7 +14,7 @@ Register each new status file here. Register archive buckets as one row per buck
 | `JOURNAL.md` | 🟢 active | Append-only event log. |
 | `RESUME-NEXT-SESSION.md` | 🟢 active | Session recovery point. |
 | `INDEX.md` | 🟢 active | File catalog. |
-| `DECISIONS.md` | 🟢 active | Accepted scope, interaction, Capstone architecture and subscription-first replaceable runtimes and omp/AAR, power-grid capability base and locked scientific stack, and D016 scientific trust and D018 three-layer AAR/Capstone organization (superseding D017) and D021 subscription API-key prohibition and D022 recoverable limit governance and D023 substantive scientific contribution and D024 OOD-generation priority and D025 targeted training benefit and D026 simulated client delegation; protocol details remain draft. |
+| `DECISIONS.md` | 🟢 active | Accepted scope, interaction, Capstone architecture and subscription-first replaceable runtimes and omp/AAR, power-grid capability base and locked scientific stack, and D016 scientific trust and D018 three-layer AAR/Capstone organization (superseding D017) and D021 subscription API-key prohibition and D022 recoverable limit governance and D023 substantive scientific contribution and D024 OOD-generation priority and D025 targeted training benefit and D026 simulated client delegation and D027 autonomous direction formation; protocol details remain draft. |
 | `BOOTSTRAP-PREFLIGHT.md` | 🟡 decision history | Initial environment discovery; current numerical evidence is in docs/validation/P1-NUMERICAL-LAB.md. |
 
 ## Decision history
@@ -79,3 +79,7 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 - `docs/validation/P4-DEVELOPMENT-TOOLS.json` — admitted isolated analysis/label/fixed-training engineering checks; no model-driven augmentation or final-test claim.
 
 - `docs/validation/P4-SCIENTIFIC-RESULTS.md`, `P4-RESULTS.json`, `P4-RESEARCHER-FINAL.md` — actual autonomous OOD study, independent final metrics, exact replay, usable artifacts and explicit controller-assisted archival.
+
+- `docs/ASR-PLAIN-LANGUAGE.md` — 中文通俗说明：P4实际成果、当前自动研究过程与规划中的多研究员协作；区分已实现和待实现。
+
+- `docs/plans/P5-RESEARCH-ORGANIZATION.md` — P5 scope, first implemented organization-record slice and remaining runtime/scientific acceptance; autonomous direction formation without preset topics.

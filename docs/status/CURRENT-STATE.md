@@ -7,7 +7,7 @@
 - Theme-level focus: Formal scientific comparison contracts over a verified bounded single-researcher foundation.
 - Project route: managed
 - Canonical worklist: docs/plans/WORKLIST.md
-- Package boundary: P4 simulated OOD deliverable verified; P5 organization pending
+- Active work package: P5 — autonomous direction formation and bounded role collaboration; P4 verified
 
 ## Current Architecture
 
@@ -26,6 +26,7 @@
 
 ## Open Problems (theme-level)
 
+- Organization records and unique task ownership are implemented in Control; actual role-bound AAR sessions, organizational adaptation and comparative scientific acceptance remain gaps.
 - Long native conversations require explicit context recovery; final AAR report publication needed controller archival after a time cap. Automatic report-first/context recovery is not verified.
 
 - P4 provides measured training benefit on a synthetic client project, with actual AAR experiments, independent final scoring and exact selected-training replay. Broader topology/distribution transfer, mechanistic attribution and actual client utility remain untested.

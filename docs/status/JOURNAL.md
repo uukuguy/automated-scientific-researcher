@@ -169,3 +169,13 @@
 - 2026-11-03: AAR authored final report; controller archived exact bytes after time cap. Independent OOD reduction83.23%; Control and AAR completed.
 
 - 2026-11-03: Verified318 core/AAR tests,13 scientific tests,33 immutable executions,320 original raw hashes and27 delivery files.
+
+- 2026-11-03: Completed simulated OOD delivery with independent test evidence and explicit archival limits, closing P4. [62b14f4]
+
+- 2026-11-03: Added plain-language Chinese guide combining actual research results, current autonomy and planned multi-researcher collaboration.
+
+- 2026-11-03: Recorded D027: Organizer forms research directions; concurrency limits do not prescribe topics or sample-generator architecture.
+
+- 2026-11-03: Implemented same-ledger organization revisions, unique task claims, explicit discussion targets, HTTP/bridge gates and recoverable capacity rejection.
+
+- 2026-11-03: Verified12 organization checks and330 combined tests (20 skips); no model sessions or multi-role autonomy claim.
