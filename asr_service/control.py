@@ -688,20 +688,28 @@ class ControlService(PolicyStore):
             self._event(db,project,run,'runtime_launch_authorized',session_id=session_id,epoch=epoch)
             return session
 
-    def abort_runtime_prelaunch(self, token, project, run, session_id, epoch, owner, *, reason):
-        """Settle a setup rejection only when no launch grant was ever issued."""
+    def abort_runtime_prelaunch(self, token, project, run, session_id, epoch, owner, *, reason, actual_walltime_ms=0):
+        """Settle measured setup cost only when no launch grant was ever issued.
+
+        The default preserves immediate operator cancellations. Runtime launchers
+        supply their measured setup walltime; no provider turn is charged.
+        """
         self._auth(token,project,{'human','supervisor'})
+        BudgetStore._amount(actual_walltime_ms)
         if type(reason) is not str or not reason.strip(): raise ControlError('reason_required')
         with self._connect() as db:
             db.execute('BEGIN IMMEDIATE')
             session=self._session(db,project,run,session_id,epoch,owner)
-            if session['state']=='exited' and session.get('launch_state')=='aborted': return session
+            if session['state']=='exited' and session.get('launch_state')=='aborted':
+                if session['actual_walltime_ms']!=actual_walltime_ms:raise ControlError('idempotency_conflict')
+                return session
             if session['state']!='active' or session.get('launch_state')!='prepared' or session.get('process_identity') is not None: raise ControlError('runtime_launch_already_authorized')
-            receipt=dict(kind='no_launch_grant_issued',session_id=session_id,epoch=epoch,observed_at=now(),reason=reason)
-            session.update(state='exited',launch_state='aborted',actual_walltime_ms=0,execution_exited=True,exit_receipt=receipt,finished_at=now())
-            db.execute('UPDATE asr_budget_reservations SET actual=0 WHERE project=? AND attempt=? AND dimension=?',(project,session_id,'research_walltime_ms'))
+            receipt=dict(kind='no_launch_grant_issued',session_id=session_id,epoch=epoch,observed_at=now(),reason=reason,actual_walltime_ms=actual_walltime_ms,usage_basis='trusted_launcher_measured_setup_walltime' if actual_walltime_ms else 'immediate_prelaunch_abort')
+            session.update(state='exited',launch_state='aborted',actual_walltime_ms=actual_walltime_ms,execution_exited=True,exit_receipt=receipt,finished_at=now())
+            db.execute('UPDATE asr_budget_reservations SET actual=? WHERE project=? AND attempt=? AND dimension=?',(actual_walltime_ms,project,session_id,'research_walltime_ms'))
             db.execute('UPDATE asr_runtime_sessions SET state=?,record=? WHERE session_id=?',('exited',encoded(session),session_id))
             self._event(db,project,run,'runtime_prelaunch_aborted',session_id=session_id,epoch=epoch,receipt=receipt)
+            self.refresh_run_health(db,project,run)
             from asr_supervisor.store import ExecutionStore
             ExecutionStore.finalize_controls_in_transaction(db,project,run)
             return session

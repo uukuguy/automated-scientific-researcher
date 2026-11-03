@@ -57,6 +57,36 @@ class ControlLimitTests(unittest.TestCase):
         self.assertEqual(self.service.budgets.balance('p','research_walltime_ms')['reserved'],5000)
         self.assertEqual(len([event for event in self.service.events('human-secret','p') if event['type']=='runtime_limit_observed']),1)
 
+    def test_measured_prelaunch_timeout_charges_setup_and_preserves_limit_receipt(self):
+        self.contract['budget']['research_walltime_ms']=10
+        self.start()
+        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='runtime',runtime_identity=self.runtime_identity(),requested_walltime_ms=10)
+        observation=self.service.observe_runtime_limit('human-secret','p','r',session_id=session['session_id'],epoch=1,owner='worker',kind='model_walltime',limit=10,observed=12,reason='Version/setup deadline exhausted before provider launch',idempotency_key='setup-limit')
+        ended=self.service.abort_runtime_prelaunch('human-secret','p','r',session['session_id'],1,'worker',reason='setup_deadline_exhausted',actual_walltime_ms=12)
+        self.assertEqual(ended['actual_walltime_ms'],12)
+        self.assertEqual(ended['exit_receipt']['actual_walltime_ms'],12)
+        self.assertEqual(ended['limit_observations'],[observation])
+        self.assertEqual(self.service.budgets.balance('p','research_walltime_ms'),dict(limit=10,spent=12,reserved=0,available=-2))
+        self.assertEqual(self.service.budgets.balance('p','turns')['spent'],0)
+        self.assertEqual(self.service.abort_runtime_prelaunch('human-secret','p','r',session['session_id'],1,'worker',reason='setup_deadline_exhausted',actual_walltime_ms=12),ended)
+        with self.assertRaisesRegex(ValueError,'idempotency_conflict'):
+            self.service.abort_runtime_prelaunch('human-secret','p','r',session['session_id'],1,'worker',reason='setup_deadline_exhausted',actual_walltime_ms=13)
+        self.service=ControlService(self.service.path,credentials=self.service.credentials)
+        run=self.service.get_run('agent-secret','p','r')
+        self.assertEqual(run['state'],'paused')
+        self.assertFalse(run['admission_open'])
+        self.assertTrue(any(event['type']=='budget_debt_observed' for event in run['limit_events']))
+
+    def test_prelaunch_abort_rejects_invalid_measured_cost_before_settlement(self):
+        self.start()
+        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='runtime',runtime_identity=self.runtime_identity(),requested_walltime_ms=10)
+        for amount in (True,-1,1.5,float('inf')):
+            with self.subTest(amount=amount),self.assertRaises(ValueError):
+                self.service.abort_runtime_prelaunch('human-secret','p','r',session['session_id'],1,'worker',reason='fixture',actual_walltime_ms=amount)
+        self.assertEqual(self.service.budgets.balance('p','research_walltime_ms')['reserved'],10)
+        ended=self.service.abort_runtime_prelaunch('human-secret','p','r',session['session_id'],1,'worker',reason='Immediate operator cancellation')
+        self.assertEqual(ended['actual_walltime_ms'],0)
+
     def test_protocol_safeguards_have_explicit_byte_or_count_receipts(self):
         self.start()
         session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='runtime',runtime_identity=self.runtime_identity(),requested_walltime_ms=5000)
