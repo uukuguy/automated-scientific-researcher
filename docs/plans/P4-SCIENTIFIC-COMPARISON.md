@@ -1,13 +1,71 @@
-# P4: autonomous research toward new methods
+# P4: realistic OOD sample generation
 
 Status: active, research framing and contract preparation. P3 is complete.
 No new model or experiment budget has been admitted. This document is a planning
 boundary, not an executable contract or a claim of scientific novelty.
 
+## Current priority and proposed first experiment
+
+User steering, 2026-11-03 (D024): record the new-method objective for later;
+prioritize realistic OOD sample generation now. The design below is a proposal,
+not an admitted experiment. It supersedes the unselected-direction framing below
+for immediate work. A useful initial data-generation deliverable need not claim
+algorithmic novelty; later scientific contributions still need D023 evidence.
+
+- Define one sample as original grid/scenario inputs, control policy, solved
+  state if available, and independent equation/operating assessments. Keep the
+  proposal before any dispatch adjustment and record all transformations.
+- Establish the reference distribution from existing successful samples and the
+  generator that produced them, if supplied. With public case118 only, construct
+  an explicitly synthetic reference distribution; never call it a measured
+  operational distribution. Fit scaling, feature normalization and OOD thresholds
+  on reference/development data only.
+- Begin with a fixed topology and a small interpretable scenario space: regional
+  load levels/shapes, P/Q relationships and generation mix. Preserve correlations
+  and explicit balancing/dispatch constraints. Do not perturb every bus field
+  independently or use an unlimited slack generator to hide power imbalance.
+- Separate magnitude shifts, spatial-pattern shifts and new combinations of
+  familiar factors into named OOD groups. A random train/test split alone does
+  not define OOD. Topology/outage shifts are a later profile after input and
+  validation semantics are supported. Disconnected cases require explicit policy.
+- Compare random/LHS proposals and correlated-profile sampling under the same
+  variable envelope, dispatch policy, solver policy and total compute budget.
+  A candidate adaptive sampler can propose around verified points toward coverage
+  gaps, adjust step sizes from feedback, and restart in separate regions. This
+  is a testable engineering starting point, not an asserted novel algorithm.
+- Preserve original proposals, repaired/redispatched inputs, all solver attempts
+  and outcomes. Recompute OOD labels for final inputs; repairs may move a proposal
+  back into the reference distribution. Solver failures remain unresolved rather
+  than automatically infeasible. Charge diagnostic restarts and continuation.
+- Keep equation-valid/operationally-satisfied, equation-valid/violating,
+  equation-valid/partially-assessed and unresolved outcomes separate. Dataset
+  inclusion depends on its declared purpose; never discard failure denominators.
+- Report unique independently validated OOD yield per compute budget, per-group
+  coverage proxies, duplicates, rejection/failure rates and constraint assessment
+  completeness. Freeze features, normalization and duplicate tolerances first.
+  Retain coverage and yield separately; a high success rate in one easy region
+  is not broad OOD coverage. Validate downstream utility only if a downstream
+  task and frozen external test set are available.
+
+Existing gaps in the table below must be addressed for this experiment: scenario
+input profiles, original-input binding, an admitted control/Q-limit policy and
+independent checks, plus unseen-data access protection. The present case118
+fixture has unassessed thermal limits; do not invent branch ratings or call its
+samples fully operationally feasible. Before full feasibility claims, obtain
+traceable ratings or explicitly select a documented, separately pinned test case.
+
+Reference implementations to inspect, not blindly adopt:
+[GridFM DataKit](https://github.com/gridfm/gridfm-datakit) and
+[PFDelta](https://github.com/MOSSLab-MIT/pfdelta).
+GridFM's [PF/OPF mode documentation](https://gridfm.github.io/gridfm-datakit/manual/getting_started/)
+explicitly distinguishes PF data that may violate operating limits from OPF data.
+Pin and verify an implementation before reuse; neither a library label nor its
+own validation replaces ASR's independently bound evidence.
+
 ## Scientific objective
 
 The user clarified that “find new methods” means substantive research beyond
-searching for an existing method and trying it. P4 therefore targets an original,
+searching for an existing method and trying it. The longer-term new-method objective therefore targets an original,
 evidence-supported contribution in power-grid sampling, power-flow solution, or
 their interaction. It does not preselect solver improvement as the right direction.
 Novelty is an aspiration to investigate, not a result that the system may fabricate

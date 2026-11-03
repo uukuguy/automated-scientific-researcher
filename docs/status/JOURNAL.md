@@ -135,3 +135,7 @@
 
 - 2026-11-03: P4 readiness review confirmed fixed-input and held-out isolation gaps; 35 guard tests ran, three Docker checks skipped.
 - 2026-11-03: D023 clarifies substantive new-method research; withdrew solver-first suggestion, preserving autonomous question formation and honest negative outcomes.
+
+- 10:41 Reframed P4 toward substantive contributions and documented execution gaps, preventing benchmark results from masquerading as novelty. [f73215b]
+
+- 2026-11-03: D024 prioritizes realistic OOD sample generation; retain new-method goal without making invention an initial data-loop prerequisite.

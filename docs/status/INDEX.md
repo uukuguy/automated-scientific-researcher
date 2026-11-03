@@ -14,7 +14,7 @@ Register each new status file here. Register archive buckets as one row per buck
 | `JOURNAL.md` | 🟢 active | Append-only event log. |
 | `RESUME-NEXT-SESSION.md` | 🟢 active | Session recovery point. |
 | `INDEX.md` | 🟢 active | File catalog. |
-| `DECISIONS.md` | 🟢 active | Accepted scope, interaction, Capstone architecture and subscription-first replaceable runtimes and omp/AAR, power-grid capability base and locked scientific stack, and D016 scientific trust and D018 three-layer AAR/Capstone organization (superseding D017) and D021 subscription API-key prohibition and D022 recoverable limit governance and D023 substantive scientific contribution; protocol details remain draft. |
+| `DECISIONS.md` | 🟢 active | Accepted scope, interaction, Capstone architecture and subscription-first replaceable runtimes and omp/AAR, power-grid capability base and locked scientific stack, and D016 scientific trust and D018 three-layer AAR/Capstone organization (superseding D017) and D021 subscription API-key prohibition and D022 recoverable limit governance and D023 substantive scientific contribution and D024 OOD-generation priority; protocol details remain draft. |
 | `BOOTSTRAP-PREFLIGHT.md` | 🟡 decision history | Initial environment discovery; current numerical evidence is in docs/validation/P1-NUMERICAL-LAB.md. |
 
 ## Decision history

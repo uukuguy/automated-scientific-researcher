@@ -190,3 +190,10 @@
 - Rationale: do not confuse autonomous tool use or algorithm reproduction with autonomous scientific contribution. Agent-generated code and simple recombination do not establish novelty.
 - Boundary: do not preselect solver research from engineering convenience. Exploration can refine questions; confirmatory claims require frozen protocols and independent validation. Negative outcomes remain valuable and retained, but cannot be relabelled as achieving the new-method objective.
 - Supersession: withdraws this session's suggested solver-first direction; preserves P3 engineering acceptance and P4 planning status. No new run budget or claim of novelty is granted.
+
+## D024 — Prioritize realistic OOD sample generation
+
+- Date: 2026-11-03. Status: explicit user priority.
+- Decision: retain D023's new-method objective, but first address realistic OOD sample generation. Do not require inventing a solver before building a useful generation loop.
+- Boundary: OOD needs an explicit reference distribution and shift definition. Synthetic correlated public-case scenarios are not measured real operations. Equation validity, operating feasibility and downstream utility remain separate.
+- Supersession: P4 now prioritizes sampling rather than leaving sampling/solver/joint research equally unselected. The concrete sampling design remains proposed; no model/compute budget is admitted.

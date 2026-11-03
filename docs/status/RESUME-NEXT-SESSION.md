@@ -56,7 +56,9 @@ evaluation rules or budget. This multi-entry mechanism is not yet implemented.
 
 Use docs/plans/P4-SCIENTIFIC-COMPARISON.md for substantive new-method research.
 User clarified that retrieving and trying known solvers is insufficient. The
-solver-first suggestion was withdrawn; no direction choice is pending. Establish
+solver-first suggestion was withdrawn. User now prioritizes realistic OOD sample
+generation (D024); concrete design is proposed, not admitted. Retain the new-method
+objective without requiring algorithm invention for the initial data loop. Establish
 prior knowledge and an unresolved problem before selecting a research direction.
 Current Control, candidate wrapper and evaluator only support exact fixed-case
 inputs; do not claim scenario or held-out capability. Confirmatory experiments
