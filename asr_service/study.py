@@ -96,10 +96,11 @@ def completed_material(db, project, run, trial_id):
         trial_id=trial_id, execution_attempt_id=row[0], manifest_hash=report['manifest_hash'])
 
 
-def submit(service, token, project, run, *, request_key, request, timeout_seconds, hypothesis_ref):
+def submit(service, token, project, run, *, request_key, request, timeout_seconds, hypothesis_ref, organization_task=None):
     principal = service._auth(token, project, {'researcher', 'human'})
     service._identity(run, request_key)
     payload = [principal['subject'], request, timeout_seconds, hypothesis_ref]
+    if organization_task is not None:payload.append(organization_task)
     encoded(payload)
     with service._connect() as db:
         db.execute('BEGIN IMMEDIATE')
@@ -107,6 +108,9 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
         if replay:
             return replay
         running = service._run(db, project, run)
+        from .organization_experiments import admit
+        task_binding=admit(db,project,run,principal,organization_task,
+                           'study:'+str(request.get('operation')) if type(request) is dict else '')
         if running.get('study_final_lock'):raise ControlError('final_protocol_frozen')
         if not service.owning_gate(db, {'project_id': project, 'research_run_id': run}):
             raise ControlError('admission_closed')
@@ -214,6 +218,7 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
                       requested_budget=budget, execution_request=execution_request, state='queued', created_at=now(),
                       hypothesis_ref=hypothesis, hypothesis_linkage='linked', dependencies=dependencies,
                       proposal_accounting='Conservative permits: all admitted proposals charged once execution starts; partial results retained.')
+        if task_binding is not None:record['organization_task']=task_binding
         db.execute('INSERT INTO asr_dispatch VALUES (?,?,?,?,?,?,?)', (attempt, project, run, trial, attempt, 'queued', encoded(record)))
         service._remember(db, project, 'study:' + run, request_key, payload, record)
         service._event(db, project, run, 'trial_admitted', trial_id=trial, execution_attempt_id=attempt, profile=PROFILE)

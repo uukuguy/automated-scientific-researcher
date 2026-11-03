@@ -16,6 +16,8 @@ def submit(service,token,project,run,*,request_key,trial_id,requested_budget):
         replay=service._replay(db,project,'replication:'+run,request_key,payload)
         if replay:return replay
         running=service._run(db,project,run)
+        from .organization_experiments import reject_legacy
+        reject_legacy(db,project,run)
         if not service.owning_gate(db,dict(project_id=project,research_run_id=run)):raise ValueError('admission_closed')
         row=db.execute('SELECT attempt,record FROM asr_dispatch WHERE project=? AND run=? AND trial=?',(project,run,trial_id)).fetchone()
         if not row:raise ValueError('trial_not_found')

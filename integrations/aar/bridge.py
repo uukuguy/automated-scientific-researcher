@@ -127,7 +127,7 @@ class ResearchBridge:
                 objective=contract['objective'],runtime_policy=contract['runtime_policy'],organization=history,
                 boundary='Organization records only; follow history pages. No role execution or scientific validation is implied.')
         run=self.service.get_run(self.researcher_token,self.project,self.run)
-        if self.capability_profile in ('ood-study-development/1','ood-study-synthesis/1'):
+        if self.capability_profile in ('ood-study-development/1','ood-study-synthesis/1','research-organization-study/1'):
             from .study_projection import project_state
             return project_state(self,run)
         if self.capability_profile=='powerflow-readonly-finalization/1':

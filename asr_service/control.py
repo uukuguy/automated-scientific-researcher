@@ -333,6 +333,8 @@ class ControlService(PolicyStore):
             replay=self._replay(db,project,'trial:'+run,request_key,payload)
             if replay:return replay
             running=self._run(db,project,run)
+            from .organization_experiments import reject_legacy
+            reject_legacy(db,project,run)
             frozen_hypothesis=self._hypothesis_ref(db,project,hypothesis_ref) if hypothesis_ref is not None else None
             if running.get('study_final_lock'):raise ControlError('final_protocol_frozen')
             if not self.owning_gate(db,{'project_id':project,'research_run_id':run}): raise ControlError('admission_closed')

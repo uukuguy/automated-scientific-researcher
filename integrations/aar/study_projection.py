@@ -1,5 +1,6 @@
 """Compact development observations, with lossless large-output delivery."""
 import json
+import hashlib
 from pathlib import Path
 
 from powerflow_lab.runner import canonical, digest
@@ -10,6 +11,12 @@ def project_state(bridge, run):
     trials = []
     for trial in run['trials']:
         item = {key: trial[key] for key in ('trial_id', 'execution_attempt_id', 'dispatch_state', 'variables', 'hypothesis_ref')}
+        binding=trial.get('organization_task')
+        if binding:
+            item['organization_task']=dict(subject=binding['subject'],operation=binding['operation'],
+                task_id=binding['task']['entity_id'],task_revision=binding['task']['revision'],
+                direction_id=binding['direction']['entity_id'],direction_revision=binding['direction']['revision'],
+                member_revision=binding['member']['revision'],binding_sha256=hashlib.sha256(canonical(binding)).hexdigest())
         report = (trial.get('execution') or {}).get('report')
         if report:
             item['report'] = {key: report[key] for key in ('status', 'manifest_hash', 'usage', 'execution_exited')}

@@ -16,7 +16,7 @@ def session_engine_deadline(limits,reserved_walltime_ms,started):
 def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limits, oauth_source=None, on_event=None):
     service=bridge.service
     organization_arguments={}
-    if bridge.capability_profile=='research-organization/1':
+    if bridge.capability_profile in ('research-organization/1','research-organization-study/1'):
         pack=runtime.preflight_capabilities()
         if pack['pack']['id']!=bridge.capability_profile:
             raise RuntimeFailure('organization_capability_mismatch')

@@ -396,3 +396,27 @@ roles cannot be reassigned by resubmitting the same coordinates. A real batch of
 64 labels and fixed-trainer reproduction are engineering acceptance evidence,
 not a model-driven P4 result. Final-test release and continuation of the actual
 intake run still require their integration and a recorded successor contract.
+
+### P5 task-bound study admission (2026-11-03)
+
+For organization-enabled runs, task documents may include `experiment_operations`
+with `study:label`, `study:analysis`, `study:fit`. Missing means none. An assignee
+cannot expand permissions when claiming or finishing a task. `submit_study`
+requires `organization_task={task_id,revision}`; authenticated assignee, active
+direction/task, allowed operation, contract and shared budget are checked in the
+same admission transaction. Historical non-organization idempotency is unchanged.
+
+Accepted dispatch retains the full member/direction/task records and operation;
+Supervisor copies this binding into the immutable manifest and checks it during
+publication/recovery. Compact study state includes task/direction/member versions
+and a binding hash. Outstanding attempts prevent completing/cancelling their task.
+Organization policy cannot be enabled over an unresolved legacy numerical attempt.
+Legacy reference/replication submissions remain unavailable for organized runs;
+human-only final evaluation remains separate and does not become a worker tool.
+
+`research-organization-study/1` combines coordination and development study tools
+for Leads/workers only under `ood-study-development/1` contracts. It retains
+per-member runtime directories, bounded model reservations and explicit tasks.
+This does not grant paid usage, new experimental budget, hidden-test access or
+parallel execution. Real task-bound container success/failure has engineering
+evidence; a model-driven scientific trajectory using this profile is not yet verified.

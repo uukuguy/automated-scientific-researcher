@@ -28,7 +28,7 @@
 
 ## Open Problems (theme-level)
 
-- Control organization records, role binding and serial AAR design collaboration are verified; task-scoped scientific execution, concurrent roles and comparative scientific acceptance remain gaps.
+- Control organization records, role binding and serial AAR design collaboration are verified; task-scoped scientific admission and real container execution are verified. Model-driven team experiments, concurrent roles and comparative scientific acceptance remain gaps.
 - Long native conversations require explicit context recovery; final AAR report publication needed controller archival after a time cap. Automatic report-first/context recovery is not verified.
 
 - P4 provides measured training benefit on a synthetic client project, with actual AAR experiments, independent final scoring and exact selected-training replay. Broader topology/distribution transfer, mechanistic attribution and actual client utility remain untested.

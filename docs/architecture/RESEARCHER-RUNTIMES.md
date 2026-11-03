@@ -334,3 +334,15 @@ run; it does not imply expired authentication or authorize repeated login.
 Session directories and capability boundaries remain per-role. No credential
 values enter receipts. This is serial runtime reconciliation with conflict
 detection, not a fully validated concurrent OAuth broker. See P5 pilot evidence.
+
+### Organized scientific worker profile (2026-11-03)
+
+`organization-study-capabilities.json` declares `research-organization-study/1`:
+organization records, versioned hypotheses/candidate findings, snapshots, guidance
+and task-bound study submission. Only registered Lead/worker identities can bind
+it, and only under an effective OOD development contract. The existing
+`research-organization/1` remains coordination-only. Both use per-role native
+contexts and the same model budget and canonical OAuth reconciliation. File tools
+do not grant host shell access; numerical/analysis execution remains in the
+existing isolated StudyBackend. Tests cover profile binding and real bridge to
+container execution, not fresh model inference or deployment of parallel roles.

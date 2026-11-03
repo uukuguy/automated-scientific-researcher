@@ -113,6 +113,9 @@ def validate(db, project, run, kind, entity, doc, previous, role, subject, run_s
         if not old:
             require(db.execute("SELECT 1 FROM asr_runtime_sessions WHERE project=? AND run=? AND state!='exited'", (project,run)).fetchone() is None,
                     'organization_runtime_reconciliation_required')
+            require(not any(state not in ('succeeded','failed','cancelled','timed_out','interrupted')
+                            for state, in db.execute('SELECT state FROM asr_dispatch WHERE project=? AND run=?', (project,run))),
+                    'organization_experiment_reconciliation_required')
         check_capacity(db, project, run, doc)
         return []
     policy = latest(db, project, run, 'policy', 'capacity')
@@ -149,7 +152,11 @@ def validate(db, project, run, kind, entity, doc, previous, role, subject, run_s
         if doc['status'] == 'active': require(run_state == 'running', 'organization_work_paused')
         check_capacity(db, project, run, policy['document'], replacement=(kind,entity,doc))
     elif kind == 'task':
-        require(set(doc) == {'direction_id','assignee','title','instructions','status','result','evidence_trial_ids'})
+        require(set(doc)-{'experiment_operations'} == {'direction_id','assignee','title','instructions','status','result','evidence_trial_ids'})
+        from .organization_experiments import OPERATIONS, require_idle
+        operations=doc.get('experiment_operations', [])
+        require(type(operations) is list and all(type(x) is str and x in OPERATIONS for x in operations)
+                and len(operations)==len(set(operations)))
         require(all(text(doc[k]) for k in ('direction_id','assignee','title','instructions')) and type(doc['result']) is str)
         require(doc['status'] in ('assigned','in_progress','completed','cancelled'))
         direction = latest(db, project, run, 'direction', doc['direction_id'])
@@ -160,10 +167,12 @@ def validate(db, project, run, kind, entity, doc, previous, role, subject, run_s
             require(old['status'] not in TERMINAL_TASKS, 'task_terminal')
             require(doc['direction_id'] == old['direction_id'], 'task_direction_immutable')
             if old['status'] == 'in_progress':
+                require(doc.get('experiment_operations',[]) == old.get('experiment_operations',[]), 'task_in_progress')
                 require(all(doc[k] == old[k] for k in ('direction_id','assignee','title','instructions')), 'task_in_progress')
                 require(subject == old['assignee'], 'forbidden')
                 require(doc['status'] in TERMINAL_TASKS, 'invalid_task_transition')
             elif doc['status'] == 'in_progress':
+                require(doc.get('experiment_operations',[]) == old.get('experiment_operations',[]), 'forbidden')
                 require(subject == old['assignee'] and all(doc[k] == old[k] for k in ('assignee','title','instructions')), 'forbidden')
             else:
                 require(manager, 'forbidden')
@@ -176,6 +185,7 @@ def validate(db, project, run, kind, entity, doc, previous, role, subject, run_s
             require(not doc['result'])
         else:
             require(text(doc['result']), 'task_result_required')
+            require_idle(db, project, run, entity)
         if doc['status'] == 'in_progress':
             require(not any(x['entity_id'] != entity and x['document']['status'] == 'in_progress'
                             and x['document']['assignee'] == doc['assignee'] for x in current(db, project, run, 'task')), 'member_already_working')

@@ -62,6 +62,8 @@ class Supervisor:
                       request_sha256=hashlib.sha256(canonical(request)).hexdigest(),
                       usage=usage,usage_estimated=estimated or any(k not in ('execution_ms','attempts','trial_attempts') for k in usage),
                       execution_exited=True,artifacts=publication_inventory(path))
+        if 'organization_task' in record['dispatch']:
+            manifest['organization_task']=record['dispatch']['organization_task']
         if (path/'resource-events.json').exists():
             manifest['resource_events']=json.loads((path/'resource-events.json').read_text())
         elif (path/'limit-trigger.json').exists():
@@ -77,6 +79,8 @@ class Supervisor:
             raise ValueError('manifest request mismatch')
         if manifest['trial_id']!=record['trial'] or manifest['execution_attempt_id']!=record['attempt']:
             raise ValueError('manifest identity mismatch')
+        if manifest.get('organization_task')!=record['dispatch'].get('organization_task'):
+            raise ValueError('manifest organization binding mismatch')
         if manifest['artifacts']!=publication_inventory(final): raise ValueError('evidence corrupt')
         report={k:manifest[k] for k in ('trial_id','execution_attempt_id','status','usage','usage_estimated','execution_exited')}
         report.update(manifest_hash=digest(final/'manifest.json'),evidence_path=str(final))

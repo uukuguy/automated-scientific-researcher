@@ -7,8 +7,9 @@
 D027: Organizer forms directions from evidence; two Lead slots are not fixed
 departments. The human two-layer generator is a candidate, not ASR core or a P4
 agent invention. P4 remains complete and its run must not be reopened. P5 now has
-actual serial Organizer/Lead/Worker design collaboration; scientific execution,
-parallelism, comparative gains and Capstone integration remain open.
+actual serial Organizer/Lead/Worker design collaboration and task-bound real
+container engineering checks. Model-driven team science, parallelism, comparative
+gains and Capstone integration remain open.
 
 ## This work cycle
 
@@ -45,17 +46,33 @@ other providers unchanged. Never print auth or raw native events. No *_API_KEY.
 Long-term/concurrent provider refresh is not proven by mocked engineering tests.
 Do not open a browser for generic WebSocket/fetch failures.
 
-## Checks and next implementation
+## Latest task-bound execution slice
 
-Full uv run --extra aar python -m unittest discover -s tests -v:
-345 tests,325 pass,20 environment skips; /tmp/asr-p5-oauth-full-tests.log.
-24 organization checks passed. Independent engineering reviewer failed to start
-because configured subagent model was unavailable; not counted as review evidence.
-Read WORKLIST and P5 plan; implement task identity to experiment permission and
-source/receipt adapters, then verify these before admitting a fresh numerical
-contract. Team's3584-slot design is only a proposal, not current compute authority.
-Need new frozen evaluation assets; P4 finals are known development evidence.
-Preserve same-ledger ownership and all failures; avoid extra organization layers.
+Implemented asr_service/organization_experiments.py. Task experiment_operations
+default empty; only actual assignee with current in_progress task revision may
+submit study operations. Member/direction/task records freeze into dispatch and
+Supervisor manifest. Outstanding attempts block task completion/cancellation;
+legacy reference/replication routes cannot bypass organization binding.
+New research-organization-study/1 profile binds Lead/worker under an OOD
+development contract; organizer remains coordination-only. Runtime directories,
+canonical OAuth, shared budget and single-owner limits remain in force.
+
+Full suite354 tests,332 pass,22 environment skips;
+/tmp/asr-task-final-tests.log. Organization33 tests,31pass/2skip. Explicit real
+Docker cases2/2passed; /tmp/asr-task-docker-tests.log. Two independent engineering
+fixtures archived with raw evidence and30-file inventory under
+artifacts/p5-task-execution-checks-001. No model calls or original run mutation.
+See docs/validation/P5-TASK-EXECUTION.md. Independent reviewer model remained
+unavailable from prior attempt; this slice has local inspection/tests, not a
+claimed independent model review.
+
+Next: source/receipt adapters and explicit paired-coordinate protocol. Team's
+3584-slot design is a proposal, not current compute authority. Its repeated
+cross-arm coordinates conflict with existing study deduplication: do not simply
+remove that leakage guard. Define frozen reuse identity, sample purposes and
+charge policy, implement genuine expected-input/label adapters and test the
+team prototype before a new model-driven scientific run. New evaluation assets
+are needed; P4 finals are known development evidence.
 
 ## P4 anchors
 
@@ -68,6 +85,6 @@ No new novelty/real-industrial/generalization claim follows from P5 design work.
 
 ## Workspace
 
-Task changes ready for commit; inspect git status. No active native model owner.
+Pilot/auth changes committed as2564854. New task-bound execution slice ready for commit; inspect git status. No active native model owner.
 Recovery logs /tmp/asr-p5-organization-001-resumed.log and
 /tmp/asr-p5-organization-001-network-recovery.log. Preserve ignored evidence.

@@ -205,3 +205,13 @@
 - 2026-11-03: Fixed canonical OAuth staging/refresh reconciliation with conflict pause; consolidated successful login without exposing credentials or changing other providers.
 
 - 2026-11-03: Verified345 engineering tests (20 skips),24 organization checks; P5 design pilot accepted, full scientific organization acceptance remains open.
+
+- 2026-11-03: Verified AAR role handoffs and reconciled OAuth refreshes to prevent stale-role login loops. [2564854]
+
+- 2026-11-03: Added explicit task-scoped study admission and frozen responsibility in experiment manifests; unresolved attempts block task closure.
+
+- 2026-11-03: Bound Lead/worker scientific profiles to OOD contracts; preserved role contexts, shared budgets and task checks through bridge.
+
+- 2026-11-03: Verified354 tests (22 skips), two real container cases and30 archived engineering files; no model or research-budget use.
+
+- 2026-11-03: Identified paired-study cross-arm reuse conflict with existing deduplication; preserve leakage controls pending explicit frozen protocol adaptation.
