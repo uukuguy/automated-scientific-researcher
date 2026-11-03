@@ -139,3 +139,7 @@
 - 10:41 Reframed P4 toward substantive contributions and documented execution gaps, preventing benchmark results from masquerading as novelty. [f73215b]
 
 - 2026-11-03: D024 prioritizes realistic OOD sample generation; retain new-method goal without making invention an initial data-loop prerequisite.
+
+- 10:46 Recorded OOD-generation priority and proposed physical/distribution safeguards to ground P4 in a useful data deliverable. [9c48d28]
+
+- 2026-11-03: D025 grounds OOD generation in target-method training gains; Research Lead owns finer problem decomposition and controlled evaluation.

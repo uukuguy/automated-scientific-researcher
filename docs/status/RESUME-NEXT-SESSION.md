@@ -54,12 +54,15 @@ evaluation rules or budget. This multi-entry mechanism is not yet implemented.
 
 ## Next boundary
 
-Use docs/plans/P4-SCIENTIFIC-COMPARISON.md for substantive new-method research.
-User clarified that retrieving and trying known solvers is insufficient. The
-solver-first suggestion was withdrawn. User now prioritizes realistic OOD sample
-generation (D024); concrete design is proposed, not admitted. Retain the new-method
-objective without requiring algorithm invention for the initial data loop. Establish
-prior knowledge and an unresolved problem before selecting a research direction.
+D025 clarifies the active task: a target trainable method underperforms on some
+OOD regimes; diagnose them, test the benefit of similar-distribution augmentation,
+and research usable sample generation. Research Lead owns finer decomposition,
+similarity and experiment design; do not ask the human to preselect algorithms.
+Exact target model/data/training interface remain unavailable. No model or
+experiment budget is admitted. Read docs/plans/P4-SCIENTIFIC-COMPARISON.md.
+Final evidence requires controlled training and fresh target-regime testing,
+plus ID retention. Coverage/yield alone cannot close the task. Earlier generic
+OOD-generation options are subordinate, not a preselected experimental protocol.
 Current Control, candidate wrapper and evaluator only support exact fixed-case
 inputs; do not claim scenario or held-out capability. Confirmatory experiments
 need explicit frozen families/evaluation and finite budget.

@@ -197,3 +197,11 @@
 - Decision: retain D023's new-method objective, but first address realistic OOD sample generation. Do not require inventing a solver before building a useful generation loop.
 - Boundary: OOD needs an explicit reference distribution and shift definition. Synthetic correlated public-case scenarios are not measured real operations. Equation validity, operating feasibility and downstream utility remain separate.
 - Supersession: P4 now prioritizes sampling rather than leaving sampling/solver/joint research equally unselected. The concrete sampling design remains proposed; no model/compute budget is admitted.
+
+## D025 — Targeted augmentation for a specified method's OOD weakness
+
+- Date: 2026-11-03. Status: explicit user problem decomposition and human-role clarification.
+- Decision: identify the OOD regimes where a target trainable method performs poorly; test whether more similar-distribution training data helps; research generation of those usable examples. Improvement is a hypothesis, not an assumed consequence of data volume.
+- Roles: human problem decomposition can stop at this level. Research Lead owns diagnosis, similarity, sampling and experiment design; request only genuinely missing external facts/materials/authority.
+- Evidence: independent target-regime evaluation after augmentation, original-distribution retention and controlled training comparisons are central. Separate target model from label generation; separate diagnostic/augmentation data from final tests and retain original-distribution provenance.
+- Supersession: narrows D024 from generic OOD generation to targeted training benefit. Generation/coverage alone cannot close the scientific task. Exact model/data/interface and budgets remain unspecified; no execution is authorized by this record.

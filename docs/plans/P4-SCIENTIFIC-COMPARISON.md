@@ -1,10 +1,71 @@
-# P4: realistic OOD sample generation
+# P4: targeted OOD augmentation for solver generalization
 
 Status: active, research framing and contract preparation. P3 is complete.
 No new model or experiment budget has been admitted. This document is a planning
 boundary, not an executable contract or a claim of scientific novelty.
 
-## Current priority and proposed first experiment
+## Task meaning and human/researcher boundary (D025)
+
+User clarification: a particular trainable solving method performs poorly on
+some OOD samples. The research question is whether additional usable training
+samples from similar distributions can improve that method's generalization,
+and how to generate those samples. This supersedes generic OOD coverage as the
+primary goal. More similar data helping is a hypothesis to test, not a guarantee.
+
+The human supplies this problem-level intent and available target artifacts,
+permissions and resources. The Research Lead must translate it into diagnoses,
+measurable hypotheses, a definition of relevant similarity, generation methods,
+training experiments and independent comparisons. Do not require the human to
+choose a sampler, similarity metric, perturbation range or detailed experiment
+sequence. Clarify missing external facts rather than delegating research design
+back to the human. The exact target method, checkpoint, training data/interface,
+poor-performing examples and evaluation criteria have not yet been supplied here;
+a substitute model would demonstrate a prototype, not solve the actual task.
+
+Three linked research questions:
+
+1. Which OOD regimes expose the target method's weaknesses, and what failure or
+   error mechanisms do they share? Use a designated diagnostic set; repeated
+   inspection makes it development data, not the final unseen test set.
+2. Does training with additional data from those regimes improve performance on
+   fresh examples from the target distribution? Separate sample scarcity from
+   architecture/optimization/label or numerical problems. Also measure ID retention.
+3. Which generator produces usable, diverse training examples in those relevant
+   regimes most effectively for the combined generation/labeling/training cost?
+   Similarity must preserve the relevant regime, not merely produce near-duplicates.
+
+Keep the target method being improved separate from the trusted label/reference
+pipeline. The latter need not be the poorly performing method. Reference outputs
+need independent checks; target predictions are not automatically ground truth.
+A learned warm start, hybrid method or end-to-end solver may need different
+training targets. Do not select labels before inspecting the actual interface.
+
+Freeze the original training-distribution definition. Augmentation samples are
+OOD relative to that original set; after inclusion they are training data. The
+claim must concern fresh, independent target-regime test samples, with grouping
+by shared parent/time episode/scenario lineage to avoid near-duplicate leakage.
+Any claim about transfer to additional unseen regimes needs a separate test.
+
+Suggested causal comparison, to be refined by the Lead: original checkpoint;
+equal-budget continuation without new data; untargeted augmentation; targeted
+augmentation. Match starting checkpoint, training policy and relevant resource
+budgets; report both training and generation/labeling costs and repeat uncertainty
+checks as appropriate. Do not let extra training steps masquerade as a data benefit.
+Final test labels and feedback must not steer the generator or method selection.
+
+Primary outcome: target-method performance on the independent target-regime test
+set after training, plus regressions on the original distribution. Sample yield,
+physical validity, diversity and coverage are supporting measures. A dataset-only
+engineering milestone cannot establish improved generalization or close the full
+scientific task. Negative transfer or no gain must be retained and investigated.
+
+## Earlier generation proposal: supporting options, not a selected protocol
+
+The following D024 options remain useful only if they address the observed target
+weaknesses. Fixed topology, regional features and local expansion are not imposed
+on the research question before seeing its data and method.
+
+### D024 generation options
 
 User steering, 2026-11-03 (D024): record the new-method objective for later;
 prioritize realistic OOD sample generation now. The design below is a proposal,
@@ -44,8 +105,9 @@ algorithmic novelty; later scientific contributions still need D023 evidence.
   coverage proxies, duplicates, rejection/failure rates and constraint assessment
   completeness. Freeze features, normalization and duplicate tolerances first.
   Retain coverage and yield separately; a high success rate in one easy region
-  is not broad OOD coverage. Validate downstream utility only if a downstream
-  task and frozen external test set are available.
+  is not broad OOD coverage. Under D025, target-method training/evaluation is
+  required for the generalization claim; without it only generation readiness
+  can be reported.
 
 Existing gaps in the table below must be addressed for this experiment: scenario
 input profiles, original-input binding, an admitted control/Q-limit policy and

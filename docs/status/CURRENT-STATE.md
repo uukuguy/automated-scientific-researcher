@@ -7,7 +7,7 @@
 - Theme-level focus: Formal scientific comparison contracts over a verified bounded single-researcher foundation.
 - Project route: managed
 - Canonical worklist: docs/plans/WORKLIST.md
-- Active work package: P4 — realistic OOD sample-generation design and contract planning (no new run budget admitted)
+- Active work package: P4 — targeted OOD augmentation for solver generalization; task and contract framing (no new run budget admitted)
 
 ## Current Architecture
 
