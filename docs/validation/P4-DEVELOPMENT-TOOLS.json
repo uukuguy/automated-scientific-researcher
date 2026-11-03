@@ -1,0 +1,52 @@
+{
+  "schema": "asr-p4-development-tools-verification/1",
+  "date": "2026-11-03",
+  "scope": "Engineering acceptance only; no new model-driven research or held-out improvement claim",
+  "image": {
+    "schema": "asr-scientific-image/1",
+    "image_id": "sha256:091c3ae6729e2afe32f9ff6aeea5becff172858659911be21986e20f5933cc92",
+    "base_image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+    "sources": {
+      "research_projects/ood_augmentation/project.py": "61feddeef8add21223b22da0199616afd1a2395c5761b77548927768a5cc3c97",
+      "research_projects/ood_augmentation/worker.py": "0eab1dc92f4a8114922a22028077f6540f0fbd383bdac9e433ede03d6ca37ed7",
+      "environments/scientific/calibrate.py": "3868f980d0a41b4cf05ce7aa13a088ef1deaadc2259df292d0d10f1827982bb2",
+      "powerflow_lab/validation.py": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3"
+    },
+    "uv_lock_sha256": "81303c283dabf033624def67f42511e07d16c796fb11937fb4e5485d05bd7406",
+    "requirements_sha256": "8255e84d915eb0ecd75c7a16a34af0367e901ccd1fac14bcaf1d5bdbbd43b1d3",
+    "dockerfile_sha256": "fe19cd1302800f83816d1675dd3a3ae9cbf7bf6013fd465c71f3274259f397f5"
+  },
+  "checks": {
+    "core": {
+      "run": 304,
+      "skipped": 19,
+      "passed": 285
+    },
+    "scientific": {
+      "passed": 13
+    },
+    "actual_docker": {
+      "passed": 4,
+      "seconds": 15.715,
+      "cases": [
+        "64 real labels, frozen baseline reproduction, fixed 192-row training and shared-ledger settlement",
+        "offline non-root read-only author analysis, no Docker socket/API keys, output rejected as training labels",
+        "one-second timeout preserves raw evidence and charges 64 proposal permits",
+        "16 MiB output overflow preserves prefix, explicit diagnostic and consumed attempt"
+      ]
+    },
+    "client_integrity": "Original source and all 320 raw preparation hashes unchanged"
+  },
+  "remaining": [
+    "Same-run continuation harness and successor budget contract",
+    "Actual AAR-authored augmentation/training experiments",
+    "Frozen final-test release and independent performance evaluation",
+    "Scientific findings and P4 acceptance"
+  ],
+  "test_sources": {
+    "tests/test_study_admission.py": "ba201496663376b5a5321a2785ea70bc4c6ff2822d828b836097d2ec03aa6d33",
+    "tests/test_study_bridge.py": "06d4a5ace25f1817aab5a7cfb8f2030a78f18af1ecbc9683f359320108ed7b6f",
+    "tests/test_study_execution.py": "f03fa929c2107f8c5f788038060ea1208e0ea35db8fb42745084e220e0f8f243",
+    "environments/scientific/tests/test_ood_worker.py": "f910c741536e57f0c31b1649db1e6e396d5c7c36674351e2c9d87098c48a53b3"
+  }
+}

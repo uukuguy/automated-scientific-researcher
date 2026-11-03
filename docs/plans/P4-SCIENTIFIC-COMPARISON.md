@@ -2,8 +2,9 @@
 
 Status: active, simulated client project prepared and actual AAR intake verified.
 P3 is complete. A separate 300-second subscription-only intake contract was
-admitted with zero compute allowance. Training/evaluation execution remains
-unimplemented for this project; P4 is not complete.
+admitted with zero compute allowance. Development analysis, labeling and fixed training now use the owning Control
+ledger and isolated Supervisor. Final evaluation and resumed model-driven study
+remain outstanding; P4 is not complete.
 
 ## Actual simulated project and next implementation boundary (D026)
 
@@ -274,3 +275,21 @@ studied scope. Engineering readiness and a polished report alone do not close P4
 Multi-Lead coordination remains P5. Capstone's separate acceptance lane remains
 independent. The current researcher must first demonstrate substantive research;
 adding agents is not a substitute for that evidence.
+
+## Implemented development slice
+
+`asr_service/study.py` admits versioned analysis/label/fit payloads into the existing
+Control ledger and `asr_dispatch`; `asr_supervisor/study.py` uses the existing
+fenced Supervisor with an immutable scientific image. No additional scheduler.
+Each job binds hypothesis revision and dependencies. Raw labels are streamed and
+checked against reconstructed original equations before training. Probe and
+author-analysis outputs cannot become augmentation labels. Final-test material
+is never loaded by this development profile.
+
+Real Docker tests cover64 labels, unchanged baseline training, one-second timeout,
+16MiB overflow and offline/non-root/read-only isolation. See
+`../validation/P4-DEVELOPMENT-TOOLS.json`. These are developer tests, not experiments
+performed by AAR. The actual intake run remains paused with its original budget.
+Next connect same-run continuation and a recorded successor contract, then let
+AAR select and execute experiments. Final-test freezing/release and independent
+performance evaluation remain required before P4 can close.

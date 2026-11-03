@@ -51,3 +51,21 @@ raw limits/ratings differ from the original problem; normalized state is checked
 against the original constraints. Pandapower and MATPOWER share the PYPOWER/
 MATPOWER Newton-Raphson lineage, so solver agreement alone is not independent
 scientific verification. The existing Python electrical checker is separate.
+
+## Isolated OOD development image
+
+Build from an isolated context containing only hash-locked exported requirements
+and four explicitly selected trusted source files:
+
+```sh
+uv run python environments/scientific/build_image.py --output artifacts/unique-image-build
+```
+
+The script verifies the local pinned MATPOWER base ID and emits the resulting
+immutable image ID/source manifest. It never sends the repository, model
+credentials or private test data into the build context. Optional `--proxy` is a
+Docker build proxy, not a runtime network permission. Jobs use the returned image
+ID with network disabled and only their frozen payload mounted read-only.
+`worker.py` selects no sampler; its analysis branch executes researcher code only
+inside this isolated worker, never in Control. See the P4 development verification
+report and limits audit for measured scope and outstanding final evaluation.

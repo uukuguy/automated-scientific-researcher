@@ -52,6 +52,9 @@ class ResearchBridge:
             return self.state()
         if operation=='freeze_candidate':
             return self.freeze_candidate(arguments,key)
+        if operation=='submit_study':
+            receipt=s.submit_study(t,p,r,request_key=key,**arguments)
+            return self.dispatch_trial(receipt)
         if operation in ('submit_trial','submit_candidate'):
             if operation=='submit_candidate' and arguments.get('variables',{}).get('solver')!='octave-candidate/1':
                 raise ValueError('candidate_profile_required')
@@ -112,6 +115,9 @@ class ResearchBridge:
 
     def state(self):
         run=self.service.get_run(self.researcher_token,self.project,self.run)
+        if self.capability_profile=='ood-study-development/1':
+            from .study_projection import project_state
+            return project_state(self,run)
         if self.capability_profile=='powerflow-readonly-finalization/1':
             return dict(projection='readonly-finalization/1',run={key:run[key] for key in ('project_id','research_run_id','experiment_id','state','contract_revision','budget')},
                 hypotheses=[{key:item[key] for key in ('hypothesis_id','revision','sha256')} for item in self.service.hypotheses(self.researcher_token,self.project)],

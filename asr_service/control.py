@@ -38,7 +38,7 @@ def records_budget_block(method):
     def guarded(self,token,project,run,*args,**kwargs):
         try:return method(self,token,project,run,*args,**kwargs)
         except ValueError as error:
-            if getattr(error,'code',str(error)) in ('budget_exhausted','admission_closed','candidate_revision_limit','candidate_timeout_limit'):
+            if getattr(error,'code',str(error)) in ('budget_exhausted','admission_closed','candidate_revision_limit','candidate_timeout_limit','study_batch_limit','study_source_limit','study_dependency_limit','study_payload_limit','study_timeout_limit'):
                 block=self._record_budget_block(token,project,run,method.__name__,args,kwargs,getattr(error,'details',None))
                 if block:error.details=dict(block['budget'],block_id=block['block_id'],recoverable=True)
             raise
@@ -138,11 +138,17 @@ class ControlService(PolicyStore):
             'reference': {'profile':'matpower-reference/1','image_id':baseline['image_id']},
             'evaluation': {'profile':'powerflow-independent/1','validator_sha256':baseline['source_hashes']['validation.py'],'tolerance_pu':1e-7},
         }
+        if isinstance(doc['provenance'],dict) and doc['provenance'].get('capability_profile')=='ood-study-development/1':
+            from .study import expected_references
+            expected_refs=expected_references(doc['provenance'].get('study'))
+            if type(doc['budget']) is not dict or 'sample_proposals' not in doc['budget']: raise ControlError('invalid_budget')
+            if effective.get('solver','newton_raphson')!='newton_raphson' or effective.get('iterations',20)!=20:
+                raise ControlError('capability_unavailable')
         for field,kind in [('problem_ref','problem'),('reference_ref','reference'),('evaluation_ref','evaluation')]:
             reference=ReferenceStore.get_in_transaction(db,project,kind,doc[field])
             if reference != expected_refs[kind]: raise ControlError('unsupported_'+kind+'_profile')
         if type(doc['budget']) is not dict or not {'attempts','execution_ms','research_walltime_ms','turns','tool_executions'} <= set(doc['budget']): raise ControlError('invalid_budget')
-        if set(doc['budget'])-{'attempts','execution_ms','research_walltime_ms','turns','tool_executions','evaluation_attempts','evaluation_ms'}: raise ControlError('unsupported_budget_dimension')
+        if set(doc['budget'])-{'attempts','execution_ms','research_walltime_ms','turns','tool_executions','evaluation_attempts','evaluation_ms','sample_proposals'}: raise ControlError('unsupported_budget_dimension')
         for amount in doc['budget'].values(): BudgetStore._amount(amount)
         intake_only=(isinstance(doc['provenance'],dict) and doc['provenance'].get('capability_profile')=='ood-project-intake/1'
                      and doc['budget']['attempts']==0 and doc['budget']['execution_ms']==0)
@@ -281,6 +287,11 @@ class ControlService(PolicyStore):
         return running
 
     @records_budget_block
+    def submit_study(self, token, project, run, **arguments):
+        from .study import submit
+        return submit(self, token, project, run, **arguments)
+
+    @records_budget_block
     def submit_trial(self, token, project, run, *, request_key, variables, references, requested_budget, hypothesis_ref=None):
         principal=self._auth(token,project,{'researcher','human'})
         self._identity(run,request_key)
@@ -296,6 +307,7 @@ class ControlService(PolicyStore):
             if not self.owning_gate(db,{'project_id':project,'research_run_id':run}): raise ControlError('admission_closed')
             contract=self._contract(db,project,running['contract_id'],running['contract_revision'])
             doc=contract['document']
+            if doc['provenance'].get('capability_profile')=='ood-study-development/1': raise ControlError('capability_unavailable')
             # Revalidate frozen reference availability in the same owning transaction.
             self._validate_contract(db,project,doc)
             if type(variables) is not dict: raise ControlError('invalid_variables')

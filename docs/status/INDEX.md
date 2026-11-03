@@ -75,3 +75,5 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 
 - `research_projects/ood_augmentation/README.md` — implemented simulated client and limits.
 - `docs/validation/P4-CLIENT-PREPARATION.json`, `P4-ASR-INTAKE.json`, `P4-RESEARCHER-INTAKE.md` — real client baseline and actual researcher-authored intake; no scientific improvement claim.
+
+- `docs/validation/P4-DEVELOPMENT-TOOLS.json` — admitted isolated analysis/label/fixed-training engineering checks; no model-driven augmentation or final-test claim.

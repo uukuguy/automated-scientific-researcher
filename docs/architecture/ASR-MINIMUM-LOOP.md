@@ -384,3 +384,15 @@ A8/A9/A12–A14 have bounded acceptance in [P3 system acceptance](../validation/
 D021 forbids subscription runtime *_API_KEY settings except the explicitly permitted non-Codex pi case (which grants no billing authority). D022 requires purposeful limits, adequate defaults, detailed exceedance receipts and recoverable research. [Limit audit](../validation/LIMITS-AUDIT.md) records implemented boundaries and limitations, including legacy direct-debug diagnostics and non-hard-total DNS timeouts.
 
 The single researcher is the Research Lead prototype: AAR owns its outer scientific loop and runtime owns inner reasoning/tools. Organizer/Lead/Worker deployment remains P5. P4 now plans formal comparison and held-out evaluation; P3's fixed-case replication is not a substitute. No new P4 model/experiment allowance follows from P3 closeout.
+
+The `ood-study-development/1` capability now admits analysis, label and fit jobs
+through the same `asr_dispatch` table, budget reservations and fenced Supervisor.
+Frozen payload hashes, dependencies and hypothesis revisions bind each job. An
+additional compute dimension, `sample_proposals`, charges all admitted proposals
+conservatively once execution starts; unstarted cancellation releases them.
+Private test material is absent from this profile. Analysis outputs remain author
+claims and cannot satisfy fixed-trainer label dependencies. Probe and training
+roles cannot be reassigned by resubmitting the same coordinates. A real batch of
+64 labels and fixed-trainer reproduction are engineering acceptance evidence,
+not a model-driven P4 result. Final-test release and continuation of the actual
+intake run still require their integration and a recorded successor contract.

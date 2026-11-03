@@ -106,3 +106,25 @@ The inventory below was checked against source, boundary tests and actual manage
   Source hashes/row counts preserved; final/private data excluded.
 - Data-domain multipliers[0.7,1.6] and utility thresholds are explicit simulated
   client task rules, not numerical stability guarantees or global ASR defaults.
+
+## P4 development worker profile (2026-11-03)
+
+These caps authorize no model run. The actual intake contract still has zero
+compute allowance. New jobs require a separately admitted successor contract.
+
+| Limit | Purpose and sufficiency | Exceedance and recovery |
+|---|---|---|
+| 64 proposals per label batch | Bound raw evidence, solve latency and cancellation loss; real full-batch test passes within 60s | Structured admission block before any solve; retain task and explicitly resume with smaller requests |
+| 300s maximum worker walltime, further reduced by contract | Stop stalled author code/solver; tested at 60s for 64 labels and 1s for timeout | Stop owned container, retain stream/events, publish timeout receipt and actual elapsed cost; no automatic retry |
+| 64KiB analysis source, 12 input trial references | Bound request size/dependency fan-in; sufficient for one generator and baseline plus nine fits plus two probe batches | Detailed admission block and recoverable pause; source and original trials retained |
+| 16MiB frozen input and 16MiB combined stdout/stderr | Bound trusted collector memory and evidence size; 64 raw labels fit comfortably | Input admission block or externally stopped output overflow; retain bounded raw prefix and diagnostic, never report success |
+| 1GiB RAM, one CPU, 64 PIDs, 128MiB temporary storage | Offline single-worker resource isolation; actual labeling/fitting/analysis pass | Docker resource limits remain enforced; OOM flag becomes explicit diagnostic. PID/temp exhaustion surfaces process/worker error, not an inferred scientific failure |
+| `sample_proposals` ledger | Prevent a batched job from hiding dozens of solve permissions behind one attempt | Reserve whole batch before dispatch; charge whole admitted count conservatively after launch even on timeout; retain completed/failed rows separately. Unstarted cancellation releases all |
+| 335s bridge transport wait for study jobs | Accommodate up to 300s execution plus launch/publication, bounded further by runtime deadline | Existing runtime timeout observation and native recovery apply; retry same key only after reading state, never duplicate admitted work |
+| 40,000-byte inline result threshold | Keep routine model responses readable without dropping full author output | Larger output is exported completely to a workspace file and can be consumed by later analysis dependency; native single-line limits may still require analysis-based extraction for a very long scalar |
+| 600s image build CLI timeout | Bound developer build wait; measured locked dependency build succeeds | Retain context/log/failure record; timeout does not prove Docker daemon build ended. Reconcile before a new invocation |
+
+Limits combine: 12 dependencies do not guarantee that their raw rows fit within
+16MiB. A large combined analysis must request fewer inputs or a reviewed profile
+revision. Conservative proposal charges are permits, not a claim that every
+reserved solve completed. Actual attempts and partial raw events remain distinct.

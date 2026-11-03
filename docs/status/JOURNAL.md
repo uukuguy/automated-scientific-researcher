@@ -149,3 +149,7 @@
 - 2026-11-03: Prepared concrete simulated client: 320 independently equation-valid labels; measured target surrogate OOD error gap without augmentation.
 - 2026-11-03: Actual AAR intake recovered same run via proxy, preserving failure costs; two hypotheses and researcher snapshot, zero experiments.
 - 2026-11-03: Researcher exposed unreadable compact arrays; supplied lossless public pages and exact predicate clarification, guidance not yet acknowledged.
+
+- 11:32 Prepared measured simulated client and actual AAR intake, preserving hypotheses and separating delegation from experimental completion. [76b8c98]
+
+- 2026-11-03: Verified Control-admitted OOD analysis, labels and fixed training: 304 core tests, 13 scientific tests, four real Docker checks.

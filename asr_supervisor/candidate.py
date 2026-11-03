@@ -66,6 +66,7 @@ def make_candidate_request(path, sha256, size, *, timeout_seconds=60, max_iterat
 
 
 class CandidateBackend:
+    output_bytes = MAX_OUTPUT_BYTES
     def __init__(self):
         self.collectors = {}
 
@@ -158,7 +159,7 @@ class CandidateBackend:
                     try: chunk=os.read(process.stdout.fileno(),65536)
                     except BlockingIOError: continue
                     if not chunk: break
-                    available=MAX_OUTPUT_BYTES-count
+                    available=self.output_bytes-count
                     collector['observed_bytes']=count+len(chunk)
                     stream.write(chunk[:available]);count+=min(len(chunk),available)
                     if len(chunk)>available:

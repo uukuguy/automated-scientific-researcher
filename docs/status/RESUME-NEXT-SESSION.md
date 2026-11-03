@@ -39,24 +39,34 @@ Developer supplies the client project and infrastructure; AAR owns the research.
   unchanged. Human guidance recorded, NOT yet acknowledged; Control revision5.
   AAR projection synchronized. No further model session has read the addendum.
 
+## Current implementation checkpoint
+
+Development profile `ood-study-development/1` is implemented through the existing
+Control/asr_dispatch/Supervisor ledger. Tools: isolated author Python analysis,
+1..64 fresh-coordinate labels with immutable augmentation/probe role, unchanged
+trainer consuming only verified augmentation trial evidence. sample_proposals is
+a separate conservative compute permit count; actual completed rows stay explicit.
+No final-test capability. Image manifest artifacts/p4-worker-image-002/manifest.json;
+image sha256:091c3ae6729e2afe32f9ff6aeea5becff172858659911be21986e20f5933cc92.
+Original client project.py and all320 raw preparation hashes are unchanged.
+
 ## Next concrete work
 
-Implement the minimal admitted scenario-labeling, unchanged-trainer and independent
-final-evaluation profile needed for this actual researcher plan, then resume its
-existing run/hypotheses with a recorded compute/model contract. Do not bypass
-Control or disguise a developer-run augmentation as ASR science. The old fixed-case
-profile cannot serve this training task. The intake launcher currently supports
-only initial launch or one pre-intake provider-failure recovery, not post-intake
-research continuation; extend deliberately rather than resetting the run.
+Connect same-run continuation to the new bridge profile and record a finite
+successor resource contract before actual AAR execution. Do not reset prior
+216397ms,11turns,21tools. User continues to authorize advancing the simulated
+project on subscriptions/local compute; finite limits must be recorded explicitly,
+with their measured purpose and recovery rather than inferred unlimited scope.
+The real intake run has NOT resumed yet, remains paused with zero compute budget.
+Then implement frozen final-test release/independent performance evaluation;
+P4 requires actual researcher experiments and supported findings, not these tests.
+Keep the client private root and all controller/evidence material denied to pi.
 
-Check the researcher note before deciding tool requirements. Its unresolved data
-reading and predicate ambiguities were corrected via the client addendum. Do not
-rewrite its original snapshot or hypotheses. No model is currently running.
+## Verification and commit
 
-## Verification and pending commit
-
-293 core tests,15 explicit Docker skips;9 scientific pytest tests passed. Added
-public-page preservation/private-exclusion test then verified3 focused intake/
-delivery tests. Numerical preparation verified all320raw artifact hashes. Final focused25 tests passed after review, and material preflight remains valid.
-Implementation and evidence are ready for the task commit. Credentials
-and native transcripts remain ignored. Prior P3 immutable reports unchanged.
+304 core tests pass (19 explicit environment skips);13 scientific tests pass;
+four real Docker tests pass:64 labels plus baseline/augmentation fit, isolated
+analysis, timeout, output overflow. No leftover owned study containers. Bridge
+profile preflight and original client integrity verified. Details are in
+`docs/validation/P4-DEVELOPMENT-TOOLS.json`. Development slice pending commit;
+prior simulated client/intake is commit76b8c98. No new model run has occurred.
