@@ -56,6 +56,9 @@ VALIDATION_SCHEMA={
                           'limits':{'type':'array','minItems':1,'maxItems':64,'items':_TEXT},
                       }},
         'summary':_TEXT,
+        'evaluation_artifact':{'type':'object','additionalProperties':False,
+                               'required':['evaluation_id','evaluation_attempt_id','artifact_sha256'],
+                               'properties':{'evaluation_id':_ID,'evaluation_attempt_id':_ID,'artifact_sha256':_HASH}},
         'hypothesis_ref':{'type':'object','additionalProperties':False,
                           'required':['project_id','hypothesis_id','revision'],
                           'properties':{'project_id':_ID,'hypothesis_id':_ID,'revision':{'type':'integer','minimum':1,'maximum':2**63-1}}},
@@ -130,10 +133,12 @@ def publish_validation(service, token, project, run, validation_id, document, *,
             prior=db.execute('SELECT record FROM asr_validations WHERE project=? AND run=? AND validation_id=?',(project,run,supersedes)).fetchone()
             if prior is None:raise ValidationError('validation_not_found')
             if json.loads(prior[0])['document']['target']!=document['target']:raise ValidationError('supersedes_target_conflict')
+        linked_artifact=_linked_evaluation(service,db,project,run,document['evaluation_artifact'],document['target'],document['assessments']) if 'evaluation_artifact' in document else None
         record=dict(schema_version='asr-validation/1',project_id=project,research_run_id=run,validation_id=validation_id,
                     document=document,sha256=hashlib.sha256(encoded(document).encode()).hexdigest(),hypothesis_ref=hypothesis,
                     author=principal['subject'],author_role=principal['role'],created_at=datetime.now(timezone.utc).isoformat(),supersedes=supersedes,
                     independence_basis='evaluator_attestation',isolation_verified_by_service=False)
+        if linked_artifact is not None:record.update(evaluation_artifact=linked_artifact,evaluation_artifact_verified_by_service=True)
         db.execute('INSERT INTO asr_validations VALUES (?,?,?,?)',(project,run,validation_id,encoded(record)))
         service._remember(db,project,'validation:'+run,idempotency_key,payload,record)
         service._event(db,project,run,'validation_recorded',validation_id=validation_id,sha256=record['sha256'],supersedes=supersedes)
@@ -145,3 +150,20 @@ def validations(service, token, project, run):
     with service._connect() as db:
         service._run(db,project,run)
         return [json.loads(row[0]) for row in db.execute('SELECT record FROM asr_validations WHERE project=? AND run=? ORDER BY rowid',(project,run))]
+
+
+def _linked_evaluation(service,db,project,run,reference,target,assessments):
+    from .evaluation_jobs import _get,verify_artifact
+    job=_get(db,project,run,reference['evaluation_id'])
+    if not job['settled'] or not job.get('artifact') or job['evaluation_attempt_id']!=reference['evaluation_attempt_id'] or job['artifact']['sha256']!=reference['artifact_sha256'] or job['target']!=target:raise ValidationError('evaluation_artifact_conflict')
+    path=Path(job['artifact']['path'])
+    if (path/'manifest.json').is_symlink() or hashlib.sha256((path/'manifest.json').read_bytes()).hexdigest()!=reference['artifact_sha256']:raise ValidationError('evaluation_artifact_conflict')
+    verified=verify_artifact(path,job['artifact']['authority'])
+    if verified['manifest']!=job['report'] or verified['isolation_facts']['container_id']!=job['identity']['container_id']:raise ValidationError('evaluation_artifact_conflict')
+    result=job['report'].get('result') or {}
+    equation=assessments['equation_validity']
+    if equation!='unassessed' and result.get('equation_valid') is not (equation=='valid'):raise ValidationError('validation_result_conflict')
+    operating=assessments['operating_checks']
+    expected={'satisfied':'satisfied','violated':'violated','partially_assessed':'not_fully_assessed'}
+    if operating!='unassessed' and result.get('operational_status')!=expected[operating]:raise ValidationError('validation_result_conflict')
+    return dict(reference)

@@ -62,6 +62,20 @@ def make_server(service, *, host='127.0.0.1', port=8765):
                     result=service.pending_dispatch(token,project)
                 elif self.command=='GET' and len(route)==3 and route[0]=='references':
                     result=service.get_reference(token,project,route[1],route[2])
+                elif self.command=='POST' and route==['candidates']:
+                    result=service.register_candidate(token,project,**body)
+                elif len(route)==3 and route[0]=='runs' and route[2]=='evaluations':
+                    result=service.evaluations(token,project,route[1]) if self.command=='GET' else service.admit_evaluation(token,project,route[1],**body)
+                elif self.command=='GET' and len(route)==4 and route[0]=='runs' and route[2]=='evaluations':
+                    result=service.get_evaluation(token,project,route[1],route[3])
+                elif self.command=='POST' and len(route)==5 and route[0]=='runs' and route[2]=='evaluations':
+                    actions={'claim':service.claim_evaluation,'heartbeat':service.heartbeat_evaluation,'attach':service.attach_evaluation,'uncertain':service.mark_evaluation_uncertain,'reconcile':service.reconcile_evaluation_claim,'complete':service.complete_evaluation,'launch':service.begin_evaluation_launch,'abort-prelaunch':service.abort_evaluation_prelaunch,'should-stop':service.evaluation_should_stop}
+                    if route[4] not in actions:raise ControlError('not_found')
+                    result=actions[route[4]](token,project,route[1],route[3],**body)
+                elif self.command=='POST' and len(route)==3 and route[0]=='runs' and route[2]=='replications':
+                    result=service.submit_replication(token,project,route[1],**body)
+                elif self.command=='POST' and len(route)==3 and route[0]=='runs' and route[2]=='quota-observations':
+                    result=service.observe_quota(token,project,route[1],**body)
                 elif len(route)==3 and route[0]=='runs' and route[2]=='validations':
                     result=service.validations(token,project,route[1]) if self.command=='GET' else service.publish_validation(token,project,route[1],**body)
                 elif len(route)==3 and route[0]=='runs' and route[2]=='findings':
@@ -96,7 +110,7 @@ def make_server(service, *, host='127.0.0.1', port=8765):
                 self.respond(200,result)
             except (ValueError,TypeError,KeyError) as exc:
                 code=getattr(exc,'code',str(exc))
-                status=401 if code=='unauthorized' else 403 if code=='forbidden' else 404 if code in ('not_found','run_not_found','contract_not_found','reference_not_found','hypothesis_not_found','validation_not_found') else 409 if code in ('revision_conflict','idempotency_conflict','admission_closed','budget_exhausted','validation_id_conflict') else 400
+                status=401 if code=='unauthorized' else 403 if code=='forbidden' else 404 if code in ('not_found','run_not_found','contract_not_found','reference_not_found','hypothesis_not_found','validation_not_found','evaluation_not_found') else 409 if code in ('revision_conflict','idempotency_conflict','admission_closed','budget_exhausted','validation_id_conflict','evaluation_reconciliation_required','stale_evaluation_epoch','evaluation_lease_active','evaluation_lease_expired','evaluation_launch_already_authorized','candidate_revision_limit') else 400
                 self.respond(status,{'error':code})
             except Exception:
                 self.respond(500,{'error':'internal_error'})

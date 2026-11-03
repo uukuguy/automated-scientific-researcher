@@ -14,7 +14,7 @@ class BudgetError(ValueError):
 # unlike units or move historical consumption to a second mutable store.
 LEDGER_DIMENSIONS = {
     'model': frozenset({'research_walltime_ms', 'turns', 'tool_executions'}),
-    'compute': frozenset({'attempts', 'execution_ms'}),
+    'compute': frozenset({'attempts', 'execution_ms', 'evaluation_attempts', 'evaluation_ms'}),
 }
 
 

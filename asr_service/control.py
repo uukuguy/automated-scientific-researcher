@@ -58,6 +58,11 @@ class ControlService(PolicyStore):
             ''')
             from .validations import initialize
             initialize(db)
+            from .candidates import initialize as initialize_candidates
+            from .quotas import initialize as initialize_quotas
+            initialize_candidates(db);initialize_quotas(db)
+            from .evaluation_jobs import initialize as initialize_evaluations
+            initialize_evaluations(db)
 
     def _auth(self, token, project, roles=None):
         principal = None
@@ -110,7 +115,7 @@ class ControlService(PolicyStore):
             raise ControlError('invalid_objective')
         doc['variable_policy']=resolve_policy(doc['variable_policy'])
         effective={k:v['value'] for k,v in doc['variable_policy']['variables'].items()}
-        if set(effective)-{'network','iterations','solver'} or effective.get('network','case118')!='case118' or effective.get('solver','newton_raphson')!='newton_raphson': raise ControlError('capability_unavailable')
+        if set(effective)-{'network','iterations','solver'} or effective.get('network','case118')!='case118' or effective.get('solver','newton_raphson') not in ('newton_raphson','octave-candidate/1'): raise ControlError('capability_unavailable')
         if type(effective.get('iterations',20)) is not int or not 0<=effective.get('iterations',20)<=1000: raise ControlError('capability_unavailable')
         from powerflow_lab.reference import make_request
         baseline=make_request()
@@ -123,7 +128,7 @@ class ControlService(PolicyStore):
             reference=ReferenceStore.get_in_transaction(db,project,kind,doc[field])
             if reference != expected_refs[kind]: raise ControlError('unsupported_'+kind+'_profile')
         if type(doc['budget']) is not dict or not {'attempts','execution_ms','research_walltime_ms','turns','tool_executions'} <= set(doc['budget']): raise ControlError('invalid_budget')
-        if set(doc['budget'])-{'attempts','execution_ms','research_walltime_ms','turns','tool_executions'}: raise ControlError('unsupported_budget_dimension')
+        if set(doc['budget'])-{'attempts','execution_ms','research_walltime_ms','turns','tool_executions','evaluation_attempts','evaluation_ms'}: raise ControlError('unsupported_budget_dimension')
         for amount in doc['budget'].values(): BudgetStore._amount(amount)
         if doc['budget']['attempts']<1 or doc['budget']['execution_ms']<1: raise ControlError('invalid_budget')
         runtime=doc['runtime_policy']
@@ -131,7 +136,8 @@ class ControlService(PolicyStore):
         if runtime['billing_mode']=='subscription' and (runtime.get('auth_mode') not in ('subscription_oauth','subscription_cli') or runtime.get('paid_api_authorized',False)): raise ControlError('invalid_runtime_policy')
         if runtime['billing_mode']=='paid_api' and (runtime.get('auth_mode')!='api_key' or runtime.get('paid_api_authorized') is not True): raise ControlError('paid_api_not_authorized')
         execution=doc['execution_policy']
-        if type(execution) is not dict or set(execution)!={'researchers','candidate_interface','timeout_seconds','output_bytes','max_concurrency','retry_limit'}: raise ControlError('invalid_execution_policy')
+        if type(execution) is not dict or set(execution)-{'candidate_profiles','max_candidate_revisions'}!={'researchers','candidate_interface','timeout_seconds','output_bytes','max_concurrency','retry_limit'}: raise ControlError('invalid_execution_policy')
+        if effective.get('solver')=='octave-candidate/1' and 'octave-candidate/1' not in execution.get('candidate_profiles',[]):raise ControlError('capability_unavailable')
         if execution['researchers']!=1 or execution['candidate_interface']!='asr-candidate/1' or execution['max_concurrency']!=1:
             raise ControlError('capability_unavailable')
         for key in ('researchers','timeout_seconds','output_bytes','max_concurrency'):
@@ -209,14 +215,22 @@ class ControlService(PolicyStore):
                 for trial in record['trials']:
                     execution=db.execute('SELECT record FROM asr_executions WHERE attempt=?',(trial['execution_attempt_id'],)).fetchone()
                     trial['execution']=json.loads(execution[0]) if execution else None
+            record['evaluations']=[json.loads(r[0]) for r in db.execute('SELECT record FROM asr_evaluation_jobs WHERE project=? AND run=? ORDER BY rowid',(project,run))]
             record['commands']=commands
+            record['quota_observations']=[json.loads(r[0]) for r in db.execute('SELECT record FROM asr_quota_observations WHERE project=? AND run=? ORDER BY seq',(project,run))]
+            provider=record['contract']['document']['runtime_policy']['provider']
+            observed=[item for item in record['quota_observations'] if item['provider']==provider and item['applied']]
+            if observed:
+                latest=max(observed,key=lambda item:datetime.fromisoformat(item['observed_at']))
+                record['resource_ledgers']['provider_quota']=dict(state=record['quota_state'],observation_state=latest['state'],source=latest['source'],observed_at=latest['observed_at'],numeric_remaining=None)
             record['runtime_sessions']=[json.loads(r[0]) for r in db.execute('SELECT record FROM asr_runtime_sessions WHERE project=? AND run=? ORDER BY rowid',(project,run))]
             return record
 
     @staticmethod
     def owning_gate(db, dispatch):
         run=ControlService._run(db,dispatch['project_id'],dispatch['research_run_id'])
-        return run['state']=='running' and run['admission_open'] and run['health']=='ok' and run.get('quota_state','unknown') in ('unknown','available')
+        no_debt=all(BudgetStore._balance(db,dispatch['project_id'],dimension)['available']>=0 for dimension, in db.execute('SELECT dimension FROM asr_budget_limits WHERE project=?',(dispatch['project_id'],)))
+        return run['state']=='running' and run['admission_open'] and run['health']=='ok' and run.get('quota_state','unknown') in ('unknown','available') and no_debt
 
     def submit_trial(self, token, project, run, *, request_key, variables, references, requested_budget, hypothesis_ref=None):
         principal=self._auth(token,project,{'researcher','human'})
@@ -246,7 +260,14 @@ class ControlService(PolicyStore):
             from powerflow_lab.reference import make_request
             execution_request=make_request(max_iterations=values.get('iterations',20),timeout_seconds=requested_budget['execution_ms']/1000)
             candidate=ReferenceStore.get_in_transaction(db,project,'candidate',references['candidate'])
-            if candidate!={'profile':'matpower-reference/1','image_id':execution_request['image_id'],'solver':'newton_raphson'} or values.get('solver','newton_raphson')!='newton_raphson' or values.get('network','case118')!='case118':
+            if candidate.get('profile')=='octave-candidate/1':
+                if 'octave-candidate/1' not in doc['execution_policy'].get('candidate_profiles',[]) or values.get('solver')!='octave-candidate/1':raise ControlError('capability_unavailable')
+                from .candidates import resolve,check_admission
+                from asr_supervisor.candidate import make_candidate_request
+                artifact=resolve(db,project,references['candidate'])
+                check_admission(db,project,run,references['candidate'],doc['execution_policy'])
+                execution_request=make_candidate_request(artifact['path'],artifact['source_sha256'],artifact['size'],timeout_seconds=requested_budget['execution_ms']/1000,max_iterations=values.get('iterations',20))
+            elif candidate!={'profile':'matpower-reference/1','image_id':execution_request['image_id'],'solver':'newton_raphson'} or values.get('solver','newton_raphson')!='newton_raphson' or values.get('network','case118')!='case118':
                 raise ControlError('capability_unavailable')
             if set(variables)-{'iterations','solver','network'}: raise ControlError('capability_unavailable')
             inputs=ReferenceStore.get_in_transaction(db,project,'input_manifest',references['input_manifest'])
@@ -282,10 +303,9 @@ class ControlService(PolicyStore):
                 record.update(state='paused' if kind=='pause' else 'running',admission_open=kind=='resume')
             elif kind=='quota':
                 if set(payload)!={'state'} or payload['state'] not in ('unknown','available','exhausted','rate_limited'): raise ControlError('invalid_quota_state')
-                record['quota_state']=payload['state']
-                if payload['state'] in ('exhausted','rate_limited'):
-                    record['admission_open']=False
-                    if record['state'] not in ('stopping','finishing'): record['state']='paused'
+                from .quotas import apply_observation
+                policy=self._contract(db,project,record['contract_id'],record['contract_revision'])['document']['runtime_policy']
+                apply_observation(self,db,project,run,record,provider=policy['provider'],state=payload['state'],source='runtime_rate_limit' if principal['role']=='supervisor' else 'operator_observation',observed_at=now(),author=principal['subject'],bump_revision=False)
                 scope='subsequent_submissions'
             elif kind=='guidance':
                 if set(payload)!={'text'} or type(payload['text']) is not str or not payload['text'].strip(): raise ControlError('invalid_guidance')
@@ -294,7 +314,11 @@ class ControlService(PolicyStore):
                 if set(payload)!={'contract_id','revision'}: raise ControlError('invalid_payload')
                 contract=self._contract(db,project,payload['contract_id'],payload['revision'])
                 self._set_limits(db,project,contract['document']['budget'])
-                record.update(contract_id=payload['contract_id'],contract_revision=payload['revision'],quota_state=contract['document']['runtime_policy']['quota_state'])
+                from .quotas import contract_state
+                previous_policy=self._contract(db,project,record['contract_id'],record['contract_revision'])['document']['runtime_policy']
+                runtime_policy=contract['document']['runtime_policy']
+                effective_quota=contract_state(db,project,run,runtime_policy['provider'],runtime_policy['quota_state'],record.get('quota_state','unknown'),previous_policy['provider'])
+                record.update(contract_id=payload['contract_id'],contract_revision=payload['revision'],quota_state=effective_quota)
                 if record['quota_state'] in ('rate_limited','exhausted'): record.update(state='paused',admission_open=False)
                 scope='subsequent_submissions'
             elif kind in ('stop','finish','cancel_trial'):
@@ -314,6 +338,16 @@ class ControlService(PolicyStore):
                         status='pending'
                         if kind!='finish': db.execute('UPDATE asr_dispatch SET state=? WHERE attempt=?',('cancel_requested',attempt))
                 if kind in ('stop','finish'):
+                    for evaluation_id,body in db.execute('SELECT evaluation_id,record FROM asr_evaluation_jobs WHERE project=? AND run=?',(project,run)).fetchall():
+                        evaluation=json.loads(body)
+                        if evaluation['settled']:continue
+                        if evaluation['state']=='queued':
+                            evaluation.update(state='cancelled',settled=True,usage_ms=0)
+                            db.execute('UPDATE asr_budget_reservations SET actual=0 WHERE project=? AND attempt=? AND actual IS NULL',(project,evaluation['evaluation_attempt_id']))
+                        else:
+                            status='pending'
+                            if kind=='stop':evaluation['state']='cancel_requested'
+                        db.execute('UPDATE asr_evaluation_jobs SET state=?,record=? WHERE evaluation_id=?',(evaluation['state'],encoded(evaluation),evaluation_id))
                     if db.execute("SELECT 1 FROM asr_runtime_sessions WHERE project=? AND run=? AND state!='exited'",(project,run)).fetchone(): status='pending'
                     record.update(state=('stopping' if kind=='stop' else 'finishing') if status=='pending' else ('stopped' if kind=='stop' else 'completed'),admission_open=False)
                 scope='cancel_requested' if kind=='cancel_trial' else 'stop_and_preserve_evidence' if kind=='stop' else 'drain_inflight_and_close'
@@ -695,3 +729,63 @@ class ControlService(PolicyStore):
     def validations(self, token, project, run):
         from .validations import validations
         return validations(self,token,project,run)
+
+    def register_candidate(self, token, project, *, request_key, source, entrypoint='candidate.m', profile='octave-candidate/1', snapshot_ref=None, run=None):
+        from .candidates import register
+        return register(self,token,project,request_key=request_key,source=source,entrypoint=entrypoint,profile=profile,snapshot_ref=snapshot_ref,run=run)
+
+    def observe_quota(self, token, project, run, *, request_key, provider, state, source, observed_at):
+        from .quotas import observe
+        return observe(self,token,project,run,request_key=request_key,provider=provider,state=state,source=source,observed_at=observed_at)
+
+    def admit_evaluation(self, token, project, run, *, request_key, target, requested_budget):
+        from .evaluation_jobs import admit
+        return admit(self,token,project,run,request_key=request_key,target=target,requested_budget=requested_budget)
+
+    def evaluations(self, token, project, run):
+        from .evaluation_jobs import list_jobs
+        return list_jobs(self,token,project,run)
+
+    def get_evaluation(self, token, project, run, evaluation_id):
+        from .evaluation_jobs import get_job
+        return get_job(self,token,project,run,evaluation_id)
+
+    def claim_evaluation(self, token, project, run, evaluation_id, owner, *, lease_seconds=30):
+        from .evaluation_jobs import claim
+        return claim(self,token,project,run,evaluation_id,owner,lease_seconds=lease_seconds)
+
+    def heartbeat_evaluation(self, token, project, run, evaluation_id, epoch, owner, *, lease_seconds=30):
+        from .evaluation_jobs import heartbeat
+        return heartbeat(self,token,project,run,evaluation_id,epoch,owner,lease_seconds=lease_seconds)
+
+    def attach_evaluation(self, token, project, run, evaluation_id, epoch, owner, identity):
+        from .evaluation_jobs import attach
+        return attach(self,token,project,run,evaluation_id,epoch,owner,identity)
+
+    def mark_evaluation_uncertain(self, token, project, run, evaluation_id, epoch, owner, reason):
+        from .evaluation_jobs import uncertain
+        return uncertain(self,token,project,run,evaluation_id,epoch,owner,reason)
+
+    def reconcile_evaluation_claim(self, token, project, run, evaluation_id, owner, *, lease_seconds=30):
+        from .evaluation_jobs import reconcile_claim
+        return reconcile_claim(self,token,project,run,evaluation_id,owner,lease_seconds=lease_seconds)
+
+    def evaluation_should_stop(self, token, project, run, evaluation_id, epoch, owner):
+        from .evaluation_jobs import should_stop
+        return should_stop(self,token,project,run,evaluation_id,epoch,owner)
+
+    def complete_evaluation(self, token, project, run, evaluation_id, epoch, owner, *, artifact_path, artifact_sha256, usage_ms):
+        from .evaluation_jobs import complete
+        return complete(self,token,project,run,evaluation_id,epoch,owner,artifact_path=artifact_path,artifact_sha256=artifact_sha256,usage_ms=usage_ms)
+
+    def submit_replication(self, token, project, run, *, request_key, trial_id, requested_budget):
+        from .replication import submit
+        return submit(self,token,project,run,request_key=request_key,trial_id=trial_id,requested_budget=requested_budget)
+
+    def begin_evaluation_launch(self, token, project, run, evaluation_id, epoch, owner):
+        from .evaluation_jobs import begin_launch
+        return begin_launch(self,token,project,run,evaluation_id,epoch,owner)
+
+    def abort_evaluation_prelaunch(self, token, project, run, evaluation_id, epoch, owner, *, usage_ms, reason):
+        from .evaluation_jobs import abort_prelaunch
+        return abort_prelaunch(self,token,project,run,evaluation_id,epoch,owner,usage_ms=usage_ms,reason=reason)
