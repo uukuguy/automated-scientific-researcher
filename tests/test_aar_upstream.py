@@ -36,6 +36,66 @@ class UpstreamIntegrationTests(unittest.TestCase):
         self.service.publish_contract('human-secret','p','c',self.contract,expected_revision=0,idempotency_key='pub')
         return adapter.create_run('human-secret','p','r','c',1,idempotency_key='create')
 
+    def test_authoritative_completion_projects_actual_orm_and_replays_after_reopen(self):
+        adapter=self.adapter();self.start(adapter)
+        self.assertTrue(callable(getattr(adapter,'sync_experiment_state',None)),'trusted lifecycle projection required')
+        finish=self.service.command('human-secret','p','r','finish',expected_revision=1,idempotency_key='finish')
+        self.assertEqual(adapter.experiment('human-secret','p','r')['status'],'running')
+        with self.service._connect() as db:control_before=db.execute('SELECT record FROM asr_runs').fetchone()[0]
+        receipt=adapter.sync_experiment_state('human-secret','p','r',expected_control_revision=finish['control_revision'],idempotency_key='sync-state')
+        self.assertEqual(receipt['prior_status'],'running')
+        self.assertEqual(receipt['projected_status'],'completed')
+        self.assertEqual(receipt['control_revision'],finish['control_revision'])
+        self.assertTrue(receipt['changed'])
+        self.assertEqual(adapter.experiment('human-secret','p','r')['status'],'completed')
+        with adapter.app.app_context():self.assertEqual(adapter.models.Experiment.query.one().status,'completed')
+        from asr_service.control import ControlService
+        from integrations.aar.upstream_adapter import UpstreamAdapter
+        reopened=UpstreamAdapter(ControlService(self.service.path,credentials=self.service.credentials),checkout=self.checkout)
+        self.assertEqual(reopened.sync_experiment_state('human-secret','p','r',expected_control_revision=finish['control_revision'],idempotency_key='sync-state'),receipt)
+        events=[event for event in self.service.events('human-secret','p') if event['type']=='aar_experiment_state_projected']
+        self.assertEqual(len(events),1)
+        with self.service._connect() as db:
+            self.assertEqual(db.execute('SELECT record FROM asr_runs').fetchone()[0],control_before)
+            self.assertEqual(db.execute('SELECT count(*) FROM experiments').fetchone()[0],1)
+
+    def test_state_projection_authorization_binding_and_revision_fail_closed(self):
+        adapter=self.adapter();self.start(adapter)
+        self.assertTrue(callable(getattr(adapter,'sync_experiment_state',None)))
+        for token in ('agent-secret','other-secret','missing'):
+            with self.subTest(token=token),self.assertRaises(ValueError):
+                adapter.sync_experiment_state(token,'p','r',idempotency_key='unauthorized')
+        pause=self.service.command('human-secret','p','r','pause',expected_revision=1,idempotency_key='pause')
+        with self.assertRaisesRegex(ValueError,'revision_conflict'):
+            adapter.sync_experiment_state('human-secret','p','r',expected_control_revision=1,idempotency_key='stale')
+        self.assertEqual(adapter.experiment('human-secret','p','r')['status'],'running')
+        with self.service._connect() as db:
+            control_before=db.execute('SELECT record FROM asr_runs').fetchone()[0]
+            db.execute("UPDATE experiments SET run_id='different-run'")
+        with self.assertRaisesRegex(ValueError,'actual_experiment_binding_required'):
+            adapter.sync_experiment_state('human-secret','p','r',expected_control_revision=pause['control_revision'],idempotency_key='bad-binding')
+        with self.service._connect() as db:
+            self.assertEqual(db.execute('SELECT record FROM asr_runs').fetchone()[0],control_before)
+            self.assertEqual(db.execute('SELECT status FROM experiments').fetchone()[0],'running')
+            db.execute("UPDATE experiments SET run_id='r'")
+        self.service.credentials['supervisor-projection']={'subject':'projection-supervisor','role':'supervisor','projects':['p']}
+        receipt=adapter.sync_experiment_state('supervisor-projection','p','r',expected_control_revision=pause['control_revision'],idempotency_key='trusted-supervisor')
+        self.assertEqual(receipt['projected_status'],'paused')
+        self.assertEqual(receipt['author_role'],'supervisor')
+        self.assertEqual(adapter.experiment('agent-secret','p','r')['status'],'paused')
+
+    def test_projection_rolls_back_with_receipt_event_and_control_is_unchanged(self):
+        from unittest.mock import patch
+        adapter=self.adapter();self.start(adapter)
+        self.assertTrue(callable(getattr(adapter,'sync_experiment_state',None)))
+        self.service.command('human-secret','p','r','finish',expected_revision=1,idempotency_key='finish')
+        with patch.object(self.service,'_event',side_effect=RuntimeError('deliberate receipt failure')):
+            with self.assertRaises(RuntimeError):adapter.sync_experiment_state('human-secret','p','r',idempotency_key='atomic-sync')
+        self.assertEqual(adapter.experiment('human-secret','p','r')['status'],'running')
+        receipt=adapter.sync_experiment_state('human-secret','p','r',idempotency_key='atomic-sync')
+        self.assertTrue(receipt['changed'])
+        self.assertEqual(adapter.experiment('human-secret','p','r')['status'],'completed')
+
     def test_actual_experiment_row_same_database_atomic_mapping_and_legacy_guard(self):
         adapter=self.adapter();record=self.start(adapter)
         self.assertTrue(record['experiment_id'].startswith('aar-experiment:'))

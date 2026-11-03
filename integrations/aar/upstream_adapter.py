@@ -12,10 +12,11 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import uuid
 from datetime import datetime
 
 from asr_service.contracts import encoded
-from asr_service.control import ControlError
+from asr_service.control import ControlError,now
 
 _MODELS={}
 
@@ -121,6 +122,41 @@ class UpstreamAdapter:
             actual=self.models.Experiment.query.filter_by(asr_project_id=project,asr_research_run_id=run).one_or_none()
             if actual is None or binding['experiment_id']!='aar-experiment:'+str(actual.id) or actual.execution_mode!='asr':raise ControlError('actual_experiment_binding_required')
             return dict(actual.to_dict(),asr_project_id=actual.asr_project_id,asr_research_run_id=actual.asr_research_run_id)
+
+    def sync_experiment_state(self,token,project,run,*,idempotency_key,expected_control_revision=None):
+        """Project an authoritative lifecycle snapshot, never update Control.
+
+        The owning SQLite write transaction binds the source revision, actual
+        upstream row, projection write and receipt/event. A replay returns its
+        original as-of receipt; a new source revision needs a new request key.
+        """
+        service=self.service;principal=service._auth(token,project,{'human','supervisor'})
+        service._identity(run,idempotency_key)
+        if expected_control_revision is not None:service._revision(expected_control_revision)
+        payload=[principal['subject'],run,expected_control_revision]
+        with service._connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            control=service._run(db,project,run)
+            actual=db.execute('SELECT id,status,execution_mode,run_id FROM experiments WHERE asr_project_id=? AND asr_research_run_id=?',(project,run)).fetchone()
+            if actual is None or control['experiment_id']!='aar-experiment:'+str(actual[0]) or actual[2]!='asr' or actual[3]!=run:
+                raise ControlError('actual_experiment_binding_required')
+            replay=service._replay(db,project,'aar_sync_experiment_state',idempotency_key,payload)
+            if replay:return replay
+            if expected_control_revision is not None and control['control_revision']!=expected_control_revision:
+                raise ControlError('revision_conflict')
+            projected=control['state']
+            if projected not in ('running','paused','stopping','finishing','completed','stopped','failed'):
+                raise ControlError('unsupported_control_projection_state')
+            receipt=dict(schema='asr-aar-experiment-projection/1',projection_id='aar_projection_'+uuid.uuid4().hex,
+                project_id=project,research_run_id=run,upstream_experiment_id=actual[0],experiment_id=control['experiment_id'],
+                control_revision=control['control_revision'],control_state=projected,
+                control_record_sha256=hashlib.sha256(encoded(control).encode()).hexdigest(),
+                prior_status=actual[1],projected_status=projected,changed=actual[1]!=projected,
+                author=principal['subject'],author_role=principal['role'],created_at=now(),authority='asr-control')
+            db.execute('UPDATE experiments SET status=? WHERE id=?',(projected,actual[0]))
+            service._remember(db,project,'aar_sync_experiment_state',idempotency_key,payload,receipt)
+            service._event(db,project,run,'aar_experiment_state_projected',**receipt)
+            return receipt
 
     def legacy_worker(self):
         """Actual guarded upstream class; ASR app cannot start its scheduler."""

@@ -108,7 +108,7 @@ def execute(args):
     runtime=PiRuntime(model=model,thinking='low',capabilities_path=HERE/'p3-finalization-capabilities.json')
     runtime.preflight_capabilities()
     migration=migrate_native_session(root,run,args.oauth_source,source_directory='pi-private-resumed',target_directory='pi-private-final')
-    config=Path(migration['config_dir']);events=[];result=None;failure=None;finish=None
+    config=Path(migration['config_dir']);events=[];result=None;failure=None;finish=None;projection=None
     source=source_provenance();started=time.monotonic()
     try:
         available=state['budget']['research_walltime_ms']['available']/1000
@@ -121,21 +121,24 @@ def execute(args):
         after=service.get_run(tokens['human'],project,run)
         if result['status']=='settled' and reports_match(root,plan) and counts(service,tokens['human'],project,run)==before and all(balance['reserved']==0 and balance['available']>=0 for balance in after['budget'].values()):
             finish=service.command(tokens['human'],project,run,'finish',expected_revision=after['control_revision'],idempotency_key='p3_finalization_finish')
+            if finish['status']=='applied':
+                projection=organization.sync_experiment_state(tokens['human'],project,run,expected_control_revision=finish['control_revision'],idempotency_key='p3_finalization_projection')
     except Exception as error:failure=dict(category=type(error).__name__,code=getattr(error,'code',None))
     after=service.get_run(tokens['human'],project,run);after_counts=counts(service,tokens['human'],project,run)
     checks=dict(scientific_counts_unchanged=after_counts==before,original_report_hashes_unchanged=reports_match(root,plan),native_model_settled=bool(result and result['status']=='settled'),
         zero_reservations_and_no_debt=all(balance['reserved']==0 and balance['available']>=0 for balance in after['budget'].values()),
+        upstream_projection_synchronized=bool(projection and projection['projected_status']==after['state']),
         finish_receipt_applied=bool(finish and finish['status']=='applied'),run_completed=after['state'] in ('completed','finished'))
     write_once(root/'model-events-finalization.json',events)
     write_once(root/'result-finalization.json',dict(runtime=result,run=after,checks=checks,failure=failure,finish_receipt=finish,source_provenance=source))
     transcripts=[dict(path=str(path.relative_to(root)),sha256=hashlib.sha256(path.read_bytes()).hexdigest()) for path in (config/'sessions').glob('*.jsonl')]
-    report=dict(schema='asr-p3-finalization-result/1',status='closed_with_retained_original_timeout' if all(checks.values()) else 'incomplete',
+    report=dict(schema='asr-p3-finalization-result/1',status='closed_with_retained_original_timeout' if all(checks.values()) and failure is None else 'incomplete',
         project_id=project,research_run_id=run,prepared_plan=dict(path=str(root/'finalization-plan.json'),sha256=hashlib.sha256((root/'finalization-plan.json').read_bytes()).hexdigest()),
         prior_reports=plan['source_reports'],original_phase_checks=recovered['acceptance_checks'],original_timeout_retained=True,
         original_walltime_limit_ms=plan['contract']['document']['provenance']['original_walltime_limit_ms'],
         original_walltime_spent_ms=plan['contract']['document']['provenance']['original_walltime_spent_ms'],
         original_walltime_overrun_ms=plan['contract']['document']['provenance']['original_walltime_overrun_ms'],
-        finalization_checks=checks,counts_before=before,counts_after=after_counts,finish_receipt=finish,
+        finalization_checks=checks,counts_before=before,counts_after=after_counts,finish_receipt=finish,projection_receipt=projection,
         budget=after['budget'],resource_ledgers=after['resource_ledgers'],runtime_records=after['runtime_sessions'],
         runtime={key:result.get(key) for key in ('status','turns','tool_executions','duration_seconds','capability_pack_sha256','capability_pack_id','limit_observations','cleanup')} if result else None,
         source_provenance=source,native_session_migration=migration,native_transcripts=transcripts,
