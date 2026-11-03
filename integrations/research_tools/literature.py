@@ -121,7 +121,7 @@ def _metadata(item,omissions=None,index=0):
     # that could manufacture a citation to a different work.
     omissions=[] if omissions is None else omissions
     def omitted(field,configured,observed,action='truncated'):
-        omissions.append(dict(result_index=index,field=field,configured=configured,observed=observed,action=action,unit='characters' if field not in ('authors','results') else 'items'))
+        omissions.append(dict(result_index=index,field=field,configured=configured,observed=observed,action=action,unit='items' if field in ('authors','results','alternate_titles') else 'characters'))
     def text(value,maximum,field):
         cleaned=_text(value,None)
         if cleaned is not None and len(cleaned)>maximum:omitted(field,maximum,len(cleaned))
@@ -129,7 +129,7 @@ def _metadata(item,omissions=None,index=0):
     doi = item.get('DOI')
     doi = doi.strip() if isinstance(doi, str) else None
     if doi is not None and (len(doi) > 256 or not re.fullmatch(r'10\.\d{4,9}/[^\s<>\x00-\x1f\x7f]+', doi)):
-        omitted('doi',256,len(doi),'omitted_identifier_never_truncated')
+        omitted('doi',256,len(doi),'omitted_oversize_identifier' if len(doi)>256 else 'omitted_invalid_identifier')
         doi = None
     titles = item.get('title')
     if isinstance(titles,list) and len(titles)>1:omitted('alternate_titles',1,len(titles),'primary_title_only')
