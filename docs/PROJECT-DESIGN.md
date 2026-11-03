@@ -81,6 +81,8 @@
 
 运行时适配负责启动、事件、工具、指导、停止和会话恢复；ASR 保留课题、预算、实验与证据身份，AAR 研究组织和协作能力独立于具体模型。认证方式与计费方式显式记录。订阅额度耗尽或限流时暂停并保留恢复状态，不自动切换付费 API。API 模式只在单独明确授权时启用。订阅运行仍限制墙钟时间、会话/轮次数和实验工具消耗；供应商未提供剩余额度时记录 unknown，不伪造无限额度或精确费用。
 
+**已确认（2026-11-03，D021）**：订阅型 LLM runtime 禁止设置或向子进程传递任何 `*_API_KEY`。唯一例外是 pi 明确使用非 `openai-codex`（亦记为 `openai_codex`）provider；该例外不授予付费 API 使用权，仍需显式计费授权与预算。运行时启动边界必须执行此约束，不能仅靠 prompt。
+
 运行时边界和各适配器验证状态见 [研究员运行时](architecture/RESEARCHER-RUNTIMES.md)。本决定替代此前“初版固定沿用 Claude Agent SDK”的技术建议。pi 基准接入不等于所有订阅运行时已完成验证。
 
 ### 三层研究组织与 Capstone
@@ -119,7 +121,7 @@ Capstone 只持有交互和展示投影。讨论转成明确目标、任务、�
 
 当前校准 profile 为 `fixed-pv-pq-single-slack/1`：连通网络、单参考节点、恒功率负荷、固定拓扑、不做 Q 限值 PV/PQ 切换；平启动 NR 仅为参考。原输入中固定量保持不变，允许求解所需的 Slack 有功及 PV/Slack 无功变化，仍单独检查其运行限值。缺少支路限额维持未评估。此 profile 是已实现能力，不收窄用户可研究的方法范围；超出当前实现的控制政策须新增适配与验证。
 
-本地 runner 以文件锁及原子 manifest 提供单机证据入口。`asr_service.control` 已提供本机 bearer 认证、完整参考 profile 契约、原子准入与预算、控制回执和候选发现；`asr_supervisor` 已提供执行租约、代次隔离、外部超时与恢复对账。公共端点以 `asr_service/README.md` 为实现依据，真实 AAR/订阅研究员已完成受限参考实验、快照、候选发现和会话重开；尚未完成 Capstone 联调。未知在途执行保留预算并阻止自动重跑。实验执行仍只支持固定参考脚本，任意候选执行尚未验收。另有独立 Docker 冻结材料评价切片：校验实际挂载/资源/权限后，使用只读原始输入与验证代码重算冻结解；保留负面结果并通过 evaluator 接口追加报告。该切片不等于候选方法重跑或评价预算已纳入 Control。见 [隔离复核证据](validation/ISOLATED-EVALUATION.json) 和 [实际报告发布](validation/P3-ACTUAL05-VALIDATION.json)。
+本地 runner 以文件锁及原子 manifest 提供单机证据入口。`asr_service.control` 已提供本机 bearer 认证、完整参考 profile 契约、原子准入与预算、控制回执和候选发现；`asr_supervisor` 已提供执行租约、代次隔离、外部超时与恢复对账。公共端点以 `asr_service/README.md` 为实现依据，真实 AAR/订阅研究员已完成受限参考实验、快照、候选发现和会话重开；尚未完成 Capstone 联调。未知在途执行保留预算并阻止自动重跑。现已增加显式授权的 octave-candidate/1 候选代码执行、冻结方法的新 trial 复现，以及由 Control 预留、代次隔离和结算的独立评价任务；真实 Docker 隔离与恢复测试已通过。评价使用只读原始输入与验证代码重新计算，typed artifact link 校验身份和产物，科学结论仍单独评估。完整 P3 模型研究轨迹正在验收。见 [隔离复核证据](validation/ISOLATED-EVALUATION.json) 和 [实际报告发布](validation/P3-ACTUAL05-VALIDATION.json)。
 
 独立科学环境 `environments/scientific/` 已锁定并安装首批工具；pandapower 与冻结 IEEE118 MATPOWER 结果完成同模型/同初值校准。原始转换矩阵的限值与顺序差异被保留，独立检查始终使用原问题。详见 [科学环境校准](validation/PANDAPOWER-CALIBRATION.md)。这不是新执行后端或正式泛化验收。
 

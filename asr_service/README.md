@@ -255,3 +255,42 @@ Provider quota remains explicitly unknown here, independently of local balances
 and admission state. `BudgetStore.reserve_ledgers` provides atomic reservations
 across both logical groups; it is a trusted primitive, not a new public endpoint
 or permission to execute unsupported backends.
+
+
+## P3 candidate and managed evaluation interfaces
+
+The explicit `octave-candidate/1` profile supplements the reference profile.
+`POST candidates` accepts bounded UTF-8 `source`, `request_key`, fixed entrypoint
+`candidate.m`, profile and optional snapshot reference. Control stores immutable
+bytes; registration does not grant execution rights. A contract must opt in via
+`execution_policy.candidate_profiles`. `max_candidate_revisions` counts distinct
+methods admitted in that run, including unsuccessful trials, rather than unused
+registered files. Current permission and budget checks still apply.
+
+`POST runs/{run}/replications` accepts `request_key`, parent `trial_id` and
+`requested_budget`. It admits a fresh execution of the frozen source/input under
+a new identity. Incompatible current evaluation/problem/method/time policies
+reject the request; they do not rewrite the original attempt.
+
+`GET / POST runs/{run}/evaluations` lists or admits evaluation jobs. Admission
+uses `request_key`, `target` (trial ID, execution attempt ID, manifest hash and
+evaluation reference), and `requested_budget` with `evaluation_attempts: 1` and
+finite `evaluation_ms`. These dimensions belong to the compute ledger.
+`GET runs/{run}/evaluations/{id}` reads a job. Supervisor-only POST actions below
+that path are `claim`, `heartbeat`, `launch`, `attach`, `uncertain`, `reconcile`,
+`complete`, `abort-prelaunch` and `should-stop`; they retain owner/epoch fencing.
+The concrete trusted driver is `asr_evaluation.managed.run_evaluation`.
+
+A Validation may include `evaluation_artifact` with `evaluation_id`,
+`evaluation_attempt_id` and `artifact_sha256`. Control rechecks the stored artifact,
+container identity and target and rejects contradictory numerical assessments.
+`evaluation_artifact_verified_by_service` records that check. The existing
+`isolation_verified_by_service` remains false: verified retained container facts
+are not a claim that all researcher runtimes or trusted host software are isolated.
+Freeform scientific claims still require separate assessment.
+
+`POST runs/{run}/quota-observations` accepts a sourced, timestamped observation
+from a human or supervisor. Unknown/stale observations do not clear a known
+blocked provider; future timestamps are bounded. Availability does not reopen
+admission automatically. Local finite balances remain authoritative, and neither
+quota observations nor contract replacement enable API fallback.

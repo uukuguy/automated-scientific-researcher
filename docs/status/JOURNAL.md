@@ -99,3 +99,13 @@
 - 00:51 Removed evaluator test trailing whitespace to keep owned changes clean. [45f3a8a]
 - 2026-11-03: b0ff38f records verified native dialogues and isolated negative-result publication, preserving scope and remaining P3 acceptance gaps.
 - 2026-11-03: User requested P3 completion; resumed candidate containment, Control evaluation accounting and actual model-driven scientific acceptance.
+
+- 2026-11-03: Defined bounded P3 closure gates to keep candidate isolation, evaluator accounting and actual research acceptance aligned. Commit d47135d.
+- 2026-11-03: be73274 connects bounded AAR candidate tools and evaluator-backed recovery acceptance without expanding P2 permissions.
+- 2026-11-03: 91c6d21 preserves partial operating assessments and distinguishes managed artifact verification from full runtime isolation.
+- 2026-11-03: 483553a admitted frozen candidates and fenced evaluator jobs, preserving budget authority, artifact links and recovery.
+- 2026-11-03: User forbids all subscription-runtime *_API_KEY settings; only pi with non-openai-codex provider may allow them.
+- 08:55 Bound frozen candidate execution and evaluator reservations to verified container facts for safe P3 replication. [d40aa84]
+- 2026-11-03: b36e6ef prohibits subscription API-key environments while preserving explicit native OAuth authentication.
+- 2026-11-03: Root verified 242 tests, 13 explicit Docker skips; worker verified 41 real Docker checks before bounded P3 launch.
+- 2026-11-03: P3-01 retained expired OAuth failure: one turn, no experiments, 2395ms charged; remaining budget preserved for login recovery.

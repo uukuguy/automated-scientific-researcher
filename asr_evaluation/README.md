@@ -45,8 +45,7 @@ inconsistent evidence; it does not make files tamper-proof against the trusted
 host owner. A completed container does not imply valid equations or operating
 limits. Missing ratings remain unassessed. This replays numerical **material**;
 it does not rerun a candidate method, establish held-out generalization, publish
-an authoritative Validation or reserve/settle Control budgets. Those integrations
-remain separate. It does not isolate a researcher running on the host or prove
+an authoritative Validation. The managed integration below supplies Control admission and accounting; scientific interpretation remains separate. It does not isolate a researcher running on the host or prove
 arbitrary candidate-code isolation.
 
 Run unit checks with:
@@ -60,3 +59,34 @@ uv run python -m scripts.evaluation_probe --root data/isolated-evaluation-accept
 The probe script uses actual retained P2 evidence plus explicitly synthetic
 corrupted copies for negative tests. These copies are not admitted executions.
 Its receipt contains sanitized inspection facts and preserves the distinction.
+
+
+## Control-managed evaluation
+
+`managed.run_evaluation(service, supervisor_token, project, run, evaluation_id,
+owner, evidence_root, reconcile=False)` advances a previously admitted evaluation.
+The researcher requests a job through Control with the exact frozen trial,
+execution attempt, source manifest hash and evaluation reference. Control reserves
+`evaluation_attempts` and `evaluation_ms` in the compute ledger before any launch.
+This is separate from method execution and its `attempts`/`execution_ms` balance.
+
+Control owns the lease, fencing epoch and deterministic launch intent. The
+artifact retains the original execution epoch when a later owner reconciles it.
+Completion must verify the artifact inventory, original target, attached container
+identity, exit evidence and actual isolation settings before settlement. A typed
+Validation artifact link is distinct from an evaluator's textual attestation.
+The evaluator token remains in the trusted publisher, never in the researcher
+bridge or candidate container.
+
+Prelaunch recovery must distinguish an unissued launch grant from uncertain
+execution after a grant. Prepared work can end with a no-launch receipt; it has
+no container isolation claim. Once launch is granted, missing or unreachable
+execution remains reserved until proven resolved. Lease expiration alone cannot
+release its budget or authorize a duplicate. Failed setup and execution retain
+consumed resources. A scientific negative result does not trigger a retry.
+
+Candidate-method replication uses a new admitted numerical trial with the same
+frozen source/input. Each resulting material set is checked independently.
+Material rechecking alone is not method replication; neither establishes
+held-out generalization. P3 closure evidence is tracked in
+`docs/plans/P3-CLOSURE.md`; implementation alone does not establish acceptance.

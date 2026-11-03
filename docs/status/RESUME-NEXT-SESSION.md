@@ -4,8 +4,7 @@
 
 ## Current intent
 
-The user requested uninterrupted native Codex/Grok dialogue checks followed by
-mainline work. Both dialogue checks are complete. P2 bounded AAR/pi acceptance
+The user explicitly requested completion of P3 without incremental stops. Native Codex/Grok dialogue checks are complete. P2 bounded AAR/pi acceptance
 remains complete; P3 is active. No permission question is pending. Preserve
 negative results and frozen evidence. Never infer unlimited subscription quota
 or fall back to a paid API.
@@ -73,3 +72,17 @@ Credentials and sessions remain in private ignored artifacts. Do not print them
 or repeat accepted model checks unnecessarily. The actual05 database now contains
 an appended Validation; its original trial and evidence remain immutable. Consult
 JOURNAL and Git for the final documentation commit. No background model work remains.
+
+## Active P3 implementation checkpoint
+
+Commit d47135d records the closure plan in docs/plans/P3-CLOSURE.md. Existing workers implement disjoint lanes: control owns candidate registration, managed evaluator jobs and quota observations; supervisor owns isolated candidate/evaluator execution and real Docker tests; aar owns the P3 capability pack and actual trajectory harness. Root owns integration review and documentation. Changes are in progress, not acceptance evidence.
+
+P3 acceptance uses a tracked finite subscription-only configuration: 180 seconds model sessions, 20 turns, 32 tools, four numerical attempts, three evaluations. No P3 model call has launched at this checkpoint. First require focused backend and actual isolation tests, then run the pinned AAR/pi trajectory with retained interruption and recovery. P3 remains active until A8/A9/A12–A14 evidence is verified.
+
+## P3 implementation ready; latest user constraint
+
+Service483553a and executiond40aa84 are committed;41 combined real Docker checks passed. AAR pack/harnessbe73274 and projection91c6d21 are committed. Root and AAR cross-review fixed timeout-policy and cross-run revision-cap bypasses. Actual model trajectory has not launched. User D021 now forbids every subscription child *_API_KEY; AAR worker is adding shared environment guards and tests before launch. Root owns docs; existing workers have finished service/execution. Next: guard tests/commit, final suite, then explicit finite tracked P3 harness run and independent evidence inspection.
+
+## Actual P3-01 credential failure retained
+
+D021 environment guard committed b36e6ef; root final242 tests passed8.925s (13 Docker opt-ins skipped),41 realDocker checks separately passed. P3-01 actual AAR/pi ended provider_error expired OAuth before tools/trials. Immutable public docs/validation/P3-RESULTS.json and private artifacts/p3-acceptance-20261103-01/result.json retain failure. Original180000ms ledger charged2395ms,1turn;177605ms/19turns/32tools and all numerical/evaluator budget remain. No fallback. User previously authorized browser re-login once if expired. AAR worker diagnoses supported OAuth refresh and same-run remaining-budget harness recovery; root continues P3, not closed.

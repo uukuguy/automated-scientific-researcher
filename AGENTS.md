@@ -13,11 +13,9 @@ and a fenced execution supervisor support the pinned reference profile, durable
 commands, budgets and recovery. The pinned AAR loop and Experiment/Finding ORM have actual subscription-backed
 pi/Codex evidence, including a negative numerical outcome and notebook snapshot.
 See docs/validation/P2-SUBSCRIPTION.md for measured scope; arbitrary candidate
-execution remains unverified. A standalone isolated frozen-material evaluator has
-real Docker evidence, including the retained AAR negative outcome; its Control
-budget integration and candidate-code replication remain incomplete.
+execution is restricted to the explicit octave-candidate/1 profile. Candidate isolation, fresh method replication and Control-budgeted evaluator recovery have real Docker tests; the complete P3 model-driven trajectory remains under acceptance. Typed evaluator artifact links are verified separately from scientific claims.
 Researcher runtimes are replaceable and subscription-first; pi is the lightweight
-baseline. Paid API fallback requires separate explicit authorization. Use `uv sync --locked` and `uv run python -m
+baseline. Subscription runtime children must not receive any *_API_KEY; only pi explicitly using a non-openai-codex provider may allow such settings. That exception does not authorize paid API usage or fallback. Use `uv sync --locked` and `uv run python -m
 unittest discover -s tests -v` for the base suite. Add `--extra aar` to `uv run`
 for the actual upstream integration tests. The fixed-PV/PQ baseline is a calibration
 profile, not a restriction on candidate-method research. See

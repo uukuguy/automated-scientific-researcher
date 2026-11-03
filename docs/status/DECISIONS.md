@@ -168,3 +168,10 @@
 - Existing login/coding use is user-confirmed availability, not ASR tool/lifecycle acceptance. Reuse login without reauthentication; inspect no secret payloads. Subscription mode must exclude API fallback.
 - Acceptance proceeds through bounded protocol, session, tool/approval, interruption/recovery and finally model-driven research evidence. Native session identity stays separate from ASR research and execution identities. Cancellation receipt alone does not prove process/remote work exit.
 - Supersedes generic 'Native Codex/Grok' candidate wording with concrete adapter choices; does not close P3 or deploy P5.
+
+## D021 — No API-key environment for subscription runtimes
+
+- Date: 2026-11-03. Status: explicit user instruction during P3 completion.
+- Decision: subscription LLM runtimes must not set or pass any `*_API_KEY`. Only pi explicitly using a non-`openai-codex`/`openai_codex` provider may allow these variables.
+- Rationale: make subscription authentication explicit and prevent accidental API billing or cross-provider credentials.
+- Boundary: enforce in launcher code and tests; OAuth login remains allowed. The pi exception does not authorize paid API usage or change finite budget requirements. Supplements D020 and the subscription-first runtime policy.

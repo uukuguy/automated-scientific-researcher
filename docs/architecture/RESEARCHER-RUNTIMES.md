@@ -317,3 +317,7 @@ optimization, ML, symbolic, distribution or dynamic packages belong to explicit
 optional environments, not automatic installation by a researcher.
 
 Native dialogue evidence and retained Grok route/default-model failures: [NATIVE-RUNTIME-PROTOCOLS](../validation/NATIVE-RUNTIME-PROTOCOLS.md). Native dialogue does not establish ASR research integration.
+
+## D021: subscription credential environment
+
+All subscription LLM runtime launches prohibit any `*_API_KEY` setting in the child environment, including unrelated provider keys. Native Codex, Grok and future Claude subscription bindings follow this rule. Only pi explicitly using a provider other than `openai-codex`/`openai_codex` may permit such variables; this exception does not authorize paid usage or automatic fallback. Keep OAuth subscription login separate and never print credential values. Enforce at launch, with regression tests, rather than relying on agent instructions.
