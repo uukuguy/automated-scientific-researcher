@@ -1,0 +1,312 @@
+{
+  "schema": "asr-p3-acceptance-result/1",
+  "checked_at": "2026-11-03T00:58:14.822936+00:00",
+  "status": "incomplete",
+  "private_evidence_root": "artifacts/p3-acceptance-20261103-01",
+  "project_id": "p3-689915c3fcd2",
+  "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+  "external_experiment_id": "aar-experiment:1",
+  "runtime": {
+    "status": "ready",
+    "model": "gpt-6.1-sol",
+    "thinking": "high",
+    "provider": "openai-codex",
+    "auth_mode": "subscription_oauth",
+    "runtime_version": "1.5.0",
+    "capability_pack_sha256": "e70125a066e40f76fce780c73d12f30428adee2fac45d1e56aeb23fda4b89260",
+    "limits": {
+      "schema": "asr-runtime-acceptance/1",
+      "provider": "openai-codex",
+      "model": "from validated pi default openai-codex settings",
+      "auth_mode": "subscription_oauth",
+      "billing_mode": "subscription",
+      "total_walltime_seconds": 180,
+      "turns": 20,
+      "tool_executions": 32,
+      "numerical_attempts": 4,
+      "numerical_execution_ms": 80000,
+      "evaluation_attempts": 3,
+      "evaluation_ms": 60000,
+      "per_attempt_timeout_seconds": 20,
+      "max_method_revisions": 2,
+      "paid_api_fallback": false
+    },
+    "pinned_image": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+    "aar_owner": "actual AutonomousAgentLoop.run"
+  },
+  "runtime_sessions": [
+    {
+      "status": "provider_error",
+      "turns": 1,
+      "tool_executions": 0,
+      "native_session_id": "research_49c26021d0404e1688e344b051ed587a",
+      "capability_pack_sha256": "e70125a066e40f76fce780c73d12f30428adee2fac45d1e56aeb23fda4b89260",
+      "runtime_claim": {
+        "project_id": "p3-689915c3fcd2",
+        "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+        "session_id": "session_0dcec69996fa486eb1ad3af7b77767a2",
+        "epoch": 1,
+        "owner": "pi_f3de5d23e0804861a0d2f8e74de135fc",
+        "state": "active",
+        "runtime_identity": {
+          "provider": "openai-codex",
+          "model": "gpt-6.1-sol",
+          "auth_mode": "subscription_oauth",
+          "billing_mode": "subscription"
+        },
+        "reserved_walltime_ms": 110000,
+        "started_at": "2026-11-03T00:58:12.308272+00:00",
+        "process_identity": null,
+        "launch_state": "prepared",
+        "replayed": false
+      },
+      "execution_exited": null
+    }
+  ],
+  "actor_roles": {
+    "human": "p3-human",
+    "researcher": "p3-researcher",
+    "supervisor": "p3-supervisor",
+    "evaluator": "p3-evaluator"
+  },
+  "hypotheses": [],
+  "findings": [],
+  "trials": [],
+  "candidate_refs": [],
+  "evaluations": [],
+  "validations": [],
+  "snapshots": [],
+  "replication_comparisons": [],
+  "comparison_attempts": [],
+  "interruption": null,
+  "resource_ledgers": {
+    "schema_version": "asr-logical-ledgers/1",
+    "model": {
+      "research_walltime_ms": {
+        "limit": 180000,
+        "spent": 2395,
+        "reserved": 0,
+        "available": 177605
+      },
+      "tool_executions": {
+        "limit": 32,
+        "spent": 0,
+        "reserved": 0,
+        "available": 32
+      },
+      "turns": {
+        "limit": 20,
+        "spent": 1,
+        "reserved": 0,
+        "available": 19
+      }
+    },
+    "compute": {
+      "attempts": {
+        "limit": 4,
+        "spent": 0,
+        "reserved": 0,
+        "available": 4
+      },
+      "evaluation_attempts": {
+        "limit": 3,
+        "spent": 0,
+        "reserved": 0,
+        "available": 3
+      },
+      "evaluation_ms": {
+        "limit": 60000,
+        "spent": 0,
+        "reserved": 0,
+        "available": 60000
+      },
+      "execution_ms": {
+        "limit": 80000,
+        "spent": 0,
+        "reserved": 0,
+        "available": 80000
+      }
+    },
+    "unclassified": {},
+    "provider_quota": {
+      "state": "unknown"
+    }
+  },
+  "budget": {
+    "attempts": {
+      "limit": 4,
+      "spent": 0,
+      "reserved": 0,
+      "available": 4
+    },
+    "evaluation_attempts": {
+      "limit": 3,
+      "spent": 0,
+      "reserved": 0,
+      "available": 3
+    },
+    "evaluation_ms": {
+      "limit": 60000,
+      "spent": 0,
+      "reserved": 0,
+      "available": 60000
+    },
+    "execution_ms": {
+      "limit": 80000,
+      "spent": 0,
+      "reserved": 0,
+      "available": 80000
+    },
+    "research_walltime_ms": {
+      "limit": 180000,
+      "spent": 2395,
+      "reserved": 0,
+      "available": 177605
+    },
+    "tool_executions": {
+      "limit": 32,
+      "spent": 0,
+      "reserved": 0,
+      "available": 32
+    },
+    "turns": {
+      "limit": 20,
+      "spent": 1,
+      "reserved": 0,
+      "available": 19
+    }
+  },
+  "acceptance_checks": {
+    "actual_aar_owner": true,
+    "candidate_interrupted_after_evidence": false,
+    "same_trial_ids_on_reopen": false,
+    "same_frozen_hypothesis_on_reopen": false,
+    "no_duplicate_method_submission_after_recovery": true,
+    "recovered_model_settled": false,
+    "hypothesis_revision_retained": false,
+    "candidate_method_authored_by_model": false,
+    "candidate_finding_published": false,
+    "independent_validation_published": false,
+    "independent_replication_verified": false,
+    "research_note_snapshot": false,
+    "all_admitted_trials_terminal": true,
+    "all_admitted_evaluations_settled": true,
+    "zero_reservations_and_no_budget_debt": true
+  },
+  "failures": [
+    {
+      "stage": "research_trajectory",
+      "category": "RuntimeError",
+      "code": null
+    }
+  ],
+  "model_events": {
+    "path": "model-events.json",
+    "sha256": "f0f7f1dcc9c8b39b5389b564f7b29c300e9b15489fe80d92bd4d58efe43c4fde"
+  },
+  "native_transcripts": [
+    {
+      "path": "pi-private/sessions/2026-11-03T00-58-12-620Z_research_49c26021d0404e1688e344b051ed587a.jsonl",
+      "sha256": "086575de684f0275919440d1eb6bcab52b18512fb6730b591365a2d79635349a"
+    }
+  ],
+  "total_duration_seconds": 2.601,
+  "source_provenance": {
+    "git_head": "b36e6ef02e757ce19718d53bd2a6b4b2a1c8589e",
+    "tracked_dirty_paths": [
+      "asr_evaluation/README.md",
+      "docs/PROJECT-DESIGN.md",
+      "docs/architecture/RESEARCHER-RUNTIMES.md",
+      "docs/status/DECISIONS.md",
+      "docs/status/INDEX.md",
+      "docs/status/JOURNAL.md",
+      "docs/status/RESUME-NEXT-SESSION.md"
+    ],
+    "source_sha256": {
+      "asr_service/README.md": "a5afd8e03e5f92ddf2ea52fc462b87e074a4c4f074ef0dcb9adf458de0ab51fc",
+      "asr_service/__init__.py": "e9c7b00c8256089818fea2ba0fb73b1ac0075728a2fbe7a487354dee5ad171f8",
+      "asr_service/admission.py": "4d4af4046093da2ee1fbed034ada90f30c296f8ee7f25c116f69a11ac9aeeeb4",
+      "asr_service/budgets.py": "82c51803b5c30b084e5ccaa2ff0e6ff9c55c5c3261075e5c11c9db22054feb77",
+      "asr_service/candidates.py": "78b9c734cee65de6c8bbe06b3387a9f13f2b7c23c7d6194d5e477ee0bdd9a7fa",
+      "asr_service/contracts.py": "1ba543e83b82330ebde8fc7660f39326d3cdc17747200b03260e0d8517c5988c",
+      "asr_service/control.py": "dd3f753ef0445234a488d4d61efaa70880949fbd1b8373dd7c9ce1a71cc6de26",
+      "asr_service/evaluation_jobs.py": "5746098a2c5dbf0e6c36ffcdd6b1e910977ceb6338e554986cf3424f0e3460af",
+      "asr_service/http.py": "a8400a117cbdfd8260cb4559c7147ba1b0916a90fdc07dd014723d05c9fa5c07",
+      "asr_service/hypotheses.py": "594c5273ec253318085297b36646211174e00bca269f45bcdcdda246f5db76dd",
+      "asr_service/quotas.py": "4cfbe91b198049aa543b9a272170c6aa29121a8d710ac34abf73f4c2cbc2ae56",
+      "asr_service/references.py": "e5eb9b181294119d9f07ae776ee5df8cf2009cbd5f7aac1145a5aa4ff93b5bfd",
+      "asr_service/replication.py": "813295e323436f921385a105b1285ad3b28e99a0eaaaa0616bd54cf6056efed8",
+      "asr_service/validations.py": "a07516a431bec7523833d4cc7de0da6c329ea262ec1129d922e0ac49c42cc41e",
+      "asr_supervisor/README.md": "15de0b44c0ece5712c866cca2e3b1088b98ba91051ba67390f991f194ab118f7",
+      "asr_supervisor/__init__.py": "81cb10b697dfa5a855a40f76ce0027c1cfd87b47f32161d64982cff1274e9a7d",
+      "asr_supervisor/__main__.py": "02445d64817aff97a3f17223c965e3ebd1f47954c05ff72282b4439b57055ccc",
+      "asr_supervisor/candidate.py": "08f00c810874e97c651effb8e7caa07c0481b99082bf824c3299dcef46754a7d",
+      "asr_supervisor/candidate_wrapper.m": "cda9abfab75ed9318ca8fa454a6c0fa3b1d78447f12a370eab637f099fe043b9",
+      "asr_supervisor/docker.py": "381078bd1236d12c8ca8354209b72065c6223f5ad4d109557a6fa4798c4611ab",
+      "asr_supervisor/process.py": "f7ea5b317483bc73bf6ce852f1d702863e74c2844d32cfd9f028bdd75450e99c",
+      "asr_supervisor/store.py": "ed5e41e2e853674160ae3b8e3688100c9733cb593c1d1df01c8d4c6dafa5a0be",
+      "asr_supervisor/supervisor.py": "af1fc22bd0db07b6311b822de1705883fea7f9691519e9779b15020ed21b6227",
+      "asr_evaluation/README.md": "75c2bb06d9dcd6c3cf5bae8e46ae3906c3b0d333a5547ae0fb2c04bfbc2b73c0",
+      "asr_evaluation/__init__.py": "68327629ce5a903a04cb6ee593d74b26acc4d13ead568e7f9e5fe3b15c7e7ae9",
+      "asr_evaluation/entrypoint.py": "5252a4e37adbe19a3d45f2d3bdd3fa513c8cff17a31e21631cf63c667509fd1f",
+      "asr_evaluation/managed.py": "c5597ddb60a63717e3b1ebf430e090f65956e881073629b4ad0b660918c894bb",
+      "asr_evaluation/replay.py": "6614cd259c531d963be29ae442d5a81862e944d4f0a9da506bc0c0bbcd849d2c",
+      "powerflow_lab/__init__.py": "0593119557b619b67dfef822dc3aa661fad1a82e6c8be0522ef9c70be1ddabfa",
+      "powerflow_lab/reference.py": "cd2a98a5135ac5461bd028948a6e3b998e4d9b218e2b22c83bb69b0dced5587c",
+      "powerflow_lab/runner.py": "bbc307a89da9cd71d96bdf2ddcf104df4bef5f5fe7fc148afad245b6592f902e",
+      "powerflow_lab/validation.py": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3",
+      "integrations/aar/README.md": "21ebc73f6794428b1514659ea686c09f0794b8da356b5c924d662c1d8e323c63",
+      "integrations/aar/RUNTIME.md": "70d79791bb62a29f47b55c3254067caaece4dcde414e24984bd43bd18104b4ed",
+      "integrations/aar/bridge.py": "2dec359e59b6fc2140d0820c61c6319ed9f43d46119126aaef938896d6f5c813",
+      "integrations/aar/evaluation_projection.py": "3bbb1d893a2638dbefa7ff9fa014abf184d296a842ccab3280261ba797994120",
+      "integrations/aar/loop_patch.py": "fe0d5b0fb78526b16e3126e84a741e934c683bbc3807ac304b6b8507a08357a2",
+      "integrations/aar/prepare.py": "19b394fdc4176247fc0e86012472f5878704890491e718ce9f705b0124381de5",
+      "integrations/aar/prepare_upstream.py": "63e63d71bdf718549f13937e584ff656b0ec373238a5bbcaaec6bf869a41f2f5",
+      "integrations/aar/researcher.py": "7a4e8ce8a726afa97101b6f41f0a94f1b3c9188bb2f7797df621c82d8a470484",
+      "integrations/aar/source_integrity.py": "7a928774669ddefd752191cbb51b6fcd513e18a9b57651959da5b2a96e1301d3",
+      "integrations/aar/upstream.json": "14d868771772344c9bbeda365b767eeb5e1d9dc2f2d42fe44c945ca54c468cf3",
+      "integrations/aar/upstream_adapter.py": "fee5e10b1b4db749068e57b6d711e6ae438ca9cc08d0dc5c7e1f65565da916be",
+      "integrations/runtimes/README.md": "1adf32c51fae458b5f6223f2d18a51224f5a8202909a625f75763516b6c4e34d",
+      "integrations/runtimes/acceptance-limits.json": "4557db2db3ccd4968ee8d7eb60e5dcf9806de73aa7dd97153c7155d5d53d45a1",
+      "integrations/runtimes/acceptance.py": "912023f847f5e57a32c7383cd97926946384b1ca5f3ce57839d28c18bf5ef57d",
+      "integrations/runtimes/asr-extension.mjs": "1f8a7c092715cccbcb023d938f58de5fc1aab4bac2a23e0f4fa956ec1ff33120",
+      "integrations/runtimes/capabilities.json": "5839a2813de614ba2f55805d3f174b74f890c0cc80bfb768551ef3c7deb618e7",
+      "integrations/runtimes/capability_inventory.py": "f2a543546ed1828b029556b53f48e322c5372df986aec8fd0f09fa54a4f52656",
+      "integrations/runtimes/codex_app_server.py": "6bf3208b4bc850dc070f586ce759276a5ce9d91aa476cee73ce8fdd3743ee0d9",
+      "integrations/runtimes/domain-powergrid.json": "d21131ed2f6b1cd71e830f659722cc72af901f11740e0fcd76f14dadac1af1cc",
+      "integrations/runtimes/environment.py": "38b02319d44de6def69245faa23a5f1bc572309045c8a0559972f5d83311a754",
+      "integrations/runtimes/grok_smoke.py": "ad0c4dcc286eea94cb965ff375b4b1b1330eb60cb96dfad316ea3a79b5db2394",
+      "integrations/runtimes/p3-acceptance-limits.json": "fcbddbf94b4f930394ddc053f7da1767e09f3ee639ec8358b33bbfaf04fb9af3",
+      "integrations/runtimes/p3-capabilities.json": "e70125a066e40f76fce780c73d12f30428adee2fac45d1e56aeb23fda4b89260",
+      "integrations/runtimes/p3-domain-powergrid.json": "0339ad414ae5bc97fe863c38d08a7421ecde3e9c5de45f4d1c42cce5a9daf633",
+      "integrations/runtimes/p3_acceptance.py": "5b601dc87e6af2bd1619ef64840549237a2e36cb6c21955011399056b9ce70e7",
+      "integrations/runtimes/pi.py": "afb259788da76b08b94c1a2ace6df033e61056cf1b9b3a05a194e52a43c92caf",
+      "integrations/runtimes/process.py": "06467b09feabcc9fc0622f2ad1890978b5a8122004e47f718d2bca87f391d2b3",
+      "integrations/runtimes/recover_acceptance.py": "06a48b34e3816f60a42204f4c889ef6808f705c41ab5994b6c2caef23e2de56f",
+      "integrations/runtimes/session.py": "69e06038274a1baaed38a59b3472bccfff8e8ffe96ea5af0656b007d1e310bfd",
+      "integrations/runtimes/skills/code-review/SKILL.md": "f579ba418163f380c8ab3290a45a790300ead845ea236bb575ad0aca4763fed0",
+      "integrations/runtimes/skills/deep-research/SKILL.md": "08b8deb9d6e0a9a963d597052514a2c5f4aa88536c6dc90ac5f8b0a524871e36",
+      "integrations/runtimes/skills/provenance.json": "32f6d0872052cdd096ba05a12416cc8e906e1f6d3daebe44aad5e5b40eba1a9c",
+      "integrations/runtimes/skills/scientific-reasoning/SKILL.md": "eae8c5709306206ee31e97219f33a30c8adb0cba63e2311f6afa65bd7794a66c",
+      "integrations/runtimes/skills/systematic-debugging/SKILL.md": "ed07642cd7eefd8062eb4b4bc6da9fedf7a1014d60e473d225eef55c64146f3a",
+      "integrations/runtimes/skills/verification-before-completion/SKILL.md": "88067fa4c862228008e93112a8d060c2ffe2c4ac007046f839138b56ff53d418",
+      "integrations/runtimes/workspace-path.mjs": "55e9151dad6a3439a3c3c436a1b125116b1680576a05c4d3c7e5f34294d868f5",
+      "contracts/README.md": "decf3515a72a9e67797e4d180b635f6c4596ff6d958b0e59c17a526ce7a4e958",
+      "contracts/examples/research-variables.json": "db210cd45bac6fac4499213a4f56dee26a63690344e27b57e45c92c399207611",
+      "contracts/research-contract.schema.json": "5da1ad1d6122a2a7f4a94a89b06575e3a3872e4961d6d90c9c8231bcaabd7a37",
+      "contracts/variable-policy.schema.json": "64d08fd1ee19ddbef566258593704f6502e49f95d95d4a8c8b95e82f7b0ee8a3",
+      "configs/numerical-environment.json": "9e8c04542866c742f2850ca33b517d927531ecb3c280bbc90414557f8fd5f653"
+    }
+  },
+  "billing": {
+    "mode": "subscription",
+    "actual_dollar_charge": null,
+    "remaining_provider_quota": "unknown",
+    "paid_api_fallback": false
+  },
+  "limits": [
+    "Fixed-case engineering/scientific trajectory only; no novelty or held-out generalization claim.",
+    "Independent automatic mapping does not judge freeform hypotheses or experimental design.",
+    "Typed evaluation_artifact_verified_by_service proves managed artifact binding; isolation_verified_by_service remains separate and is not full runtime-isolation proof."
+  ]
+}

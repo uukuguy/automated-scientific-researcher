@@ -25,7 +25,7 @@ from integrations.aar.evaluation_projection import validation_document, compare_
 from integrations.aar.researcher import load_loop, run_research_session
 from integrations.aar.upstream_adapter import UpstreamAdapter
 from powerflow_lab.reference import make_request
-from .pi import Limits, PiRuntime
+from .pi import Limits, PiRuntime,prepare_oauth
 from .process import identify
 from .environment import reject_api_key_settings
 
@@ -53,6 +53,28 @@ def source_provenance():
         source_sha256=inventory)
 
 
+def migrate_native_session(root,run,oauth_source):
+    """Continue a copied native journal; original failure evidence stays intact."""
+    original=root/'pi-private/sessions'
+    journals=list(original.glob('*_'+run+'.jsonl'))
+    if len(journals)!=1 or journals[0].is_symlink() or journals[0].stat().st_size>16777216:
+        raise ValueError('unique_bounded_native_journal_required')
+    target=root/'pi-private-resumed'
+    target.mkdir(mode=0o700,exist_ok=False)
+    prepare_oauth(Path(oauth_source),target)
+    destination=target/'sessions';destination.mkdir(mode=0o700)
+    records=[]
+    for source in journals:
+        with source.open('rb') as stream:raw=stream.read(16777217)
+        if len(raw)>16777216:raise ValueError('native_journal_too_large')
+        copied=destination/source.name
+        with copied.open('xb') as stream:stream.write(raw)
+        copied.chmod(0o600)
+        records.append(dict(original=str(source.relative_to(root)),copy=str(copied.relative_to(root)),
+            sha256=hashlib.sha256(raw).hexdigest()))
+    return dict(config_dir=str(target),journals=records)
+
+
 def preflight(checkout, oauth_source):
     settings=json.loads((Path.home()/'.pi/agent/settings.json').read_text())
     reject_api_key_settings(settings,runtime='pi',provider='openai-codex')
@@ -64,6 +86,8 @@ def preflight(checkout, oauth_source):
     if version!=runtime.expected_version:raise ValueError('pi_version_drift')
     auth=json.loads(Path(oauth_source).read_text())
     if auth.get('openai-codex',{}).get('type')!='oauth':raise ValueError('subscription_oauth_required')
+    expiry=auth['openai-codex'].get('expires')
+    if type(expiry) not in (int,float) or expiry<=time.time()*1000:raise ValueError('refresh_subscription_oauth_before_model_launch')
     load_loop(checkout)
     request=make_request()
     image=subprocess.check_output(['docker','image','inspect','--format','{{.Id}}',request['image_id']],text=True,timeout=5).strip()
@@ -123,19 +147,47 @@ def execute(args, prepared):
     from asr_evaluation.managed import run_evaluation
     root=args.output.resolve()
     if args.report.exists():raise ValueError('refusing_to_overwrite_report')
-    root.mkdir(parents=True,exist_ok=False,mode=0o700)
+    previous=None;migration=None
+    if args.resume_existing_auth_failure:
+        previous=json.loads((root/'result.json').read_text())
+        if previous['run']['trials'] or previous['hypotheses'] or any(item['status']!='provider_error' or item['tool_executions'] for item in previous['runtime_sessions']):
+            raise ValueError('only_preexperiment_auth_failure_resume_supported')
+        project=previous['project_id'];run=previous['research_run_id']
+    else:
+        root.mkdir(parents=True,exist_ok=False,mode=0o700)
+        project='p3-'+uuid.uuid4().hex[:12];run='research_'+uuid.uuid4().hex
     provenance=source_provenance()
-    work=root/'workspace';work.mkdir()
-    subprocess.run(['git','init','--quiet',str(work)],check=True)
-    project='p3-'+uuid.uuid4().hex[:12];run='research_'+uuid.uuid4().hex
+    work=root/'workspace'
+    if previous is None:
+        work.mkdir()
+        subprocess.run(['git','init','--quiet',str(work)],check=True)
     tokens={role:secrets.token_urlsafe(32) for role in ('human','researcher','supervisor','evaluator')}
     credentials={token:dict(subject='p3-'+role,role=role,projects=[project]) for role,token in tokens.items()}
     service=ControlService(root/'control.db',credentials=credentials)
     organization=UpstreamAdapter(service,checkout=args.aar_checkout)
-    refs=configure(service,project,run,tokens['human'],organization,prepared['model'],prepared['limits'],prepared['public']['capability_pack_sha256'])
+    prior=[]
+    if previous:
+        current=service.get_run(tokens['human'],project,run)
+        if current['trials'] or service.hypotheses(tokens['human'],project) or any(item['state']=='active' for item in current['runtime_sessions']):
+            raise ValueError('auth_failure_ledger_changed_or_unresolved')
+        document=current['contract']['document']
+        if document['runtime_policy']['model']!=prepared['model']:raise ValueError('resumed_model_mismatch')
+        refs=dict(problem=document['problem_ref'],reference=document['reference_ref'],evaluation=document['evaluation_ref'])
+        refs['input_manifest']=service.references.register(project,'input_manifest',dict(profile='matpower-case118-flat/1',problem_ref=refs['problem']))
+        migration=migrate_native_session(root,run,args.oauth_source)
+        config_dir=Path(migration['config_dir'])
+        prior=[dict(path='result.json',sha256=hashlib.sha256((root/'result.json').read_bytes()).hexdigest(),
+                    failures=previous['failures'],runtime_statuses=[item['status'] for item in previous['runtime_sessions']])]
+    else:
+        refs=configure(service,project,run,tokens['human'],organization,prepared['model'],prepared['limits'],prepared['public']['capability_pack_sha256'])
+        config_dir=root/'pi-private'
+    result_file=root/('result-resumed.json' if previous else 'result.json')
+    event_file=root/('model-events-resumed.json' if previous else 'model-events.json')
     manager=Supervisor(ExecutionStore(service.path),root/'evidence')
     fault=None;events=[];runtime_results=[];failures=[];comparison_records=[];comparison_attempts=[]
-    started=time.monotonic();deadline=started+prepared['limits']['total_walltime_seconds']
+    started=time.monotonic()
+    remaining=service.get_run(tokens['human'],project,run)['budget']['research_walltime_ms']['available']/1000
+    deadline=started+min(prepared['limits']['total_walltime_seconds'],remaining)
 
     def dispatch(receipt):
         nonlocal fault
@@ -199,7 +251,7 @@ def execute(args, prepared):
         if available<=1 or budget['turns']['available']<=0 or budget['tool_executions']['available']<=0:
             raise RuntimeError('remaining_research_budget_insufficient')
         return run_research_session(prepared['runtime'],bridge(),checkout=args.aar_checkout,
-            config_dir=root/'pi-private',native_session_id=run,prompt=prompt,
+            config_dir=config_dir,native_session_id=run,prompt=prompt,
             limits=Limits(available,budget['turns']['available'],budget['tool_executions']['available']),
             oauth_source=args.oauth_source,on_event=event)
 
@@ -229,10 +281,9 @@ INITIAL TASK HISTORY: '''+research_prompt(refs)
             if candidate['type']=='candidate_registered':
                 candidate_refs.append(dict(candidate_ref=candidate['digest'],snapshot_ref=candidate.get('snapshot_ref'),
                     **service.references.get(project,'candidate',candidate['digest'])))
-        write_once(root/'model-events.json',events)
+        write_once(event_file,events)
         native=[dict(path=str(path.relative_to(root)),sha256=hashlib.sha256(path.read_bytes()).hexdigest())
-                for path in sorted((root/'pi-private/sessions').glob('*.jsonl'))]
-        event_file=root/'model-events.json'
+                for path in sorted((config_dir/'sessions').glob('*.jsonl'))]
         same_ids=bool(before_reopen and after_reopen and
             [item['trial_id'] for item in before_reopen['trials']]==[item['trial_id'] for item in after_reopen['trials']])
         same_hypothesis=bool(fault and any(item['sha256']==(fault.get('hypothesis_ref') or {}).get('sha256') for item in hypotheses))
@@ -268,12 +319,15 @@ INITIAL TASK HISTORY: '''+research_prompt(refs)
         private=dict(schema='asr-p3-private-trajectory/1',project_id=project,research_run_id=run,
             runtime_sessions=runtime_results,interruption=fault,run=after,hypotheses=hypotheses,findings=findings,
             validations=validations,candidate_refs=candidate_refs,source_provenance=provenance,snapshots=snapshots,replication_comparisons=comparison_records,comparison_attempts=comparison_attempts,failures=failures,acceptance_checks=checks)
-        write_once(root/'result.json',private)
+        private.update(prior_results=prior,native_session_migration=migration)
+        write_once(result_file,private)
         public=dict(schema='asr-p3-acceptance-result/1',checked_at=datetime.now(timezone.utc).isoformat(),
             status='passed' if all(checks.values()) and not failures else 'incomplete',
             private_evidence_root=str(root.relative_to(REPO)) if root.is_relative_to(REPO) else str(root),
+            private_result_file=result_file.name,prior_results=prior,native_session_migration=migration,
             project_id=project,research_run_id=run,external_experiment_id=after['experiment_id'],
             runtime=prepared['public'],runtime_sessions=[{key:item.get(key) for key in ('status','turns','tool_executions','native_session_id','capability_pack_sha256','runtime_claim','execution_exited')} for item in runtime_results],
+            runtime_records=after['runtime_sessions'],
             actor_roles={role:'p3-'+role for role in tokens},hypotheses=hypotheses,findings=findings,
             trials=after['trials'],candidate_refs=candidate_refs,evaluations=after.get('evaluations',[]),validations=validations,snapshots=snapshots,
             replication_comparisons=comparison_records,comparison_attempts=comparison_attempts,interruption=fault,resource_ledgers=after['resource_ledgers'],
@@ -296,6 +350,7 @@ def main():
     parser.add_argument('--oauth-source',type=Path,default=Path.home()/'.pi/agent/auth.json')
     parser.add_argument('--preflight',action='store_true')
     parser.add_argument('--run-authorized-subscription',action='store_true')
+    parser.add_argument('--resume-existing-auth-failure',action='store_true',help='Resume the same preexperiment failed run with remaining original budget; requires a new report path and refreshed OAuth source')
     parser.add_argument('--output',type=Path)
     parser.add_argument('--report',type=Path,default=REPO/'docs/validation/P3-RESULTS.json')
     parser.add_argument('--proxy',help='Explicit existing credential-free HTTP(S) proxy, if required')
