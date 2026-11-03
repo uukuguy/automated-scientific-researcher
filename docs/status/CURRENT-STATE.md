@@ -7,7 +7,7 @@
 - Theme-level focus: Formal scientific comparison contracts over a verified bounded single-researcher foundation.
 - Project route: managed
 - Canonical worklist: docs/plans/WORKLIST.md
-- Active work package: P4 — simulated OOD client project; actual AAR intake, isolated development tools, final evaluation pending
+- Package boundary: P4 simulated OOD deliverable verified; P5 organization pending
 
 ## Current Architecture
 
@@ -26,7 +26,9 @@
 
 ## Open Problems (theme-level)
 
-- P4 targets training benefit from OOD augmentation on a concrete simulated client project. Actual AAR intake and targeted private-file denial exist; admitted scenario/training/analysis tools now reuse the Control ledger and Supervisor; resumed model-driven experiments and independent final-performance evaluation remain gaps.
+- Long native conversations require explicit context recovery; final AAR report publication needed controller archival after a time cap. Automatic report-first/context recovery is not verified.
+
+- P4 provides measured training benefit on a synthetic client project, with actual AAR experiments, independent final scoring and exact selected-training replay. Broader topology/distribution transfer, mechanistic attribution and actual client utility remain untested.
 - Explicit octave-candidate/1 supports bounded single-file methods; broader workloads/profiles require separate capability and limit review.
 - Unconfirmed real-world input distribution, OOD definition, failure cases, and downstream task.
 - Formal evaluation policy and expanded operating conventions remain uncalibrated; the implemented reference uses fixed PV/PQ and one Slack.

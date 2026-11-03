@@ -161,3 +161,11 @@
 - 2026-11-03: Preserved two live-run interruptions; fixed queue backpressure and request-only deferral; AAR completed704 labels and nine augmentation fits.
 
 - 2026-11-03: AAR froze ten fitted models and prospective h3 before final testing; independent evaluator and snapshot gates verified.
+
+- 2026-11-03: Added same-run recovery and frozen independent evaluation so autonomous OOD experiments retain budgets and scientific boundaries. [54c8341]
+
+- 2026-11-03: Independent held-out evaluation passed; exact training reproduced. Preserved context-exhausted synthesis and recovered within unchanged budget.
+
+- 2026-11-03: AAR authored final report; controller archived exact bytes after time cap. Independent OOD reduction83.23%; Control and AAR completed.
+
+- 2026-11-03: Verified318 core/AAR tests,13 scientific tests,33 immutable executions,320 original raw hashes and27 delivery files.

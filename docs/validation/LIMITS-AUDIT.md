@@ -1,6 +1,6 @@
 # Limit and recovery audit
 
-Status: reviewed for the current managed P3 profile, 2026-11-03. Required by the user and AGENTS.md. Confirmed material gaps are corrected and verified; explicit legacy and observability limits remain listed below.
+Status: reviewed for the current managed P3 and P4 profiles, 2026-11-03. Required by the user and AGENTS.md. Confirmed material gaps are corrected and verified; explicit legacy and observability limits remain listed below.
 
 Every inventory row records scope/unit, purpose, default adequacy, exceedance
 record/action, recovery and evidence. Acceptance budgets are not production
@@ -158,3 +158,28 @@ Failed final execution can only retry its identical frozen protocol after exit i
 reconciled; completed release cannot be repeated with new models. Synthesis exposes
 no experiment tools and caps its session at180seconds/25turns/50tools, bounded by
 remaining historical balances rather than a new model allowance.
+
+
+### P4 context and final reporting limits
+
+The first final synthesis received explicit provider context-window exhaustion,
+after accumulated development history; this is not a compute failure. Its7,525ms
+charge and transcript remain. Existing per-response40KB projection limits do not
+bound accumulated conversation size. No automatic context-rotation guarantee is
+made. The original native sessions directory was archived intact with an explicit
+recovery receipt, then a fresh conversation recovered from frozen proposal,
+aggregate final report, training replay and authoritative state under the SAME
+research identity and remaining107,680ms. No model or experiment budget increased. After completion, archived transcripts were also restored to their original paths so historical evidence references continue to resolve.
+
+The recovered session wrote and read back the complete report, then hit its
+102,485ms engine cap (102,487ms observed; cleanup headroom retained). Final ledger
+is1,495,509/1,500,000ms,79/140turns,107/300tools, with all reservations zero.
+The controller verified the successful write-event bytes, archived that exact
+report and explicitly published its conclusion as controller archival. This is
+not a clean model termination or agent-issued publication. Science was preserved;
+the report's lifecycle limitation is public.4,491ms remained and was not used for
+another unlikely-to-complete model call. The bounded25-minute allowance was
+sufficient for this science result, but insufficient for fully autonomous report
+publication with these recoveries; it is not a production default. Future long
+runs need measured context monitoring and an explicit publication/cleanup reserve,
+not silent retries, truncation, allowance increases or paid fallback.

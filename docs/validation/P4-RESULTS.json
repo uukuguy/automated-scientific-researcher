@@ -1,0 +1,728 @@
+{
+  "schema": "asr-p4-acceptance/1",
+  "status": "completed",
+  "research_run_id": "research_bb9205963bd144b898d1bc46c4dbf1ad",
+  "project_id": "ood-client-ef6293124853",
+  "scope": "Actual single AAR researcher, simulated synthetic IEEE-118 OOD augmentation client; no real-client or novelty claim.",
+  "independent_result": {
+    "assessment": "objective_met_on_frozen_test",
+    "baseline": {
+      "private_id": {
+        "labelled": 64,
+        "nonreference_angle_rmse_degree": 0.0006512417889280194,
+        "pq_voltage_rmse_pu": 7.300125027977869e-07,
+        "proposed": 64
+      },
+      "private_ood": {
+        "labelled": 64,
+        "nonreference_angle_rmse_degree": 0.09052819051064813,
+        "pq_voltage_rmse_pu": 0.00010760772778696295,
+        "proposed": 64
+      }
+    },
+    "label_validity": {
+      "private_id": {
+        "equation_valid": 64,
+        "incompletely_assessed": 64,
+        "operationally_violating": 64,
+        "proposed": 64
+      },
+      "private_ood": {
+        "equation_valid": 64,
+        "incompletely_assessed": 64,
+        "operationally_violating": 64,
+        "proposed": 64
+      }
+    },
+    "models": {
+      "trial_1a84f42d9c8c4b94a76f19f294130e16": {
+        "id_retention_satisfied": true,
+        "metrics": {
+          "private_id": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.0006247660011694148,
+            "pq_voltage_rmse_pu": 6.988951275594746e-07,
+            "proposed": 64
+          },
+          "private_ood": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.09126596633357278,
+            "pq_voltage_rmse_pu": 0.0001083734693531154,
+            "proposed": 64
+          }
+        },
+        "model_sha256": "a8675a9ce01d5f768cc54bbc44e99abf524356e3fc2fa15e0cf01d71298fa3e9",
+        "ood_improvement_satisfied": false,
+        "paired_mse_intervals": {
+          "private_id": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": -8.298541099939992e-14,
+            "mean": -4.446385491471458e-14,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": -1.2869522716444852e-14
+          },
+          "private_ood": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": 1.2756045877364956e-10,
+            "mean": 1.65385780157524e-10,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": 2.0298745569759949e-10
+          }
+        },
+        "utility_satisfied": false
+      },
+      "trial_26a6c2f606a8412eadfb8fe7fee8c4af": {
+        "id_retention_satisfied": true,
+        "metrics": {
+          "private_id": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.0005825893217783118,
+            "pq_voltage_rmse_pu": 6.676769436136979e-07,
+            "proposed": 64
+          },
+          "private_ood": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.09183948147276089,
+            "pq_voltage_rmse_pu": 0.00010877934775623993,
+            "proposed": 64
+          }
+        },
+        "model_sha256": "5176095e01c420d02f1cba5aa38285124cdaf0fee95ec3d0b3facd2809b07ff6",
+        "ood_improvement_satisfied": false,
+        "paired_mse_intervals": {
+          "private_id": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": -1.9341966072395768e-13,
+            "mean": -8.712575320775968e-14,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": -7.444102848679478e-15
+          },
+          "private_ood": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": 1.9334824384464817e-10,
+            "mean": 2.5352341879986144e-10,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": 3.159335533269549e-10
+          }
+        },
+        "utility_satisfied": false
+      },
+      "trial_4077930704074c99998cc049e40f40e6": {
+        "id_retention_satisfied": false,
+        "metrics": {
+          "private_id": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.016999867271813712,
+            "pq_voltage_rmse_pu": 1.9009378759661964e-05,
+            "proposed": 64
+          },
+          "private_ood": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.061941423092845616,
+            "pq_voltage_rmse_pu": 7.352958798979096e-05,
+            "proposed": 64
+          }
+        },
+        "model_sha256": "f849e78d28d69835e6edfd165dd76a54d2bc93ffe009fac8eacee1913e403959",
+        "ood_improvement_satisfied": true,
+        "paired_mse_intervals": {
+          "private_id": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": 2.7991507258833505e-10,
+            "mean": 3.608235625740463e-10,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": 4.508952967162124e-10
+          },
+          "private_ood": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": -9.784741045309862e-09,
+            "mean": -6.172822769524709e-09,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": -2.843503221096774e-09
+          }
+        },
+        "utility_satisfied": false
+      },
+      "trial_6e19bad026b94c24b339eb7525ba18f1": {
+        "id_retention_satisfied": true,
+        "metrics": {
+          "private_id": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.0006512417889279093,
+            "pq_voltage_rmse_pu": 7.300125028025095e-07,
+            "proposed": 64
+          },
+          "private_ood": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.09052819051065011,
+            "pq_voltage_rmse_pu": 0.00010760772778667638,
+            "proposed": 64
+          }
+        },
+        "model_sha256": "b4479736d4a777048b09193f423670f3ba7e550928f910e3b521cc710b41670b",
+        "ood_improvement_satisfied": false,
+        "paired_mse_intervals": {
+          "private_id": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": 1.435655349587135e-24,
+            "mean": 6.895166291031867e-24,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": 1.349371536583727e-23
+          },
+          "private_ood": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": -7.604680349509864e-20,
+            "mean": -6.167469390849815e-20,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": -4.718508075113994e-20
+          }
+        },
+        "utility_satisfied": false
+      },
+      "trial_812ef849dde24f7196b6c3d1413bf0f9": {
+        "id_retention_satisfied": false,
+        "metrics": {
+          "private_id": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.015989613802613125,
+            "pq_voltage_rmse_pu": 1.8597191608461517e-05,
+            "proposed": 64
+          },
+          "private_ood": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.07662038091839517,
+            "pq_voltage_rmse_pu": 8.884922359163821e-05,
+            "proposed": 64
+          }
+        },
+        "model_sha256": "5652a177599be607b49ea068efaa8c31f3aa2b209e4dbb686f376e678d8756f7",
+        "ood_improvement_satisfied": false,
+        "paired_mse_intervals": {
+          "private_id": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": 2.7953967491516167e-10,
+            "mean": 3.453226174675904e-10,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": 4.156448516309047e-10
+          },
+          "private_ood": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": -7.098898555794075e-09,
+            "mean": -3.6852385466362005e-09,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": -5.418121167257944e-10
+          }
+        },
+        "utility_satisfied": false
+      },
+      "trial_a1c1bd36e5724050bf0d5ab8b89adc0b": {
+        "id_retention_satisfied": false,
+        "metrics": {
+          "private_id": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.017008221155467435,
+            "pq_voltage_rmse_pu": 1.936763129768537e-05,
+            "proposed": 64
+          },
+          "private_ood": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.068059578268455,
+            "pq_voltage_rmse_pu": 7.995744989246136e-05,
+            "proposed": 64
+          }
+        },
+        "model_sha256": "eab142cdb1df3d57bb827617e54d18c3bc457a6355f9397f3f4bb68795f88a02",
+        "ood_improvement_satisfied": true,
+        "paired_mse_intervals": {
+          "private_id": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": 3.040893414812675e-10,
+            "mean": 3.745722238288408e-10,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": 4.5585866363852706e-10
+          },
+          "private_ood": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": -8.203586706903692e-09,
+            "mean": -5.186229286167651e-09,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": -2.476338939529076e-09
+          }
+        },
+        "utility_satisfied": false
+      },
+      "trial_b1bcc4832d704263b948b1865ef1ea8f": {
+        "id_retention_satisfied": true,
+        "metrics": {
+          "private_id": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.005803101878583946,
+            "pq_voltage_rmse_pu": 8.042635962016063e-06,
+            "proposed": 64
+          },
+          "private_ood": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.014963475351853713,
+            "pq_voltage_rmse_pu": 1.8048463257316755e-05,
+            "proposed": 64
+          }
+        },
+        "model_sha256": "02b4db9c8b1bf4a5c27584720b4d96bfe66a9372239a857271777721942891e6",
+        "ood_improvement_satisfied": true,
+        "paired_mse_intervals": {
+          "private_id": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": 5.1903550301237566e-11,
+            "mean": 6.415107496327296e-11,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": 7.686977529300802e-11
+          },
+          "private_ood": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": -1.457586671210631e-08,
+            "mean": -1.1253676053522408e-08,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": -8.077490549107295e-09
+          }
+        },
+        "utility_satisfied": true
+      },
+      "trial_c0e6cb3d9fe34802b2cc6a1c52e49df6": {
+        "id_retention_satisfied": true,
+        "metrics": {
+          "private_id": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.000634022766934164,
+            "pq_voltage_rmse_pu": 7.067727513725568e-07,
+            "proposed": 64
+          },
+          "private_ood": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.09069927780052059,
+            "pq_voltage_rmse_pu": 0.00010757775668632601,
+            "proposed": 64
+          }
+        },
+        "model_sha256": "92f0763242b768bab6d886ab5a2ed00a1db41492bc06bf489ab0f3f74569d1c2",
+        "ood_improvement_satisfied": false,
+        "paired_mse_intervals": {
+          "private_id": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": -1.153854676930981e-13,
+            "mean": -3.3390532158354703e-14,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": 3.2726126472121154e-14
+          },
+          "private_ood": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": -1.455481885671369e-11,
+            "mean": -6.449345810759412e-12,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": 1.986108134866147e-12
+          }
+        },
+        "utility_satisfied": false
+      },
+      "trial_dd8793bcfc8146bdbf91f921bb392312": {
+        "id_retention_satisfied": true,
+        "metrics": {
+          "private_id": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.007197400469171129,
+            "pq_voltage_rmse_pu": 9.088306730809971e-06,
+            "proposed": 64
+          },
+          "private_ood": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.0158650147063347,
+            "pq_voltage_rmse_pu": 1.991239300619046e-05,
+            "proposed": 64
+          }
+        },
+        "model_sha256": "d617173107ec56a6808502e17e1f4a9d72291c021ffa66fb2dd1ca5b5be53676",
+        "ood_improvement_satisfied": true,
+        "paired_mse_intervals": {
+          "private_id": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": 6.634168784305625e-11,
+            "mean": 8.206440097904475e-11,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": 9.827643220780821e-11
+          },
+          "private_ood": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": -1.4575517712533276e-08,
+            "mean": -1.1182919684240137e-08,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": -7.985105960948964e-09
+          }
+        },
+        "utility_satisfied": true
+      },
+      "trial_f67211c4158f424b8bc2bb8d34f50fec": {
+        "id_retention_satisfied": true,
+        "metrics": {
+          "private_id": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.007302659058034985,
+            "pq_voltage_rmse_pu": 9.51209972154242e-06,
+            "proposed": 64
+          },
+          "private_ood": {
+            "labelled": 64,
+            "nonreference_angle_rmse_degree": 0.017733760526415943,
+            "pq_voltage_rmse_pu": 1.9733010460020663e-05,
+            "proposed": 64
+          }
+        },
+        "model_sha256": "bf4173bfbe6caedda07e45dab7678fc9f277ebdba4110e87ad517b6639f1e0ae",
+        "ood_improvement_satisfied": true,
+        "paired_mse_intervals": {
+          "private_id": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": 7.039651311854334e-11,
+            "mean": 8.994712285832628e-11,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": 1.118702116835193e-10
+          },
+          "private_ood": {
+            "draws": 2000,
+            "estimand": "candidate_minus_baseline_sample_mse",
+            "level": 0.95,
+            "lower": -1.4459171451425156e-08,
+            "mean": -1.1190031377657835e-08,
+            "scope": "Paired test-instance bootstrap conditional on a fixed trained model; not training-seed or unseen-family uncertainty.",
+            "seed": 20261103,
+            "upper": -8.035811775861815e-09
+          }
+        },
+        "utility_satisfied": true
+      }
+    },
+    "primary_model": "trial_b1bcc4832d704263b948b1865ef1ea8f",
+    "protocol_sha256": "896ab41e376f9f50feb353dff42abb276ccc57a0ffe951285fd4b1849921fe94",
+    "schema": "asr-ood-independent-validation/1",
+    "scope": "One frozen synthetic ID/target-regime test. Independent scalar metrics and original-equation checks. No unseen-family transfer, operating feasibility, scientific novelty or independent training reproduction claim.",
+    "thresholds": {
+      "id_rmse_max_pu": 1.0730012502797789e-05,
+      "ood_rmse_max_pu": 8.608618222957037e-05
+    }
+  },
+  "training_replay": {
+    "original_trial_id": "trial_b1bcc4832d704263b948b1865ef1ea8f",
+    "replay_trial_id": "trial_9a8088b82a234aeea6fffdb558b260e6",
+    "original_model_sha256": "02b4db9c8b1bf4a5c27584720b4d96bfe66a9372239a857271777721942891e6",
+    "replayed_model_sha256": "02b4db9c8b1bf4a5c27584720b4d96bfe66a9372239a857271777721942891e6",
+    "identical_model": true,
+    "identical_payload": true,
+    "report": {
+      "trial_id": "trial_9a8088b82a234aeea6fffdb558b260e6",
+      "execution_attempt_id": "attempt_bfff4bd08a414418b02243fa4eb61001",
+      "status": "succeeded",
+      "usage": {
+        "attempts": 1,
+        "execution_ms": 2279,
+        "sample_proposals": 0
+      },
+      "usage_estimated": true,
+      "execution_exited": true,
+      "manifest_hash": "da5f88d3d26d5372663cdef1e5e1fe2148818e671ae98eaba7c5ee93a327ea9e",
+      "evidence_path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p4-intake-001/study-evidence/trial_9a8088b82a234aeea6fffdb558b260e6/attempt_bfff4bd08a414418b02243fa4eb61001"
+    },
+    "scope": "Independent execution of the unchanged trainer on the frozen selected inputs; no hidden test access."
+  },
+  "lineage": {
+    "schema": "asr-ood-delivery/1",
+    "research_run_id": "research_bb9205963bd144b898d1bc46c4dbf1ad",
+    "project_id": "ood-client-ef6293124853",
+    "primary_model": "trial_b1bcc4832d704263b948b1865ef1ea8f",
+    "selected_augmentation_trial": "trial_22035fdaffb24d1aadc54502b5e696f0",
+    "final_trial": "trial_8435ec64fb3644778ece38ddaa574620",
+    "proposal_snapshot": "919e3cf608e5d3e0daacc97bdda2d1093e7f6379bd0c723fc150386fa6205a7b",
+    "model_canonical_sha256": "02b4db9c8b1bf4a5c27584720b4d96bfe66a9372239a857271777721942891e6",
+    "fit_payload_sha256": "7b98a81c311c5fdaf2e1d6885d3ef8c5aeba18231cd91708fafb55b41feb76c1",
+    "training_rows": 192,
+    "augmentation_rows": 64,
+    "augmentation_outside_original_box": 60,
+    "original_distribution": "Uniform([0.9,1.1]^3); membership refers to this declared box, not empirical nearest-neighbor distance.",
+    "generated_total": 704,
+    "generated_augmentation": 576,
+    "generated_development_probes": 128,
+    "private_final_rows_exported": 0,
+    "boundary": "Synthetic fixed-topology IEEE-118; equation-valid labels are not operating-feasible labels. All generated rows have operating violations and unassessed thermal ratings. Probes are excluded from training."
+  },
+  "closure": {
+    "schema": "asr-p4-closure/1",
+    "research_run_id": "research_bb9205963bd144b898d1bc46c4dbf1ad",
+    "state": "completed",
+    "health": "ok",
+    "budget": {
+      "attempts": {
+        "limit": 40,
+        "spent": 33,
+        "reserved": 0,
+        "available": 7
+      },
+      "execution_ms": {
+        "limit": 2400000,
+        "spent": 129098,
+        "reserved": 0,
+        "available": 2270902
+      },
+      "research_walltime_ms": {
+        "limit": 1500000,
+        "spent": 1495509,
+        "reserved": 0,
+        "available": 4491
+      },
+      "sample_proposals": {
+        "limit": 768,
+        "spent": 704,
+        "reserved": 0,
+        "available": 64
+      },
+      "tool_executions": {
+        "limit": 300,
+        "spent": 107,
+        "reserved": 0,
+        "available": 193
+      },
+      "turns": {
+        "limit": 140,
+        "spent": 79,
+        "reserved": 0,
+        "available": 61
+      }
+    },
+    "runtime_count": 7,
+    "runtime_states": [
+      {
+        "session_id": "session_3cef5dad092944c497225c423cd9aa24",
+        "state": "exited",
+        "actual_walltime_ms": 21486,
+        "execution_exited": true
+      },
+      {
+        "session_id": "session_3dfee29aacc4454d90bd83667ba88419",
+        "state": "exited",
+        "actual_walltime_ms": 194911,
+        "execution_exited": true
+      },
+      {
+        "session_id": "session_14b653bd745546af9789003eda00b876",
+        "state": "exited",
+        "actual_walltime_ms": 100774,
+        "execution_exited": true
+      },
+      {
+        "session_id": "session_908401219b014a2e98460b8393637884",
+        "state": "exited",
+        "actual_walltime_ms": 455815,
+        "execution_exited": true
+      },
+      {
+        "session_id": "session_b77676c99de747d5a2c4aa732e0b5fee",
+        "state": "exited",
+        "actual_walltime_ms": 611508,
+        "execution_exited": true
+      },
+      {
+        "session_id": "session_a1853bd6554a48a5b70eb106f7a21a5f",
+        "state": "exited",
+        "actual_walltime_ms": 7826,
+        "execution_exited": true
+      },
+      {
+        "session_id": "session_526323166a2e456ba12a548cfecba015",
+        "state": "exited",
+        "actual_walltime_ms": 103189,
+        "execution_exited": true
+      }
+    ],
+    "trial_count": 33,
+    "snapshot": {
+      "snapshot_sha256": "8df353c9ba02bfba2a934d03e5b966fc95c1c20e29ed3e57df4e880ea8c7aeed",
+      "manifest": {
+        "schema": "asr-workspace-snapshot/1",
+        "project_id": "ood-client-ef6293124853",
+        "research_run_id": "research_bb9205963bd144b898d1bc46c4dbf1ad",
+        "files": [
+          {
+            "path": "FINAL-RESEARCH-REPORT.md",
+            "sha256": "568592bdcd044132450e7563cf4e8537b4fe06dd31190236af5de5aecabbe2fa",
+            "size": 12747
+          },
+          {
+            "path": "INDEPENDENT-FINAL-RESULT.json",
+            "sha256": "03271efb8a3cb7f868b9951891c37cd912b96d56a0f19b8369d084aea6182c00",
+            "size": 12908
+          },
+          {
+            "path": "INDEPENDENT-TRAINING-REPLAY.json",
+            "sha256": "5cbf971beaa8164f8571051e3532acaebc6fd5462e5d3eb164fb0c1333cb2c26",
+            "size": 1137
+          }
+        ]
+      }
+    },
+    "report_sha256": "568592bdcd044132450e7563cf4e8537b4fe06dd31190236af5de5aecabbe2fa",
+    "finding": {
+      "project_id": "ood-client-ef6293124853",
+      "research_run_id": "research_bb9205963bd144b898d1bc46c4dbf1ad",
+      "finding_id": "controller-archived-aar-final-interpretation",
+      "revision": 1,
+      "statement": "**Objective met on the one frozen synthetic ID/target-regime test.** The prospectively selected mixed-202 model passes both the original client ID-retention allowance and the required >=20% target PQ-voltage RMSE reduction. Target RMSE falls approximately **83.23%**, from 1.0760772778696295e-4 to 1.8048463257316755e-5 pu. ID RMSE increases substantially, from 7.300125027977869e-7 to 8.042635962016063e-6 pu (about 11.02 times baseline), but remains below the allowed 1.0730012502797789e-5 pu. \u201cRetention\u201d means passing that tolerance, **not unchanged ID accuracy**.",
+      "limitations": "Verbatim AAR report conclusion archived by the controller after model walltime ended; not an agent-issued publish receipt. Snapshot 8df353c9ba02bfba2a934d03e5b966fc95c1c20e29ed3e57df4e880ea8c7aeed. This establishes held-out utility for this fixed surrogate and declared target distribution. It does not establish unseen-family transfer, operating feasibility, real-grid benefit, optimality or scientific novelty. A separate training replay establishes exact reproduction only on the frozen selected inputs.",
+      "evidence": [
+        {
+          "trial_id": "trial_8435ec64fb3644778ece38ddaa574620",
+          "execution_attempt_id": "attempt_a34789b5bbb14c5bbc4a5d2cc41da25f",
+          "manifest_hash": "049e9079e722febf49d9f50cef5e31e06918c82ee35ef3dd18345a6387ce6c13"
+        },
+        {
+          "trial_id": "trial_b1bcc4832d704263b948b1865ef1ea8f",
+          "execution_attempt_id": "attempt_e0468c941544463386dcaa1366dde960",
+          "manifest_hash": "981f29d98837fafb5de253483e8d75bed65ba41e83420cf51c1856a1c40e3352"
+        },
+        {
+          "trial_id": "trial_6e19bad026b94c24b339eb7525ba18f1",
+          "execution_attempt_id": "attempt_eecfe04bf69b427284fc7503411bf85f",
+          "manifest_hash": "f773d8b40657ca65c62537216591775606c387e807d993a863ed59bbcfd2014e"
+        },
+        {
+          "trial_id": "trial_9a8088b82a234aeea6fffdb558b260e6",
+          "execution_attempt_id": "attempt_bfff4bd08a414418b02243fa4eb61001",
+          "manifest_hash": "da5f88d3d26d5372663cdef1e5e1fe2148818e671ae98eaba7c5ee93a327ea9e"
+        }
+      ],
+      "status": "candidate",
+      "author": "controller-archive-of-aar-authored-report",
+      "created_at": "2026-11-03T05:22:06.714897+00:00"
+    },
+    "finish_receipt": {
+      "command_id": "command_3387c7e23fcd49ad9a1f9e687c53ea2f",
+      "kind": "finish",
+      "project_id": "ood-client-ef6293124853",
+      "research_run_id": "research_bb9205963bd144b898d1bc46c4dbf1ad",
+      "author": "controller-archive-of-aar-authored-report",
+      "payload": {},
+      "status": "applied",
+      "effective_scope": "drain_inflight_and_close",
+      "control_revision": 27,
+      "created_at": "2026-11-03T05:22:06.722765+00:00"
+    },
+    "projection": {
+      "schema": "asr-aar-experiment-projection/1",
+      "projection_id": "aar_projection_019d4b529cd2410c948a2e75ac767d0c",
+      "project_id": "ood-client-ef6293124853",
+      "research_run_id": "research_bb9205963bd144b898d1bc46c4dbf1ad",
+      "upstream_experiment_id": 1,
+      "experiment_id": "aar-experiment:1",
+      "control_revision": 27,
+      "control_state": "completed",
+      "control_record_sha256": "a08393a363a432ceca727628920446d27e8a368e55fac3536f3c8d00d7627920",
+      "prior_status": "paused",
+      "projected_status": "completed",
+      "changed": true,
+      "author": "controller-archive-of-aar-authored-report",
+      "author_role": "human",
+      "created_at": "2026-11-03T05:22:06.728153+00:00",
+      "authority": "asr-control"
+    },
+    "actual_orm": {
+      "experiment_id": 1,
+      "status": "completed"
+    },
+    "synthesis_status": "Report authored and written by actual AAR; context recovery retained, final session timed_out after file readback; controller archived/published verbatim, no extra model allowance."
+  },
+  "delivery": {
+    "path": "artifacts/p4-delivery-001",
+    "manifest_sha256": "d6b570010f989ad30264551e52b8bf3c4ac096504e99153ab45cd2716d2a2178",
+    "files": 27
+  },
+  "recovery_records": [
+    "intake provider fetch failure",
+    "bounded native queue backpressure",
+    "oversize analysis request deferral",
+    "provider context-window exhaustion",
+    "synthesis walltime cap; exact author report archived by controller"
+  ],
+  "validation": {
+    "core_suite": {
+      "command": "uv run --extra aar python -m unittest discover -s tests -v",
+      "tests": 318,
+      "skipped": 20,
+      "status": "passed",
+      "log": "/tmp/asr-p4-closure-tests.log"
+    },
+    "scientific_tests": 13,
+    "real_development_docker_tests": 4,
+    "real_final_docker_tests": 1,
+    "immutable_execution_inventories_verified": 33,
+    "scientific_suite": {
+      "command": "uv run --locked --project environments/scientific pytest environments/scientific/tests -q",
+      "tests": 13,
+      "status": "passed"
+    },
+    "original_client_raw_files_verified": 320,
+    "delivery_inventory_files_verified": 27,
+    "owned_running_containers": 0
+  }
+}

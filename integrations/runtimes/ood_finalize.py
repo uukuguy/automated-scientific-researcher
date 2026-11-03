@@ -38,6 +38,21 @@ def frozen_proposal(root,project,run):
     raise ValueError('both final proposal files must match an actual AAR snapshot')
 
 
+def export_final_result(report, workspace):
+    """Deliver only the aggregate result from verified immutable evidence."""
+    from asr_supervisor.supervisor import publication_inventory
+    if report['status'] != 'succeeded' or not report.get('execution_exited'):
+        raise ValueError('successful exited final evaluation required')
+    path=Path(report['evidence_path'])
+    if (digest(path/'manifest.json') != report['manifest_hash'] or
+        json.loads((path/'manifest.json').read_text())['artifacts'] != publication_inventory(path)):
+        raise ValueError('final evidence corrupt')
+    result=json.loads((path/'study-result.json').read_text())
+    if result.get('schema') != 'asr-ood-independent-validation/1':
+        raise ValueError('independent final result required')
+    write(Path(workspace)/'INDEPENDENT-FINAL-RESULT.json',result)
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root',required=True,type=Path)
@@ -129,6 +144,7 @@ def main():
     write(output/'result.json',report)
     print(json.dumps(dict(result=str(output/'result.json'),state=result['state'],trial_id=receipt['trial_id'])))
     if result['state']!='succeeded':raise SystemExit(2)
+    export_final_result(result['report'],root/'workspace')
 
 
 if __name__=='__main__':main()

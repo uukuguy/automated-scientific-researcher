@@ -71,9 +71,11 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 - `docs/validation/LIMITS-AUDIT.md` — limit purposes, defaults, exceedance receipts and recovery audit required by repository rules.
 
 - `docs/validation/P3-SYSTEM-ACCEPTANCE.md`, `P3-RESULTS.json`, `P3-RESULTS-RECOVERED.json`, `P3-RESULTS-FINAL.json` and `P3-PROJECTION-RECONCILIATION.json` — retained real research, failures, closeout and actual lifecycle projection evidence.
-- `docs/plans/P4-SCIENTIFIC-COMPARISON.md` — new-method research framing, verified capability gaps and contract preparation; no new model/experiment budget.
+- `docs/plans/P4-SCIENTIFIC-COMPARISON.md` — targeted augmentation scope and completed simulated scientific comparison.
 
 - `research_projects/ood_augmentation/README.md` — implemented simulated client and limits.
 - `docs/validation/P4-CLIENT-PREPARATION.json`, `P4-ASR-INTAKE.json`, `P4-RESEARCHER-INTAKE.md` — real client baseline and actual researcher-authored intake; no scientific improvement claim.
 
 - `docs/validation/P4-DEVELOPMENT-TOOLS.json` — admitted isolated analysis/label/fixed-training engineering checks; no model-driven augmentation or final-test claim.
+
+- `docs/validation/P4-SCIENTIFIC-RESULTS.md`, `P4-RESULTS.json`, `P4-RESEARCHER-FINAL.md` — actual autonomous OOD study, independent final metrics, exact replay, usable artifacts and explicit controller-assisted archival.

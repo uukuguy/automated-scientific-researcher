@@ -1,39 +1,22 @@
 # P4: targeted OOD augmentation for solver generalization
 
-Status: active, simulated client project prepared and actual AAR intake verified.
-P3 is complete. A separate 300-second subscription-only intake contract was
-admitted with zero compute allowance. Development analysis, labeling and fixed training now use the owning Control
-ledger and isolated Supervisor. Final evaluation and resumed model-driven study
-remain outstanding; P4 is not complete.
+Status: complete within the simulated client scope, 2026-11-03. Actual AAR
+performed the research; frozen independent final utility and exact selected-model
+training reproduction passed. See [scientific results](../validation/P4-SCIENTIFIC-RESULTS.md)
+and [machine-readable evidence](../validation/P4-RESULTS.json).
+Final report archival was controller-assisted after a recorded native time cap;
+fully unattended lifecycle, unknown real-client benefit and novelty are not claimed.
 
-## Actual simulated project and next implementation boundary (D026)
+## Actual simulated project (D026)
 
-The development agent acts as client: prepares artifacts and criteria, delegates
-the problem and supplies experiment capabilities. AAR owns scientific diagnosis,
-hypotheses and augmentation design. Do not implement the researcher's proposed
-scientific solution on its behalf or label developer preparation an ASR result.
-
-- Prepared 320 real reference-labelled scenarios; all pass independent original-
-  equation checks. Public train/ID-development/diagnostic counts are 128/32/32;
-  private ID/target-regime counts are 64/64. Operating limits remain partially
-  assessed. See `P4-CLIENT-PREPARATION.json` and project README.
-- Actual AAR/pi received the public package and generated two hypotheses plus
-  a frozen intake note. Its proposed mixed-regime augmentation and controls are
-  researcher-authored and untested, not client-prescribed instructions.
-- Intake used 216397/300000 ms including a retained 21486-ms network failure,
-  11/40 turns and 21/100 tools. Same run resumed via the existing local proxy;
-  both sessions exited and reservations are zero. Control and AAR are paused,
-  not completed. Public evidence: `P4-ASR-INTAKE.json`, `P4-RESEARCHER-INTAKE.md`.
-- The researcher exposed a real delivery issue: native reads reject the large
-  compact single-line data arrays. Lossless 40,000-byte pages and a precise client
-  addendum now exist without overwriting sources. Guidance is recorded but not
-  yet acknowledged.
-- Next implement only the needed admitted scenario-labeling, unchanged-trainer
-  and independent-evaluation capabilities, with frozen material identities and
-  Control accounting. Then resume this researcher's run/hypotheses. Do not use
-  the old fixed-case profile or a developer-run augmentation experiment as proof
-  that ASR completed the client task. Its proposed 704 solve attempts are a
-  request to assess, not an automatically approved compute budget.
+Development supplied a frozen320-label client project and governed tools. AAR
+independently designed three sampling arms across three seeds, generated704 labels,
+trained9 augmented candidates, retained controls/ID failures and froze mixed202
+before the64+64 held-out evaluation. OOD RMSE fell83.23%; ID RMSE increased11.02×
+but passed the original absolute allowance. Selected64 labels and unchanged128
+original rows yield the192-row usable training delivery. All label/evaluation
+operating limitations remain explicit. Source/intake records are historical;
+current lifecycle and budgets are in P4-RESULTS.json. P5 remains pending.
 
 ## Task meaning and human/researcher boundary (D025)
 

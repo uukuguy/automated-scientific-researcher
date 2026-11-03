@@ -81,3 +81,21 @@ verified skill bytes are frozen under the private runtime directory, and session
 results record `capability_pack_sha256` and `capability_pack_id`. A changed skill,
 manifest version or path fails before spawning pi. Historical acceptance04
 artifacts predate this enforcement and are preserved unchanged.
+
+
+## Simulated OOD project lifecycle
+
+`ood_intake` delegates the frozen public client package; `ood_study` continues the
+same AAR run under explicit model/compute totals; `ood_finalize` requires a real
+frozen proposal plus prospective hypothesis and performs selected-training replay
+before controller-only hidden evaluation. It exports only verified aggregate final
+results to the workspace. `ood_study --synthesis-only` removes experiment tools and
+uses remaining model budget to interpret final results and training reproduction.
+See `docs/validation/P4-SCIENTIFIC-RESULTS.md` for the actual completed trajectory,
+limits and controller-assisted archival. Never relaunch the completed P4 run.
+
+Native context can exhaust before ASR's time budget. P4 preserved the original
+session directory, recorded context-recovery.json and opened a fresh conversation
+with the same research identity and remaining allowance, restoring from durable
+files. This was an explicit operator recovery, not implemented automatic
+compaction/rotation. A runtime's final timeout is not erased by scientific success.

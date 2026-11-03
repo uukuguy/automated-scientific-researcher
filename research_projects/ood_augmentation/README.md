@@ -85,11 +85,13 @@ an actual macOS sandbox denial of the entire original client preparation root.
 This protects private materials for this local intake; it does not claim general
 process/network containment. Raw transcripts and OAuth stay in ignored artifacts.
 
-Current missing capability is an admitted scenario-labeling/training experiment
-profile. Giving the researcher a brief or receiving its plan does not complete
-this scientific project. Keep the run paused with its actual hypotheses/native
-history until that capability and its compute contract are ready. Do not reuse
-P3's fixed-case numerical tools to produce misleading training evidence.
+The intake's missing development capability was subsequently implemented through
+Control/Supervisor. Actual AAR completed its own study and independent final
+scoring passed the frozen utility rule. See
+[scientific acceptance](../../docs/validation/P4-SCIENTIFIC-RESULTS.md) and
+[local delivery](../../artifacts/p4-delivery-001/README.md). The same run is completed;
+its evidence and budgets remain authoritative. Do not resume development after
+its frozen final-test lock. The following intake record is historical.
 
 ## First actual intake and delivery corrections
 
@@ -102,5 +104,5 @@ The researcher found the compact public arrays exceeded the native read tool's
 50-KB single-line boundary. `delivery.py` now creates lossless JSONL pages below
 40,000 bytes, with source hashes and row counts. The original arrays are unchanged.
 `CLIENT-ADDENDUM.md` supplies exact mappings and clarifies the existing acceptance
-predicate. Its guidance receipt is stored but not yet acknowledged by the paused
-researcher; preparing an addendum is not proof it was read.
+predicate. The later actual development consumed this addendum; historical intake evidence
+is preserved separately from final research acceptance.
