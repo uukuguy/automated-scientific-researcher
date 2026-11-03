@@ -197,20 +197,7 @@ def complete(service,token,project,run,evaluation_id,epoch,owner,*,artifact_path
 
 
 def _update_run_after_settlement(service,db,project,run):
-    running=service._run(db,project,run)
-    unresolved=any(not json.loads(row[0])['settled'] and json.loads(row[0])['state'] in ('uncertain','reconciling') for row in db.execute('SELECT record FROM asr_evaluation_jobs WHERE project=? AND run=?',(project,run)))
-    if db.execute("SELECT 1 FROM sqlite_master WHERE name='asr_executions'").fetchone():
-        for body, in db.execute('SELECT record FROM asr_executions'):
-            execution=json.loads(body)
-            if execution['project']==project and execution['run']==run and execution.get('report') is None:unresolved=True
-    for body, in db.execute('SELECT record FROM asr_runtime_sessions WHERE project=? AND run=?',(project,run)):
-        if json.loads(body)['state'] in ('uncertain','reconciling'):unresolved=True
-    if not unresolved and running['health']=='reconciling':running['health']='ok'
-    debt=any(BudgetStore._balance(db,project,name)['available']<0 for name, in db.execute('SELECT dimension FROM asr_budget_limits WHERE project=?',(project,)))
-    if debt:
-        running['admission_open']=False
-        if running['state']=='running':running['state']='paused'
-    db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(running),project,run))
+    service.refresh_run_health(db,project,run)
 
 
 def begin_launch(service,token,project,run,evaluation_id,epoch,owner):

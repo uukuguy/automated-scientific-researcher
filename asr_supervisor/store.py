@@ -5,6 +5,7 @@ must go through ControlService. Expired leases never authorize a second launch:
 reconciliation grants only the right to inspect/terminate the original identity.
 """
 import json
+import math
 import time
 from datetime import datetime, timezone
 from asr_service.contracts import PolicyStore, encoded
@@ -42,9 +43,13 @@ class ExecutionStore(PolicyStore):
     def get(self, attempt):
         with self._connect() as db: return self._read(db,attempt)
 
+    @staticmethod
+    def _lease(seconds):
+        if type(seconds) not in (int,float) or not math.isfinite(seconds) or not 0<seconds<=3600:raise LeaseError('invalid_lease')
+
     def claim(self, attempt, owner, *, lease_seconds=30, now=None):
         self._identity(attempt,owner)
-        if not 0 < lease_seconds <= 3600: raise LeaseError('invalid_lease')
+        self._lease(lease_seconds)
         now = time.time() if now is None else now
         with self._connect() as db:
             db.execute('BEGIN IMMEDIATE')
@@ -89,7 +94,7 @@ class ExecutionStore(PolicyStore):
             return record
 
     def heartbeat(self, attempt, epoch, owner, *, lease_seconds=30, now=None):
-        if not 0 < lease_seconds <= 3600: raise LeaseError('invalid_lease')
+        self._lease(lease_seconds)
         now=time.time() if now is None else now
         return self._update(attempt,epoch,owner,lambda r:r.update(lease_until=now+lease_seconds),now)
 
@@ -99,7 +104,7 @@ class ExecutionStore(PolicyStore):
             r.update(identity=identity,state='running')
         return self._update(attempt,epoch,owner,change,now)
 
-    def mark_uncertain(self, attempt, epoch, owner, reason, *, now=None):
+    def mark_uncertain(self, attempt, epoch, owner, reason, *, diagnostic=None, now=None):
         now=time.time() if now is None else now
         with self._connect() as db:
             db.execute('BEGIN IMMEDIATE')
@@ -107,6 +112,9 @@ class ExecutionStore(PolicyStore):
             self._fence(r,epoch,owner,now)
             if r['report'] is not None: raise LeaseError('already_terminal')
             r.update(state='interrupted',uncertainty=reason)
+            if diagnostic is not None:
+                if type(diagnostic) is not dict or len(encoded(diagnostic).encode('utf-8'))>16384:raise LeaseError('invalid_diagnostic')
+                r['diagnostic']=diagnostic
             self._save(db,r)
             self._event(db,r,'attempt_state_changed')
             row=db.execute('SELECT record FROM asr_runs WHERE project=? AND run=?',(r['project'],r['run'])).fetchone()
@@ -133,6 +141,7 @@ class ExecutionStore(PolicyStore):
 
     def reconcile_claim(self, attempt, owner, *, lease_seconds=30, now=None):
         self._identity(attempt,owner)
+        self._lease(lease_seconds)
         now=time.time() if now is None else now
         with self._connect() as db:
             db.execute('BEGIN IMMEDIATE')
@@ -142,6 +151,10 @@ class ExecutionStore(PolicyStore):
             r.update(owner=owner,epoch=r['epoch']+1,lease_until=now+lease_seconds,state='reconciling')
             self._save(db,r)
             self._event(db,r,'attempt_state_changed')
+            row=db.execute('SELECT record FROM asr_runs WHERE project=? AND run=?',(r['project'],r['run'])).fetchone()
+            if row:
+                run=json.loads(row[0]);run.update(health='reconciling',admission_open=False)
+                db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(run),r['project'],r['run']))
             return r
 
     def should_stop(self, attempt):
@@ -173,13 +186,10 @@ class ExecutionStore(PolicyStore):
                 if previous[dimension] is not None and previous[dimension]!=actual: raise LeaseError('usage_conflict')
                 db.execute('UPDATE asr_budget_reservations SET actual=? WHERE project=? AND attempt=? AND dimension=?',(actual,r['project'],attempt,dimension))
             r.update(state=report['status'],report=report,finished_at=now)
-            row=db.execute('SELECT record FROM asr_runs WHERE project=? AND run=?',(r['project'],r['run'])).fetchone()
-            if row:
-                run=json.loads(row[0])
-                if run.get('health')=='reconciling':
-                    run['health']='ok'
-                    db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(run),r['project'],r['run']))
             self._save(db,r)
+            if db.execute('SELECT 1 FROM asr_runs WHERE project=? AND run=?',(r['project'],r['run'])).fetchone():
+                from asr_service.control import ControlService
+                ControlService.refresh_run_health(db,r['project'],r['run'])
             self._event(db,r,'attempt_state_changed')
             self._event(db,r,'artifact_published')
             self._event(db,r,'budget_updated')

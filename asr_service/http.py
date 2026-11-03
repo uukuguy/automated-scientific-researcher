@@ -86,6 +86,8 @@ def make_server(service, *, host='127.0.0.1', port=8765):
                     result=service.create_run(token,project,**body)
                 elif self.command=='POST' and len(route)==3 and route[0]=='runs' and route[2]=='trials':
                     result=service.submit_trial(token,project,route[1],**body)
+                elif self.command=='POST' and len(route)==4 and route[0]=='runs' and route[2:] == ['runtime','limits']:
+                    result=service.observe_runtime_limit(token,project,route[1],**body)
                 elif self.command=='POST' and len(route)==4 and route[0]=='runs' and route[2:] == ['runtime','launch']:
                     result=service.begin_runtime_launch(token,project,route[1],**body)
                 elif self.command=='POST' and len(route)==4 and route[0]=='runs' and route[2:] == ['runtime','abort-prelaunch']:
@@ -111,7 +113,9 @@ def make_server(service, *, host='127.0.0.1', port=8765):
             except (ValueError,TypeError,KeyError) as exc:
                 code=getattr(exc,'code',str(exc))
                 status=401 if code=='unauthorized' else 403 if code=='forbidden' else 404 if code in ('not_found','run_not_found','contract_not_found','reference_not_found','hypothesis_not_found','validation_not_found','evaluation_not_found') else 409 if code in ('revision_conflict','idempotency_conflict','admission_closed','budget_exhausted','validation_id_conflict','evaluation_reconciliation_required','stale_evaluation_epoch','evaluation_lease_active','evaluation_lease_expired','evaluation_launch_already_authorized','candidate_revision_limit') else 400
-                self.respond(status,{'error':code})
+                result={'error':code}
+                if getattr(exc,'details',None) is not None:result['details']=exc.details
+                self.respond(status,result)
             except Exception:
                 self.respond(500,{'error':'internal_error'})
         def respond(self,status,result):

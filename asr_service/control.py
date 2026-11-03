@@ -10,6 +10,7 @@ import hmac
 import json
 from pathlib import Path
 import uuid
+from functools import wraps
 from datetime import datetime, timezone
 
 from asr_service.contracts import PolicyStore, PolicyError, encoded, resolve_policy, check_change
@@ -29,6 +30,19 @@ class ControlError(ValueError):
 
 def now():
     return datetime.now(timezone.utc).isoformat()
+
+
+def records_budget_block(method):
+    """Record a denied intent only after its owning admission transaction rolls back."""
+    @wraps(method)
+    def guarded(self,token,project,run,*args,**kwargs):
+        try:return method(self,token,project,run,*args,**kwargs)
+        except ValueError as error:
+            if getattr(error,'code',str(error)) in ('budget_exhausted','admission_closed','candidate_revision_limit','candidate_timeout_limit'):
+                block=self._record_budget_block(token,project,run,method.__name__,args,kwargs,getattr(error,'details',None))
+                if block:error.details=dict(block['budget'],block_id=block['block_id'],recoverable=True)
+            raise
+    return guarded
 
 
 class ControlService(PolicyStore):
@@ -215,6 +229,8 @@ class ControlService(PolicyStore):
                 for trial in record['trials']:
                     execution=db.execute('SELECT record FROM asr_executions WHERE attempt=?',(trial['execution_attempt_id'],)).fetchone()
                     trial['execution']=json.loads(execution[0]) if execution else None
+            record['budget_blocks']=[json.loads(r[0]) for r in db.execute('SELECT record FROM asr_events WHERE project=? AND run=? ORDER BY seq',(project,run)) if json.loads(r[0]).get('type')=='budget_admission_blocked']
+            record['limit_events']=[json.loads(r[0]) for r in db.execute('SELECT record FROM asr_events WHERE project=? AND run=? ORDER BY seq',(project,run)) if json.loads(r[0]).get('type') in ('budget_admission_blocked','budget_debt_observed','runtime_limit_observed')]
             record['evaluations']=[json.loads(r[0]) for r in db.execute('SELECT record FROM asr_evaluation_jobs WHERE project=? AND run=? ORDER BY rowid',(project,run))]
             record['commands']=commands
             record['quota_observations']=[json.loads(r[0]) for r in db.execute('SELECT record FROM asr_quota_observations WHERE project=? AND run=? ORDER BY seq',(project,run))]
@@ -232,6 +248,37 @@ class ControlService(PolicyStore):
         no_debt=all(BudgetStore._balance(db,dispatch['project_id'],dimension)['available']>=0 for dimension, in db.execute('SELECT dimension FROM asr_budget_limits WHERE project=?',(dispatch['project_id'],)))
         return run['state']=='running' and run['admission_open'] and run['health']=='ok' and run.get('quota_state','unknown') in ('unknown','available') and no_debt
 
+    @staticmethod
+    def refresh_run_health(db,project,run):
+        """A settled component cannot clear uncertainty owned by another component."""
+        tables={row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        unresolved=False
+        if 'asr_executions' in tables:
+            for body, in db.execute('SELECT record FROM asr_executions'):
+                execution=json.loads(body)
+                if execution['project']==project and execution['run']==run and execution.get('report') is None:unresolved=True
+        if 'asr_evaluation_jobs' in tables:
+            unresolved=unresolved or any(not json.loads(body).get('settled',False) and state!='queued'
+                for state,body in db.execute('SELECT state,record FROM asr_evaluation_jobs WHERE project=? AND run=?',(project,run)))
+        if 'asr_runtime_sessions' in tables:
+            unresolved=unresolved or any(state in ('uncertain','reconciling')
+                for state, in db.execute('SELECT state FROM asr_runtime_sessions WHERE project=? AND run=?',(project,run)))
+        running=ControlService._run(db,project,run)
+        if not unresolved and running.get('health')=='reconciling':running['health']='ok'
+        debts=[]
+        for dimension, in db.execute('SELECT dimension FROM asr_budget_limits WHERE project=?',(project,)):
+            balance=BudgetStore._balance(db,project,dimension)
+            if balance['available']<0:debts.append(dict(dimension=dimension,**balance,requested=0))
+        if debts:
+            running['admission_open']=False
+            if running['state']=='running':running.update(state='paused',control_revision=running.get('control_revision',0)+1)
+            for budget in debts:
+                ControlService._event(db,project,run,'budget_debt_observed',budget=budget,recoverable=True,
+                    action='admission_closed',recovery='Approve a sufficient budget revision and explicitly resume; all costs and reservations remain retained.')
+        db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(running),project,run))
+        return running
+
+    @records_budget_block
     def submit_trial(self, token, project, run, *, request_key, variables, references, requested_budget, hypothesis_ref=None):
         principal=self._auth(token,project,{'researcher','human'})
         self._identity(run,request_key)
@@ -264,6 +311,7 @@ class ControlService(PolicyStore):
                 if 'octave-candidate/1' not in doc['execution_policy'].get('candidate_profiles',[]) or values.get('solver')!='octave-candidate/1':raise ControlError('capability_unavailable')
                 from .candidates import resolve,check_admission
                 from asr_supervisor.candidate import make_candidate_request
+                if requested_budget['execution_ms']>60000:raise BudgetError('candidate_timeout_limit',details=dict(dimension='candidate_timeout_ms',limit=60000,spent=0,reserved=0,available=60000,requested=requested_budget['execution_ms'],scope='octave-candidate/1'))
                 artifact=resolve(db,project,references['candidate'])
                 check_admission(db,project,run,references['candidate'],doc['execution_policy'])
                 execution_request=make_candidate_request(artifact['path'],artifact['source_sha256'],artifact['size'],timeout_seconds=requested_budget['execution_ms']/1000,max_iterations=values.get('iterations',20))
@@ -436,6 +484,7 @@ class ControlService(PolicyStore):
             self._run(db,project,run)
             return [json.loads(row[0]) for row in db.execute('SELECT record FROM asr_findings WHERE project=? AND run=? ORDER BY finding_id,revision',(project,run))]
 
+    @records_budget_block
     def claim_runtime(self, token, project, run, owner, *, idempotency_key, runtime_identity, requested_walltime_ms=None):
         """Reserve a single bounded external runtime; never launch on replay."""
         principal=self._auth(token,project,{'human','supervisor'})
@@ -455,7 +504,7 @@ class ControlService(PolicyStore):
             if db.execute("SELECT 1 FROM asr_runtime_sessions WHERE project=? AND run=? AND state!='exited'",(project,run)).fetchone(): raise ControlError('runtime_already_active')
             amount=self.budgets._balance(db,project,'research_walltime_ms')['available'] if requested_walltime_ms is None else requested_walltime_ms
             BudgetStore._amount(amount)
-            if amount<=0: raise ControlError('budget_exhausted')
+            if amount<=0: raise BudgetError('budget_exhausted',details=dict(dimension='research_walltime_ms',**self.budgets._balance(db,project,'research_walltime_ms'),requested=1))
             session='session_'+uuid.uuid4().hex
             self.budgets.reserve_many_in_transaction(db,project,session,{'research_walltime_ms':amount})
             record=dict(project_id=project,research_run_id=run,session_id=session,epoch=1,owner=owner,state='active',runtime_identity=runtime_identity,reserved_walltime_ms=amount,started_at=now(),process_identity=None,launch_state='prepared')
@@ -504,6 +553,7 @@ class ControlService(PolicyStore):
             if finalize: finalize(db,project,run)
             return session
 
+    @records_budget_block
     def admit_activity(self, token, project, run, *, kind, idempotency_key, session_id, epoch, owner):
         """Issue one finite permit within the exclusively reserved runtime session."""
         principal=self._auth(token,project,{'human','supervisor'})
@@ -522,7 +572,7 @@ class ControlService(PolicyStore):
             if not self.owning_gate(db,{'project_id':project,'research_run_id':run}): raise ControlError('admission_closed')
             elapsed=max(0,int((datetime.now(timezone.utc)-datetime.fromisoformat(session['started_at'])).total_seconds()*1000))
             remaining=session['reserved_walltime_ms']-elapsed
-            if remaining<=0: raise ControlError('budget_exhausted')
+            if remaining<=0: raise BudgetError('budget_exhausted',details=dict(dimension='research_walltime_ms',limit=session['reserved_walltime_ms'],spent=elapsed,reserved=0,available=remaining,requested=1,scope='runtime_session',session_id=session_id))
             dimension='turns' if kind=='turn' else 'tool_executions'
             activity='activity_'+uuid.uuid4().hex
             self.budgets.reserve_many_in_transaction(db,project,activity,{dimension:1})
@@ -587,15 +637,7 @@ class ControlService(PolicyStore):
         result=self.release_runtime(token,project,run,session_id,session['epoch'],owner,execution_exited=True,actual_walltime_ms=elapsed)
         with self._connect() as db:
             db.execute('BEGIN IMMEDIATE')
-            running=self._run(db,project,run)
-            unresolved_numerical=False
-            if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='asr_executions'").fetchone():
-                for body, in db.execute('SELECT record FROM asr_executions'):
-                    execution=json.loads(body)
-                    if execution['project']==project and execution['run']==run and execution.get('report') is None and execution['state'] in ('interrupted','reconciling'):
-                        unresolved_numerical=True
-            if not unresolved_numerical: running['health']='ok'
-            db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(running),project,run))
+            self.refresh_run_health(db,project,run)
             result['reconciliation_receipt']=receipt
             db.execute('UPDATE asr_runtime_sessions SET record=? WHERE session_id=?',(encoded(result),session_id))
             self._event(db,project,run,'runtime_reconciled',session_id=session_id,epoch=result['epoch'],receipt=receipt)
@@ -730,6 +772,55 @@ class ControlService(PolicyStore):
         from .validations import validations
         return validations(self,token,project,run)
 
+    def _record_budget_block(self,token,project,run,operation,args,request,budget):
+        principal=self._auth(token,project,{'human','researcher','supervisor'})
+        with self._connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            running=self._run(db,project,run)
+            if budget is None:
+                for dimension, in db.execute('SELECT dimension FROM asr_budget_limits WHERE project=? ORDER BY dimension',(project,)):
+                    balance=BudgetStore._balance(db,project,dimension)
+                    if balance['available']<0:
+                        budget=dict(dimension=dimension,**balance,requested=request.get('requested_budget',{}).get(dimension,0))
+                        break
+            if budget is None:return None  # Human pause/quota closure is not a budget claim.
+            if running['state']=='running':
+                running.update(state='paused',admission_open=False,control_revision=running['control_revision']+1)
+            else:running['admission_open']=False
+            block=dict(block_id='block_'+uuid.uuid4().hex,operation=operation,
+                request_key=request.get('request_key',request.get('idempotency_key')),
+                request=copy.deepcopy(dict(request,positional_arguments=list(args))),budget=copy.deepcopy(budget),
+                recoverable=True,author=principal['subject'],created_at=now())
+            self._event(db,project,run,'budget_admission_blocked',**block)
+            db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(running),project,run))
+            return block
+
+    def observe_runtime_limit(self,token,project,run,*,session_id,epoch,owner,kind,limit,observed,reason,idempotency_key):
+        principal=self._auth(token,project,{'human','supervisor'})
+        self._identity(run,idempotency_key)
+        units={'model_walltime':'milliseconds','bridge_timeout':'milliseconds','provider_turns':'count','tool_executions':'count',
+            'protocol_message_bytes':'bytes','protocol_buffer_bytes':'bytes','protocol_pending_records':'count','protocol_records':'count'}
+        if kind not in units or type(limit) is not int or not 1<=limit<=2**63-1 or type(observed) is not int or not limit<=observed<=2**63-1 or type(reason) is not str or not 1<=len(reason)<=512:raise ControlError('invalid_runtime_limit')
+        payload=[principal['subject'],session_id,epoch,owner,kind,limit,observed,reason]
+        with self._connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            session=self._session(db,project,run,session_id,epoch,owner)
+            replay=self._replay(db,project,'runtime_limit:'+run,idempotency_key,payload)
+            if replay:return replay
+            if session['state'] not in ('active','exited'):raise ControlError('runtime_not_active')
+            record=dict(observation_id='limit_'+uuid.uuid4().hex,session_id=session_id,epoch=epoch,
+                kind=kind,limit=limit,observed=observed,unit=units[kind],reason=reason,
+                recoverable=True,author=principal['subject'],created_at=now())
+            session.setdefault('limit_observations',[]).append(record)
+            db.execute('UPDATE asr_runtime_sessions SET record=? WHERE session_id=?',(encoded(session),session_id))
+            running=self._run(db,project,run)
+            if running['state']=='running':running.update(state='paused',control_revision=running['control_revision']+1)
+            running['admission_open']=False
+            db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(running),project,run))
+            self._event(db,project,run,'runtime_limit_observed',**record)
+            self._remember(db,project,'runtime_limit:'+run,idempotency_key,payload,record)
+            return record
+
     def register_candidate(self, token, project, *, request_key, source, entrypoint='candidate.m', profile='octave-candidate/1', snapshot_ref=None, run=None):
         from .candidates import register
         return register(self,token,project,request_key=request_key,source=source,entrypoint=entrypoint,profile=profile,snapshot_ref=snapshot_ref,run=run)
@@ -738,6 +829,7 @@ class ControlService(PolicyStore):
         from .quotas import observe
         return observe(self,token,project,run,request_key=request_key,provider=provider,state=state,source=source,observed_at=observed_at)
 
+    @records_budget_block
     def admit_evaluation(self, token, project, run, *, request_key, target, requested_budget):
         from .evaluation_jobs import admit
         return admit(self,token,project,run,request_key=request_key,target=target,requested_budget=requested_budget)
@@ -778,6 +870,7 @@ class ControlService(PolicyStore):
         from .evaluation_jobs import complete
         return complete(self,token,project,run,evaluation_id,epoch,owner,artifact_path=artifact_path,artifact_sha256=artifact_sha256,usage_ms=usage_ms)
 
+    @records_budget_block
     def submit_replication(self, token, project, run, *, request_key, trial_id, requested_budget):
         from .replication import submit
         return submit(self,token,project,run,request_key=request_key,trial_id=trial_id,requested_budget=requested_budget)

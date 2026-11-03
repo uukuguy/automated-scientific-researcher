@@ -48,6 +48,11 @@ class ExecutionStoreTests(unittest.TestCase):
         first=self.store.claim('a','one')
         self.store.report('a',first['epoch'],'one',dict(status='failed',manifest_hash='retained',execution_exited=True,usage={'execution_ms':6000}))
         self.assertEqual(self.budget.balance('p','execution_ms')['available'],-1000)
+        with sqlite3.connect(self.path) as db:
+            records=[json.loads(row[0]) for row in db.execute('SELECT record FROM asr_events')]
+        debt=next(record for record in records if record['type']=='budget_debt_observed')
+        self.assertEqual(debt['budget'],dict(dimension='execution_ms',limit=10000,spent=6000,reserved=5000,available=-1000,requested=0))
+        self.assertTrue(debt['recoverable'])
         with self.assertRaisesRegex(LeaseError,'dispatch_gate_closed'):self.store.claim('b','two')
         self.assertEqual(self.budget.balance('p','execution_ms')['spent'],6000)
         self.assertEqual(self.budget.balance('p','execution_ms')['reserved'],5000)
@@ -61,6 +66,35 @@ class ExecutionStoreTests(unittest.TestCase):
         self.assertFalse(self.store.dispatch_gate_open('a'))
         self.assertEqual(self.budget.balance('p','execution_ms')['reserved'],5000)
         self.assertEqual(self.budget.balance('p','turns')['spent'],2)
+
+    def test_recovery_lease_is_finite_and_expired_owner_closes_admission(self):
+        first=self.store.claim('a','one',lease_seconds=1,now=10)
+        for invalid in (float('inf'),float('nan'),0,-1,3601,True):
+            with self.subTest(lease=invalid),self.assertRaisesRegex(LeaseError,'invalid_lease'):
+                self.store.reconcile_claim('a','recovery',lease_seconds=invalid,now=12)
+        self.assertEqual(self.store.get('a')['epoch'],first['epoch'])
+        self.store.reconcile_claim('a','recovery',lease_seconds=30,now=12)
+        with sqlite3.connect(self.path) as db:run=json.loads(db.execute('SELECT record FROM asr_runs').fetchone()[0])
+        self.assertEqual(run['health'],'reconciling');self.assertFalse(run['admission_open'])
+        self.assertEqual(self.budget.balance('p','execution_ms')['reserved'],5000)
+
+    def test_numerical_settlement_does_not_clear_unknown_research_runtime(self):
+        first=self.store.claim('a','one')
+        with sqlite3.connect(self.path) as db:
+            db.execute('CREATE TABLE asr_runtime_sessions(project,run,session_id,state,record)')
+            db.execute('INSERT INTO asr_runtime_sessions VALUES (?,?,?,?,?)',('p','r','s','uncertain',json.dumps({'state':'uncertain'})))
+            db.execute('UPDATE asr_runs SET record=?',(json.dumps({'state':'running','admission_open':False,'health':'reconciling'}),))
+        self.store.report('a',first['epoch'],'one',dict(status='failed',manifest_hash='retained',execution_exited=True,usage={'execution_ms':6}))
+        with sqlite3.connect(self.path) as db:run=json.loads(db.execute('SELECT record FROM asr_runs').fetchone()[0])
+        self.assertEqual(run['health'],'reconciling');self.assertFalse(run['admission_open'])
+        self.assertEqual(self.budget.balance('p','execution_ms')['spent'],6)
+
+    def test_uncertain_execution_retains_its_structured_cap_diagnostic(self):
+        first=self.store.claim('a','one')
+        diagnostic=dict(schema='asr-limit-event/1',code='docker_command_timeout',limit=dict(name='docker_command_seconds',configured=5,unit='seconds'),observed=dict(value=5,kind='at_least'),action='reconciliation_required',task_retained=True)
+        self.store.mark_uncertain('a',first['epoch'],'one','Docker response deadline',diagnostic=diagnostic)
+        self.assertEqual(self.store.get('a')['diagnostic'],diagnostic)
+        self.assertEqual(self.budget.balance('p','execution_ms')['reserved'],5000)
 
     def test_unknown_execution_cannot_release_budget(self):
         claim=self.store.claim('a','x')

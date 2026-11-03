@@ -42,7 +42,12 @@ class CandidateAdmissionTests(unittest.TestCase):
         second=self.register('second','function s = candidate(mpc); s=mpc; end')
         self.assertEqual(self.register('same-code')['digest'],candidate['digest'])
         self.trial=self.submit(candidate['digest'])
-        with self.assertRaisesRegex(ValueError,'candidate_revision_limit'):self.submit(second['digest'],'second-trial')
+        with self.assertRaisesRegex(ValueError,'candidate_revision_limit') as caught:self.submit(second['digest'],'second-trial')
+        self.assertEqual(caught.exception.details['dimension'],'candidate_revisions')
+        run=self.service.get_run('human-secret','p','r')
+        self.assertEqual(run['state'],'paused')
+        self.assertEqual(run['budget_blocks'][0]['budget']['limit'],1)
+        self.service.command('human-secret','p','r','resume',expected_revision=run['control_revision'],idempotency_key='resume-after-cap')
         import test_validations as validation_fixtures
         validation_fixtures.ValidationTests.complete(self)
         replica=self.service.submit_replication('agent-secret','p','r',request_key='replicate',trial_id=self.trial['trial_id'],requested_budget={'attempts':1,'execution_ms':5000})
@@ -78,6 +83,21 @@ class CandidateAdmissionTests(unittest.TestCase):
         self.assertEqual(len(run['trials']),1)
         self.assertEqual(run['trials'][0]['execution_request']['timeout_seconds'],5)
         self.assertEqual(self.service.budgets.balance('p','attempts')['reserved'],0)
+
+    def test_candidate_profile_timeout_cap_retains_rejected_submission(self):
+        self.contract['execution_policy']['timeout_seconds']=120
+        self.contract['budget']['execution_ms']=120000
+        self.opt_in();candidate=self.register()
+        refs={k:v for k,v in self.refs.items() if k!='reference'};refs['candidate']=candidate['digest']
+        with self.assertRaisesRegex(ValueError,'candidate_timeout_limit') as caught:
+            self.service.submit_trial('agent-secret','p','r',request_key='long-candidate',variables={'solver':'octave-candidate/1'},references=refs,requested_budget=dict(attempts=1,execution_ms=61000))
+        self.assertEqual(caught.exception.details['limit'],60000)
+        self.assertEqual(caught.exception.details['requested'],61000)
+        run=self.service.get_run('agent-secret','p','r')
+        self.assertEqual(run['state'],'paused')
+        self.assertEqual(run['budget_blocks'][0]['request_key'],'long-candidate')
+        self.assertEqual(run['trials'],[])
+        self.assertEqual(self.service.budgets.balance('p','execution_ms')['reserved'],0)
 
     def test_no_implicit_candidate_permission_and_no_forged_registry(self):
         self.start();candidate=self.register()

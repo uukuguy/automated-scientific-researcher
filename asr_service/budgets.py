@@ -7,7 +7,10 @@ from asr_service.contracts import PolicyStore
 
 
 class BudgetError(ValueError):
-    pass
+    def __init__(self, code, *, details=None):
+        self.code=code
+        self.details=details
+        super().__init__(code)
 
 
 # Logical ledgers share the same authoritative reservation rows. Never sum
@@ -83,8 +86,9 @@ class BudgetStore(PolicyStore):
                 if prior[0] != amount:
                     raise BudgetError('idempotency_conflict')
                 return
-            if self._balance(db, project, dimension)['available'] < amount:
-                raise BudgetError('budget_exhausted')
+            balance=self._balance(db, project, dimension)
+            if balance['available'] < amount:
+                raise BudgetError('budget_exhausted',details=dict(dimension=dimension,**balance,requested=amount))
             db.execute('INSERT INTO asr_budget_reservations VALUES (?,?,?,?,NULL)',
                        (project, attempt, dimension, amount))
 
@@ -121,8 +125,9 @@ class BudgetStore(PolicyStore):
                     raise BudgetError('idempotency_conflict')
             else:
                 for dimension, amount in amounts.items():
-                    if self._balance(db, project, dimension)['available'] < amount:
-                        raise BudgetError('budget_exhausted')
+                    balance=self._balance(db, project, dimension)
+                    if balance['available'] < amount:
+                        raise BudgetError('budget_exhausted',details=dict(dimension=dimension,**balance,requested=amount))
                 db.executemany('INSERT INTO asr_budget_reservations VALUES (?,?,?,?,NULL)',
                                [(project, attempt, dimension, amount)
                                 for dimension, amount in amounts.items()])

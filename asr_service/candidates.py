@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import re
 from .contracts import encoded
+from .budgets import BudgetError
 from .references import ReferenceStore
 
 PROFILE='octave-candidate/1'
@@ -74,4 +75,5 @@ def check_admission(db,project,run,digest,policy):
         trial=json.loads(body)
         if trial['execution_request'].get('profile')==PROFILE:
             admitted[trial['references']['candidate']]=True
-    if digest not in admitted and len(admitted)>=maximum:raise ValueError('candidate_revision_limit')
+    if digest not in admitted and len(admitted)>=maximum:
+        raise BudgetError('candidate_revision_limit',details=dict(dimension='candidate_revisions',limit=maximum,spent=len(admitted),reserved=0,available=maximum-len(admitted),requested=1,scope='research_run'))

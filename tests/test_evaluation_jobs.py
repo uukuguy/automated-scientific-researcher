@@ -131,6 +131,20 @@ class EvaluationJobTests(unittest.TestCase):
             (path/'manifest.json').write_text('{}')
             with self.assertRaises(ValueError):self.service.publish_validation('evaluator-secret','p','r','tampered',document,idempotency_key='tampered')
 
+    def test_runtime_recovery_does_not_clear_unreconciled_evaluation_gate(self):
+        identity={k:self.contract['runtime_policy'][k] for k in ('provider','model','auth_mode','billing_mode')}
+        runtime=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='runtime',runtime_identity=identity,requested_walltime_ms=10000)
+        fixtures.ControlTests.attach_exited_process(self,runtime)
+        job=self.claim(self.admit())
+        self.service.begin_evaluation_launch('supervisor-secret','p','r',job['evaluation_id'],1,'executor')
+        self.service.mark_evaluation_uncertain('supervisor-secret','p','r',job['evaluation_id'],1,'executor','Docker unavailable')
+        self.service.reconcile_runtime('human-secret','p','r',runtime['session_id'],1,'recovery')
+        run=self.service.get_run('human-secret','p','r')
+        self.assertEqual(run['health'],'reconciling')
+        self.service.command('human-secret','p','r','resume',expected_revision=run['control_revision'],idempotency_key='resume')
+        with self.service._connect() as db:self.assertFalse(self.service.owning_gate(db,dict(project_id='p',research_run_id='r')))
+        self.assertEqual(self.service.budgets.balance('p','evaluation_ms')['reserved'],5000)
+
     def test_http_researcher_requests_but_only_supervisor_can_claim_or_abort(self):
         import threading
         import urllib.request
