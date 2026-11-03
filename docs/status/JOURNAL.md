@@ -179,3 +179,9 @@
 - 2026-11-03: Implemented same-ledger organization revisions, unique task claims, explicit discussion targets, HTTP/bridge gates and recoverable capacity rejection.
 
 - 2026-11-03: Verified12 organization checks and330 combined tests (20 skips); no model sessions or multi-role autonomy claim.
+
+- 2026-11-03: Added versioned organization and ownership controls so autonomous directions can coordinate without another scheduler. [4eab9d4]
+
+- 2026-11-03: Bound organization identity and tool profiles to existing runtime reservations; preserved serial process fencing and shared setup costs.
+
+- 2026-11-03: Verified18 organization/role tests and336 combined tests (20 skips); all checks used no provider inference.

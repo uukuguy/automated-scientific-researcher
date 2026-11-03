@@ -110,6 +110,9 @@ def validate(db, project, run, kind, entity, doc, previous, role, subject, run_s
         require(role == 'human', 'forbidden')
         require(entity == 'capacity' and set(doc) == {'max_active_leads','max_active_workers'})
         require(all(type(v) is int and v > 0 for v in doc.values()))
+        if not old:
+            require(db.execute("SELECT 1 FROM asr_runtime_sessions WHERE project=? AND run=? AND state!='exited'", (project,run)).fetchone() is None,
+                    'organization_runtime_reconciliation_required')
         check_capacity(db, project, run, doc)
         return []
     policy = latest(db, project, run, 'policy', 'capacity')
@@ -117,7 +120,10 @@ def validate(db, project, run, kind, entity, doc, previous, role, subject, run_s
     if kind == 'member':
         require(role == 'human', 'forbidden')
         require(set(doc) == {'role','enabled'} and doc['role'] in ('organizer','lead','worker') and type(doc['enabled']) is bool)
-        if old and old != doc:
+        if old:
+            active = [json.loads(row[0]) for row in db.execute(
+                "SELECT record FROM asr_runtime_sessions WHERE project=? AND run=? AND state!='exited'", (project,run))]
+            require(not any(x.get('organization_binding',{}).get('subject') == entity for x in active), 'member_runtime_active')
             busy = any(x['document']['owner'] == entity and x['document']['status'] != 'closed'
                        for x in current(db, project, run, 'direction'))
             busy |= any(x['document']['assignee'] == entity and x['document']['status'] not in TERMINAL_TASKS

@@ -339,3 +339,21 @@ actual multi-role AAR execution are the next slice, with the existing single-own
 runtime guard preserved meanwhile. Split/merge can be represented by new/closed
 directions and rationale; atomic multi-direction lineage operations are not yet
 implemented. No new model budget or autonomous-organization claim follows.
+
+### Role-bound runtime reservation
+
+An enabled organization policy now requires `claim_runtime.organization_binding`.
+Trusted host code obtains it via `organization_runtime_binding` using the actual
+researcher credential plus a verified capability pack. It freezes subject, role,
+member revision/hash and capability profile/hash. Only research-organization/1 is
+currently admitted for this path. A stale member/profile fails before reservation;
+legacy claims remain unchanged for runs without organization policy.
+
+Existing single-active-runtime, process proof, model policy and shared project
+budget checks remain authoritative. Identity cannot be revised while its bound
+session is non-exited, including seemingly harmless no-op member revisions. A new
+organization policy cannot overlay an unresolved legacy runtime. Role contexts
+use separate per-project/run/subject/role directories; this is conversation/config
+separation, not an OS-isolation claim. Runtime launches remain the trusted host's
+responsibility. Tests use deliberate prelaunch failures and fake OAuth only;
+actual autonomous organization and concurrent role execution remain unverified.

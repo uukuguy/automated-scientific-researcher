@@ -212,3 +212,11 @@ Tests cover concurrent direction activation, duplicate task claims, capacity
 rejection/restart, document and page boundaries, role spoofing, terminal history,
 HTTP authentication and explicit bridge capability gates. No actual multi-role
 model execution is claimed by these checks.
+
+Organization role binding preserves the existing single-active-runtime-per-run
+limit. First role integration is serial: active-direction/worker declarations are
+not evidence of model concurrency. A new role claim cannot escape an unresolved
+prior process or obtain a new budget ledger. Failed setup costs remain charged
+when a different member subsequently reserves time. No new session timeout or
+automatic retry is added; old membership revisions and tool profiles are rejected
+before admission. Parallel model execution needs a separate reviewed integration.

@@ -15,9 +15,20 @@ def session_engine_deadline(limits,reserved_walltime_ms,started):
 
 def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limits, oauth_source=None, on_event=None):
     service=bridge.service
+    organization_arguments={}
+    if bridge.capability_profile=='research-organization/1':
+        pack=runtime.preflight_capabilities()
+        if pack['pack']['id']!=bridge.capability_profile:
+            raise RuntimeFailure('organization_capability_mismatch')
+        binding=service.organization_runtime_binding(bridge.researcher_token,bridge.project,bridge.run,
+            capability_profile=bridge.capability_profile,capability_pack_sha256=pack['sha256'])
+        organization_arguments['organization_binding']=binding
+        identity=[bridge.project,bridge.run,binding['subject'],binding['role']]
+        context=hashlib.sha256(json.dumps(identity,separators=(',',':')).encode()).hexdigest()
+        config_dir=Path(config_dir)/'organization'/context
     owner='pi_'+uuid.uuid4().hex
     claim=service.claim_runtime(bridge.supervisor_token,bridge.project,bridge.run,owner,
-        idempotency_key=owner,runtime_identity=dict(provider=runtime.provider,model=runtime.model,auth_mode='subscription_oauth',billing_mode='subscription'),requested_walltime_ms=int(limits.walltime_seconds*1000))
+        idempotency_key=owner,runtime_identity=dict(provider=runtime.provider,model=runtime.model,auth_mode='subscription_oauth',billing_mode='subscription'),requested_walltime_ms=int(limits.walltime_seconds*1000),**organization_arguments)
     if claim.get('replayed'): raise RuntimeFailure('runtime_reconciliation_required')
     bridge.runtime_identity=dict(session_id=claim['session_id'],epoch=claim['epoch'],owner=owner)
     started=time.monotonic()

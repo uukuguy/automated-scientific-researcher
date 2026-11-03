@@ -86,6 +86,10 @@ class ControlService(PolicyStore):
         from .organization import change
         return change(self, token, project, run, **arguments)
 
+    def organization_runtime_binding(self, token, project, run, **arguments):
+        from .organization_runtime import describe
+        return describe(self, token, project, run, **arguments)
+
     def organization_records(self, token, project, run, **arguments):
         from .organization import records
         return records(self, token, project, run, **arguments)
@@ -526,11 +530,12 @@ class ControlService(PolicyStore):
             return [json.loads(row[0]) for row in db.execute('SELECT record FROM asr_findings WHERE project=? AND run=? ORDER BY finding_id,revision',(project,run))]
 
     @records_budget_block
-    def claim_runtime(self, token, project, run, owner, *, idempotency_key, runtime_identity, requested_walltime_ms=None):
+    def claim_runtime(self, token, project, run, owner, *, idempotency_key, runtime_identity, requested_walltime_ms=None, organization_binding=None):
         """Reserve a single bounded external runtime; never launch on replay."""
         principal=self._auth(token,project,{'human','supervisor'})
         self._identity(run,owner,idempotency_key)
         payload=[principal['subject'],owner,requested_walltime_ms,runtime_identity]
+        if organization_binding is not None: payload.append(organization_binding)
         with self._connect() as db:
             db.execute('BEGIN IMMEDIATE')
             replay=self._replay(db,project,'runtime:'+run,idempotency_key,payload)
@@ -543,12 +548,15 @@ class ControlService(PolicyStore):
             if runtime_identity!=expected_identity: raise ControlError('runtime_binding_conflict')
             if not self.owning_gate(db,{'project_id':project,'research_run_id':run}): raise ControlError('admission_closed')
             if db.execute("SELECT 1 FROM asr_runtime_sessions WHERE project=? AND run=? AND state!='exited'",(project,run)).fetchone(): raise ControlError('runtime_already_active')
+            from .organization_runtime import validate as validate_organization_binding
+            validate_organization_binding(db,project,run,organization_binding)
             amount=self.budgets._balance(db,project,'research_walltime_ms')['available'] if requested_walltime_ms is None else requested_walltime_ms
             BudgetStore._amount(amount)
             if amount<=0: raise BudgetError('budget_exhausted',details=dict(dimension='research_walltime_ms',**self.budgets._balance(db,project,'research_walltime_ms'),requested=1))
             session='session_'+uuid.uuid4().hex
             self.budgets.reserve_many_in_transaction(db,project,session,{'research_walltime_ms':amount})
             record=dict(project_id=project,research_run_id=run,session_id=session,epoch=1,owner=owner,state='active',runtime_identity=runtime_identity,reserved_walltime_ms=amount,started_at=now(),process_identity=None,launch_state='prepared')
+            if organization_binding is not None: record['organization_binding']=copy.deepcopy(organization_binding)
             db.execute('INSERT INTO asr_runtime_sessions VALUES (?,?,?,?,?)',(project,run,session,'active',encoded(record)))
             self._remember(db,project,'runtime:'+run,idempotency_key,payload,record)
             self._event(db,project,run,'runtime_claimed',**record)
