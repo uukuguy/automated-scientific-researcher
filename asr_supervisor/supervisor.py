@@ -88,17 +88,23 @@ class Supervisor:
                     self.store.heartbeat(attempt,record['epoch'],owner)
                     state=self.backend.inspect(identity)
                     if not state['running']:
-                        status='succeeded' if state['exit_code']==0 else 'failed'
+                        status='succeeded' if state['exit_code']==0 and not state.get('failure_reason') else 'failed'
                         break
+                    if state.get('failure_reason'): status='failed';state=self.backend.stop(identity);break
                     if self.store.should_stop(attempt): status='cancelled'; state=self.backend.stop(identity); break
                     if time.monotonic()>=deadline: status='timed_out'; state=self.backend.stop(identity); break
                     time.sleep(self.poll_seconds)
-                self.backend.finalize(path,request,status)
+                outcome=self.backend.finalize(path,request,status)
+                if isinstance(outcome,dict) and outcome.get('status')=='failed': status='failed'
                 return self._publish(record,path,final,status,state['exit_code'],request)
             except Exception as exc:
                 # Exceptions do not establish container exit, even during create.
                 try: self.store.mark_uncertain(attempt,record['epoch'],owner,str(exc))
                 except LeaseError: pass
+                raise
+            except BaseException:
+                if 'identity' in locals() and hasattr(self.backend,'detach'):
+                    self.backend.detach(identity)
                 raise
 
     def reconcile(self,attempt,owner):

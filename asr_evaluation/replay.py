@@ -119,6 +119,14 @@ def freeze_source(source_path, manifest_hash, *, trial_id, execution_attempt_id,
         raise ReplayError('unsupported source profile')
     if not isinstance(request.get('source_hashes'),dict) or request['source_hashes'].get('validation.py') != VALIDATOR_SHA256:
         raise ReplayError('unsupported frozen validator')
+    if request.get('profile') not in (None,'octave-candidate/1'):
+        raise ReplayError('unsupported candidate source profile')
+    if request.get('profile')=='octave-candidate/1':
+        candidate=request.get('candidate',{})
+        code=artifacts.get('candidate.m',{})
+        wrapper=artifacts.get('candidate_wrapper.m',{})
+        if code!={'bytes':candidate.get('size'),'sha256':candidate.get('sha256')} or wrapper.get('sha256')!=request.get('wrapper_sha256') or request.get('original_input_sha256')!=INPUT_SHA256:
+            raise ReplayError('candidate provenance does not match frozen execution request')
     trusted = _read(FIXTURE_INPUT)
     if _sha(trusted) != INPUT_SHA256 or retained['input.json'] != trusted:
         raise ReplayError('source does not preserve pinned original input')
@@ -217,9 +225,9 @@ def _manifest_metadata(path, job, value, outcome):
     if identity.get('container_id') and identity['container_id'] != value['Id']:
         raise ReplayError('exit evidence container changed')
     state = value['State']; status = outcome['execution_status']
-    if state['Running'] or state['Status'] not in ('created','exited') or status not in ('succeeded','failed','timed_out','interrupted'):
+    if state['Running'] or state['Status'] not in ('created','exited') or status not in ('succeeded','failed','timed_out','interrupted','cancelled'):
         raise ReplayError('evaluator exit is not confirmed')
-    if (status=='succeeded' and (state['Status']!='exited' or state['ExitCode']!=0)) or (status=='failed' and state['ExitCode']==0) or (state['Status']=='created' and status!='interrupted'):
+    if (status=='succeeded' and (state['Status']!='exited' or state['ExitCode']!=0)) or (status=='failed' and state['ExitCode']==0) or (state['Status']=='created' and status not in ('interrupted','cancelled')):
         raise ReplayError('execution outcome contradicts exit evidence')
     if outcome['execution_exited'] is not True or outcome['exit_code'] != state['ExitCode'] or outcome['exit_inspection_sha256'] != _sha(_read(path/'exit-inspection.json')):
         raise ReplayError('terminal outcome does not match exit evidence')
@@ -228,10 +236,16 @@ def _manifest_metadata(path, job, value, outcome):
         raise ReplayError('invalid elapsed time')
     result = _json(_read(path/'output/result.json',65536)) if status=='succeeded' else None
     if status=='succeeded' and not isinstance(result,dict): raise ReplayError('invalid evaluator result')
-    return dict(schema='asr-isolated-material-evaluation/1',evaluation_id=job['identity']['labels']['asr.evaluation'],
+    metadata=dict(schema='asr-isolated-material-evaluation/1',evaluation_id=job['identity']['labels']['asr.evaluation'],
         source=request['source'],request_sha256=_sha(canonical(request)),evaluator=request['evaluator'],
         execution_status=status,execution_exited=True,exit_code=state['ExitCode'],result=result,
         elapsed_seconds=elapsed,limits=LIMITS)
+    if 'authority' in request:
+        metadata['authority']=request['authority']
+        metadata['evaluation_ref']=request['evaluation_ref']
+        metadata['limits']=[LIMITS[0],LIMITS[1],
+            'Control owns managed evaluator authorization and budget settlement; numerical material does not itself publish a Validation or establish a scientific claim.',LIMITS[3]]
+    return metadata
 
 
 class Replay:
@@ -313,7 +327,7 @@ class Replay:
         return self._verified_final(final)
 
     def run(self, key, source_path, manifest_hash, *, trial_id, execution_attempt_id, research_run_id,
-            timeout_seconds=60, mode='check'):
+            timeout_seconds=60, mode='check',authority=None,evaluation_ref=None,launch_intent=None,on_create=None,on_attach=None,on_poll=None):
         if type(timeout_seconds) not in (int,float) or not math.isfinite(timeout_seconds) or not 0 < timeout_seconds <= 60:
             raise ValueError('evaluation timeout must be finite in (0,60]')
         if mode not in ('check','probe'): raise ValueError('unsupported evaluator mode')
@@ -326,6 +340,9 @@ class Replay:
             tolerance_pu=1e-7, source={k:v for k,v in frozen.items() if k != 'files'},
             evaluator=dict(profile=PROFILE, policy=POLICY, image_id=IMAGE_ID,
                            validator_sha256=VALIDATOR_SHA256, entrypoint_sha256=_sha(entrypoint)))
+        if authority is not None:
+            request['authority']=dict(authority)
+            request['evaluation_ref']=evaluation_ref
         pending, final, lock_path = self._paths(key)
         with lock_path.open('a') as lock:
             fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
@@ -343,11 +360,15 @@ class Replay:
             for name in ('inputs','code'):
                 for item in (pending/name).iterdir(): item.chmod(0o444)
                 (pending/name).chmod(0o555)
-            identity = dict(name='asr-eval-'+uuid.uuid4().hex)
-            identity['labels'] = {'asr.evaluation':identity['name'][9:], 'asr.owner':'isolated-material-evaluator'}
+            if launch_intent is not None:
+                identity=dict(name=launch_intent['name'],labels=dict(launch_intent['labels']))
+            else:
+                identity = dict(name='asr-eval-'+uuid.uuid4().hex)
+                identity['labels'] = {'asr.evaluation':identity['name'][9:], 'asr.owner':'isolated-material-evaluator'}
             job = dict(request=request, identity=identity, started_at=time.time())
             _write(pending/'job.json',job)  # Persist deterministic name before Docker create.
             try:
+                cancelled=bool(on_poll()) if on_poll else False
                 arguments = ['create','--name',identity['name'],'--network','none','--read-only',
                     '--cap-drop','ALL','--security-opt','no-new-privileges','--user','65532:65532',
                     '--pids-limit','32','--memory','256m','--memory-swap','256m','--cpus','1',
@@ -356,19 +377,28 @@ class Replay:
                 for k,v in identity['labels'].items(): arguments += ['--label',k+'='+v]
                 for name,destination,readonly in [('inputs','/inputs',True),('code','/evaluator',True),('output','/output',False)]:
                     arguments += ['--mount',f'type=bind,src={pending/name},dst={destination}'+(',readonly' if readonly else '')]
+                if on_create:
+                    if cancelled:raise ReplayError('managed evaluation stopped before launch grant')
+                    on_create()
                 identity['container_id'] = self._docker(arguments+[IMAGE_ID,'-I','-S','/evaluator/entrypoint.py'])
                 _write(pending/'identity.json',identity)
+                if on_attach:on_attach(identity)
                 value = self._inspect(identity)
                 verify_container(value,identity,pending)
                 _verify_staging(pending,request)
                 _write(pending/'launch-inspection.json',value)
+                if cancelled or (on_poll and on_poll()):
+                    return self._publish(pending,final,job,'cancelled',self._exit(identity))
                 self._docker(['start',identity['container_id']])
                 deadline = time.monotonic()+timeout_seconds
                 while True:
+                    cancelled=bool(on_poll()) if on_poll else False
                     value = self._inspect(identity)
                     if not value['State']['Running']:
                         status = 'succeeded' if value['State']['ExitCode']==0 else 'failed'
                         break
+                    if cancelled:
+                        value=self._exit(identity);status='cancelled';break
                     if time.monotonic() >= deadline:
                         value = self._exit(identity); status = 'timed_out'; break
                     time.sleep(.05)
@@ -380,19 +410,28 @@ class Replay:
                     _write(pending/'uncertain.json',dict(reason=type(error).__name__))
                 raise UnresolvedReplay('evaluation unresolved; pending evidence retained') from error
 
-    def reconcile(self, key):
+    def reconcile(self, key,*,on_attach=None,on_poll=None):
         pending, final, lock_path = self._paths(key)
         with lock_path.open('a') as lock:
             fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
-            if final.exists(): return self._verified_final(final)
+            if final.exists():
+                if on_poll:on_poll()
+                if on_attach:on_attach(_json(_read(final/'identity.json',65536)))
+                return self._verified_final(final)
             if not pending.exists(): raise ReplayError('no pending evaluation')
             if (pending/'manifest.json').exists():
                 self._verified_final(pending)
+                if on_poll:on_poll()
+                if on_attach:on_attach(_json(_read(pending/'identity.json',65536)))
                 pending.rename(final); _sync_directory(self.root)
                 return self._verified_final(final)
             job = _json(_read(pending/'job.json',65536))
             identity = _json(_read(pending/'identity.json',65536)) if (pending/'identity.json').exists() else job['identity']
             try:
+                if on_poll:on_poll()
+                value=self._inspect(identity)
+                identity=dict(identity,container_id=value['Id'])
+                if on_attach:on_attach(identity)
                 value = self._exit(identity)
                 checked_identity = dict(identity,container_id=value['Id'])
                 verify_container(value,checked_identity,pending)

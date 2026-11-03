@@ -8,8 +8,17 @@ from powerflow_lab.validation import validate
 
 
 class DockerBackend:
+    def _candidate_backend(self):
+        if not hasattr(self,'_candidate'):
+            from .candidate import CandidateBackend
+            self._candidate=CandidateBackend()
+        return self._candidate
+
     @staticmethod
     def validate_request(request):
+        if request.get('profile')=='octave-candidate/1':
+            from .candidate import CandidateBackend
+            return CandidateBackend.validate_request(request)
         expected=make_request(max_iterations=request.get("max_iterations"),timeout_seconds=request.get("timeout_seconds"))
         if canonical(expected)!=canonical(request): raise ValueError("unsupported reference execution request")
 
@@ -21,11 +30,15 @@ class DockerBackend:
 
     @staticmethod
     def identity(record):
+        if record.get('dispatch',{}).get('execution_request',{}).get('profile')=='octave-candidate/1':
+            from .candidate import CandidateBackend
+            return CandidateBackend.identity(record)
         return {'backend':'docker','name':'asr-managed-'+record['attempt'],
                 'labels':{'asr.attempt':record['attempt'],'asr.trial':record['trial'],
                           'asr.run':record['run'],'asr.epoch':str(record['epoch'])}}
 
     def create(self, record, path, request):
+        if request.get('profile')=='octave-candidate/1': return self._candidate_backend().create(record,path,request)
         identity=self.identity(record)
         for source,expected in request['source_hashes'].items():
             original=REPO/'powerflow_lab'/source
@@ -44,9 +57,11 @@ class DockerBackend:
         return identity
 
     def start(self, identity, path):
+        if identity.get('backend')=='docker-candidate': return self._candidate_backend().start(identity,path)
         self._call(['start',identity.get('container_id',identity['name'])])
 
     def inspect(self, identity):
+        if identity.get('backend')=='docker-candidate': return self._candidate_backend().inspect(identity)
         value=json.loads(self._call(['inspect',identity.get('container_id',identity['name'])]))[0]
         if any(value['Config']['Labels'].get(k)!=v for k,v in identity['labels'].items()):
             raise RuntimeError('container identity mismatch')
@@ -56,13 +71,18 @@ class DockerBackend:
         return {'running':state['Running'],'exit_code':state['ExitCode'], 'started':state['Status']!='created'}
 
     def stop(self, identity):
+        if identity.get('backend')=='docker-candidate': return self._candidate_backend().stop(identity)
         self.inspect(identity)  # Never signal a mismatched container.
         self._call(['stop','--time','1',identity.get('container_id',identity['name'])])
         state=self.inspect(identity)
         if state['running']: raise RuntimeError('container termination unconfirmed')
         return state
 
+    def detach(self,identity):
+        if identity.get('backend')=='docker-candidate':return self._candidate_backend().detach(identity)
+
     def finalize(self,path,request,status):
+        if request.get('profile')=='octave-candidate/1': return self._candidate_backend().finalize(path,request,status)
         identity=json.loads((path/'identity.json').read_text())
         (path/'solver.log').write_text(self._call(['logs',identity.get('container_id',identity['name'])]))
         if status=='succeeded':

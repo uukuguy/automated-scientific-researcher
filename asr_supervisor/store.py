@@ -59,6 +59,9 @@ class ExecutionStore(PolicyStore):
                 existing=json.loads(body)
                 if existing['run']==row[2] and existing['project']==row[1] and existing['report'] is None:
                     raise LeaseError('run_execution_active')
+            if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='asr_evaluation_jobs'").fetchone():
+                for body, in db.execute("SELECT record FROM asr_evaluation_jobs WHERE project=? AND run=? AND state!='queued'",(row[1],row[2])):
+                    if json.loads(body).get('settled') is not True: raise LeaseError('run_evaluation_active')
             reservations=db.execute('SELECT dimension,amount,actual FROM asr_budget_reservations WHERE project=? AND attempt=?',(row[1],attempt)).fetchall()
             if not reservations or any(r[2] is not None for r in reservations): raise LeaseError('reservation_required')
             record=dict(attempt=attempt,trial=row[3],project=row[1],run=row[2],dispatch_id=row[0],
@@ -190,7 +193,11 @@ class ExecutionStore(PolicyStore):
         runtime_active=False
         if 'asr_runtime_sessions' in tables:
             runtime_active=db.execute("SELECT 1 FROM asr_runtime_sessions WHERE project=? AND run=? AND state!='exited' LIMIT 1",(project,run_id)).fetchone() is not None
-        all_exited=not runtime_active and all(state in terminal for state in states.values())
+        evaluation_active=False
+        if 'asr_evaluation_jobs' in tables:
+            evaluation_active=any(state not in terminal or json.loads(body).get('settled') is not True
+                for state,body in db.execute('SELECT state,record FROM asr_evaluation_jobs WHERE project=? AND run=?',(project,run_id)))
+        all_exited=not runtime_active and not evaluation_active and all(state in terminal for state in states.values())
         row=db.execute('SELECT record FROM asr_runs WHERE project=? AND run=?',(project,run_id)).fetchone()
         if row is None: return
         run=json.loads(row[0])
