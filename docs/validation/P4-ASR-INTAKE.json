@@ -1,0 +1,129 @@
+{
+  "project_id": "ood-client-ef6293124853",
+  "research_run_id": "research_bb9205963bd144b898d1bc46c4dbf1ad",
+  "status": "intake_returned",
+  "control_state": "paused",
+  "budgets": {
+    "attempts": {
+      "limit": 0,
+      "spent": 0,
+      "reserved": 0,
+      "available": 0
+    },
+    "execution_ms": {
+      "limit": 0,
+      "spent": 0,
+      "reserved": 0,
+      "available": 0
+    },
+    "research_walltime_ms": {
+      "limit": 300000,
+      "spent": 216397,
+      "reserved": 0,
+      "available": 83603
+    },
+    "tool_executions": {
+      "limit": 100,
+      "spent": 21,
+      "reserved": 0,
+      "available": 79
+    },
+    "turns": {
+      "limit": 40,
+      "spent": 11,
+      "reserved": 0,
+      "available": 29
+    }
+  },
+  "hypotheses": [
+    {
+      "author": "simulated-client-researcher",
+      "created_at": "2026-11-03T03:20:23.460835+00:00",
+      "document": {
+        "analysis_timing": "prospective",
+        "change_reason": "Initial researcher-authored hypothesis after source and supplied baseline-report inspection; full covariate audit unavailable with current file interface.",
+        "prediction": "A future covariate/feature audit will show higher diagnostic feature leverage or distance from training support than ID development, and independently solved bridge/diagnostic-neighborhood probes will show larger baseline PQ-voltage error than ID probes. If coverage is useful, same-size targeted augmentation will outperform additional ID-only labels on fresh diagnostic-regime development probes.",
+        "refutation_criteria": "Comparable diagnostic and ID feature coverage would oppose the extrapolation mechanism. Across valid independent probes and repeated sampling seeds, no targeted advantage over ID-only augmentation would oppose the actionable coverage prediction. Solver/checker failures are inconclusive; lack of 20% improvement alone does not identify the cause.",
+        "scope": "Supplied synthetic fixed-topology case, three regional load multipliers in [0.7,1.6], unchanged quadratic surrogate and fit policy. No operational-feasibility or real-grid claim.",
+        "statement": "The reported diagnostic error gap is partly caused by quadratic-feature extrapolation beyond original training coverage, rather than establishing that reference labels are invalid or that operational violations uniquely cause the gap.",
+        "study_type": "exploratory"
+      },
+      "hypothesis_id": "h1-coverage-versus-quadratic-bias",
+      "parent_revision": null,
+      "project_id": "ood-client-ef6293124853",
+      "revision": 1,
+      "schema_version": "asr-hypothesis/1",
+      "sha256": "27c79e50c789593d9d7ff669615bcc46e97b1c107029c68acce02f12a939381b"
+    },
+    {
+      "author": "simulated-client-researcher",
+      "created_at": "2026-11-03T03:20:42.708479+00:00",
+      "document": {
+        "analysis_timing": "prospective",
+        "change_reason": "Initial independent augmentation design motivated by the supplied error gap and fixed quadratic representation; balances target coverage with ID protection and acknowledges a possible approximation-bias tradeoff.",
+        "prediction": "Appending 64 unique equation-checked labels (32 diagnostic-covariate-envelope, 16 bridge, 16 global) to the unchanged original 128-row training set, with unchanged equal-row fit policy, will yield at least 20% lower PQ-voltage RMSE than the original-only baseline on fresh diagnostic-regime development probes while satisfying the client's fixed ID noninferiority rule. Across three sampling seeds, its median diagnostic RMSE will be lower than equal-label-count global-only and ID-only augmentation controls. Final acceptance requires a separately frozen evaluation, not diagnostic reuse.",
+        "refutation_criteria": "For valid completed comparisons, median reduction below 20% or violation of the fixed ID guardrail opposes the performance prediction; median RMSE not lower than a matched control opposes that comparative prediction. Mixed seed outcomes must be reported, not hidden. Invalid labels, unavailable evaluation, or nonconvergent proposals do not establish refutation or success.",
+        "scope": "Exploratory future experiment within [0.7,1.6]^3, fixed physical case, fixed PV/PQ and dispatch policy, fixed features/ridge/trainer. Diagnostic covariates may guide design; diagnostic labels may not enter training or pseudo-label generation. Subject to resolving exact coordinate mapping, sampling distributions and executable acceptance rule before execution.",
+        "statement": "A balanced mix of newly reference-solved diagnostic-neighborhood, ID-to-diagnostic bridge, and global-domain scenarios can improve the fixed quadratic surrogate without unacceptable ID regression; this is an untested researcher-selected approach, not a client-prescribed recipe.",
+        "study_type": "exploratory"
+      },
+      "hypothesis_id": "h2-mixed-regime-augmentation",
+      "parent_revision": null,
+      "project_id": "ood-client-ef6293124853",
+      "revision": 1,
+      "schema_version": "asr-hypothesis/1",
+      "sha256": "50de7a9c42bbbb33e0d39dac2c3bdf238303a5f0e969761f78199b5856651145"
+    }
+  ],
+  "snapshots": [
+    "b73de0118a6f906ae26e3348cc5de04ca5dda489eac837f5e0054e1ce7c81082"
+  ],
+  "projection": {
+    "schema": "asr-aar-experiment-projection/1",
+    "projection_id": "aar_projection_1e4b797aa7694d62ba49118ee6dc1a79",
+    "project_id": "ood-client-ef6293124853",
+    "research_run_id": "research_bb9205963bd144b898d1bc46c4dbf1ad",
+    "upstream_experiment_id": 1,
+    "experiment_id": "aar-experiment:1",
+    "control_revision": 4,
+    "control_state": "paused",
+    "control_record_sha256": "b60a93ecd25ece6679ccdaaba38fe642b18c438fc1f6302ca96fb062e1c1d095",
+    "prior_status": "running",
+    "projected_status": "paused",
+    "changed": true,
+    "author": "simulated-client-supervisor",
+    "author_role": "supervisor",
+    "created_at": "2026-11-03T03:22:43.185755+00:00",
+    "authority": "asr-control"
+  },
+  "intake_exists": true,
+  "trials": 0,
+  "outcome": "Project delegated to actual AAR; scientific experiments/training and final evaluation remain outstanding.",
+  "runtime": {
+    "runtime": "pi-rpc/1",
+    "runtime_version": "1.5.0",
+    "provider": "openai-codex",
+    "model": "gpt-6.1-sol",
+    "status": "settled",
+    "turns": 10,
+    "tool_executions": 21,
+    "duration_seconds": 194.4899342909921,
+    "exit_code": 0,
+    "capability_pack_id": "ood-project-intake/1",
+    "capability_pack_sha256": "d611aca3624261a8c316fef44b849f07723747c8f90d920ef61203a4e775d66d"
+  },
+  "initial_failure": {
+    "status": "provider_error",
+    "reason": "fetch failed; direct network timeout; recovered using configured local proxy",
+    "spent_walltime_ms": 21486,
+    "spent_turns": 1
+  },
+  "source_reports": {
+    "result.json": "833ff63823a82d4e426438687225171cdf407af6bad5d040eee292e316ee631a",
+    "result-resumed.json": "4e170433dfe6a5924e72751de3a4d975913cdfa71f3a23071089f11c11eb1a0c",
+    "access-check.json": "9d482e6176b33fe45f99cc0804993eee12c89c545123d1abfcd4d1c056aa59b5",
+    "access-check-resumed.json": "9d482e6176b33fe45f99cc0804993eee12c89c545123d1abfcd4d1c056aa59b5"
+  },
+  "intake_sha256": "4dc0ad6ed52220be5f0498f775a3015cdba86fef4c4bb18b4d410b24341b95c6",
+  "client_addendum_sha256": "dde1d7cf122fea21e18287263af7934eebbff30f6fba66ecafb7659c25a17a37"
+}

@@ -1,0 +1,10 @@
+{
+  "schema": "asr-project-intake-limits/1",
+  "walltime_seconds": 300,
+  "turns": 40,
+  "tool_executions": 100,
+  "purpose": "One project-intake session: inspect supplied materials and preserve researcher-authored diagnosis/hypotheses/requirements; not a long-research default.",
+  "basis": "About 1 MiB client data plus model/task files; permit iterative inspection and writing with five seconds reserved by runtime for cleanup.",
+  "exceedance": "Control records cap and preserves native journal/hypotheses/workspace; pause, no automatic retry or quota reset.",
+  "paid_api_fallback": false
+}

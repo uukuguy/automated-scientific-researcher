@@ -87,3 +87,22 @@ The inventory below was checked against source, boundary tests and actual manage
 - Native Codex App Server/Grok smoke transport limits are diagnostic connection
   limits. Those adapters have not become full AAR research executors; they must
   not be presented as long-research defaults or complete task recovery support.
+
+## P4 simulated-client preparation and intake (2026-11-03)
+
+- Client preparation: fixed320 proposals (128/32/32 public,64/64 private), not an
+  open-ended rejection sampler. Every failure counts and is retained. Between-
+  sample600s per-invocation deadline pauses resumably; this is not a hard timeout
+  on an individual trusted numerical solve. The pinned reference has20iterations.
+  This trusted development CLI is not an ASR experiment admission service.
+- Intake model ledger:300s total,40turns,100tools, zero numerical allowance. Purpose
+  is one actual project reading/diagnosis session, not long research. Failure cost
+  retained; same-run recovery used remaining278514ms. Final total216397ms and no
+  unresolved reservations. No cap was raised or provider/billing mode changed.
+- Actual pi read refused compact data lines above50KB. Researcher reported the
+  limitation explicitly; no data were silently treated as read. Lossless public
+  JSONL pages now cap each page at40000bytes, below that observed boundary. A row
+  above the page cap is rejected with an explicit remedy; no field truncation.
+  Source hashes/row counts preserved; final/private data excluded.
+- Data-domain multipliers[0.7,1.6] and utility thresholds are explicit simulated
+  client task rules, not numerical stability guarantees or global ASR defaults.

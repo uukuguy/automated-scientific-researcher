@@ -1,8 +1,38 @@
 # P4: targeted OOD augmentation for solver generalization
 
-Status: active, research framing and contract preparation. P3 is complete.
-No new model or experiment budget has been admitted. This document is a planning
-boundary, not an executable contract or a claim of scientific novelty.
+Status: active, simulated client project prepared and actual AAR intake verified.
+P3 is complete. A separate 300-second subscription-only intake contract was
+admitted with zero compute allowance. Training/evaluation execution remains
+unimplemented for this project; P4 is not complete.
+
+## Actual simulated project and next implementation boundary (D026)
+
+The development agent acts as client: prepares artifacts and criteria, delegates
+the problem and supplies experiment capabilities. AAR owns scientific diagnosis,
+hypotheses and augmentation design. Do not implement the researcher's proposed
+scientific solution on its behalf or label developer preparation an ASR result.
+
+- Prepared 320 real reference-labelled scenarios; all pass independent original-
+  equation checks. Public train/ID-development/diagnostic counts are 128/32/32;
+  private ID/target-regime counts are 64/64. Operating limits remain partially
+  assessed. See `P4-CLIENT-PREPARATION.json` and project README.
+- Actual AAR/pi received the public package and generated two hypotheses plus
+  a frozen intake note. Its proposed mixed-regime augmentation and controls are
+  researcher-authored and untested, not client-prescribed instructions.
+- Intake used 216397/300000 ms including a retained 21486-ms network failure,
+  11/40 turns and 21/100 tools. Same run resumed via the existing local proxy;
+  both sessions exited and reservations are zero. Control and AAR are paused,
+  not completed. Public evidence: `P4-ASR-INTAKE.json`, `P4-RESEARCHER-INTAKE.md`.
+- The researcher exposed a real delivery issue: native reads reject the large
+  compact single-line data arrays. Lossless 40,000-byte pages and a precise client
+  addendum now exist without overwriting sources. Guidance is recorded but not
+  yet acknowledged.
+- Next implement only the needed admitted scenario-labeling, unchanged-trainer
+  and independent-evaluation capabilities, with frozen material identities and
+  Control accounting. Then resume this researcher's run/hypotheses. Do not use
+  the old fixed-case profile or a developer-run augmentation experiment as proof
+  that ASR completed the client task. Its proposed 704 solve attempts are a
+  request to assess, not an automatically approved compute budget.
 
 ## Task meaning and human/researcher boundary (D025)
 
@@ -18,9 +48,11 @@ measurable hypotheses, a definition of relevant similarity, generation methods,
 training experiments and independent comparisons. Do not require the human to
 choose a sampler, similarity metric, perturbation range or detailed experiment
 sequence. Clarify missing external facts rather than delegating research design
-back to the human. The exact target method, checkpoint, training data/interface,
-poor-performing examples and evaluation criteria have not yet been supplied here;
-a substitute model would demonstrate a prototype, not solve the actual task.
+back to the human. The real client's exact model/data remain unknown. The user subsequently directed
+us to simulate the human client's project (D026), so waiting for external materials
+is not the current task. `research_projects/ood_augmentation/` now supplies a
+measured synthetic target, checkpoint, training/diagnostic data and criteria.
+This demonstrates ASR on a simulated project, not the unknown industrial case.
 
 Three linked research questions:
 

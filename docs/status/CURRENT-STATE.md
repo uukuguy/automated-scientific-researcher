@@ -7,7 +7,7 @@
 - Theme-level focus: Formal scientific comparison contracts over a verified bounded single-researcher foundation.
 - Project route: managed
 - Canonical worklist: docs/plans/WORKLIST.md
-- Active work package: P4 — targeted OOD augmentation for solver generalization; task and contract framing (no new run budget admitted)
+- Active work package: P4 — simulated OOD client project; actual AAR intake, scientific execution capability pending
 
 ## Current Architecture
 
@@ -26,7 +26,7 @@
 
 ## Open Problems (theme-level)
 
-- P4 targets substantive new-method research beyond retrieving known algorithms: prior knowledge and problem formation precede frozen confirmatory comparisons. Scenario support, hidden-material isolation and independent contribution evidence remain gaps.
+- P4 targets training benefit from OOD augmentation on a concrete simulated client project. Actual AAR intake and targeted private-file denial exist; admitted scenario/training tools and independent final-performance evaluation remain gaps.
 - Explicit octave-candidate/1 supports bounded single-file methods; broader workloads/profiles require separate capability and limit review.
 - Unconfirmed real-world input distribution, OOD definition, failure cases, and downstream task.
 - Formal evaluation policy and expanded operating conventions remain uncalibrated; the implemented reference uses fixed PV/PQ and one Slack.
@@ -95,3 +95,6 @@
 - `docs/validation/P3-SYSTEM-ACCEPTANCE.md` — bounded scientific lifecycle, retained failures and actual final receipts.
 - `docs/validation/LIMITS-AUDIT.md` — purpose/default/exceedance/recovery inventory and explicit limits.
 - `docs/plans/P4-SCIENTIFIC-COMPARISON.md` — governed successor contract-planning boundary.
+
+- `research_projects/ood_augmentation/` — concrete client fixture, fixed surrogate and lossless public-data delivery.
+- `integrations/runtimes/ood_intake.py` — actual AAR intake, zero-compute contract and targeted private-material access denial.

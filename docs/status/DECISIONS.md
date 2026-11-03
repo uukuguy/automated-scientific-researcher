@@ -205,3 +205,10 @@
 - Roles: human problem decomposition can stop at this level. Research Lead owns diagnosis, similarity, sampling and experiment design; request only genuinely missing external facts/materials/authority.
 - Evidence: independent target-regime evaluation after augmentation, original-distribution retention and controlled training comparisons are central. Separate target model from label generation; separate diagnostic/augmentation data from final tests and retain original-distribution provenance.
 - Supersession: narrows D024 from generic OOD generation to targeted training benefit. Generation/coverage alone cannot close the scientific task. Exact model/data/interface and budgets remain unspecified; no execution is authorized by this record.
+
+## D026 — Simulate the human client's project and delegate to ASR
+
+- Date: 2026-11-03. Status: explicit user task.
+- Decision: the development agent prepares a concrete simulated client project, with a trainable target, original data, measured OOD weakness and criteria, then delegates scientific work to ASR. Do not keep asking the human to supply a detailed project or conduct the research as the developer.
+- Boundary: client preparation and infrastructure are developer work; scientific diagnosis, hypotheses and augmentation choices belong to the AAR researcher. A synthetic project is not evidence of real-client benefit. Intake is not completion.
+- Implementation: real numerical client materials and actual subscription AAR intake are verified; two hypotheses and a snapshot exist. Zero-compute intake is paused pending supported training/labeling/evaluation capabilities. All initial connection failure costs remain charged.

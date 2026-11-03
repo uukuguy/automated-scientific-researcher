@@ -143,3 +143,9 @@
 - 10:46 Recorded OOD-generation priority and proposed physical/distribution safeguards to ground P4 in a useful data deliverable. [9c48d28]
 
 - 2026-11-03: D025 grounds OOD generation in target-method training gains; Research Lead owns finer problem decomposition and controlled evaluation.
+
+- 10:59 Aligned P4 with targeted augmentation and independent training-benefit evidence, preserving Research Lead design responsibility. [9144863]
+
+- 2026-11-03: Prepared concrete simulated client: 320 independently equation-valid labels; measured target surrogate OOD error gap without augmentation.
+- 2026-11-03: Actual AAR intake recovered same run via proxy, preserving failure costs; two hypotheses and researcher snapshot, zero experiments.
+- 2026-11-03: Researcher exposed unreadable compact arrays; supplied lossless public pages and exact predicate clarification, guidance not yet acknowledged.

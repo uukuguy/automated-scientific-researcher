@@ -19,7 +19,7 @@ ASR 构建可持续运行、可恢复、可复核的自动化科研系统。人�
 
 总体架构、研究变量和人机交互原则已确认；最小闭环详细设计与 Capstone 准备交接已形成。总体协议仍需跨项目对齐；本机实现接口见 [控制服务](asr_service/README.md)，尚未完成 Capstone 联调。
 
-P1 本机数值切片已完成：MATPOWER 8.1 / Octave 7.3.0 的 IEEE-118 参考实验、独立 Python 方程验证、不可覆盖的证据、并发幂等、失败保留和重放均已有运行证据。**P2 单研究员闭环与 P3 有界独立复核/系统验收已完成；当前进入 P4 科学比较契约规划**；已实现变量策略 schema、语义校验和本地修订/绑定核心，已新增本机认证控制 API 与执行监督，真实 AAR/订阅研究员已完成参考实验、笔记快照、候选发现及同会话恢复，见 [P2 验收](docs/validation/P2-SUBSCRIPTION.md)。P3 已有 evaluator 专用不可覆盖报告、双逻辑预算视图，以及受限 Docker 冻结材料复核；实际 AAR 负面实验已独立重算并追加 Validation。显式 octave-candidate/1 候选执行、冻结方法复现和评价预算集成已验证；真实模型形成两版假说、两次方法执行、三份 Validation 与一个候选发现，见 [P3 验收](docs/validation/P3-SYSTEM-ACCEPTANCE.md)。这不证明算法创新、运行可行性或泛化；更广执行 profile 仍需单独准入。运行时采用订阅优先、可替换设计，pi 为轻量基准；原生 Codex App Server 和 Grok ACP 已完成单轮订阅对话验证，尚未接成完整 AAR 执行器。
+P1 本机数值切片已完成：MATPOWER 8.1 / Octave 7.3.0 的 IEEE-118 参考实验、独立 Python 方程验证、不可覆盖的证据、并发幂等、失败保留和重放均已有运行证据。**P2 单研究员闭环与 P3 有界独立复核/系统验收已完成；当前 P4 已准备模拟 OOD 客户项目并完成实际 AAR 接收，训练实验工具仍待接通**；已实现变量策略 schema、语义校验和本地修订/绑定核心，已新增本机认证控制 API 与执行监督，真实 AAR/订阅研究员已完成参考实验、笔记快照、候选发现及同会话恢复，见 [P2 验收](docs/validation/P2-SUBSCRIPTION.md)。P3 已有 evaluator 专用不可覆盖报告、双逻辑预算视图，以及受限 Docker 冻结材料复核；实际 AAR 负面实验已独立重算并追加 Validation。显式 octave-candidate/1 候选执行、冻结方法复现和评价预算集成已验证；真实模型形成两版假说、两次方法执行、三份 Validation 与一个候选发现，见 [P3 验收](docs/validation/P3-SYSTEM-ACCEPTANCE.md)。这不证明算法创新、运行可行性或泛化；更广执行 profile 仍需单独准入。运行时采用订阅优先、可替换设计，pi 为轻量基准；原生 Codex App Server 和 Grok ACP 已完成单轮订阅对话验证，尚未接成完整 AAR 执行器。
 
 参考基线在 4 次迭代后达到约 `3.94e-13 p.u.` 残差，但有 6 处无功越限，186 条支路热限额未评估，因此不宣称运行可行。详见 [P1 验收记录](docs/validation/P1-NUMERICAL-LAB.md)。
 
@@ -56,3 +56,5 @@ uv run python -m powerflow_lab.reference --key my-baseline
 本机服务与运行恢复见 [控制服务说明](asr_service/README.md) 和 [执行监督说明](asr_supervisor/README.md)。订阅凭据只供研究员运行时使用；不传入数值候选容器，且不会自动回退到 API 计费。
 
 科学计算环境与 pandapower 交叉校准见 [科学环境](environments/scientific/README.md) 和 [数值校准报告](docs/validation/PANDAPOWER-CALIBRATION.md)。该环境独立锁定，Notebook 工具通过 `--group notebooks` 启用。
+
+P4 的模拟项目与真实研究员接收产物见 [客户项目](research_projects/ood_augmentation/README.md) 和 [AAR 接收报告](docs/validation/P4-RESEARCHER-INTAKE.md)。开发侧准备了目标模型及实测 OOD 问题；研究员自主提出两个假说和对照方案。接收会话不等于训练增强完成。

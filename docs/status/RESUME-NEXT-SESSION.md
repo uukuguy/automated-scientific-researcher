@@ -1,77 +1,62 @@
-# Recovered Session Checkpoint
+# Live Session Checkpoint
 
-> Updated: 2026-11-03. Active recovery point. Prior work continued from a live checkpoint; no final handoff was performed.
+> Updated: 2026-11-03. Active checkpoint; no final handoff or P4 closure.
 
-## Current boundary
+## User intent
 
-User requested complete P3, subscription API-key prohibition, and all-limit audit
-written into AGENTS.md. P3 is now complete within the bounded fixed-case scope.
-P4 contract planning is the governed successor; no new P4 model/experiment budget
-has been admitted. No research model, candidate or evaluator is still running.
-No permission question is pending.
+Simulate the human researcher's actual project and have ASR solve it (D026).
+A target trainable method performs poorly on some OOD regimes; determine whether
+similar-distribution augmentation helps and how to generate useful data (D025).
+Do not ask the human to design samplers or wait for unavailable real-client data.
+Developer supplies the client project and infrastructure; AAR owns the research.
 
-## Verified outcome
+## Actual state
 
-- Real pinned AAR/actual ORM + pi1.5/Codex OAuth: model-authored candidate, two
-  immutable hypotheses, two frozen-method trials in distinct containers, two
-  independent material evaluations, three Validation reports, notebook and one
-  candidate finding. Deliberate SIGKILL recovery preserved original identities.
-- Equations valid, mismatch 3.9307660706864565e-13 pu; six Q violations and 186 thermal
-  ratings unassessed. No operating-feasibility, improvement, novelty or held-out
-  generalization claim. Hypothesis/design formal assessments remain unassessed.
-- First expired OAuth failure preserved. Private browser login used existing
-  Vivaldi session; global credentials unchanged. No API keys or paid fallback.
-- Original 180s acceptance cutoff recorded 180037ms, including 37ms debt. It remains
-  in immutable history. Recorded contract revision 2 added only 30s / 2 turns / 3 tools for
-  read-only low-thinking closeout. Native model settled; original reports/scientific
-  counts unchanged; total 193820/210000ms, 21/22 turns, 23/35 tools; all reservations zero.
-- Actual Control finish command_7cd3cec371ec4d8695b850b6008abfda applied; state completed.
-  Trusted actual AAR projection reconciled to completed at revision 4; six historical
-  report hashes, Control bytes, scientific rows and usage unchanged.
-- Latest full optional suite: 291 tests, 15 explicit Docker skips; 59 combined real
-  Docker tests separately passed. See P3-SYSTEM-ACCEPTANCE.md and LIMITS-AUDIT.md.
+- P3 complete; P4 active. New simulated client package is implemented under
+  research_projects/ood_augmentation. Real labels: 320/320 equation-valid;
+  fixed synthetic case118/PV-PQ, operating violations and missing thermal ratings
+  explicit. No operational-feasibility or real-client benefit claim.
+- Public train/ID-dev/OOD-diagnostic: 128/32/32; private test:64/64. Fixed quadratic
+  surrogate ID voltage RMSE6.678335356298293e-7 pu versus OOD9.20150915545494e-5 pu.
+  Actual preparation root: artifacts/p4-simulated-client-001. Preserve unchanged.
+- Actual AAR/pi intake root: artifacts/p4-intake-001; project ood-client-ef6293124853;
+  run research_bb9205963bd144b898d1bc46c4dbf1ad. Pinned prepared checkout:
+  artifacts/p2-aar-private-20261102-final-preflight.
+- First intake failed with fetch failed; direct network timed out. Resumed SAME
+  run via configured HTTP/HTTPS proxy http://127.0.0.1:7897. No API keys/fallback.
+  Final total216397/300000ms,11/40turns,21/100tools; both sessions exited;
+  all reservations zero. Numerical budgets zero. Control and actual AAR paused.
+- ASR authored two prospective exploratory hypotheses and RESEARCH-INTAKE.md,
+  snapshot b73de0118a6f906ae26e3348cc5de04ca5dda489eac837f5e0054e1ce7c81082.
+  Its mixed-regime/bridge/global augmentation design is UNTESTED, not developer
+  advice. Its request for704solves is not authorized budget or completed work.
+- Original client preparation root is denied to pi by actual macOS sandbox;
+  denial probes retained. This is targeted filesystem isolation, not a claim of
+  unrestricted runtime containment. Private seeds/data never copied to workspace.
+- ASR found native read's50KB single-line issue. Lossless<=40000-byte JSONL pages
+  now exist in workspace/client-data with source hashes. CLIENT-ADDENDUM.md gives
+  exact mapping/distributions and original ID acceptance predicate; original files
+  unchanged. Human guidance recorded, NOT yet acknowledged; Control revision5.
+  AAR projection synchronized. No further model session has read the addendum.
 
-## Durable implementation
+## Next concrete work
 
-483553a/d40aa84 implement candidate/evaluation admission and managed execution.
-b36e6ef enforces D021 no subscription *_API_KEY environment. 58a288b/4aa7db7 fix
-budget/start/recovery gates, finite leases and detailed recoverable cap receipts.
-c3ff486/ffa207a add runtime/network/native overflow and truncation diagnostics.
-68f48c2 retains failed setup cost. ddb0509 bounds Docker CLI streams/group cleanup and
-preserves sealed publication recovery. ae2d808 adds deadline headroom/read-only closeout.
-459b44d synchronizes AAR lifecycle projection; d298526 records actual reconciliation.
-All model/evidence reports remain immutable. Root documentation records the final acceptance boundary.
+Implement the minimal admitted scenario-labeling, unchanged-trainer and independent
+final-evaluation profile needed for this actual researcher plan, then resume its
+existing run/hypotheses with a recorded compute/model contract. Do not bypass
+Control or disguise a developer-run augmentation as ASR science. The old fixed-case
+profile cannot serve this training task. The intake launcher currently supports
+only initial launch or one pre-intake provider-failure recovery, not post-intake
+research continuation; extend deliberately rather than resetting the run.
 
-## Architecture discussion to preserve
+Check the researcher note before deciding tool requirements. Its unresolved data
+reading and predicate ambiguities were corrected via the client addendum. Do not
+rewrite its original snapshot or hypotheses. No model is currently running.
 
-Current single AAR researcher is Research Lead's predecessor. Each Lead owns an
-outer scientific loop; runtime owns inner reasoning/tool loop. Organizer handles
-human communication and cross-direction coordination; Control/Supervisor retain
-budget/permission/execution authority. Future multi-Lead/Workers organization is P5.
-Directions may be proposed by humans, Organizer or Leads; proposed organization
-policy coordinates admission within existing authority and escalates new scope,
-evaluation rules or budget. This multi-entry mechanism is not yet implemented.
+## Verification and pending commit
 
-## Next boundary
-
-D025 clarifies the active task: a target trainable method underperforms on some
-OOD regimes; diagnose them, test the benefit of similar-distribution augmentation,
-and research usable sample generation. Research Lead owns finer decomposition,
-similarity and experiment design; do not ask the human to preselect algorithms.
-Exact target model/data/training interface remain unavailable. No model or
-experiment budget is admitted. Read docs/plans/P4-SCIENTIFIC-COMPARISON.md.
-Final evidence requires controlled training and fresh target-regime testing,
-plus ID retention. Coverage/yield alone cannot close the task. Earlier generic
-OOD-generation options are subordinate, not a preselected experimental protocol.
-Current Control, candidate wrapper and evaluator only support exact fixed-case
-inputs; do not claim scenario or held-out capability. Confirmatory experiments
-need explicit frozen families/evaluation and finite budget.
-Read-only guard regression: 35 tests, three Docker skips; no model/experiment run. Do not reuse P3 closeout allowance or
-claim fixed-case replication proves scientific improvement. Preserve independent
-Capstone C0–C4 lane; its delivery/acceptance is unconfirmed. Native Codex/Grok
-actual greetings/protocol checks are verified, full AAR binding still pi.
-
-Known limits: legacy direct reference CLI publication errors remain generic; managed
-Supervisor records detailed caps. DNS/request timeouts are not hard total network bounds.
-Handled PID/tmp failures may be externally unobservable; never invent measurements.
-Private OAuth/native journals stay in ignored artifacts; never print credentials.
+293 core tests,15 explicit Docker skips;9 scientific pytest tests passed. Added
+public-page preservation/private-exclusion test then verified3 focused intake/
+delivery tests. Numerical preparation verified all320raw artifact hashes. Final focused25 tests passed after review, and material preflight remains valid.
+Implementation and evidence are ready for the task commit. Credentials
+and native transcripts remain ignored. Prior P3 immutable reports unchanged.
