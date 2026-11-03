@@ -1,0 +1,148 @@
+{
+  "schema": "asr-p3-projection-reconciliation/1",
+  "status": "reconciled_without_model_or_experiment",
+  "checked_at": "2026-11-03T02:25:59.347279+00:00",
+  "project_id": "p3-689915c3fcd2",
+  "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+  "control_finish_receipt": {
+    "author": "p3-human",
+    "command_id": "command_7cd3cec371ec4d8695b850b6008abfda",
+    "control_revision": 4,
+    "created_at": "2026-11-03T02:15:10.055350+00:00",
+    "effective_scope": "drain_inflight_and_close",
+    "kind": "finish",
+    "payload": {},
+    "project_id": "p3-689915c3fcd2",
+    "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+    "status": "applied"
+  },
+  "projection_receipt": {
+    "schema": "asr-aar-experiment-projection/1",
+    "projection_id": "aar_projection_2e78ebd8edc74bf1a084de6226c35ddf",
+    "project_id": "p3-689915c3fcd2",
+    "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+    "upstream_experiment_id": 1,
+    "experiment_id": "aar-experiment:1",
+    "control_revision": 4,
+    "control_state": "completed",
+    "control_record_sha256": "cb69c5327110628d26934e1b596ac8c297197ab8526b6e8d15fd492d6cf538d6",
+    "prior_status": "running",
+    "projected_status": "completed",
+    "changed": true,
+    "author": "p3-terminal-projection-reconciler",
+    "author_role": "supervisor",
+    "created_at": "2026-11-03T02:25:59.202683+00:00",
+    "authority": "asr-control"
+  },
+  "before": {
+    "control_state": "completed",
+    "control_record_sha256": "cb69c5327110628d26934e1b596ac8c297197ab8526b6e8d15fd492d6cf538d6",
+    "upstream_status": "running",
+    "scientific_counts": {
+      "trials": 2,
+      "evaluations": 2,
+      "hypotheses": 2,
+      "findings": 1,
+      "validations": 3
+    },
+    "upstream_row_counts": {
+      "experiments": 1,
+      "findings": 3
+    }
+  },
+  "after": {
+    "control_state": "completed",
+    "control_record_sha256": "cb69c5327110628d26934e1b596ac8c297197ab8526b6e8d15fd492d6cf538d6",
+    "upstream_status": "completed",
+    "scientific_counts": {
+      "trials": 2,
+      "evaluations": 2,
+      "hypotheses": 2,
+      "findings": 1,
+      "validations": 3
+    },
+    "upstream_row_counts": {
+      "experiments": 1,
+      "findings": 3
+    }
+  },
+  "budget": {
+    "attempts": {
+      "limit": 4,
+      "spent": 2,
+      "reserved": 0,
+      "available": 2
+    },
+    "evaluation_attempts": {
+      "limit": 3,
+      "spent": 2,
+      "reserved": 0,
+      "available": 1
+    },
+    "evaluation_ms": {
+      "limit": 60000,
+      "spent": 751,
+      "reserved": 0,
+      "available": 59249
+    },
+    "execution_ms": {
+      "limit": 80000,
+      "spent": 1373,
+      "reserved": 0,
+      "available": 78627
+    },
+    "research_walltime_ms": {
+      "limit": 210000,
+      "spent": 193820,
+      "reserved": 0,
+      "available": 16180
+    },
+    "tool_executions": {
+      "limit": 35,
+      "spent": 23,
+      "reserved": 0,
+      "available": 12
+    },
+    "turns": {
+      "limit": 22,
+      "spent": 21,
+      "reserved": 0,
+      "available": 1
+    }
+  },
+  "prior_report_sha256": {
+    "docs/validation/P3-RESULTS.json": "4fd4b8fcc1ffd313154891eb9a4423ef26f7c9de54800ae30a5e0aa67153f3f8",
+    "docs/validation/P3-RESULTS-RECOVERED.json": "0677fc03c05241ad2bb35fbae8d40098e9e2cb9263fb96dc9cafe8e54324d867",
+    "docs/validation/P3-RESULTS-FINAL.json": "7cf568d22343f5b806a2da8ed7b97f45a32626398f5ad94fdbf63470ef9512d4",
+    "artifacts/p3-acceptance-20261103-01/result.json": "064631d99c325054fd06c999294e7c50e94984f9f0475601bf5eff8852c2f061",
+    "artifacts/p3-acceptance-20261103-01/result-resumed.json": "3df216f31f9f43120d090ed29039de13fe0276033c87e4bb48ea308a740ea7ea",
+    "artifacts/p3-acceptance-20261103-01/result-finalization.json": "eb5639404d3fc3040410d0b15f20fc715e86587466bf757b54a620508f6c9661"
+  },
+  "checks": {
+    "control_completed_unchanged": true,
+    "actual_aar_experiment_completed": true,
+    "same_explicit_binding": true,
+    "identical_receipt_after_reopen": true,
+    "exactly_one_projection_event": true,
+    "scientific_counts_unchanged": true,
+    "upstream_row_counts_unchanged": true,
+    "budget_and_usage_unchanged": true,
+    "prior_reports_unchanged": true,
+    "projection_source_hash_matches": true
+  },
+  "actor": {
+    "subject": "p3-terminal-projection-reconciler",
+    "role": "supervisor",
+    "project_scope": [
+      "p3-689915c3fcd2"
+    ]
+  },
+  "source": {
+    "commit": "459b44dae21ca07d896e2aeb97c592324ec7c975",
+    "adapter_sha256": "950f011023980f99f1dd6c0cdad4510cfb10fe9aaad818ad2d0f371f62f14645"
+  },
+  "scope": "Lifecycle projection only. Original reports retain their historical running projection, original timeout and overrun. No scientific interpretation, numerical evidence, usage or authoritative Control state was modified.",
+  "model_calls": 0,
+  "numerical_executions": 0,
+  "independent_evaluations": 0
+}
