@@ -164,6 +164,15 @@ class ContainerInspectionTests(unittest.TestCase):
 
 @unittest.skipUnless(os.environ.get('ASR_REAL_DOCKER') == '1', 'explicit local Docker acceptance only')
 class RealDockerReplayTests(unittest.TestCase):
+    def test_failed_rename_does_not_mutate_sealed_pending_inventory(self):
+        with tempfile.TemporaryDirectory() as root:
+            root=Path(root);source=root/'source';digest=create_source(source);runner=Replay(root/'evaluation')
+            with patch.object(Path,'rename',side_effect=PermissionError('publication blocked')):
+                with self.assertRaises(UnresolvedReplay):runner.run('rename-error',source,digest,**IDENTITY)
+            recovered=runner.reconcile('rename-error')
+            self.assertEqual(recovered['execution_status'],'succeeded')
+            self.assertTrue(recovered['execution_exited'])
+
     def test_interrupted_publication_recovers_same_container(self):
         import asr_evaluation.replay as implementation
         with tempfile.TemporaryDirectory() as root:

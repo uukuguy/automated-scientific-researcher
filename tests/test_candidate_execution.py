@@ -51,6 +51,14 @@ class CandidateTests(unittest.TestCase):
         link=self.root/'linked.m';link.symlink_to(self.code)
         with self.assertRaises(ValueError):make_candidate_request(link,hashlib.sha256(body).hexdigest(),len(body),timeout_seconds=5)
 
+    def test_code_cap_explains_actual_size_and_retains_research_task(self):
+        self.code.write_text('x'*70000)
+        with self.assertRaises(ValueError) as raised:self.request(timeout_seconds=5)
+        detail=raised.exception.details
+        self.assertEqual(detail['limit']['configured'],65536)
+        self.assertEqual(detail['observed']['value'],70000)
+        self.assertTrue(detail['task_retained'])
+
     def manager(self,attempt,request):
         dbpath=self.root/'state.db'
         budget=BudgetStore(dbpath);budget.set_limit('p','execution_ms',300000)
@@ -122,6 +130,12 @@ class CandidateDockerTests(CandidateTests):
                 path=Path(result['report']['evidence_path'])
                 self.assertLessEqual((path/'candidate-stream.log').stat().st_size,1048576)
                 self.assertGreater(budget.balance('p','execution_ms')['spent'],0)
+                events=result['report']['resource_events']
+                self.assertTrue(events)
+                self.assertTrue(all(event['task_retained'] and event['recovery'] for event in events))
+                if name!='timeout':
+                    self.assertEqual(events[0]['limit']['configured'],1048576)
+                    self.assertGreater(events[0]['observed']['value'],1048576)
 
     def test_invalid_return_protocol_is_failed_not_unknown_execution(self):
         code="function result=candidate(mpc)\nfprintf('ASR_CANDIDATE_RESULT_V1:{}\\n');result=mpc;end"

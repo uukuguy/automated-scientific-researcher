@@ -14,10 +14,12 @@ import stat
 import subprocess
 import threading
 import time
+from datetime import datetime
 
 from powerflow_lab.reference import REPO, make_request
 from powerflow_lab.runner import canonical, digest
 from asr_evaluation.replay import IMAGE_ID, INPUT_SHA256, FIXTURE_INPUT, VALIDATOR_SHA256
+from .resources import bounded_command,limit_event,LimitViolation
 
 PROFILE = 'octave-candidate/1'
 MAX_CODE_BYTES = 65536
@@ -32,11 +34,15 @@ def _source(path):
     try:
         descriptor = os.open(raw,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
         with os.fdopen(descriptor,'rb') as stream:
-            if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode): raise ValueError('regular candidate source required')
+            info=os.fstat(stream.fileno())
+            if not stat.S_ISREG(info.st_mode): raise ValueError('regular candidate source required')
             body = stream.read(MAX_CODE_BYTES+1)
     except OSError as error:
         raise ValueError('candidate source unavailable') from error
-    if not body or len(body)>MAX_CODE_BYTES: raise ValueError('candidate source must be 1–65536 bytes')
+    if not body:raise ValueError('candidate source must not be empty')
+    if len(body)>MAX_CODE_BYTES:
+        raise LimitViolation(limit_event('candidate','candidate_code_limit','candidate_code_bytes',MAX_CODE_BYTES,max(info.st_size,len(body)),'bytes','admission',
+            'submission_rejected','Keep the research task; revise the single-file method or request an explicitly approved profile with a larger source limit.',evidence_basis='fstat_and_bounded_read'))
     try: body.decode('utf-8')
     except UnicodeError as error: raise ValueError('candidate source must be UTF-8') from error
     return body
@@ -44,6 +50,9 @@ def _source(path):
 
 def make_candidate_request(path, sha256, size, *, timeout_seconds=60, max_iterations=20):
     if type(timeout_seconds) not in (int,float) or not math.isfinite(timeout_seconds) or not 0<timeout_seconds<=60:
+        if type(timeout_seconds) in (int,float) and math.isfinite(timeout_seconds) and timeout_seconds>60:
+            raise LimitViolation(limit_event('candidate','candidate_timeout_limit','candidate_timeout_seconds',60,timeout_seconds,'seconds','admission',
+                'submission_rejected','Request at most 60 seconds or obtain an explicitly approved profile revision; keep the research task pending.'))
         raise ValueError('candidate timeout must be finite in (0,60]')
     body = _source(path)
     if type(size) is not int or len(body)!=size or hashlib.sha256(body).hexdigest()!=sha256:
@@ -76,8 +85,8 @@ class CandidateBackend:
 
     @staticmethod
     def _call(arguments):
-        result=subprocess.run(['docker',*arguments],capture_output=True,timeout=5)
-        if result.returncode or len(result.stdout)>262144: raise RuntimeError('candidate Docker operation failed')
+        result=bounded_command(['docker',*arguments],component='candidate',operation=arguments[0])
+        if result.returncode: raise RuntimeError('candidate Docker operation failed')
         return result.stdout.decode().strip()
 
     def create(self,record,path,request):
@@ -150,6 +159,7 @@ class CandidateBackend:
                     except BlockingIOError: continue
                     if not chunk: break
                     available=MAX_OUTPUT_BYTES-count
+                    collector['observed_bytes']=count+len(chunk)
                     stream.write(chunk[:available]);count+=min(len(chunk),available)
                     if len(chunk)>available:
                         collector['overflow']=True
@@ -164,7 +174,7 @@ class CandidateBackend:
     def start(self,identity,path):
         process=subprocess.Popen(['docker','start','--attach',identity['container_id']],stdin=subprocess.DEVNULL,
             stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-        collector=dict(process=process,path=path/'candidate-stream.log',overflow=False,error=False)
+        collector=dict(process=process,path=path/'candidate-stream.log',overflow=False,error=False,observed_bytes=0)
         collector['thread']=threading.Thread(target=self._collect,args=(collector,),daemon=True)
         self.collectors[identity['container_id']]=collector;collector['thread'].start()
         deadline=time.monotonic()+5
@@ -206,11 +216,28 @@ class CandidateBackend:
                 except subprocess.TimeoutExpired:collector['process'].kill();collector['process'].wait(timeout=1)
             collector['thread'].join(timeout=1)
             if collector['thread'].is_alive(): raise RuntimeError('candidate stream collector unresolved')
-            (path/'capture.json').write_bytes(canonical(dict(overflow=collector['overflow'],error=collector['error'],max_bytes=MAX_OUTPUT_BYTES)))
+            (path/'capture.json').write_bytes(canonical(dict(overflow=collector['overflow'],error=collector['error'],max_bytes=MAX_OUTPUT_BYTES,observed_bytes=collector['observed_bytes'],
+                observed_kind='at_least' if collector['overflow'] else 'exact',retained_bytes=(path/'candidate-stream.log').stat().st_size if (path/'candidate-stream.log').exists() else 0)))
         value=self._raw_inspect(identity)
         if value['State']['Running']: raise RuntimeError('candidate exit unconfirmed')
         self.verify_container(value,identity,path)
         (path/'candidate-exit.json').write_bytes(canonical(value))
+        events=[]
+        if collector and collector['overflow']:
+            events.append(limit_event('candidate','candidate_output_limit','candidate_output_bytes',MAX_OUTPUT_BYTES,collector['observed_bytes'],'bytes','running',
+                'container_stopped','Reduce diagnostic output or revise the candidate; submit a new explicitly admitted attempt. The raw prefix and failed attempt remain preserved.',kind='at_least'))
+        if status=='timed_out':
+            state=value['State']
+            elapsed=max(0,(datetime.fromisoformat(state['FinishedAt'].replace('Z','+00:00'))-datetime.fromisoformat(state['StartedAt'].replace('Z','+00:00'))).total_seconds())
+            events.append(limit_event('candidate','candidate_timeout','candidate_timeout_seconds',request['timeout_seconds'],elapsed,'seconds','running',
+                'container_stopped','Keep the method and evidence; revise it or explicitly request another authorized attempt within the profile limit.',kind='container_lifetime_including_stop',evidence_basis='docker_started_and_finished_timestamps'))
+        if value['State'].get('OOMKilled'):
+            events.append(limit_event('candidate','candidate_oom_killed','candidate_memory_bytes',1073741824,None,'bytes','running',
+                'container_oom_killed','Reduce memory use or obtain an explicitly approved resource profile; preserve this failed attempt.',kind='oom_kill_observed',evidence_basis='docker_state_oom_killed'))
+        if collector and collector['error']:
+            events.append(dict(schema='asr-execution-diagnostic/1',component='candidate',code='candidate_capture_error',task_retained=True,
+                recovery='Inspect capture/storage availability and reconcile before an explicitly authorized new attempt.'))
+        if events:(path/'resource-events.json').write_bytes(canonical(events))
         if digest(path/'candidate.m')!=request['candidate']['sha256'] or digest(path/'candidate_wrapper.m')!=request['wrapper_sha256'] or digest(path/'input.json')!=INPUT_SHA256:
             raise ValueError('candidate modified immutable host evidence')
         if status!='succeeded': return

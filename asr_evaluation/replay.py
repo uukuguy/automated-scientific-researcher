@@ -17,6 +17,7 @@ import time
 import uuid
 
 from powerflow_lab.runner import canonical, _sync_directory
+from asr_supervisor.resources import bounded_command,limit_event,LimitViolation
 
 REPO = Path(__file__).resolve().parents[1]
 IMAGE_ID = 'sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831'
@@ -35,7 +36,9 @@ FIXTURE_INPUT = REPO/'environments/scientific/fixtures/matpower-case118/input.js
 
 
 class ReplayError(RuntimeError):
-    pass
+    def __init__(self,message,*,diagnostic=None):
+        self.details=self.diagnostic=diagnostic
+        super().__init__(message)
 
 
 class UnresolvedReplay(ReplayError):
@@ -50,7 +53,8 @@ def _read(path, limit=MAX_FILE_BYTES, *, sync=False):
     try:
         descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
         with os.fdopen(descriptor, 'rb') as stream:
-            if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+            info=os.fstat(stream.fileno())
+            if not stat.S_ISREG(info.st_mode):
                 raise ReplayError('regular files required')
             if sync:
                 os.fsync(stream.fileno())
@@ -58,7 +62,8 @@ def _read(path, limit=MAX_FILE_BYTES, *, sync=False):
     except OSError as error:
         raise ReplayError('evidence file unavailable or symlinked') from error
     if len(body) > limit:
-        raise ReplayError('evidence file exceeds size limit')
+        raise ReplayError('evidence file exceeds size limit',diagnostic=limit_event('evaluator','evaluator_file_limit','evaluator_file_bytes',limit,max(info.st_size,len(body)),'bytes','preflight',
+            'material_rejected','Preserve source evidence; use a reviewed smaller material capsule or explicitly approved larger-cap evaluator profile.'))
     return body
 
 
@@ -95,6 +100,9 @@ def freeze_source(source_path, manifest_hash, *, trial_id, execution_attempt_id,
         raise ReplayError('published terminal managed evidence required')
     artifacts = manifest.get('artifacts')
     if not isinstance(artifacts, dict) or not 1 <= len(artifacts) <= 100:
+        if isinstance(artifacts,dict) and len(artifacts)>100:
+            raise ReplayError('source artifact count exceeds limit',diagnostic=limit_event('evaluator','evaluator_artifact_count','source_artifact_files',100,len(artifacts),'files','preflight',
+                'material_rejected','Retain the source attempt; prepare an explicitly verified material capsule or approve a profile with a larger inventory.'))
         raise ReplayError('invalid source artifact inventory')
     if {p.name for p in source.iterdir()} != set(artifacts) | {'manifest.json'}:
         raise ReplayError('source artifact membership changed')
@@ -105,7 +113,10 @@ def freeze_source(source_path, manifest_hash, *, trial_id, execution_attempt_id,
             raise ReplayError('unsafe artifact name')
         body = _read(source/name)
         total += len(body)
-        if total > MAX_TOTAL_BYTES or metadata != dict(bytes=len(body), sha256=_sha(body)):
+        if total > MAX_TOTAL_BYTES:
+            raise ReplayError('source artifact bytes exceed limit',diagnostic=limit_event('evaluator','evaluator_source_bytes','source_artifact_bytes',MAX_TOTAL_BYTES,total,'bytes','preflight',
+                'material_rejected','Preserve the source attempt and request a reviewed material-capsule or larger-cap profile.',kind='at_least'))
+        if metadata != dict(bytes=len(body), sha256=_sha(body)):
             raise ReplayError('source artifact hash or size mismatch')
         if name in ('input.json', 'solution.json', 'request.json'):
             retained[name] = body
@@ -181,7 +192,11 @@ def _inventory(path):
         body = _read(entry,sync=True)
         total += len(body)
         if total > MAX_TOTAL_BYTES or len(records) >= 100:
-            raise ReplayError('evaluator evidence exceeds limits')
+            count_overrun=len(records)>=100
+            raise ReplayError('evaluator evidence exceeds limits',diagnostic=limit_event('evaluator','evaluator_publication_limit',
+                'publication_files' if count_overrun else 'publication_bytes',100 if count_overrun else MAX_TOTAL_BYTES,
+                len(records)+1 if count_overrun else total,'files' if count_overrun else 'bytes','publication','pending_evidence_retained',
+                'Keep the pending evidence and reservation; use reviewed export or an approved publisher profile, never silently truncate artifacts.',kind='at_least'))
         records[str(entry.relative_to(path))] = dict(bytes=len(body), sha256=_sha(body))
     return records
 
@@ -245,6 +260,7 @@ def _manifest_metadata(path, job, value, outcome):
         metadata['evaluation_ref']=request['evaluation_ref']
         metadata['limits']=[LIMITS[0],LIMITS[1],
             'Control owns managed evaluator authorization and budget settlement; numerical material does not itself publish a Validation or establish a scientific claim.',LIMITS[3]]
+    if (path/'resource-events.json').exists():metadata['resource_events']=_json(_read(path/'resource-events.json',65536))
     return metadata
 
 
@@ -262,11 +278,12 @@ class Replay:
 
     def _docker(self, arguments):
         try:
-            result = subprocess.run(['docker', *arguments], capture_output=True, timeout=5)
-        except (OSError, subprocess.TimeoutExpired) as error:
+            result=bounded_command(['docker',*arguments],component='evaluator',operation=arguments[0])
+        except LimitViolation as error:
+            raise ReplayError(error.code,diagnostic=error.diagnostic) from error
+        except OSError as error:
             raise ReplayError('Docker operation unavailable or timed out') from error
-        if result.returncode or len(result.stdout) > 262144:
-            raise ReplayError('Docker operation failed or exceeded output limit')
+        if result.returncode:raise ReplayError('Docker operation failed')
         return result.stdout.decode().strip()
 
     def _inspect(self, identity):
@@ -310,6 +327,9 @@ class Replay:
         return manifest
 
     def _publish(self, pending, final, job, status, value):
+        if value['State'].get('OOMKilled') and not (pending/'resource-events.json').exists():
+            _write(pending/'resource-events.json',[limit_event('evaluator','evaluator_oom_killed','evaluator_memory_bytes',268435456,None,'bytes','running',
+                'container_oom_killed','Preserve the failed check and original evidence; reduce memory use or approve a revised evaluator profile.',kind='oom_kill_observed',evidence_basis='docker_state_oom_killed')])
         exit_path = pending/'exit-inspection.json'
         if exit_path.exists():
             if _read(exit_path) != canonical(value):
@@ -329,6 +349,9 @@ class Replay:
     def run(self, key, source_path, manifest_hash, *, trial_id, execution_attempt_id, research_run_id,
             timeout_seconds=60, mode='check',authority=None,evaluation_ref=None,launch_intent=None,on_create=None,on_attach=None,on_poll=None):
         if type(timeout_seconds) not in (int,float) or not math.isfinite(timeout_seconds) or not 0 < timeout_seconds <= 60:
+            if type(timeout_seconds) in (int,float) and math.isfinite(timeout_seconds) and timeout_seconds>60:
+                raise LimitViolation(limit_event('evaluator','evaluator_timeout_limit','evaluator_timeout_seconds',60,timeout_seconds,'seconds','admission',
+                    'request_rejected','Retain the evaluation task; request at most 60 seconds or obtain an explicitly approved profile revision.'))
             raise ValueError('evaluation timeout must be finite in (0,60]')
         if mode not in ('check','probe'): raise ValueError('unsupported evaluator mode')
         frozen = freeze_source(source_path, manifest_hash, trial_id=trial_id,
@@ -400,15 +423,26 @@ class Replay:
                     if cancelled:
                         value=self._exit(identity);status='cancelled';break
                     if time.monotonic() >= deadline:
+                        _write(pending/'resource-events.json',[limit_event('evaluator','evaluator_timeout','evaluator_timeout_seconds',timeout_seconds,time.monotonic()-(deadline-timeout_seconds),'seconds','running',
+                            'stop_requested','Keep this check and its source; verify exit and explicitly request a revised authorized evaluation. This does not reject the scientific hypothesis.')])
                         value = self._exit(identity); status = 'timed_out'; break
                     time.sleep(.05)
                 return self._publish(pending,final,job,status,value)
             except Exception as error:
                 # A timeout/error of the Docker CLI is not evidence of daemon or
                 # container exit. Persist pending material and require reconcile.
-                if not (pending/'uncertain.json').exists():
-                    _write(pending/'uncertain.json',dict(reason=type(error).__name__))
-                raise UnresolvedReplay('evaluation unresolved; pending evidence retained') from error
+                sealed=(pending/'manifest.json').exists() or final.exists()
+                diagnostic=getattr(error,'diagnostic',None)
+                if sealed and diagnostic is None:
+                    diagnostic=dict(schema='asr-execution-diagnostic/1',component='evaluator',code='publication_commit_pending',phase='publication',
+                        error_class=type(error).__name__,task_retained=True,action='sealed_evidence_retained',
+                        recovery='Restore publication storage/permissions and reconcile the existing sealed attempt; do not rerun the scientific task.')
+                # Never append diagnostic files after the inventory is sealed:
+                # that would invalidate its hash and block publication recovery.
+                if pending.exists() and not sealed and not (pending/'uncertain.json').exists():
+                    _write(pending/'uncertain.json',dict(reason=type(error).__name__,diagnostic=getattr(error,'diagnostic',None),
+                        task_retained=True,recovery='Reconcile the exact intent and source material before any explicit retry; reservation remains held.'))
+                raise UnresolvedReplay('evaluation unresolved; pending evidence retained',diagnostic=diagnostic) from error
 
     def reconcile(self, key,*,on_attach=None,on_poll=None):
         pending, final, lock_path = self._paths(key)
@@ -437,4 +471,4 @@ class Replay:
                 verify_container(value,checked_identity,pending)
                 return self._publish(pending,final,job,'interrupted',value)
             except Exception as error:
-                raise UnresolvedReplay('evaluation remains unresolved; pending evidence retained') from error
+                raise UnresolvedReplay('evaluation remains unresolved; pending evidence retained',diagnostic=getattr(error,'diagnostic',None)) from error
