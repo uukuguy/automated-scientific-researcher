@@ -52,9 +52,7 @@ class ExecutionStore(PolicyStore):
                 raise LeaseError('reconciliation_required')
             row=db.execute('SELECT id,project,run,trial,state,record FROM asr_dispatch WHERE attempt=?',(attempt,)).fetchone()
             if not row or row[4]!='queued': raise LeaseError('not_dispatchable')
-            run=db.execute('SELECT record FROM asr_runs WHERE project=? AND run=?',(row[1],row[2])).fetchone()
-            run=json.loads(run[0]) if run else {}
-            if run.get('state')!='running' or not run.get('admission_open') or run.get('health','ok')!='ok': raise LeaseError('dispatch_gate_closed')
+            if not self._owning_gate(db,row[1],row[2]): raise LeaseError('dispatch_gate_closed')
             for body, in db.execute('SELECT record FROM asr_executions'):
                 existing=json.loads(body)
                 if existing['run']==row[2] and existing['project']==row[1] and existing['report'] is None:
@@ -116,12 +114,21 @@ class ExecutionStore(PolicyStore):
             db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(run),r['project'],r['run']))
             return r
 
+    @staticmethod
+    def _owning_gate(db, project, run):
+        # Admission and the final pre-start check share Control's quota and
+        # project-budget gate; a reservation does not override newly recorded debt.
+        from asr_service.control import ControlService, ControlError
+        try:
+            return ControlService.owning_gate(db,{'project_id':project,'research_run_id':run})
+        except ControlError:
+            return False
+
     def dispatch_gate_open(self, attempt):
         with self._connect() as db:
+            db.execute('BEGIN')
             r=self._read(db,attempt)
-            row=db.execute('SELECT record FROM asr_runs WHERE project=? AND run=?',(r['project'],r['run'])).fetchone()
-            run=json.loads(row[0]) if row else {}
-            return run.get('state')=='running' and run.get('admission_open') is True and run.get('health','ok')=='ok'
+            return self._owning_gate(db,r['project'],r['run'])
 
 
     def reconcile_claim(self, attempt, owner, *, lease_seconds=30, now=None):

@@ -17,7 +17,7 @@ class ExecutionStoreTests(unittest.TestCase):
         self.budget.reserve('p', 'a', 'execution_ms', 5000)
         with sqlite3.connect(self.path) as db:
             db.executescript('CREATE TABLE asr_runs(project,run,experiment_id,record); CREATE TABLE asr_dispatch(id PRIMARY KEY,project,run,trial,attempt,state,record);')
-            db.execute('INSERT INTO asr_runs VALUES (?,?,?,?)', ('p','r','e',json.dumps({'state':'running','admission_open':True})))
+            db.execute('INSERT INTO asr_runs VALUES (?,?,?,?)', ('p','r','e',json.dumps({'state':'running','admission_open':True,'health':'ok'})))
             db.execute('INSERT INTO asr_dispatch VALUES (?,?,?,?,?,?,?)', ('d','p','r','t','a','queued',json.dumps({'request':{'x':1}})))
         self.store = ExecutionStore(self.path)
 
@@ -40,6 +40,27 @@ class ExecutionStoreTests(unittest.TestCase):
             db.execute('UPDATE asr_runs SET record=?', (json.dumps({'state':'running','admission_open':False}),))
         with self.assertRaises(LeaseError): self.store.claim('a','x')
         self.assertEqual(self.budget.balance('p','execution_ms')['reserved'],5000)
+
+    def test_prequeued_attempt_cannot_claim_after_project_execution_overrun(self):
+        self.budget.reserve('p','b','execution_ms',5000)
+        with sqlite3.connect(self.path) as db:
+            db.execute('INSERT INTO asr_dispatch VALUES (?,?,?,?,?,?,?)',('d2','p','r','t2','b','queued','{}'))
+        first=self.store.claim('a','one')
+        self.store.report('a',first['epoch'],'one',dict(status='failed',manifest_hash='retained',execution_exited=True,usage={'execution_ms':6000}))
+        self.assertEqual(self.budget.balance('p','execution_ms')['available'],-1000)
+        with self.assertRaisesRegex(LeaseError,'dispatch_gate_closed'):self.store.claim('b','two')
+        self.assertEqual(self.budget.balance('p','execution_ms')['spent'],6000)
+        self.assertEqual(self.budget.balance('p','execution_ms')['reserved'],5000)
+        self.assertTrue(self.store.get('a')['report']['execution_exited'])
+
+    def test_claimed_attempt_rechecks_all_project_dimensions_before_start(self):
+        self.store.claim('a','one')
+        self.budget.set_limit('p','turns',1)
+        self.budget.reserve('p','model-activity','turns',1)
+        self.budget.settle('p','model-activity','turns',2,execution_exited=True)
+        self.assertFalse(self.store.dispatch_gate_open('a'))
+        self.assertEqual(self.budget.balance('p','execution_ms')['reserved'],5000)
+        self.assertEqual(self.budget.balance('p','turns')['spent'],2)
 
     def test_unknown_execution_cannot_release_budget(self):
         claim=self.store.claim('a','x')
