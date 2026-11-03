@@ -13,6 +13,32 @@ from integrations.runtimes import session
 
 
 class DeadlineTests(unittest.TestCase):
+    def test_prelaunch_cap_is_durable_and_measured_setup_is_not_free(self):
+        import test_control_service
+        from integrations.aar.bridge import ResearchBridge
+        from integrations.runtimes.session import run_session
+        fixture=test_control_service.ControlTests();fixture.setUp()
+        self.addCleanup(fixture.doCleanups)
+        fixture.start()
+        root=Path(fixture.tmp.name);auth=root/'oauth-fixture.json'
+        auth.write_text(json.dumps({'openai-codex':{'type':'oauth','access':'fixture','refresh':'fixture','expires':9999999999999}}))
+        class SetupOnly:
+            provider='codex';model='gpt-6.1-sol'
+            def run(self,**kwargs):
+                time.sleep(.02)
+                details=dict(kind='model_walltime',limit=10,observed=20,reason='Version fixture exhausted setup cap; no model launched.')
+                kwargs['on_event'](dict(type='asr_limit',recoverable=True,**details))
+                raise RuntimeFailure('setup_deadline_exhausted',details=details)
+        bridge=ResearchBridge(fixture.service,project='p',run='r',researcher_token='agent-secret',supervisor_token='human-secret',workspace=root,snapshots=root/'snapshots')
+        with self.assertRaises(RuntimeFailure):
+            run_session(SetupOnly(),bridge,config_dir=root/'private',native_session_id='r',prompt='fixture',limits=Limits(3,1,1),oauth_source=auth)
+        state=fixture.service.get_run('human-secret','p','r')
+        self.assertEqual(state['state'],'paused')
+        self.assertGreater(state['budget']['research_walltime_ms']['spent'],0)
+        self.assertEqual(state['budget']['research_walltime_ms']['reserved'],0)
+        self.assertEqual(state['budget']['turns']['spent'],0)
+        self.assertTrue(state['runtime_sessions'][0]['limit_observations'])
+
     def test_turn_exhaustion_checkpoints_limit_and_aborts_before_next_request(self):
         extension=Path('integrations/runtimes/asr-extension.mjs').resolve().as_uri()
         code=f'''import extension from {json.dumps(extension)};
@@ -47,11 +73,13 @@ console.log('UNSAFE_NEXT_REQUEST');'''
         with tempfile.TemporaryDirectory() as directory:
             def slow_version(*args,**kwargs):time.sleep(.04);return '1.5.0'
             with patch('integrations.runtimes.pi.subprocess.check_output',side_effect=slow_version),patch('integrations.runtimes.pi.subprocess.Popen') as spawn:
-                with self.assertRaisesRegex(RuntimeFailure,'setup_deadline_exhausted'):
+                with self.assertRaisesRegex(RuntimeFailure,'setup_deadline_exhausted') as raised:
                     PiRuntime(model='test').run(workspace=Path(directory),config_dir=Path(directory),session_id='deadline',
                         prompt='fixture',limits=Limits(1,1,1),bridge_url='http://localhost:1',bridge_token='fixture',
                         absolute_deadline=time.monotonic()+.02)
                 spawn.assert_not_called()
+                self.assertEqual(raised.exception.details['kind'],'model_walltime')
+                self.assertGreaterEqual(raised.exception.details['observed'],raised.exception.details['limit'])
 
     def test_oversize_native_record_stops_with_explicit_recoverable_byte_limit(self):
         from test_runtimes import RuntimeTests

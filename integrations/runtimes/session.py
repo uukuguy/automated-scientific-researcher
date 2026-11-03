@@ -2,6 +2,7 @@
 from pathlib import Path
 import hashlib
 import json
+import math
 import time
 import uuid
 from .pi import Limits, RuntimeFailure, prepare_oauth
@@ -48,6 +49,10 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
             service.command(bridge.supervisor_token,bridge.project,bridge.run,'quota',expected_revision=run['control_revision'],
                 idempotency_key='quota_'+owner,payload={'state':'rate_limited'})
         return result
+    except RuntimeFailure as error:
+        if {'kind','limit','observed','reason'}<=set(error.details):
+            record_event(dict(type='asr_limit',recoverable=True,**error.details))
+        raise
     finally:
         # If setup failed before spawn, there is no child to reconcile. A runtime
         # exception after launch is conservatively unresolved unless run returned.
@@ -55,7 +60,8 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
             current=service.get_run(bridge.supervisor_token,bridge.project,bridge.run)
             session=next(x for x in current['runtime_sessions'] if x['session_id']==claim['session_id'])
             if session.get('launch_state')=='prepared':
-                service.abort_runtime_prelaunch(bridge.supervisor_token,bridge.project,bridge.run,claim['session_id'],claim['epoch'],owner,reason='runtime_preflight_failed')
+                service.abort_runtime_prelaunch(bridge.supervisor_token,bridge.project,bridge.run,claim['session_id'],claim['epoch'],owner,
+                    reason='runtime_preflight_failed',actual_walltime_ms=max(1,math.ceil((time.monotonic()-started)*1000)))
                 # No launch intent existed, so there is no process to release.
                 exited=False
         if exited: service.release_runtime(bridge.supervisor_token,bridge.project,bridge.run,

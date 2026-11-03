@@ -1,0 +1,15 @@
+{
+  "schema": "asr-engineering-closeout/1",
+  "additional_research_walltime_ms": 30000,
+  "additional_turns": 2,
+  "additional_tool_executions": 3,
+  "maximum_session_seconds": 30,
+  "maximum_session_turns": 2,
+  "maximum_session_tools": 3,
+  "thinking": "low",
+  "numerical_budget_increase": 0,
+  "evaluation_budget_increase": 0,
+  "purpose": "Read existing IDs and finish an already completed scientific trajectory; original timeout and overrun retained",
+  "not_a_general_research_default": true,
+  "paid_api_fallback": false
+}

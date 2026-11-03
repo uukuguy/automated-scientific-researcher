@@ -5,4 +5,7 @@ SMOKE_TOOLS = frozenset({'asr.state','asr.publish_hypothesis','asr.submit_trial'
 PROFILE_TOOLS = {
     'powerflow-calibration-smoke/3': SMOKE_TOOLS,
     'powerflow-candidate-research/1': SMOKE_TOOLS | {'asr.freeze_candidate','asr.submit_candidate','asr.request_evaluation','asr.request_replication'},
+    'powerflow-readonly-finalization/1': frozenset({'asr.state'}),
 }
+PROFILE_CODING_TOOLS={profile:['pi.read','pi.edit','pi.write','pi.grep','pi.find','pi.ls'] for profile in PROFILE_TOOLS}
+PROFILE_CODING_TOOLS['powerflow-readonly-finalization/1']=['pi.read','pi.grep','pi.find','pi.ls']

@@ -15,12 +15,14 @@ import signal
 import subprocess
 import threading
 import time
-from .capability_inventory import PROFILE_TOOLS
+from .capability_inventory import PROFILE_TOOLS,PROFILE_CODING_TOOLS
 from .environment import COMMON_ENVIRONMENT,build_environment,reject_api_key_settings
 
 
 class RuntimeFailure(RuntimeError):
-    pass
+    def __init__(self,code,*,details=None):
+        self.code=code;self.details=details or {}
+        super().__init__(code)
 
 
 @dataclass(frozen=True)
@@ -122,7 +124,7 @@ class PiRuntime:
                 if len(declared)>=2 and declared[0]==declared[-1] and declared[0] in ('"',"'"):declared=declared[1:-1]
                 if declared!=name:raise RuntimeFailure('capability_skill_name_mismatch')
                 verified.append(dict(id=identity,name=name,path=relative,sha256=digest,content=content))
-            expected=['pi.read','pi.edit','pi.write','pi.grep','pi.find','pi.ls']
+            expected=PROFILE_CODING_TOOLS[pack['id']]
             tools=PROFILE_TOOLS[pack['id']]
             if pack.get('coding_tools')!=expected or set(pack.get('tools',[]))!=tools:
                 raise RuntimeFailure('capability_tool_inventory_mismatch')
@@ -131,16 +133,31 @@ class PiRuntime:
             raise RuntimeFailure('invalid_capability_pack') from error
 
     def run(self, *, workspace, config_dir, session_id, prompt, limits, bridge_url, bridge_token, on_event=None, should_stop=None,on_process=None,on_launch=None,absolute_deadline=None):
+        setup_started=time.monotonic()
         if not re.fullmatch(r'[A-Za-z0-9](?:[A-Za-z0-9_.-]*[A-Za-z0-9])?',session_id):
             raise ValueError('invalid_native_session_id')
         if absolute_deadline is not None and (type(absolute_deadline) not in (int,float) or not math.isfinite(absolute_deadline)):
             raise ValueError('finite_absolute_deadline_required')
         def setup_remaining():
             remaining=10 if absolute_deadline is None else absolute_deadline-time.monotonic()
-            if remaining<=0:raise RuntimeFailure('setup_deadline_exhausted')
+            if remaining<=0:
+                configured=max(1,math.ceil(((absolute_deadline or setup_started)-setup_started)*1000))
+                failure=RuntimeFailure('setup_deadline_exhausted',details=dict(kind='model_walltime',limit=configured,
+                    observed=max(configured,math.ceil((time.monotonic()-setup_started)*1000)),
+                    reason='Absolute engine setup deadline exhausted before a native research process was launched.'))
+                if on_event:on_event(dict(type='asr_limit',recoverable=True,**failure.details))
+                raise failure
             return min(10,remaining)
         capabilities=self.preflight_capabilities()
-        version=subprocess.check_output([self.executable,'--version'],text=True,timeout=setup_remaining(),env=self.environment).strip()
+        version_timeout=setup_remaining()
+        try:version=subprocess.check_output([self.executable,'--version'],text=True,timeout=version_timeout,env=self.environment).strip()
+        except subprocess.TimeoutExpired:
+            configured=max(1,math.ceil(version_timeout*1000))
+            failure=RuntimeFailure('version_preflight_timeout',details=dict(kind='model_walltime',limit=configured,
+                observed=max(configured,math.ceil((time.monotonic()-setup_started)*1000)),
+                reason='Version-probe setup deadline exhausted; no native research process was launched.'))
+            if on_event:on_event(dict(type='asr_limit',recoverable=True,**failure.details))
+            raise failure from None
         if version!=self.expected_version: raise RuntimeFailure('runtime_version_mismatch')
         workspace=Path(workspace).resolve(); config_dir=Path(config_dir).resolve()
         sessions=config_dir/'sessions'; sessions.mkdir(exist_ok=True)
@@ -177,7 +194,7 @@ class PiRuntime:
                    ASR_MAX_TURNS=str(limits.turns),ASR_MAX_TOOLS=str(limits.tool_executions),ASR_ABORT_GRACE_MS=str(math.ceil(self.abort_grace_seconds*1000)),ASR_MAX_WALLTIME_MS=str(engine_budget_ms),ASR_DEADLINE_MS=str(int((time.time()+runtime_deadline-time.monotonic())*1000)))
         argv=[self.executable,'--mode','rpc','--provider',self.provider,'--model',self.model,'--thinking',self.thinking,
               '--session-id',session_id,'--session-dir',str(sessions),'--no-extensions','--extension',str(extension),
-              '--no-skills','--no-prompt-templates','--no-context-files','--tools','asr,read,write,edit,grep,find,ls']
+              '--no-skills','--no-prompt-templates','--no-context-files','--tools',','.join(['asr']+[tool.removeprefix('pi.') for tool in capabilities['pack']['coding_tools']])]
         for skill in frozen_skills:argv.extend(['--skill',skill['frozen_path']])
         if on_launch: on_launch()
         process=subprocess.Popen(argv,cwd=workspace,env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)

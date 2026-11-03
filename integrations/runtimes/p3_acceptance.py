@@ -53,13 +53,15 @@ def source_provenance():
         source_sha256=inventory)
 
 
-def migrate_native_session(root,run,oauth_source):
+def migrate_native_session(root,run,oauth_source,*,source_directory='pi-private',target_directory='pi-private-resumed'):
     """Continue a copied native journal; original failure evidence stays intact."""
-    original=root/'pi-private/sessions'
+    if source_directory not in ('pi-private','pi-private-resumed') or target_directory not in ('pi-private-resumed','pi-private-final'):
+        raise ValueError('unsupported_private_session_migration')
+    original=root/source_directory/'sessions'
     journals=list(original.glob('*_'+run+'.jsonl'))
     if len(journals)!=1 or journals[0].is_symlink() or journals[0].stat().st_size>16777216:
         raise ValueError('unique_bounded_native_journal_required')
-    target=root/'pi-private-resumed'
+    target=root/target_directory
     target.mkdir(mode=0o700,exist_ok=False)
     prepare_oauth(Path(oauth_source),target)
     destination=target/'sessions';destination.mkdir(mode=0o700)

@@ -19,6 +19,7 @@ class ResearchBridge:
         from integrations.runtimes.capability_inventory import PROFILE_TOOLS
         if capability_profile not in PROFILE_TOOLS:raise ValueError('unsupported_capability_profile')
         self.allowed_operations={tool.removeprefix('asr.') for tool in PROFILE_TOOLS[capability_profile]}|{'permit'}
+        self.capability_profile=capability_profile
         self.service=service; self.project=project; self.run=run
         self.researcher_token=researcher_token; self.supervisor_token=supervisor_token
         self.workspace=Path(workspace).resolve(); self.snapshots=Path(snapshots).resolve()
@@ -111,6 +112,13 @@ class ResearchBridge:
 
     def state(self):
         run=self.service.get_run(self.researcher_token,self.project,self.run)
+        if self.capability_profile=='powerflow-readonly-finalization/1':
+            return dict(projection='readonly-finalization/1',run={key:run[key] for key in ('project_id','research_run_id','experiment_id','state','contract_revision','budget')},
+                hypotheses=[{key:item[key] for key in ('hypothesis_id','revision','sha256')} for item in self.service.hypotheses(self.researcher_token,self.project)],
+                trials=[dict(trial_id=item['trial_id'],execution_attempt_id=item['execution_attempt_id'],state=item['dispatch_state'],replicates=item.get('replicates')) for item in run['trials']],
+                findings=self.service.findings(self.researcher_token,self.project,self.run),
+                validations=[{key:item[key] for key in ('validation_id','document')} for item in self.service.validations(self.researcher_token,self.project,self.run)],
+                omitted='Full contract, source/evaluation bytes and native transcripts are intentionally outside this closeout projection; their original evidence references remain retained.')
         observations=[];evaluation_targets=[]
         for trial in run['trials']:
             report=(trial.get('execution') or {}).get('report')
