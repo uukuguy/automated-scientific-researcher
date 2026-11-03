@@ -66,3 +66,4 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 - `docs/validation/CODEX-APP-SERVER-CONVERSATION.json` and `GROK-ACP-CONVERSATION.json` — actual bounded native dialog success and retained timeout, respectively.
 - `docs/validation/GROK-ACP-CONVERSATION-PROXY.json` and `GROK-ACP-CONVERSATION-VERIFIED.json` — preserved model-default guard and successful proxy-configured native dialogue.
 - `asr_evaluation/README.md`, `docs/validation/ISOLATED-EVALUATION.json` and `P3-ACTUAL05-VALIDATION.json` — actual isolated material checks and evaluator HTTP publication, with replication/budget limits.
+- `docs/plans/P3-CLOSURE.md` — remaining P3 implementation and actual acceptance gates under the accepted design.

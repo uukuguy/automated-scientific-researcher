@@ -107,6 +107,12 @@ Capstone 只持有交互和展示投影。讨论转成明确目标、任务、�
 
 **已确认**：结合 omp 的编程、分析与工具配置，以及 AAR 的研究方法、笔记、共享发现与快照，构建 ASR 版本化基座工具集。优先复用 pi 自带工具，按课题装配 curated skills、MCP/原生扩展、hooks 与依赖；不自动继承开发机全局工具配置。**电网科学计算工具包为独立必需组成**：算例与场景、采样、参考及候选潮流求解、数值诊断、独立电气检查、统计比较与可视化；以已有 MATPOWER/Octave 和 Python 验证为起点，按能力逐项验收。首批科学环境预选 pandapower、NumPy、SciPy、pandas、PyArrow、NetworkX、Matplotlib、Jupyter/ipykernel 与 pytest，单独锁定依赖并交叉校准，不扩充控制服务的运行依赖。完整配置见 [研究员运行时](architecture/RESEARCHER-RUNTIMES.md)。实验准入、预算、执行身份及独立证据仍由 ASR 服务控制，skill 不能授予额外权限或绕过订阅计费边界。
 
+### P3 候选与评价执行切片（实施方案）
+
+在已确认的可研究方法边界内，首个候选代码 profile 为 octave-candidate/1：冻结 candidate.m，由可信包装器传入固定 case118 原始模型。代码在固定镜像、只读根文件系统、无网络/凭据/评价器的容器中执行，仅允许有限临时存储；宿主采集输出有界，不挂载宿主可写工作区。此 profile 限定可执行接口，不把候选算法限制为 NR。原问题、正式验证方程与阈值保持冻结。
+
+候选注册由 Control 保存不可覆盖代码对象。独立评价先预留独立计算维度，再启动带身份的执行；只有实际退出和产物校验后结算。方法复现是新 trial/attempt 的真实重跑，不与冻结解的材料复核合并。P3 的闭环验收采用现有 pi 订阅基线与单研究员，细节和有限验收预算见 [P3 关闭计划](plans/P3-CLOSURE.md)。实现状态仍以工作清单与运行证据为准。
+
 ### 4.1 当前可执行切片
 
 本机参考入口为 `python -m powerflow_lab.reference`，具备真实 case118 实验、独立方程/运行约束检查、不可覆盖的试验产物、并发幂等、失败保留与新 trial 重放。操作和证据见 [P1 数值验收](validation/P1-NUMERICAL-LAB.md)。

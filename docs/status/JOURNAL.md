@@ -97,3 +97,5 @@
 - 2026-11-03: Published actual05 isolated negative recheck via evaluator HTTP; replay/reopen verified, original evidence and run/trial/finding counts unchanged.
 - 00:50 Added isolated frozen-material checks to validate retained numerical evidence without promoting author claims. [7555f3b]
 - 00:51 Removed evaluator test trailing whitespace to keep owned changes clean. [45f3a8a]
+- 2026-11-03: b0ff38f records verified native dialogues and isolated negative-result publication, preserving scope and remaining P3 acceptance gaps.
+- 2026-11-03: User requested P3 completion; resumed candidate containment, Control evaluation accounting and actual model-driven scientific acceptance.
