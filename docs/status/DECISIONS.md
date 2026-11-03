@@ -175,3 +175,10 @@
 - Decision: subscription LLM runtimes must not set or pass any `*_API_KEY`. Only pi explicitly using a non-`openai-codex`/`openai_codex` provider may allow these variables.
 - Rationale: make subscription authentication explicit and prevent accidental API billing or cross-provider credentials.
 - Boundary: enforce in launcher code and tests; OAuth login remains allowed. The pi exception does not authorize paid API usage or change finite budget requirements. Supplements D020 and the subscription-first runtime policy.
+
+## D022 — Purposeful limits and recoverable exceedance
+
+- Date: 2026-11-03. Status: explicit user requirement, added to AGENTS.md.
+- Decision: audit every implemented limit for purpose, unit/scope, configurable value and default adequacy. Keep acceptance-test budgets distinct from operational defaults.
+- Decision: exceedance requires detailed inspectable records and explicit recovery. Ordinary exhaustion pauses/defer research rather than dropping the task; forced execution termination requires a safety/resource reason, preserved evidence and exit proof. No silent failure or implicit fallback.
+- Boundary: raising limits is a recorded policy change, never usage reset. Unknown execution stays reserved. Current P3 closure includes re-auditing existing code, not only documenting future rules.

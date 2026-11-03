@@ -70,6 +70,36 @@ accepted or implemented by the other project.
 - Candidate code cannot modify evaluation code or read hidden evaluation assets.
   Claims of isolation require actual OS/container enforcement and verification.
 
+## Limits, exceedance and recovery
+
+Every limit must name the risk or resource it controls, its unit and scope,
+where it is configured, and why its default is sufficient for the intended
+workload. Distinguish acceptance-test limits from operational defaults. Do not
+add arbitrary short limits merely to make a test finish. Recheck current limits
+when workload, runtime, tools or execution profiles change.
+
+Exceedance must produce durable, inspectable records: limit name, configured
+value, measured or requested amount, affected research/session/trial/attempt IDs,
+action taken, retained evidence and the recovery or escalation path. Distinguish
+budget exhaustion, provider rate limits, transport timeout, invalid output and
+scientific negative outcomes. Never suppress an error, report success after an
+unverified operation, discard consumed cost or silently retry/fall back.
+
+Ordinary budget/session limits must pause or defer the research at a recoverable
+boundary with an explicit receipt. They must not silently discard or terminate
+the research task. Reserve cleanup/checkpoint time before deadlines. If safety,
+resource isolation or an unresponsive process requires forced termination, stop
+only the owned execution, preserve evidence and state, record the reason and
+actual exit proof, and leave the research recoverable. Unknown execution retains
+its reservations and blocks duplicate work until reconciled. Raising a limit
+requires an explicit recorded policy/budget change; it must not erase prior
+exceedance or reset usage. No paid API fallback follows from a limit change.
+
+For each changed or newly reviewed limit, verify its boundary and exceedance
+behavior with appropriate tests or actual execution evidence. Keep an up-to-date
+inventory in `docs/validation/LIMITS-AUDIT.md`; unresolved limits must be stated
+explicitly rather than hidden behind a successful test count.
+
 ## Local development and upstream adaptation
 
 Use the existing OrbStack Docker Engine and Compose; no additional VM is needed.

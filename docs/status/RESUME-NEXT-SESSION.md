@@ -86,3 +86,9 @@ Service483553a and executiond40aa84 are committed;41 combined real Docker checks
 ## Actual P3-01 credential failure retained
 
 D021 environment guard committed b36e6ef; root final242 tests passed8.925s (13 Docker opt-ins skipped),41 realDocker checks separately passed. P3-01 actual AAR/pi ended provider_error expired OAuth before tools/trials. Immutable public docs/validation/P3-RESULTS.json and private artifacts/p3-acceptance-20261103-01/result.json retain failure. Original180000ms ledger charged2395ms,1turn;177605ms/19turns/32tools and all numerical/evaluator budget remain. No fallback. User previously authorized browser re-login once if expired. AAR worker diagnoses supported OAuth refresh and same-run remaining-budget harness recovery; root continues P3, not closed.
+
+## Scientific evidence verified; bounded closeout in progress
+
+Private browserOAuth login succeeded through installedpi SDK +existingVivaldi consent; globalcredentials unchanged. Same-run recovered trajectory completed modelcandidate/h1/trial/SIGKILL/reopen/twoindepchecks/freshreplica/h2/notebook/finding. P3-RESULTS-RECOVERED.json remains incomplete because finalsessiontimed_out:180037ms spent vs180000limit (37ms debt), allreservations0. Scientific rawmaterial independently verified byroot in private root-evidence-review.json: residual3.9307660706864565e-13,6Qviolations,186thermalunassessed; distinctcontainers/samecode-input-solution, oldtrials h1 unchanged.
+
+Root announced explicit closeout contractrevision +30000modelms/+2turns/+3tools, numerical/evaluation allowances unchanged. AARworker implements deadlinecleanupheadroom and same-run finalization; no additionalmodel untilrootgo. Preserve everyprior report/hash/consumption, no numericalretry or criterion removal. Pending finalreport P3-RESULTS-FINAL.json. P3 not closed yet. Controlworker read-only finalaudit underway.

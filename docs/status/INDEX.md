@@ -14,7 +14,7 @@ Register each new status file here. Register archive buckets as one row per buck
 | `JOURNAL.md` | 🟢 active | Append-only event log. |
 | `RESUME-NEXT-SESSION.md` | 🟢 active | Session recovery point. |
 | `INDEX.md` | 🟢 active | File catalog. |
-| `DECISIONS.md` | 🟢 active | Accepted scope, interaction, Capstone architecture and subscription-first replaceable runtimes and omp/AAR, power-grid capability base and locked scientific stack, and D016 scientific trust and D018 three-layer AAR/Capstone organization (superseding D017) and D021 subscription API-key prohibition; protocol details remain draft. |
+| `DECISIONS.md` | 🟢 active | Accepted scope, interaction, Capstone architecture and subscription-first replaceable runtimes and omp/AAR, power-grid capability base and locked scientific stack, and D016 scientific trust and D018 three-layer AAR/Capstone organization (superseding D017) and D021 subscription API-key prohibition and D022 recoverable limit governance; protocol details remain draft. |
 | `BOOTSTRAP-PREFLIGHT.md` | 🟡 decision history | Initial environment discovery; current numerical evidence is in docs/validation/P1-NUMERICAL-LAB.md. |
 
 ## Decision history
@@ -67,3 +67,5 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 - `docs/validation/GROK-ACP-CONVERSATION-PROXY.json` and `GROK-ACP-CONVERSATION-VERIFIED.json` — preserved model-default guard and successful proxy-configured native dialogue.
 - `asr_evaluation/README.md`, `docs/validation/ISOLATED-EVALUATION.json` and `P3-ACTUAL05-VALIDATION.json` — actual isolated material checks and evaluator HTTP publication, with replication/budget limits.
 - `docs/plans/P3-CLOSURE.md` — remaining P3 implementation and actual acceptance gates under the accepted design.
+
+- `docs/validation/LIMITS-AUDIT.md` — limit purposes, defaults, exceedance receipts and recovery audit required by repository rules.

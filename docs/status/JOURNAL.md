@@ -109,3 +109,10 @@
 - 2026-11-03: b36e6ef prohibits subscription API-key environments while preserving explicit native OAuth authentication.
 - 2026-11-03: Root verified 242 tests, 13 explicit Docker skips; worker verified 41 real Docker checks before bounded P3 launch.
 - 2026-11-03: P3-01 retained expired OAuth failure: one turn, no experiments, 2395ms charged; remaining budget preserved for login recovery.
+- 2026-11-03: 6aa4400 aligns verified P3 execution boundaries and subscription credential policy, retaining the OAuth failure recovery checkpoint.
+- 2026-11-03: 542543a preserves failed P3 authentication evidence and resumes the original run without resetting budgets.
+- 2026-11-03: Private browser OAuth login succeeded; resumed same P3 run with remaining budget and original failed evidence preserved.
+- 2026-11-03: Recovered P3 completed scientific chain; final timeout retained 37ms original-cap debt, without duplicate trials or evidence loss.
+- 2026-11-03: Root verified both raw trial inventories, distinct replay containers, typed evaluator artifacts and unchanged hypothesis bindings.
+- 2026-11-03: 58a288b reused Control budget gates before numerical claims and starts, preventing queued launches after overruns.
+- 2026-11-03: User requires AGENTS limit rules and full current-implementation audit for justified defaults, explicit exceedance records and recoverable tasks.
