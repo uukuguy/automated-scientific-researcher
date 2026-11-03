@@ -1,0 +1,676 @@
+{
+  "schema": "asr-organization-pilot-receipt/1",
+  "project_id": "organization-0518e6ccecc2",
+  "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+  "model": "gpt-6.1-sol",
+  "runtime": "pi 1.5.0 / actual pinned AAR loop",
+  "state": "paused",
+  "budget": {
+    "attempts": {
+      "limit": 0,
+      "spent": 0,
+      "reserved": 0,
+      "available": 0
+    },
+    "execution_ms": {
+      "limit": 0,
+      "spent": 0,
+      "reserved": 0,
+      "available": 0
+    },
+    "research_walltime_ms": {
+      "limit": 1200000,
+      "spent": 1019882,
+      "reserved": 0,
+      "available": 180118
+    },
+    "tool_executions": {
+      "limit": 320,
+      "spent": 130,
+      "reserved": 0,
+      "available": 190
+    },
+    "turns": {
+      "limit": 160,
+      "spent": 77,
+      "reserved": 0,
+      "available": 83
+    }
+  },
+  "all_processes_exited": true,
+  "pending_deliveries": 0,
+  "steps": [
+    {
+      "step": "000-organizer",
+      "status": "provider_error",
+      "result_sha256": "52c8293e0b5157bfd59d5e08092f8043248e034c77f973ebc8a376ab7582da7d",
+      "delivered": false
+    },
+    {
+      "step": "001-organizer",
+      "status": "settled",
+      "result_sha256": "8c4396a70f83e0c94b3ee5a44ce9f4301cdee6f4554234af6ed7588d730c82ea",
+      "delivered": true
+    },
+    {
+      "step": "002-lead_1",
+      "status": "settled",
+      "result_sha256": "76bcbe05f37ec391bb3f24643cafccca6190896342f42fbf5c7fee87e89a726f",
+      "delivered": true
+    },
+    {
+      "step": "003-organizer",
+      "status": "settled",
+      "result_sha256": "fd5b69c8d44cb19844feedbc673ca9941f4b9b2f97b2fb3bb58afff366159369",
+      "delivered": true
+    },
+    {
+      "step": "004-lead_1",
+      "status": "settled",
+      "result_sha256": "146ec86e137626883678b6913b983a9c32c059716429f0a47f590d1572f6b645",
+      "delivered": true
+    },
+    {
+      "step": "005-worker_1",
+      "status": "settled",
+      "result_sha256": "7994e385493d67445e1609b90d837b071dd6213adb51db5cab566e69ad666e3a",
+      "delivered": true
+    },
+    {
+      "step": "006-organizer",
+      "status": "settled",
+      "result_sha256": "81e6953fa7b0e006916334a444aee3fa9bdf4dc9d903c0823ba6bcd4c17fde50",
+      "delivered": true
+    },
+    {
+      "step": "007-lead_1",
+      "status": "provider_error",
+      "result_sha256": "a839a45f9107a151bf9a2758096ad31d20127cabc1340f8ca325629eb4d97f39",
+      "delivered": false
+    },
+    {
+      "step": "008-lead_1",
+      "status": "settled",
+      "result_sha256": "50c2e89adcf328493802e5afb2bdf8451eb187deeadb01b665e2197ed27088a1",
+      "delivered": true
+    },
+    {
+      "step": "009-organizer",
+      "status": "settled",
+      "result_sha256": "84a05236c2480a32d4277ca058a9d3f661a571778e4dd09512767e7c7db80e5d",
+      "delivered": true
+    },
+    {
+      "step": "010-lead_1",
+      "status": "settled",
+      "result_sha256": "6b9afb4a67b97ad633c96fbe0966ccc9a03d4a1b4550ecb218c3a5949cc9a4b4",
+      "delivered": true
+    },
+    {
+      "step": "011-organizer",
+      "status": "settled",
+      "result_sha256": "80572e2e082beef8bf026436f766685458e380f75f132e290f771241f3d54472",
+      "delivered": true
+    }
+  ],
+  "snapshots": [
+    {
+      "snapshot_sha256": "229cf3f91a48c04c7ccdbbe4bb6dbdd3ff49d125bdc8c1860efa4099bd01ab4e",
+      "files": [
+        {
+          "path": "CROSS-REVIEW.md",
+          "sha256": "4105f5771c789a1ebd4869bc2ebc2a26436c4bb5f05ef957a0826c2e1459aef4",
+          "size": 5380
+        },
+        {
+          "path": "ORGANIZATION-REPORT.md",
+          "sha256": "852783838f5a222f221d4f1cb72594f3a000fc529b81056cb108cec5ca8fbdec",
+          "size": 10622
+        }
+      ]
+    },
+    {
+      "snapshot_sha256": "29c1fa7302d7ded1492ce5b7b9b17457f8ad3fe3401c7be2a3587b1354dac262",
+      "files": [
+        {
+          "path": "NEXT-EXPERIMENT.md",
+          "sha256": "e86753380cd077d0fee3e77c201a367b083e1cc9a5275d4e603ccd5f45e529b9",
+          "size": 12554
+        },
+        {
+          "path": "PROTOTYPE-NOTES.md",
+          "sha256": "a9b59e92724de6e346c218b0da1891c6ee74b7674609e577a796efdc168dc00b",
+          "size": 6377
+        },
+        {
+          "path": "REVIEW-RESPONSE.md",
+          "sha256": "23fecd9fa696b7919de544801e8400d07d049fbe75e3f5deac9e9f850752faf8",
+          "size": 5467
+        },
+        {
+          "path": "acquisition_ledger.py",
+          "sha256": "7587e7161c26863df3be96c3376331d44234b37c7da98e391a168aea179fe2fb",
+          "size": 11134
+        }
+      ]
+    },
+    {
+      "snapshot_sha256": "309dc5b4bb037e7fff24fd0fc5d3c596e80f9aeb57212362cb12466b8f375ef0",
+      "files": [
+        {
+          "path": "DIRECTION-PROPOSAL.md",
+          "sha256": "df5db6abec663bac7326e2f69e3c8d19bf6e88da1136906840ce02ef6c2458d1",
+          "size": 8043
+        }
+      ]
+    },
+    {
+      "snapshot_sha256": "66ad79c6b95e12e38b35167457708819535ff5b899299eb2aacf3a373af5ef05",
+      "files": [
+        {
+          "path": "ORGANIZATION-REPORT.md",
+          "sha256": "aaf63f04a491a037f9ec506a7696894e34593b78b272351d1bb727f9a07f0cdc",
+          "size": 5684
+        }
+      ]
+    },
+    {
+      "snapshot_sha256": "a123a99512b8dde7278275b46a5ca75892912796035b9098bb3ce6c941c209ce",
+      "files": [
+        {
+          "path": "CROSS-REVIEW.md",
+          "sha256": "4105f5771c789a1ebd4869bc2ebc2a26436c4bb5f05ef957a0826c2e1459aef4",
+          "size": 5380
+        }
+      ]
+    },
+    {
+      "snapshot_sha256": "b6bbe39b6c9ea38a67d9a4c4bbf7ab93cd6d9395c6f7a7f5b8ba3d1e2f9ffb92",
+      "files": [
+        {
+          "path": "ORGANIZATION-REPORT.md",
+          "sha256": "d8e8c97bcc9b9a724eada9fc8ef97c759eb7417ecefe7d530998891e08da45e1",
+          "size": 6975
+        }
+      ]
+    },
+    {
+      "snapshot_sha256": "d7b14c4adb06090a701e5dfcdf812a316295bab1b6bde2862e3ce885542c8d10",
+      "files": [
+        {
+          "path": "CROSS-REVIEW.md",
+          "sha256": "4105f5771c789a1ebd4869bc2ebc2a26436c4bb5f05ef957a0826c2e1459aef4",
+          "size": 5380
+        },
+        {
+          "path": "ORGANIZATION-REPORT.md",
+          "sha256": "a40a5330eadf6ed005f6a8583d5d3791f9a9af6b51618e5db482fd6f84ca2b82",
+          "size": 8056
+        }
+      ]
+    },
+    {
+      "snapshot_sha256": "e730965b0f94811013965f93676e704119b49ea5bef23875a132cfd83b9dd021",
+      "files": [
+        {
+          "path": "WORKER-AUDIT.md",
+          "sha256": "32ef9d925f9acb79154f701e6eb7e15650b767a6a1544f2135275abf5e260fed",
+          "size": 10826
+        }
+      ]
+    },
+    {
+      "snapshot_sha256": "fc550140fed0a7a2f919127126cb1bbc70b9b7a8c9ae84306673b2634c80d3b6",
+      "files": [
+        {
+          "path": "NEXT-EXPERIMENT.md",
+          "sha256": "5ee120bff83af26e2430b591855bed5bfc6966de85bc1d85f5b37660cbeca92b",
+          "size": 11474
+        },
+        {
+          "path": "PROTOTYPE-NOTES.md",
+          "sha256": "42f0b4ad676bb03a79bd0630f5504abd5e40fbbb6ff88d654856b8506dd138c5",
+          "size": 4145
+        },
+        {
+          "path": "acquisition_ledger.py",
+          "sha256": "cfb3fc9cb603df9d7fffc2281829b437fbd94352ab4f640b0b08451e8166a275",
+          "size": 8371
+        }
+      ]
+    }
+  ],
+  "organization": {
+    "records": [
+      {
+        "author": "human",
+        "author_role": "human",
+        "created_at": "2026-11-03T13:04:23.787543+00:00",
+        "document": {
+          "max_active_leads": 2,
+          "max_active_workers": 2
+        },
+        "entity_id": "capacity",
+        "evidence": [],
+        "kind": "policy",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 1
+      },
+      {
+        "author": "human",
+        "author_role": "human",
+        "created_at": "2026-11-03T13:04:23.787947+00:00",
+        "document": {
+          "enabled": true,
+          "role": "organizer"
+        },
+        "entity_id": "organizer",
+        "evidence": [],
+        "kind": "member",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 2
+      },
+      {
+        "author": "human",
+        "author_role": "human",
+        "created_at": "2026-11-03T13:04:23.788315+00:00",
+        "document": {
+          "enabled": true,
+          "role": "lead"
+        },
+        "entity_id": "lead_1",
+        "evidence": [],
+        "kind": "member",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 3
+      },
+      {
+        "author": "human",
+        "author_role": "human",
+        "created_at": "2026-11-03T13:04:23.788669+00:00",
+        "document": {
+          "enabled": true,
+          "role": "lead"
+        },
+        "entity_id": "lead_2",
+        "evidence": [],
+        "kind": "member",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 4
+      },
+      {
+        "author": "human",
+        "author_role": "human",
+        "created_at": "2026-11-03T13:04:23.789040+00:00",
+        "document": {
+          "enabled": true,
+          "role": "worker"
+        },
+        "entity_id": "worker_1",
+        "evidence": [],
+        "kind": "member",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 5
+      },
+      {
+        "author": "human",
+        "author_role": "human",
+        "created_at": "2026-11-03T13:04:23.789389+00:00",
+        "document": {
+          "enabled": true,
+          "role": "worker"
+        },
+        "entity_id": "worker_2",
+        "evidence": [],
+        "kind": "member",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 6
+      },
+      {
+        "author": "organizer",
+        "author_role": "organizer",
+        "created_at": "2026-11-03T13:12:56.299342+00:00",
+        "document": {
+          "evidence_trial_ids": [],
+          "recipients": [
+            "lead_1"
+          ],
+          "text": "Please inspect CLIENT-BRIEF.md, CLIENT-TASK.json, TARGET-METHOD.py, P4-SAMPLER.py, P4 reports, current state and full organization history. No scientific direction is preassigned. Propose one evidence-grounded direction you would own, using a proposed direction record (do not self-activate), and send organizer a substantive message with its question, competing explanations, deliverable, bounded Worker task(s), cross-review need and strongest refutation/next-experiment design. You may challenge/reject the human two-layer architecture; do not equate equation solvability, convergence, operational feasibility and training utility. No execution, labels or numerical trials are allowed. Source/prototype work must be labelled untested. Capacity is 2 Leads/2 Workers, but do not fill slots; Workers should start only assigned active work after activation. Keep this proposal stage short and preserve useful diagnosis; later active work should include bounded Worker use and substantive cross-review. Historical claims are not newly reproduced. shared_findings is currently empty; underlying historical evaluation JSON/raw assets are not present. Initial organizer evidence map is snapshotted at shared-artifacts/66ad79c6b95e12e38b35167457708819535ff5b899299eb2aacf3a373af5ef05/ORGANIZATION-REPORT.md (file SHA256 aaf63f04a491a037f9ec506a7696894e34593b78b272351d1bb727f9a07f0cdc). Return proposal for organizer activation; no repeated acknowledgement loops."
+        },
+        "entity_id": "organizer-invite-direction-lead1",
+        "evidence": [],
+        "kind": "message",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 7
+      },
+      {
+        "author": "lead_1",
+        "author_role": "lead",
+        "created_at": "2026-11-03T13:14:31.614010+00:00",
+        "document": {
+          "evidence_trial_ids": [],
+          "owner": "lead_1",
+          "question": "Does target-local acquisition suffice, or do bridge/global support and iterative acquisition add joint OOD/ID utility at matched proposal cost?",
+          "rationale": "P4-SAMPLER.py is a fixed 32/16/16 mixture, not active learning or feasible-region discovery. Historical reports describe target gains and significant ID degradation, but no component ablation. Propose a precise matched-budget ablation design and untested acquisition/ledger prototype, one bounded Worker source-contract audit, and substantive independent cross-review. Separate solver success, equation/input validity, operational status and training utility. No numerical execution is authorized; historical reports are not reproduced evidence.",
+          "status": "proposed",
+          "title": "Utility-first acquisition under the fixed surrogate"
+        },
+        "entity_id": "utility-first-acquisition",
+        "evidence": [],
+        "kind": "direction",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 8
+      },
+      {
+        "author": "lead_1",
+        "author_role": "lead",
+        "created_at": "2026-11-03T13:14:43.480090+00:00",
+        "document": {
+          "evidence_trial_ids": [],
+          "recipients": [
+            "organizer"
+          ],
+          "text": "Proposed direction utility-first-acquisition revision 1 awaits your activation. Source-inspected diagnosis/design is snapshotted at shared-artifacts/309dc5b4bb037e7fff24fd0fc5d3c596e80f9aeb57212362cb12466b8f375ef0/DIRECTION-PROPOSAL.md (file SHA256 df5db6abec663bac7326e2f69e3c8d19bf6e88da1136906840ce02ef6c2458d1). Question: does target-local acquisition suffice, or do bridge/global support and adaptation add joint OOD/ID utility at matched proposal cost? Competing explanations: local coverage, polynomial-support benefit, unavoidable fixed-basis ID/target compromise; no supplied hard-solve bottleneck. Deliverable on activation: precise component-ablation protocol plus small untested acquisition/ledger prototype and failure/leakage tests. Request one bounded Worker audit of source/fit contracts and adversarial cases; no Worker assigned yet. Please reserve worker_1 if useful. Cross-review should challenge component identifiability, fit-distribution tradeoff, operational-status honesty and cost fairness; another Lead is optional, not a slot-filling need. Strongest refutation: target-only matches/exceeds joint mixed utility, or all fixed-model variants fail ID rule; either rejects unjustified architectural complexity. Proposed next study keeps 64 proposal attempts per arm and failed slots, compares baseline/mixed/target-only before adaptive acquisition, uses new locked development/final panels, never reuses P4 finals as hidden tests. Existing historical all-valid labels do not justify difficult-solve machinery. No current trials, numerical claims or execution; all evidence_trial_ids empty."
+        },
+        "entity_id": "lead1-direction-proposal-handoff",
+        "evidence": [],
+        "kind": "message",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 9
+      },
+      {
+        "author": "organizer",
+        "author_role": "organizer",
+        "created_at": "2026-11-03T13:15:07.159028+00:00",
+        "document": {
+          "evidence_trial_ids": [],
+          "owner": "lead_1",
+          "question": "Does target-local acquisition suffice, or do bridge/global support and iterative acquisition add joint OOD/ID utility at matched proposal cost?",
+          "rationale": "Organizer inspected lead_1's snapshotted proposal 309dc5b4bb037e7fff24fd0fc5d3c596e80f9aeb57212362cb12466b8f375ef0/DIRECTION-PROPOSAL.md. Activate a single scientific direction: precise matched-budget static component contrasts first, an explicitly untested acquisition/provenance prototype, and one bounded Worker source-contract/adversarial audit. Historical sources justify utility/ID tradeoff investigation but not a demonstrated difficult-solve bottleneck or feasible-region discovery. Organizer will perform substantive cross-review of completed artifacts; no second direction needed. All work remains design-only with zero experimental/execution budget.",
+          "status": "active",
+          "title": "Utility-first acquisition under the fixed surrogate"
+        },
+        "entity_id": "utility-first-acquisition",
+        "evidence": [],
+        "kind": "direction",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 2,
+        "schema": "asr-organization-record/1",
+        "seq": 10
+      },
+      {
+        "author": "organizer",
+        "author_role": "organizer",
+        "created_at": "2026-11-03T13:15:19.978958+00:00",
+        "document": {
+          "evidence_trial_ids": [],
+          "recipients": [
+            "lead_1"
+          ],
+          "text": "Activated utility-first-acquisition revision 2 after reading your actual proposal. Please assign worker_1 a bounded audit task under this direction; worker_2/lead_2 remain unused intentionally. Build and snapshot the protocol + compact UNTESTED acquisition/ledger prototype early, review Worker evidence, and hand organizer the resulting exact snapshot references. I will substantively cross-review the artifacts. Required precision: (1) clearly distinguish the minimal mixture-v-target contrast (package comparison, not individual component causality) from component-identifying contrasts; freeze arm set, seed/panel counts, resource request and stopping/selection rule in the next-experiment proposal rather than leaving optional arms ambiguous; power limitations may be explicit. (2) Any later adaptive arm must count acquisition/probe labels, failed proposals and retries in total budget; a coordinate-only static prototype is not validated active learning. (3) ledger must bind labels, fixed input, model/fit policy, statuses and memory provenance; no operating-feasibility filtering silently changing the client task. (4) Your proposal says shared_findings contains organizer snapshot: distinguish governed shared-artifacts snapshots from versioned scientific shared_findings, initially empty. No new numerical work or trial claims. Finish promptly after useful handoff, with disagreements and untested boundaries explicit."
+        },
+        "entity_id": "organizer-activation-review-criteria",
+        "evidence": [],
+        "kind": "message",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 11
+      },
+      {
+        "author": "lead_1",
+        "author_role": "lead",
+        "created_at": "2026-11-03T13:15:56.552558+00:00",
+        "document": {
+          "assignee": "worker_1",
+          "direction_id": "utility-first-acquisition",
+          "evidence_trial_ids": [],
+          "instructions": "Read CLIENT-BRIEF.md, state/budgets, current organization records and actual CLIENT-TASK.json, TARGET-METHOD.py, P4-SAMPLER.py, P4 reports. Read proposal shared-artifacts/309dc5b4bb037e7fff24fd0fc5d3c596e80f9aeb57212362cb12466b8f375ef0/DIRECTION-PROPOSAL.md. Independently audit fixed-trainer/label/evaluation contracts and propose adversarial ledger/test vectors: leakage/overlap, proposal versus valid-label accounting, failed solves versus feasibility, input preservation, model/source binding, ID guardrail. Distinguish mixture-v-target package comparison from component causality. Produce concise WORKER-AUDIT.md with exact source functions and prioritized actionable defects; tests may be written only if compact and explicitly UNTESTED. No execution, new labels/trials, numerical reconstruction or operating-feasibility filtering. Historical reports are not independently reproduced evidence. Snapshot artifact and complete task with exact snapshot references; empty evidence_trial_ids. Lead is concurrently drafting protocol/prototype and will review your evidence. Bound task to source audit, not new architecture or broad literature work.",
+          "result": "",
+          "status": "assigned",
+          "title": "Audit fixed-trainer acquisition contracts and adversarial cases"
+        },
+        "entity_id": "audit-acquisition-contract",
+        "evidence": [],
+        "kind": "task",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 12
+      },
+      {
+        "author": "lead_1",
+        "author_role": "lead",
+        "created_at": "2026-11-03T13:19:19.218023+00:00",
+        "document": {
+          "evidence_trial_ids": [],
+          "recipients": [
+            "worker_1"
+          ],
+          "text": "Your existing task scope remains source-contract/adversarial audit; concrete draft now available for inspection at shared-artifacts/fc550140fed0a7a2f919127126cb1bbc70b9b7a8c9ae84306673b2634c80d3b6/{NEXT-EXPERIMENT.md,acquisition_ledger.py,PROTOTYPE-NOTES.md}. Source is explicitly UNTESTED; no execution. Please prioritize concrete binding or accounting defects in these actual artifacts in your existing audit, including mutable untrusted-ledger boundary, status contradictions, and whether paired 2x2 replacement contrasts are honestly scoped. Do not alter task specification or broaden into implementation; snapshot your evidence and complete task so I can review it."
+        },
+        "entity_id": "lead1-prototype-worker-review",
+        "evidence": [],
+        "kind": "message",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 13
+      },
+      {
+        "author": "lead_1",
+        "author_role": "lead",
+        "created_at": "2026-11-03T13:19:19.219285+00:00",
+        "document": {
+          "evidence_trial_ids": [],
+          "recipients": [
+            "organizer"
+          ],
+          "text": "Concrete draft handoff for substantive cross-review: snapshot fc550140fed0a7a2f919127126cb1bbc70b9b7a8c9ae84306673b2634c80d3b6 contains NEXT-EXPERIMENT.md (5ee120bff83af26e2430b591855bed5bfc6966de85bc1d85f5b37660cbeca92b), acquisition_ledger.py (cfb3fc9cb603df9d7fffc2281829b437fbd94352ab4f640b0b08451e8166a275), PROTOTYPE-NOTES.md (42f0b4ad676bb03a79bd0630f5504abd5e40fbbb6ff88d654856b8506dd138c5). Path prefix shared-artifacts/<snapshot>/. Worker_1 assigned audit-acquisition-contract under active direction and has these drafts; returned audit still pending. Protocol freezes four paired 2x2 replacement arms, eight seeds, 64 slots each, fresh dev256+256/final512+512 panels, exact selection/fallback, prospective3584 labels/33fits/replay/72jobs/2400000ms caps. It distinguishes package-v-component replacement inference, non-equivalence of null findings, label failures/yield, and no retry/feasibility filtering. No current permission requested to execute. Prototype composes supplied blocks and binds externally trusted receipts; it is not active learning, generator, solver, validator or deployable pipeline. Snapshot-index/scientific-finding confusion explicitly corrected. Please cross-review concrete artifacts; I will inspect Worker evidence and your objections before final direction handoff. No tests executed and no new numerical evidence."
+        },
+        "entity_id": "lead1-prototype-organizer-review",
+        "evidence": [],
+        "kind": "message",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 14
+      },
+      {
+        "author": "worker_1",
+        "author_role": "worker",
+        "created_at": "2026-11-03T13:19:41.190149+00:00",
+        "document": {
+          "assignee": "worker_1",
+          "direction_id": "utility-first-acquisition",
+          "evidence_trial_ids": [],
+          "instructions": "Read CLIENT-BRIEF.md, state/budgets, current organization records and actual CLIENT-TASK.json, TARGET-METHOD.py, P4-SAMPLER.py, P4 reports. Read proposal shared-artifacts/309dc5b4bb037e7fff24fd0fc5d3c596e80f9aeb57212362cb12466b8f375ef0/DIRECTION-PROPOSAL.md. Independently audit fixed-trainer/label/evaluation contracts and propose adversarial ledger/test vectors: leakage/overlap, proposal versus valid-label accounting, failed solves versus feasibility, input preservation, model/source binding, ID guardrail. Distinguish mixture-v-target package comparison from component causality. Produce concise WORKER-AUDIT.md with exact source functions and prioritized actionable defects; tests may be written only if compact and explicitly UNTESTED. No execution, new labels/trials, numerical reconstruction or operating-feasibility filtering. Historical reports are not independently reproduced evidence. Snapshot artifact and complete task with exact snapshot references; empty evidence_trial_ids. Lead is concurrently drafting protocol/prototype and will review your evidence. Bound task to source audit, not new architecture or broad literature work.",
+          "result": "",
+          "status": "in_progress",
+          "title": "Audit fixed-trainer acquisition contracts and adversarial cases"
+        },
+        "entity_id": "audit-acquisition-contract",
+        "evidence": [],
+        "kind": "task",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 2,
+        "schema": "asr-organization-record/1",
+        "seq": 15
+      },
+      {
+        "author": "worker_1",
+        "author_role": "worker",
+        "created_at": "2026-11-03T13:22:03.435145+00:00",
+        "document": {
+          "assignee": "worker_1",
+          "direction_id": "utility-first-acquisition",
+          "evidence_trial_ids": [],
+          "instructions": "Read CLIENT-BRIEF.md, state/budgets, current organization records and actual CLIENT-TASK.json, TARGET-METHOD.py, P4-SAMPLER.py, P4 reports. Read proposal shared-artifacts/309dc5b4bb037e7fff24fd0fc5d3c596e80f9aeb57212362cb12466b8f375ef0/DIRECTION-PROPOSAL.md. Independently audit fixed-trainer/label/evaluation contracts and propose adversarial ledger/test vectors: leakage/overlap, proposal versus valid-label accounting, failed solves versus feasibility, input preservation, model/source binding, ID guardrail. Distinguish mixture-v-target package comparison from component causality. Produce concise WORKER-AUDIT.md with exact source functions and prioritized actionable defects; tests may be written only if compact and explicitly UNTESTED. No execution, new labels/trials, numerical reconstruction or operating-feasibility filtering. Historical reports are not independently reproduced evidence. Snapshot artifact and complete task with exact snapshot references; empty evidence_trial_ids. Lead is concurrently drafting protocol/prototype and will review your evidence. Bound task to source audit, not new architecture or broad literature work.",
+          "result": "Completed static source-contract/adversarial audit; artifact read back and snapshotted, no execution. Exact handoff: shared-artifacts/e730965b0f94811013965f93676e704119b49ea5bef23875a132cfd83b9dd021/WORKER-AUDIT.md (file SHA256 32ef9d925f9acb79154f701e6eb7e15650b767a6a1544f2135275abf5e260fed). Reviewed lead draft snapshot fc550140fed0a7a2f919127126cb1bbc70b9b7a8c9ae84306673b2634c80d3b6 and actual client/P4 sources. F1 high integration blocker: ingest failure branch accepts wrong self-hashed scenario and ignores available input-integrity contradictions; require exact-input provenance for every attempted slot and integrity stops regardless of status. F2 documented mutable-ledger boundary: receipt/proposal aliases and missing downstream hash rechecks permit post-check mutations; not a deployed exploit under the stated immutable-store precondition. F3 native invalid_label lacks error required by ingest; specify lossless adapter rather than fabricate solver exception/retry. Scoped paired 2x2 replacement contrasts are scientifically honest, not intrinsic mechanism or independent32-replicate claims. Includes unexecuted adversarial vectors and ID-rule boundaries. No source changes, new labels/trials, numerical reproduction or independent validation claim; all tests UNTESTED.",
+          "status": "completed",
+          "title": "Audit fixed-trainer acquisition contracts and adversarial cases"
+        },
+        "entity_id": "audit-acquisition-contract",
+        "evidence": [],
+        "kind": "task",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 3,
+        "schema": "asr-organization-record/1",
+        "seq": 16
+      },
+      {
+        "author": "organizer",
+        "author_role": "organizer",
+        "created_at": "2026-11-03T13:23:31.277839+00:00",
+        "document": {
+          "evidence_trial_ids": [],
+          "recipients": [
+            "lead_1"
+          ],
+          "text": "Substantive organizer review is snapshotted at shared-artifacts/a123a99512b8dde7278275b46a5ca75892912796035b9098bb3ce6c941c209ce/CROSS-REVIEW.md (SHA256 4105f5771c789a1ebd4869bc2ebc2a26436c4bb5f05ef957a0826c2e1459aef4). I read all three actual draft files plus completed Worker audit e730965b0f94811013965f93676e704119b49ea5bef23875a132cfd83b9dd021. Scientific design accepted as a scoped prospective replacement study, not equivalence/mechanism proof. Code inspection supports Worker F1/F2/F3: require exact attempted-input provenance and integrity stops on failed statuses; address mutable aliases/downstream digest rechecks or retain precise external immutable-store gate; document lossless native invalid_label adapter without fabricated solver exception/retry. Also exact int attempt_count avoids True/1.0 acceptance. Please inspect and disposition Worker audit and this review, make compact focused corrections, snapshot final code/protocol/notes plus your review response, and return promptly for organizer final synthesis. All code/tests remain UNTESTED. No new execution. Protocol shared inputs intentionally repeat solves and charge2048 arm slots although768 unique named coordinates; this is okay if explicitly not called a sample-efficiency optimum. No need to expand arms or recruit another Lead/Worker. Budget is finite; prioritize final durable handoff over broad engineering."
+        },
+        "entity_id": "organizer-source-cross-review-disposition",
+        "evidence": [],
+        "kind": "message",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 17
+      },
+      {
+        "author": "lead_1",
+        "author_role": "lead",
+        "created_at": "2026-11-03T13:28:37.733350+00:00",
+        "document": {
+          "evidence_trial_ids": [],
+          "recipients": [
+            "organizer"
+          ],
+          "text": "Final design/source handoff ready for synthesis. Read actual Worker audit e730965b…/WORKER-AUDIT.md and your a123a995…/CROSS-REVIEW.md; accepted F1/F2/F3 and exact-attempt-type finding. Revised snapshot: shared-artifacts/29c1fa7302d7ded1492ce5b7b9b17457f8ad3fe3401c7be2a3587b1354dac262/ contains NEXT-EXPERIMENT.md (e86753380cd077d0fee3e77c201a367b083e1cc9a5275d4e603ccd5f45e529b9), acquisition_ledger.py (7587e7161c26863df3be96c3376331d44234b37c7da98e391a168aea179fe2fb), PROTOTYPE-NOTES.md (a9b59e92724de6e346c218b0da1891c6ee74b7674609e577a796efdc168dc00b), REVIEW-RESPONSE.md (23fecd9fa696b7919de544801e8400d07d049fbe75e3f5deac9e9f850752faf8). ingest now requires trusted pre-solve exact expected-input hashes for every status, checks available integrity contradictions before branches, deep-copies incoming evidence, distinguishes native invalid_label reason from true exception, and requires exact int1 attempt. training_manifest requires an externally pinned ledger hash, rechecks/re-ingests records and copies originals; bind_model requires external manifest pin and recomputes row hash. Authenticated adapters/store/executors remain mandatory external gates, not implemented scientific validation. Notes specify lossless native adapter; protocol states768 unique coordinates/2048 paid repeated arm solves and no efficiency-optimality claim. Source changes were read back, NOT executed/tested. No numerical claims/trials, no unresolved scientific disagreement; original Worker review is not retroactively a test of revised code. Please inspect revised source and close direction if accepted for design handoff, then synthesize actual achieved artifacts/remaining preflight in ORGANIZATION-REPORT.md. No more delegation needed; actual final budget receipt has101569ms walltime available and zero execution permits."
+        },
+        "entity_id": "lead1-final-reviewed-handoff",
+        "evidence": [],
+        "kind": "message",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 18
+      },
+      {
+        "author": "organizer",
+        "author_role": "organizer",
+        "created_at": "2026-11-03T13:29:13.541796+00:00",
+        "document": {
+          "evidence_trial_ids": [],
+          "owner": "lead_1",
+          "question": "Does target-local acquisition suffice, or do bridge/global support and iterative acquisition add joint OOD/ID utility at matched proposal cost?",
+          "rationale": "Design handoff accepted after organizer inspected all four revised artifacts in snapshot 29c1fa7302d7ded1492ce5b7b9b17457f8ad3fe3401c7be2a3587b1354dac262 and actual Worker audit/Organizer cross-review. Source now contains expected-input checks for every status, deep copies/external pins/revalidation, invalid-label reason distinction and exact integer attempt count. These are observed source changes, not executed fixes. Completed deliverables: diagnosis, precise four-arm prospective study, untested static-allocation/provenance prototype, substantive cross-review and explicit Lead disposition. No numerical result or deployed/validated pipeline; future study requires new authorization, authentic data/adapters/store/executors, tests and independent evaluator. Closing design work only; scientific efficacy questions remain open.",
+          "status": "closed",
+          "title": "Utility-first acquisition under the fixed surrogate"
+        },
+        "entity_id": "utility-first-acquisition",
+        "evidence": [],
+        "kind": "direction",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 3,
+        "schema": "asr-organization-record/1",
+        "seq": 19
+      },
+      {
+        "author": "organizer",
+        "author_role": "organizer",
+        "created_at": "2026-11-03T13:30:20.855272+00:00",
+        "document": {
+          "evidence_trial_ids": [],
+          "recipients": [
+            "lead_1"
+          ],
+          "text": "Final organizer synthesis preserved at shared-artifacts/229cf3f91a48c04c7ccdbbe4bb6dbdd3ff49d125bdc8c1860efa4099bd01ab4e/ORGANIZATION-REPORT.md (SHA256 852783838f5a222f221d4f1cb72594f3a000fc529b81056cb108cec5ca8fbdec), with CROSS-REVIEW.md in the same snapshot. Inspected all four actual revised files in your29c1fa7302d7ded1492ce5b7b9b17457f8ad3fe3401c7be2a3587b1354dac262 package. Accepted design/source handoff and closed utility-first-acquisition revision3, seq19; this is not validated code, numerical efficacy, or run lifecycle completion. Report records trajectory, Worker audit/Organizer cross-review, corrections, historical-only P4 evidence, disagreements resolved, untested boundaries and exact separately authorized3584-slot prospective study. Recommendation remains static replacement study before active acquisition/recovery solver; native adapters/authenticated provenance/tests/fresh evaluator are prerequisites. No further work or acknowledgement requested. All current evidence_trial_ids empty; no experiments executed."
+        },
+        "entity_id": "organizer-final-design-handoff",
+        "evidence": [],
+        "kind": "message",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 20
+      },
+      {
+        "author": "human",
+        "author_role": "human",
+        "created_at": "2026-11-03T13:30:39.323786+00:00",
+        "document": {
+          "evidence_trial_ids": [],
+          "recipients": [
+            "organizer"
+          ],
+          "text": "No pending role deliveries remain. Review actual organization/task state and artifacts. Preserve a final ORGANIZATION-REPORT.md and snapshot; identify incomplete work honestly. Continue only if a concrete necessary task remains."
+        },
+        "entity_id": "closing-review",
+        "evidence": [],
+        "kind": "message",
+        "project_id": "organization-0518e6ccecc2",
+        "research_run_id": "research_ea8d744abd5e4a31bc913d1564f12528",
+        "revision": 1,
+        "schema": "asr-organization-record/1",
+        "seq": 21
+      }
+    ],
+    "next_after": 21,
+    "has_more": false,
+    "boundary": "Shared organization history; task results are claims, not execution exit proof or scientific validation."
+  },
+  "public_materials_unchanged": true,
+  "compute_executions": 0,
+  "boundary": "Organization/design evidence only. No prototype execution, new numerical evidence, parallel runtime proof or P5 completion.",
+  "engineering_tests": {
+    "total": 345,
+    "skipped": 20,
+    "failed": 0
+  },
+  "developer_interventions": [
+    "Public client materials and neutral roles/capacity",
+    "Expired OAuth browser login and same-run recovery",
+    "WebSocket error inspected and same-run recovery",
+    "One host closing-review message with human authority; no scientific topic prescribed"
+  ],
+  "engineering_review": "Independent reviewer unavailable due configured subagent model; local code review and full tests performed."
+}

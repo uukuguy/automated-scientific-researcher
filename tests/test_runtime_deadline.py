@@ -13,6 +13,33 @@ from integrations.runtimes import session
 
 
 class DeadlineTests(unittest.TestCase):
+    def test_auth_sync_conflict_preserves_result_cost_and_pauses(self):
+        import test_control_service
+        from integrations.aar.bridge import ResearchBridge
+        from integrations.runtimes.process import identify
+        fixture=test_control_service.ControlTests();fixture.setUp()
+        self.addCleanup(fixture.doCleanups);fixture.start()
+        root=Path(fixture.tmp.name);auth=root/'auth.json'
+        auth.write_text(json.dumps({'openai-codex':{'type':'oauth','access':'fixture','refresh':'fixture'}}))
+        class ExitedRuntime:
+            provider='codex';model='gpt-6.1-sol'
+            def run(self,**kwargs):
+                import sys
+                kwargs['on_launch']()
+                process=subprocess.Popen([sys.executable,'-c','import time;time.sleep(60)'],start_new_session=True)
+                try:kwargs['on_process'](identify(process.pid))
+                finally:process.terminate();process.wait()
+                return dict(status='settled')
+        bridge=ResearchBridge(fixture.service,project='p',run='r',researcher_token='agent-secret',supervisor_token='human-secret',workspace=root,snapshots=root/'snapshots')
+        with patch('integrations.runtimes.session.synchronize_oauth',side_effect=RuntimeFailure('oauth_source_changed')):
+            result=session.run_session(ExitedRuntime(),bridge,config_dir=root/'private',native_session_id='r',prompt='fixture',limits=Limits(3,1,1),oauth_source=auth)
+        state=fixture.service.get_run('human-secret','p','r')
+        self.assertEqual(result['status'],'settled')
+        self.assertEqual(result['oauth_sync']['reason'],'oauth_source_changed')
+        self.assertEqual(state['state'],'paused')
+        self.assertEqual(state['budget']['research_walltime_ms']['reserved'],0)
+        self.assertGreater(state['budget']['research_walltime_ms']['spent'],0)
+
     def test_prelaunch_cap_is_durable_and_measured_setup_is_not_free(self):
         import test_control_service
         from integrations.aar.bridge import ResearchBridge

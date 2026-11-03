@@ -5,7 +5,7 @@ import json
 import math
 import time
 import uuid
-from .pi import Limits, RuntimeFailure, prepare_oauth
+from .pi import Limits, RuntimeFailure, prepare_oauth, synchronize_oauth
 
 
 def session_engine_deadline(limits,reserved_walltime_ms,started):
@@ -43,7 +43,8 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
                 **bridge.runtime_identity,**observation,idempotency_key='runtime_limit_'+owner+'_'+identity)
         if forward and on_event:on_event(record)
     try:
-        prepare_oauth(Path(oauth_source or Path.home()/'.pi/agent/auth.json'),Path(config_dir))
+        source=Path(oauth_source or Path.home()/'.pi/agent/auth.json')
+        oauth_baseline=prepare_oauth(source,Path(config_dir))
         effective=Limits(min(limits.walltime_seconds,claim['reserved_walltime_ms']/1000),limits.turns,limits.tool_executions)
         with bridge:
             result=runtime.run(workspace=bridge.workspace,config_dir=config_dir,session_id=native_session_id,
@@ -54,6 +55,18 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
                 should_stop=lambda: service.runtime_stop_requested(bridge.supervisor_token,bridge.project,bridge.run))
         exited=True
         result['runtime_claim']=claim
+        try:
+            result['oauth_sync']=synchronize_oauth(source,Path(config_dir),oauth_baseline)
+        except (RuntimeFailure,OSError,ValueError) as error:
+            # Preserve the actual model result and release its reservation below.
+            # A conflicting login/locked store is not permission to log in again.
+            reason=error.code if isinstance(error,RuntimeFailure) else 'oauth_store_io_failed'
+            result['oauth_sync']=dict(status='deferred',reason=reason,credentials_emitted=False)
+            with service._connect() as db:
+                service._event(db,bridge.project,bridge.run,'runtime_auth_sync_deferred',session_id=claim['session_id'],reason=reason)
+            state=service.get_run(bridge.supervisor_token,bridge.project,bridge.run)
+            if state['state']=='running':
+                service.command(bridge.supervisor_token,bridge.project,bridge.run,'pause',expected_revision=state['control_revision'],idempotency_key='auth_sync_'+owner)
         for observation in result.get('limit_observations',[]):record_event(observation,False)
         if result['status']=='rate_limited':
             run=service.get_run(bridge.supervisor_token,bridge.project,bridge.run)

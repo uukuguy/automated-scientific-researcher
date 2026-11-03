@@ -222,3 +222,11 @@
 - P5 must assess autonomous problem decomposition and project-code construction as well as coordination and scientific utility. Keep governing execution/evidence/evaluation boundaries fixed. Do not declare a difficult-solver layer necessary merely because it is drawn; P4 did not establish that need.
 - Rationale: Predetermined directions would prevent testing the Organizer's scientific decomposition capability and could force an unnecessary architecture.
 - Clarifies D018 role responsibilities and concurrency suggestions; preserves D019/D020 role/runtime separation and D025/D026 client-task boundaries. No implementation or new model budget is claimed by this decision.
+
+## D028 — Canonical subscription authentication, isolated role conversations
+
+- Date: 2026-11-03. Status: implementation correction prompted by the user's repeated-login report; preserves D019/D021.
+- Diagnosis: role-local auth took precedence over source updates, and refreshes remained in private copies. New runs could reuse an old canonical credential; different roles could retain divergent credentials. Provider WebSocket failure is a separate transport condition.
+- Decision: stage Codex OAuth from the explicit canonical source; after confirmed process exit, reconcile refreshes under a short compatible file lock and compare-before-write check. Preserve other providers and newer logins. Store conflicts pause and retain results/costs; do not open login automatically.
+- Roles retain separate conversations/tool configuration. No API keys, paid fallback or credential values in receipts. A successful isolated browser login was explicitly consolidated to the same-account canonical source after the pilot.
+- Boundary: tested serial reconciliation and conflict detection, not yet a fully validated concurrent refresh broker. This supersedes the implementation convention of never returning a private refresh to the user's source, not historical P2 evidence.

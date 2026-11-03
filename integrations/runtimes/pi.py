@@ -4,6 +4,7 @@ This adapter owns one bounded session, never a research scheduler. OS isolation
 for arbitrary coding tools belongs to the execution supervisor, not this module.
 """
 from dataclasses import dataclass
+from contextlib import contextmanager
 import json
 import hashlib
 import math
@@ -15,6 +16,7 @@ import signal
 import subprocess
 import threading
 import time
+import tempfile
 from .capability_inventory import PROFILE_TOOLS,PROFILE_CODING_TOOLS
 from .environment import COMMON_ENVIRONMENT,build_environment,reject_api_key_settings
 
@@ -38,23 +40,70 @@ class Limits:
             raise ValueError('positive_integer_limits_required')
 
 
-def prepare_oauth(source: Path, config_dir: Path):
-    """Copy only Codex OAuth into private runtime config; never resolve API keys.
+def _oauth(data):
+    auth=data.get('openai-codex',{})
+    if auth.get('type')!='oauth':raise RuntimeFailure('codex_subscription_oauth_required')
+    reject_api_key_settings(auth,runtime='pi',provider='openai-codex')
+    return auth
 
-    The runtime keeps refreshes in its own directory. Reusing that directory on
-    recovery preserves refreshed credentials without rewriting the user's store.
+
+def _oauth_digest(auth):
+    return hashlib.sha256(json.dumps(auth,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+
+
+@contextmanager
+def _oauth_lock(path):
+    """Short local transaction compatible with pi's proper-lockfile directory.
+
+    Never hold across network/model calls or remove another process's lock.
+    A busy/stale lock is an explicit recoverable condition, not a login request.
     """
+    if path.is_symlink():raise RuntimeFailure('oauth_source_symlink_forbidden')
+    lock=Path(str(path)+'.lock')
+    try:lock.mkdir(mode=0o700)
+    except FileExistsError:raise RuntimeFailure('oauth_store_busy') from None
+    try:yield
+    finally:lock.rmdir()
+
+
+def _write_oauth_file(path, data):
+    fd,temporary=tempfile.mkstemp(prefix='.asr-oauth-',dir=path.parent)
+    try:
+        with os.fdopen(fd,'w') as stream:
+            json.dump(data,stream);stream.flush();os.fsync(stream.fileno())
+        os.replace(temporary,path)
+    finally:
+        if os.path.exists(temporary):os.unlink(temporary)
+
+
+def prepare_oauth(source: Path, config_dir: Path):
+    """Stage the canonical subscription state; private copies are not authority.
+
+    Return only an opaque comparison digest for refresh reconciliation. Other
+    providers never enter the role configuration; no credential enters receipts.
+    """
+    source=source.absolute()
     config_dir.mkdir(parents=True,exist_ok=True,mode=0o700)
     target=config_dir/'auth.json'
-    data=json.loads((target if target.exists() else source).read_text())
-    auth=data.get('openai-codex',{})
-    if auth.get('type') != 'oauth':
-        raise RuntimeFailure('codex_subscription_oauth_required')
-    reject_api_key_settings(auth,runtime='pi',provider='openai-codex')
-    fd=os.open(target,os.O_WRONLY|os.O_CREAT|os.O_TRUNC,0o600)
-    os.fchmod(fd,0o600)
-    with os.fdopen(fd,'w') as stream: json.dump({'openai-codex':auth},stream)
+    with _oauth_lock(source):
+        auth=_oauth(json.loads(source.read_text()))
+        if target.absolute()!=source:_write_oauth_file(target,{'openai-codex':auth})
     (config_dir/'settings.json').write_text(json.dumps({'retry':{'enabled':False,'provider':{'maxRetries':0}},'cacheWarming':'off','compaction':{'enabled':False}}))
+    return _oauth_digest(auth)
+
+
+def synchronize_oauth(source: Path, config_dir: Path, expected_digest):
+    """Persist a reconciled child's refresh without replacing a newer login."""
+    source=source.absolute();target=config_dir/'auth.json'
+    auth=_oauth(json.loads(target.read_text()))
+    with _oauth_lock(source):
+        data=json.loads(source.read_text());current=_oauth(data)
+        if current==auth:return dict(status='unchanged',credentials_emitted=False)
+        if _oauth_digest(current)!=expected_digest:
+            raise RuntimeFailure('oauth_source_changed')
+        data['openai-codex']=auth
+        _write_oauth_file(source,data)
+    return dict(status='updated',credentials_emitted=False)
 
 
 class PiRuntime:

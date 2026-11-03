@@ -54,8 +54,13 @@ chooses its own hypothesis/iteration setting and writes its finding from actual
 supervised numerical evidence. Reopen must preserve trial IDs and findings.
 The workspace has its own Git root and Git ancestor discovery is bounded.
 If the provider reports an expired token despite a future local expiry field,
-`--refresh-oauth` refreshes only the isolated runtime credential using pi's
-`auth check`; it never prints credentials or rewrites the user's auth store.
+`--refresh-oauth` refreshes an isolated credential using pi's `auth check`
+and reconciles it to the canonical source. Each role stages current source OAuth,
+then returns refreshed Codex credentials after process exit under a short lock
+and compare-before-write guard. Other providers are preserved. A newer login,
+busy store or I/O error pauses with an explicit receipt; it does not trigger
+automatic browser login. Credentials are never printed. Role conversations and
+tool permissions remain separate from the shared account authentication.
 An unavailable proxy can produce `fetch failed`: explicitly configure the
 operator's existing HTTP(S)_PROXY and NO_PROXY for the local bridge.
 Failed acceptance artifacts are retained and are not scientific success evidence.

@@ -4,9 +4,42 @@ import os
 from pathlib import Path
 import tempfile
 import unittest
-from integrations.runtimes.pi import Limits, PiRuntime, RuntimeFailure, prepare_oauth
+from integrations.runtimes.pi import Limits, PiRuntime, RuntimeFailure, prepare_oauth, synchronize_oauth
 
 class RuntimeTests(unittest.TestCase):
+    def test_shared_oauth_supersedes_stale_role_and_persists_rotation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);source=root/'auth.json';role=root/'role';role.mkdir()
+            old={'type':'oauth','access':'old','refresh':'old'}
+            fresh={'type':'oauth','access':'fresh','refresh':'fresh'}
+            rotated={'type':'oauth','access':'rotated','refresh':'rotated'}
+            source.write_text(json.dumps({'openai-codex':fresh,'other':{'untouched':True}}))
+            (role/'auth.json').write_text(json.dumps({'openai-codex':old}))
+            baseline=prepare_oauth(source,role)
+            self.assertEqual(json.loads((role/'auth.json').read_text())['openai-codex'],fresh)
+            (role/'auth.json').write_text(json.dumps({'openai-codex':rotated}))
+            receipt=synchronize_oauth(source,role,baseline)
+            self.assertEqual(receipt['status'],'updated')
+            self.assertNotIn('rotated',json.dumps(receipt))
+            self.assertEqual(json.loads(source.read_text()),{'openai-codex':rotated,'other':{'untouched':True}})
+            prepare_oauth(source,root/'next-role')
+            self.assertEqual(json.loads((root/'next-role/auth.json').read_text())['openai-codex'],rotated)
+
+    def test_oauth_sync_does_not_overwrite_concurrent_login_or_ignore_lock(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);source=root/'auth.json';role=root/'role'
+            auth=lambda name:{'type':'oauth','access':name,'refresh':name}
+            source.write_text(json.dumps({'openai-codex':auth('initial')}))
+            baseline=prepare_oauth(source,role)
+            source.write_text(json.dumps({'openai-codex':auth('new-login')}))
+            with self.assertRaisesRegex(RuntimeFailure,'oauth_source_changed'):
+                synchronize_oauth(source,role,baseline)
+            self.assertEqual(json.loads(source.read_text())['openai-codex'],auth('new-login'))
+            lock=Path(str(source)+'.lock');lock.mkdir()
+            with self.assertRaisesRegex(RuntimeFailure,'oauth_store_busy'):
+                prepare_oauth(source,role)
+            self.assertTrue(lock.is_dir())
+
     def test_requires_finite_positive_limits(self):
         for value in (0, -1, float('inf'), True):
             with self.assertRaises(ValueError): Limits(value, 2, 3)

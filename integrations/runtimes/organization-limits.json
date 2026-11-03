@@ -1,0 +1,11 @@
+{
+  "schema": "asr-organization-resources/1",
+  "budget": {"attempts": 0, "execution_ms": 0, "research_walltime_ms": 1200000, "turns": 160, "tool_executions": 320},
+  "session_limits": {"walltime_seconds": 240, "turns": 40, "tool_executions": 80},
+  "capacity": {"max_active_leads": 2, "max_active_workers": 2},
+  "purpose": "User-authorized P5 continuation: actual subscription-only organization and design pilot using known P4 evidence. No new numerical experiments or scientific performance claim.",
+  "basis": "Twenty aggregate model minutes permit roughly five four-minute role sessions, or more shorter turns, with shared charging across participants. Four minutes allows reading, task/discussion records and a snapshotted artifact; it is a pilot cap, not a production research default. Existing per-session cleanup headroom remains inside the allowance.",
+  "exceedance": "Pause at the owning runtime/Control boundary, retain role journal and all records/costs. No automatic retry, allowance increase, provider change or paid fallback. Unresolved previous runtime prevents another session.",
+  "paid_api_authorized": false,
+  "paid_api_fallback": false
+}

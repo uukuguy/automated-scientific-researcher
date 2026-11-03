@@ -4,7 +4,7 @@
 
 - Project: Automated Scientific Researcher — durable research system with power-grid sampling and solver-method research as its first scientific deliverable.
 - Current branch: main
-- Theme-level focus: Formal scientific comparison contracts over a verified bounded single-researcher foundation.
+- Theme-level focus: Task-scoped scientific execution over verified single-researcher science and serial role collaboration.
 - Project route: managed
 - Canonical worklist: docs/plans/WORKLIST.md
 - Active work package: P5 — autonomous direction formation and bounded role collaboration; P4 verified
@@ -20,13 +20,15 @@
 - Human interaction: asynchronous guidance and versioned controls; Capstone scientific-research mode is the accepted workbench architecture; preparation is defined in `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md`.
 - Local upstream: `3th-party/automated-w2s-research/`, ignored by the parent repository; tracked deterministic preparation/patches live in integrations/aar/.
 
+- Organization: existing Control records drive serial AAR role wakeups and durable delivery receipts; roles keep separate conversations while OAuth refreshes reconcile with the canonical account source. The verified pilot produces untested designs/source, not numerical evidence.
+
 - Supervisor: fenced attempts, frozen request dispatch, external timeout and conservative process reconciliation.
 
 - Control: authenticated local HTTP, reference-profile executable contracts, atomic admission, project budgets, command receipts, candidate findings and evaluator-only immutable Validation attestations. Shared budget rows expose model/compute balances and evaluator dimensions; sourced quota observations preserve unknown values. Managed evaluator artifacts and lifecycle projections have verified receipts.
 
 ## Open Problems (theme-level)
 
-- Organization records and unique task ownership are implemented in Control; actual role-bound AAR sessions, organizational adaptation and comparative scientific acceptance remain gaps.
+- Control organization records, role binding and serial AAR design collaboration are verified; task-scoped scientific execution, concurrent roles and comparative scientific acceptance remain gaps.
 - Long native conversations require explicit context recovery; final AAR report publication needed controller archival after a time cap. Automatic report-first/context recovery is not verified.
 
 - P4 provides measured training benefit on a synthetic client project, with actual AAR experiments, independent final scoring and exact selected-training replay. Broader topology/distribution transfer, mechanistic attribution and actual client utility remain untested.

@@ -321,3 +321,16 @@ Native dialogue evidence and retained Grok route/default-model failures: [NATIVE
 ## D021: subscription credential environment
 
 All subscription LLM runtime launches prohibit any `*_API_KEY` setting in the child environment, including unrelated provider keys. Native Codex, Grok and future Claude subscription bindings follow this rule. Only pi explicitly using a provider other than `openai-codex`/`openai_codex` may permit such variables; this exception does not authorize paid usage or automatic fallback. Keep OAuth subscription login separate and never print credential values. Enforce at launch, with regression tests, rather than relying on agent instructions.
+
+### P5 authentication reconciliation (2026-11-03)
+
+Subscription account authentication is shared authority, not a role conversation.
+`prepare_oauth` now stages current canonical Codex OAuth rather than preferring a
+stale private cache. `synchronize_oauth` merges a reconciled child's refresh into
+that source with pi-compatible short lock-directory transactions and comparison
+against the staged credential digest. Other providers remain unchanged. A newer
+login or store conflict is preserved and explicitly pauses the owning Control
+run; it does not imply expired authentication or authorize repeated login.
+Session directories and capability boundaries remain per-role. No credential
+values enter receipts. This is serial runtime reconciliation with conflict
+detection, not a fully validated concurrent OAuth broker. See P5 pilot evidence.

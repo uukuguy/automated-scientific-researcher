@@ -15,7 +15,7 @@ from asr_supervisor.store import ExecutionStore
 from asr_supervisor.supervisor import Supervisor
 from powerflow_lab.reference import make_request
 from integrations.aar.bridge import ResearchBridge
-from .pi import PiRuntime, Limits, prepare_oauth
+from .pi import PiRuntime, Limits, prepare_oauth, synchronize_oauth
 from .session import run_session
 from .environment import COMMON_ENVIRONMENT,build_environment,reject_api_key_settings
 
@@ -25,20 +25,21 @@ def main():
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--aar-checkout',type=Path,help='Use actual pinned AAR loop and upstream organization backend')
     parser.add_argument('--oauth-source',type=Path,default=Path.home()/'.pi/agent/auth.json')
-    parser.add_argument('--refresh-oauth',action='store_true',help='Refresh isolated OAuth copy after provider expiry; never rewrites user auth')
+    parser.add_argument('--refresh-oauth',action='store_true',help='Refresh isolated OAuth and reconcile it to the canonical source without overwriting a newer login')
     args=parser.parse_args();root=args.output.resolve();root.mkdir(parents=True,exist_ok=False)
     settings=json.loads((Path.home()/'.pi/agent/settings.json').read_text())
     reject_api_key_settings(settings,runtime='pi',provider='openai-codex')
     if settings.get('defaultProvider')!='openai-codex': raise ValueError('default_codex_subscription_required')
     model=settings['defaultModel'];thinking=settings.get('defaultThinkingLevel','high')
     if args.refresh_oauth:
-        private=root/'pi-private';prepare_oauth(args.oauth_source,private)
+        private=root/'pi-private';baseline=prepare_oauth(args.oauth_source,private)
         authfile=private/'auth.json';auth=json.loads(authfile.read_text());auth['openai-codex']['expires']=0
         authfile.write_text(json.dumps(auth))
         import os
         env=build_environment((*COMMON_ENVIRONMENT,'PI_CODING_AGENT_DIR'),runtime='pi',provider='openai-codex',overrides={'PI_CODING_AGENT_DIR':str(private)})
         checked=subprocess.run(['pi','auth','check','--provider','openai-codex','--json'],env=env,capture_output=True,timeout=30)
-        if checked.returncode: raise RuntimeError('isolated_subscription_oauth_refresh_failed; run pi /login openai-codex')
+        if checked.returncode: raise RuntimeError('subscription_oauth_refresh_failed; inspect authentication status before requesting browser login')
+        synchronize_oauth(args.oauth_source,private,baseline)
     work=root/'workspace';work.mkdir()
     subprocess.run(['git','init','--quiet',str(work)],check=True)
     human,researcher,supervisor=[secrets.token_urlsafe(32) for _ in range(3)]

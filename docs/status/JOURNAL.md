@@ -185,3 +185,23 @@
 - 2026-11-03: Bound organization identity and tool profiles to existing runtime reservations; preserved serial process fencing and shared setup costs.
 
 - 2026-11-03: Verified18 organization/role tests and336 combined tests (20 skips); all checks used no provider inference.
+
+- 2026-11-03: Bound role sessions to existing reservations so identity changes cannot bypass process reconciliation or consumed costs. [d27b752]
+
+- 2026-11-03: Launched P5 subscription organization pilot with explicit20-minute shared model budget, zero compute and model-record-driven role delivery.
+
+- 2026-11-03: P5 first provider call failed on expired OAuth; preserved2940ms/one turn, zero reservations; browser reauthentication succeeded.
+
+- 2026-11-03: Fixed normalized-contract recovery comparison and paused preflight ordering; resumed original P5 run without budget reset.
+
+- 2026-11-03: Actual organizer invited a Lead without prescribed topic; Lead proposed utility-first acquisition and requested adversarial review.
+
+- 2026-11-03: Verified342 tests,20 environment skips; added explicit prelaunch exhausted-budget diagnostics. Independent review agent unavailable due configured model.
+
+- 2026-11-03: WebSocket failure preserved; same-run recovery completed organizer/Lead/Worker design handoff with no numerical experiments.
+
+- 2026-11-03: Verified9 snapshots,16 files,27 delivery files;12 sessions exited, zero pending deliveries/reservations,1,019,882ms consumed.
+
+- 2026-11-03: Fixed canonical OAuth staging/refresh reconciliation with conflict pause; consolidated successful login without exposing credentials or changing other providers.
+
+- 2026-11-03: Verified345 engineering tests (20 skips),24 organization checks; P5 design pilot accepted, full scientific organization acceptance remains open.
