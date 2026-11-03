@@ -1,0 +1,513 @@
+{
+  "schema": "asr-p3-finalization-result/1",
+  "status": "closed_with_retained_original_timeout",
+  "project_id": "p3-689915c3fcd2",
+  "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+  "prepared_plan": {
+    "path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p3-acceptance-20261103-01/finalization-plan.json",
+    "sha256": "611b55a35a446f3bd6c2c5b6c30ca4ed0e011cfadbdfa078d44a72e279bf5add"
+  },
+  "prior_reports": {
+    "result.json": "064631d99c325054fd06c999294e7c50e94984f9f0475601bf5eff8852c2f061",
+    "result-resumed.json": "3df216f31f9f43120d090ed29039de13fe0276033c87e4bb48ea308a740ea7ea"
+  },
+  "original_phase_checks": {
+    "actual_aar_owner": true,
+    "candidate_interrupted_after_evidence": true,
+    "same_trial_ids_on_reopen": true,
+    "same_frozen_hypothesis_on_reopen": true,
+    "no_duplicate_method_submission_after_recovery": true,
+    "recovered_model_settled": false,
+    "hypothesis_revision_retained": true,
+    "candidate_method_authored_by_model": true,
+    "candidate_finding_published": true,
+    "independent_validation_published": true,
+    "independent_replication_verified": true,
+    "research_note_snapshot": true,
+    "all_admitted_trials_terminal": true,
+    "all_admitted_evaluations_settled": true,
+    "zero_reservations_and_no_budget_debt": false
+  },
+  "original_timeout_retained": true,
+  "original_walltime_limit_ms": 180000,
+  "original_walltime_spent_ms": 180037,
+  "original_walltime_overrun_ms": 37,
+  "finalization_checks": {
+    "scientific_counts_unchanged": true,
+    "original_report_hashes_unchanged": true,
+    "native_model_settled": true,
+    "zero_reservations_and_no_debt": true,
+    "finish_receipt_applied": true,
+    "run_completed": true
+  },
+  "counts_before": {
+    "trials": 2,
+    "evaluations": 2,
+    "hypotheses": 2,
+    "findings": 1,
+    "validations": 3
+  },
+  "counts_after": {
+    "trials": 2,
+    "evaluations": 2,
+    "hypotheses": 2,
+    "findings": 1,
+    "validations": 3
+  },
+  "finish_receipt": {
+    "command_id": "command_7cd3cec371ec4d8695b850b6008abfda",
+    "kind": "finish",
+    "project_id": "p3-689915c3fcd2",
+    "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+    "author": "p3-human",
+    "payload": {},
+    "status": "applied",
+    "effective_scope": "drain_inflight_and_close",
+    "control_revision": 4,
+    "created_at": "2026-11-03T02:15:10.055350+00:00"
+  },
+  "budget": {
+    "attempts": {
+      "limit": 4,
+      "spent": 2,
+      "reserved": 0,
+      "available": 2
+    },
+    "evaluation_attempts": {
+      "limit": 3,
+      "spent": 2,
+      "reserved": 0,
+      "available": 1
+    },
+    "evaluation_ms": {
+      "limit": 60000,
+      "spent": 751,
+      "reserved": 0,
+      "available": 59249
+    },
+    "execution_ms": {
+      "limit": 80000,
+      "spent": 1373,
+      "reserved": 0,
+      "available": 78627
+    },
+    "research_walltime_ms": {
+      "limit": 210000,
+      "spent": 193820,
+      "reserved": 0,
+      "available": 16180
+    },
+    "tool_executions": {
+      "limit": 35,
+      "spent": 23,
+      "reserved": 0,
+      "available": 12
+    },
+    "turns": {
+      "limit": 22,
+      "spent": 21,
+      "reserved": 0,
+      "available": 1
+    }
+  },
+  "resource_ledgers": {
+    "schema_version": "asr-logical-ledgers/1",
+    "model": {
+      "research_walltime_ms": {
+        "limit": 210000,
+        "spent": 193820,
+        "reserved": 0,
+        "available": 16180
+      },
+      "tool_executions": {
+        "limit": 35,
+        "spent": 23,
+        "reserved": 0,
+        "available": 12
+      },
+      "turns": {
+        "limit": 22,
+        "spent": 21,
+        "reserved": 0,
+        "available": 1
+      }
+    },
+    "compute": {
+      "attempts": {
+        "limit": 4,
+        "spent": 2,
+        "reserved": 0,
+        "available": 2
+      },
+      "evaluation_attempts": {
+        "limit": 3,
+        "spent": 2,
+        "reserved": 0,
+        "available": 1
+      },
+      "evaluation_ms": {
+        "limit": 60000,
+        "spent": 751,
+        "reserved": 0,
+        "available": 59249
+      },
+      "execution_ms": {
+        "limit": 80000,
+        "spent": 1373,
+        "reserved": 0,
+        "available": 78627
+      }
+    },
+    "unclassified": {},
+    "provider_quota": {
+      "state": "unknown"
+    }
+  },
+  "runtime_records": [
+    {
+      "actual_walltime_ms": 2395,
+      "epoch": 1,
+      "execution_exited": true,
+      "exit_receipt": {
+        "execution_exited": true,
+        "identity": {
+          "backend": "host-process",
+          "birth": "1793667492.464738",
+          "boot": "1792019499:650515",
+          "host": "m3max.local",
+          "pgid": 75622,
+          "pid": 75622
+        },
+        "observed_at": 1793667494.8133812,
+        "terminated": false
+      },
+      "finished_at": "2026-11-03T00:58:14.814044+00:00",
+      "launch_authorized_at": "2026-11-03T00:58:12.464318+00:00",
+      "launch_state": "launching",
+      "owner": "pi_f3de5d23e0804861a0d2f8e74de135fc",
+      "process_identity": {
+        "backend": "host-process",
+        "birth": "1793667492.464738",
+        "boot": "1792019499:650515",
+        "host": "m3max.local",
+        "pgid": 75622,
+        "pid": 75622
+      },
+      "project_id": "p3-689915c3fcd2",
+      "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+      "reserved_walltime_ms": 110000,
+      "runtime_identity": {
+        "auth_mode": "subscription_oauth",
+        "billing_mode": "subscription",
+        "model": "gpt-6.1-sol",
+        "provider": "openai-codex"
+      },
+      "session_id": "session_0dcec69996fa486eb1ad3af7b77767a2",
+      "started_at": "2026-11-03T00:58:12.308272+00:00",
+      "state": "exited"
+    },
+    {
+      "actual_walltime_ms": 53268,
+      "epoch": 1,
+      "execution_exited": true,
+      "exit_receipt": {
+        "execution_exited": true,
+        "identity": {
+          "backend": "host-process",
+          "birth": "1793668152.175082",
+          "boot": "1792019499:650515",
+          "host": "m3max.local",
+          "pgid": 95532,
+          "pid": 95532
+        },
+        "observed_at": 1793668205.370062,
+        "terminated": false
+      },
+      "finished_at": "2026-11-03T01:10:05.370673+00:00",
+      "launch_authorized_at": "2026-11-03T01:09:12.174591+00:00",
+      "launch_state": "launching",
+      "owner": "pi_778adbaff579408fa2beeb650a977d27",
+      "process_identity": {
+        "backend": "host-process",
+        "birth": "1793668152.175082",
+        "boot": "1792019499:650515",
+        "host": "m3max.local",
+        "pgid": 95532,
+        "pid": 95532
+      },
+      "project_id": "p3-689915c3fcd2",
+      "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+      "reserved_walltime_ms": 110000,
+      "runtime_identity": {
+        "auth_mode": "subscription_oauth",
+        "billing_mode": "subscription",
+        "model": "gpt-6.1-sol",
+        "provider": "openai-codex"
+      },
+      "session_id": "session_57fc60d0322f4da6953ae2eca1284f1d",
+      "started_at": "2026-11-03T01:09:12.014442+00:00",
+      "state": "exited"
+    },
+    {
+      "actual_walltime_ms": 124374,
+      "epoch": 1,
+      "execution_exited": true,
+      "exit_receipt": {
+        "execution_exited": true,
+        "identity": {
+          "backend": "host-process",
+          "birth": "1793668205.753075",
+          "boot": "1792019499:650515",
+          "host": "m3max.local",
+          "pgid": 97901,
+          "pid": 97901
+        },
+        "observed_at": 1793668330.0505338,
+        "terminated": false
+      },
+      "finished_at": "2026-11-03T01:12:10.051162+00:00",
+      "launch_authorized_at": "2026-11-03T01:10:05.752614+00:00",
+      "launch_state": "launching",
+      "limit_observations": [
+        {
+          "author": "p3-human",
+          "created_at": "2026-11-03T02:13:45.639536+00:00",
+          "epoch": 1,
+          "kind": "model_walltime",
+          "limit": 180000,
+          "observation_id": "limit_e85d8dbaab354044978ccae9fe6dff4b",
+          "observed": 180037,
+          "reason": "Retrospective operator observation from frozen result-resumed.json: original project research-walltime acceptance budget was insufficient; measured timeout and original debt remain retained.",
+          "recoverable": true,
+          "session_id": "session_28076cd847634cef994b1b692e1df3ab",
+          "unit": "milliseconds"
+        }
+      ],
+      "owner": "pi_34b886a351c247c9a24a7faf65dd02a3",
+      "process_identity": {
+        "backend": "host-process",
+        "birth": "1793668205.753075",
+        "boot": "1792019499:650515",
+        "host": "m3max.local",
+        "pgid": 97901,
+        "pid": 97901
+      },
+      "project_id": "p3-689915c3fcd2",
+      "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+      "reserved_walltime_ms": 124044,
+      "runtime_identity": {
+        "auth_mode": "subscription_oauth",
+        "billing_mode": "subscription",
+        "model": "gpt-6.1-sol",
+        "provider": "openai-codex"
+      },
+      "session_id": "session_28076cd847634cef994b1b692e1df3ab",
+      "started_at": "2026-11-03T01:10:05.586847+00:00",
+      "state": "exited"
+    },
+    {
+      "actual_walltime_ms": 13783,
+      "epoch": 1,
+      "execution_exited": true,
+      "exit_receipt": {
+        "execution_exited": true,
+        "identity": {
+          "backend": "host-process",
+          "birth": "1793672096.354204",
+          "boot": "1792019499:650515",
+          "host": "m3max.local",
+          "pgid": 8066,
+          "pid": 8066
+        },
+        "observed_at": 1793672110.0418649,
+        "terminated": false
+      },
+      "finished_at": "2026-11-03T02:15:10.042532+00:00",
+      "launch_authorized_at": "2026-11-03T02:14:56.353624+00:00",
+      "launch_state": "launching",
+      "owner": "pi_bda542aa1afc4fa5916d97c1192074d0",
+      "process_identity": {
+        "backend": "host-process",
+        "birth": "1793672096.354204",
+        "boot": "1792019499:650515",
+        "host": "m3max.local",
+        "pgid": 8066,
+        "pid": 8066
+      },
+      "project_id": "p3-689915c3fcd2",
+      "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+      "reserved_walltime_ms": 29963,
+      "runtime_identity": {
+        "auth_mode": "subscription_oauth",
+        "billing_mode": "subscription",
+        "model": "gpt-6.1-sol",
+        "provider": "openai-codex"
+      },
+      "session_id": "session_7606725793754b2fbecaee2b6535420b",
+      "started_at": "2026-11-03T02:14:56.176845+00:00",
+      "state": "exited"
+    }
+  ],
+  "runtime": {
+    "status": "settled",
+    "turns": 2,
+    "tool_executions": 1,
+    "duration_seconds": 13.225891000125557,
+    "capability_pack_sha256": "5bd83800a1b4765076e1ecd257cbd49b552271139d8e3dc6d11df3110bf54303",
+    "capability_pack_id": "powerflow-readonly-finalization/1",
+    "limit_observations": [],
+    "cleanup": {
+      "native_abort_requested": false,
+      "sigterm": false,
+      "sigkill": false
+    }
+  },
+  "source_provenance": {
+    "git_head": "ae2d8083fbacab8237af96f549a8be3bbde9caba",
+    "tracked_dirty_paths": [
+      "docs/status/JOURNAL.md",
+      "docs/status/RESUME-NEXT-SESSION.md",
+      "docs/validation/LIMITS-AUDIT.md"
+    ],
+    "source_sha256": {
+      "asr_service/README.md": "73cd2eea65aabc9acb9360da25403e13f3fb7913a1673da432835e40ea977a8f",
+      "asr_service/__init__.py": "e9c7b00c8256089818fea2ba0fb73b1ac0075728a2fbe7a487354dee5ad171f8",
+      "asr_service/admission.py": "4d4af4046093da2ee1fbed034ada90f30c296f8ee7f25c116f69a11ac9aeeeb4",
+      "asr_service/budgets.py": "1966353fe8a79bb89dc88fe977ea7c0ea6f3a084e52a3dba9670b05d2d276e35",
+      "asr_service/candidates.py": "ee39c1f8621194c9bd948f7f3e101699e3a74bb80b7873afa34ed9790d52f1e9",
+      "asr_service/contracts.py": "1ba543e83b82330ebde8fc7660f39326d3cdc17747200b03260e0d8517c5988c",
+      "asr_service/control.py": "845e653d1680a04d7abc2bc1cc325fff80dc6222ba2ba61a19c0f648c7d158da",
+      "asr_service/evaluation_jobs.py": "3a779245e444694e6fdcd9f9bae86c43a192e1ea7682156270ba2a48b5290149",
+      "asr_service/http.py": "a0e5d81510e59a789fb5eb92de42df287e5d76a356e8a7464ef41eb57ca11dfe",
+      "asr_service/hypotheses.py": "594c5273ec253318085297b36646211174e00bca269f45bcdcdda246f5db76dd",
+      "asr_service/quotas.py": "4cfbe91b198049aa543b9a272170c6aa29121a8d710ac34abf73f4c2cbc2ae56",
+      "asr_service/references.py": "e5eb9b181294119d9f07ae776ee5df8cf2009cbd5f7aac1145a5aa4ff93b5bfd",
+      "asr_service/replication.py": "813295e323436f921385a105b1285ad3b28e99a0eaaaa0616bd54cf6056efed8",
+      "asr_service/validations.py": "a07516a431bec7523833d4cc7de0da6c329ea262ec1129d922e0ac49c42cc41e",
+      "asr_supervisor/README.md": "15de0b44c0ece5712c866cca2e3b1088b98ba91051ba67390f991f194ab118f7",
+      "asr_supervisor/__init__.py": "81cb10b697dfa5a855a40f76ce0027c1cfd87b47f32161d64982cff1274e9a7d",
+      "asr_supervisor/__main__.py": "02445d64817aff97a3f17223c965e3ebd1f47954c05ff72282b4439b57055ccc",
+      "asr_supervisor/candidate.py": "6a2f9c571c35d607171edf49788001790aa9ee3e734078dffc20d54e56d6c4e9",
+      "asr_supervisor/candidate_wrapper.m": "cda9abfab75ed9318ca8fa454a6c0fa3b1d78447f12a370eab637f099fe043b9",
+      "asr_supervisor/docker.py": "381078bd1236d12c8ca8354209b72065c6223f5ad4d109557a6fa4798c4611ab",
+      "asr_supervisor/process.py": "f7ea5b317483bc73bf6ce852f1d702863e74c2844d32cfd9f028bdd75450e99c",
+      "asr_supervisor/resources.py": "535e5896456ea2e2cd94bea2f5225b1b855a9ab25e931bfe2711d44191ff4484",
+      "asr_supervisor/store.py": "58bbca8a93473dae83875652119956fcc7aa93e4ad3e445f8a645e1498c0686a",
+      "asr_supervisor/supervisor.py": "bff132cb09812d7d290ffe14eb2afb072520c34127d94ad2907237e2fb197503",
+      "asr_evaluation/README.md": "75c2bb06d9dcd6c3cf5bae8e46ae3906c3b0d333a5547ae0fb2c04bfbc2b73c0",
+      "asr_evaluation/__init__.py": "68327629ce5a903a04cb6ee593d74b26acc4d13ead568e7f9e5fe3b15c7e7ae9",
+      "asr_evaluation/entrypoint.py": "5252a4e37adbe19a3d45f2d3bdd3fa513c8cff17a31e21631cf63c667509fd1f",
+      "asr_evaluation/managed.py": "a7892e9161ade9ce0ae7fb7abe35279e897e13dac73df921c69bc30a52ebd763",
+      "asr_evaluation/replay.py": "557fa0f3effde27002d75bd2bafd657d395b02aa7b75ccc565833e07f83a0850",
+      "powerflow_lab/__init__.py": "0593119557b619b67dfef822dc3aa661fad1a82e6c8be0522ef9c70be1ddabfa",
+      "powerflow_lab/reference.py": "cd2a98a5135ac5461bd028948a6e3b998e4d9b218e2b22c83bb69b0dced5587c",
+      "powerflow_lab/runner.py": "bbc307a89da9cd71d96bdf2ddcf104df4bef5f5fe7fc148afad245b6592f902e",
+      "powerflow_lab/validation.py": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3",
+      "integrations/aar/README.md": "21ebc73f6794428b1514659ea686c09f0794b8da356b5c924d662c1d8e323c63",
+      "integrations/aar/RUNTIME.md": "70d79791bb62a29f47b55c3254067caaece4dcde414e24984bd43bd18104b4ed",
+      "integrations/aar/bridge.py": "67e7386bcd1c3121c8f882c932b8da3a1619a090059585de0b82ceeafbee4178",
+      "integrations/aar/evaluation_projection.py": "3bbb1d893a2638dbefa7ff9fa014abf184d296a842ccab3280261ba797994120",
+      "integrations/aar/loop_patch.py": "fe0d5b0fb78526b16e3126e84a741e934c683bbc3807ac304b6b8507a08357a2",
+      "integrations/aar/prepare.py": "19b394fdc4176247fc0e86012472f5878704890491e718ce9f705b0124381de5",
+      "integrations/aar/prepare_upstream.py": "63e63d71bdf718549f13937e584ff656b0ec373238a5bbcaaec6bf869a41f2f5",
+      "integrations/aar/researcher.py": "7a4e8ce8a726afa97101b6f41f0a94f1b3c9188bb2f7797df621c82d8a470484",
+      "integrations/aar/source_integrity.py": "7a928774669ddefd752191cbb51b6fcd513e18a9b57651959da5b2a96e1301d3",
+      "integrations/aar/upstream.json": "14d868771772344c9bbeda365b767eeb5e1d9dc2f2d42fe44c945ca54c468cf3",
+      "integrations/aar/upstream_adapter.py": "fee5e10b1b4db749068e57b6d711e6ae438ca9cc08d0dc5c7e1f65565da916be",
+      "integrations/runtimes/README.md": "1adf32c51fae458b5f6223f2d18a51224f5a8202909a625f75763516b6c4e34d",
+      "integrations/runtimes/acceptance-limits.json": "4557db2db3ccd4968ee8d7eb60e5dcf9806de73aa7dd97153c7155d5d53d45a1",
+      "integrations/runtimes/acceptance.py": "912023f847f5e57a32c7383cd97926946384b1ca5f3ce57839d28c18bf5ef57d",
+      "integrations/runtimes/asr-extension.mjs": "0b6fa034050d09e87e522524a38f38d764918230b25d2d0c57e47425571f7082",
+      "integrations/runtimes/capabilities.json": "5839a2813de614ba2f55805d3f174b74f890c0cc80bfb768551ef3c7deb618e7",
+      "integrations/runtimes/capability_inventory.py": "b755b09fe6bfc13738f658f0080de1bd47b91388685206610ac0e0e7862f8c9e",
+      "integrations/runtimes/codex_app_server.py": "697dcb583ac141a29080e739d5a013e96d6a76f643f0e68d94b6a1ac037b71c9",
+      "integrations/runtimes/domain-powergrid.json": "d21131ed2f6b1cd71e830f659722cc72af901f11740e0fcd76f14dadac1af1cc",
+      "integrations/runtimes/environment.py": "38b02319d44de6def69245faa23a5f1bc572309045c8a0559972f5d83311a754",
+      "integrations/runtimes/grok_smoke.py": "1853f823bb2827fa33095527e5f275de49f0ee64b7b7e2e0bf551834fad4f7ac",
+      "integrations/runtimes/p3-acceptance-limits.json": "fcbddbf94b4f930394ddc053f7da1767e09f3ee639ec8358b33bbfaf04fb9af3",
+      "integrations/runtimes/p3-capabilities.json": "e70125a066e40f76fce780c73d12f30428adee2fac45d1e56aeb23fda4b89260",
+      "integrations/runtimes/p3-domain-powergrid.json": "0339ad414ae5bc97fe863c38d08a7421ecde3e9c5de45f4d1c42cce5a9daf633",
+      "integrations/runtimes/p3-finalization-capabilities.json": "5bd83800a1b4765076e1ecd257cbd49b552271139d8e3dc6d11df3110bf54303",
+      "integrations/runtimes/p3-finalization-limits.json": "4977e370dc966b071b812a5404d319c53871ffd7c2e52bc906e5e99a9e3509b0",
+      "integrations/runtimes/p3_acceptance.py": "bb06c07d903b06d27cd922946077e0a2baec9e5fa20af8b1896a11dcbf724baa",
+      "integrations/runtimes/p3_finalize.py": "c6a8dbed7d44a83090bb031541114fb1e28c6c02bf5214e3cef93528732b2a0a",
+      "integrations/runtimes/pi.py": "7dd6a3efe83a37e08b5bf03d327ba68e0fbd42d47cdc9809841355e08529295a",
+      "integrations/runtimes/process.py": "06467b09feabcc9fc0622f2ad1890978b5a8122004e47f718d2bca87f391d2b3",
+      "integrations/runtimes/recover_acceptance.py": "06a48b34e3816f60a42204f4c889ef6808f705c41ab5994b6c2caef23e2de56f",
+      "integrations/runtimes/session.py": "009aeb445bafdd0194b3d9ff67f53cae82ca37e533d1967cfc42463fc436a572",
+      "integrations/runtimes/skills/code-review/SKILL.md": "f579ba418163f380c8ab3290a45a790300ead845ea236bb575ad0aca4763fed0",
+      "integrations/runtimes/skills/deep-research/SKILL.md": "08b8deb9d6e0a9a963d597052514a2c5f4aa88536c6dc90ac5f8b0a524871e36",
+      "integrations/runtimes/skills/provenance.json": "32f6d0872052cdd096ba05a12416cc8e906e1f6d3daebe44aad5e5b40eba1a9c",
+      "integrations/runtimes/skills/scientific-reasoning/SKILL.md": "eae8c5709306206ee31e97219f33a30c8adb0cba63e2311f6afa65bd7794a66c",
+      "integrations/runtimes/skills/systematic-debugging/SKILL.md": "ed07642cd7eefd8062eb4b4bc6da9fedf7a1014d60e473d225eef55c64146f3a",
+      "integrations/runtimes/skills/verification-before-completion/SKILL.md": "88067fa4c862228008e93112a8d060c2ffe2c4ac007046f839138b56ff53d418",
+      "integrations/runtimes/workspace-path.mjs": "55e9151dad6a3439a3c3c436a1b125116b1680576a05c4d3c7e5f34294d868f5",
+      "contracts/README.md": "decf3515a72a9e67797e4d180b635f6c4596ff6d958b0e59c17a526ce7a4e958",
+      "contracts/examples/research-variables.json": "db210cd45bac6fac4499213a4f56dee26a63690344e27b57e45c92c399207611",
+      "contracts/research-contract.schema.json": "5da1ad1d6122a2a7f4a94a89b06575e3a3872e4961d6d90c9c8231bcaabd7a37",
+      "contracts/variable-policy.schema.json": "64d08fd1ee19ddbef566258593704f6502e49f95d95d4a8c8b95e82f7b0ee8a3",
+      "configs/numerical-environment.json": "9e8c04542866c742f2850ca33b517d927531ecb3c280bbc90414557f8fd5f653"
+    }
+  },
+  "native_session_migration": {
+    "config_dir": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p3-acceptance-20261103-01/pi-private-final",
+    "journals": [
+      {
+        "original": "pi-private-resumed/sessions/2026-11-03T00-58-12-620Z_research_49c26021d0404e1688e344b051ed587a.jsonl",
+        "copy": "pi-private-final/sessions/2026-11-03T00-58-12-620Z_research_49c26021d0404e1688e344b051ed587a.jsonl",
+        "sha256": "08fbec32d90c356b146d109b9e253996376d3d37694b93d87f1c6243e31ca279"
+      }
+    ]
+  },
+  "native_transcripts": [
+    {
+      "path": "pi-private-final/sessions/2026-11-03T00-58-12-620Z_research_49c26021d0404e1688e344b051ed587a.jsonl",
+      "sha256": "c3ec11b3f9de3956822b7b38108d3aa7891460fc34e09b59b9fed56d6cf04bd1"
+    }
+  ],
+  "model_events_sha256": "c1b9dabc51f7db547367bc4fdfba08a6600f26db127daa2b5bf0baa16462162e",
+  "actual_aar_experiment": {
+    "id": 1,
+    "idea_name": "p3-689915c3fcd2",
+    "idea_title": "Investigate a testable solver, initialization or refinement method on the frozen IEEE-118 original power-flow problem.",
+    "idea_description": "Fixed-PV/PQ single-slack case118 development profile; no generalization or novelty claim.",
+    "dataset": "asr-powerflow",
+    "weak_model": "",
+    "strong_model": "",
+    "status": "running",
+    "is_baseline": false,
+    "pgr": null,
+    "pgr_se": null,
+    "weak_acc": null,
+    "strong_acc": null,
+    "transfer_acc": null,
+    "transfer_acc_std": null,
+    "num_seeds": null,
+    "seeds": null,
+    "queue_time": "2026-11-03T08:58:12.220762",
+    "start_time": null,
+    "end_time": null,
+    "duration_seconds": null,
+    "logs": null,
+    "error_msg": null,
+    "pod_id": null,
+    "idea_uid": "p3-689915c3fcd2",
+    "run_id": "research_49c26021d0404e1688e344b051ed587a",
+    "s3_prefix": "s3:///ideas/p3-689915c3fcd2/research_49c26021d0404e1688e344b051ed587a/",
+    "results_uploaded_to_s3": false,
+    "deploy_retry_count": 0,
+    "last_deploy_attempt": null,
+    "execution_mode": "asr",
+    "gpu_ids": null,
+    "asr_project_id": "p3-689915c3fcd2",
+    "asr_research_run_id": "research_49c26021d0404e1688e344b051ed587a"
+  },
+  "failure": null,
+  "scope": "Read-only engineering closeout only. No new scientific result, hypothesis judgment, generalization or novelty promotion.",
+  "billing": {
+    "mode": "subscription",
+    "actual_dollar_charge": null,
+    "paid_api_fallback": false
+  },
+  "elapsed_seconds": 14.298
+}
