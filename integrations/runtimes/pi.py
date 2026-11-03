@@ -58,7 +58,8 @@ def prepare_oauth(source: Path, config_dir: Path):
 class PiRuntime:
     provider='openai-codex'
 
-    def __init__(self, *, executable='pi', model, thinking='high', expected_version='1.5.0', capabilities_path=None, environment=None):
+    def __init__(self, *, executable='pi', model, thinking='high', expected_version='1.5.0', capabilities_path=None, environment=None,
+                 max_message_bytes=4194304,max_buffer_bytes=16777216,max_pending_records=256,max_records=100000,abort_grace_seconds=1.5):
         if not isinstance(model,str) or not model or ':' in model or '/' in model:
             raise ValueError('explicit_codex_model_id_required')
         self.executable=executable
@@ -67,6 +68,12 @@ class PiRuntime:
         self.expected_version=expected_version
         self.capabilities_path=Path(capabilities_path or Path(__file__).with_name('capabilities.json'))
         self.environment=build_environment(COMMON_ENVIRONMENT,runtime='pi',provider=self.provider,overrides=environment)
+        for value in (max_message_bytes,max_buffer_bytes,max_pending_records,max_records):
+            if type(value) is not int or value<1:raise ValueError('finite_positive_protocol_cap_required')
+        if type(abort_grace_seconds) not in (int,float) or not math.isfinite(abort_grace_seconds) or not 0<abort_grace_seconds<=3:
+            raise ValueError('abort_grace_must_fit_cleanup_headroom')
+        self.max_message_bytes=max_message_bytes;self.max_buffer_bytes=max_buffer_bytes
+        self.max_pending_records=max_pending_records;self.max_records=max_records;self.abort_grace_seconds=abort_grace_seconds
 
     def preflight_capabilities(self):
         try:
@@ -123,11 +130,17 @@ class PiRuntime:
         except (OSError,ValueError,TypeError,KeyError) as error:
             raise RuntimeFailure('invalid_capability_pack') from error
 
-    def run(self, *, workspace, config_dir, session_id, prompt, limits, bridge_url, bridge_token, on_event=None, should_stop=None,on_process=None,on_launch=None):
+    def run(self, *, workspace, config_dir, session_id, prompt, limits, bridge_url, bridge_token, on_event=None, should_stop=None,on_process=None,on_launch=None,absolute_deadline=None):
         if not re.fullmatch(r'[A-Za-z0-9](?:[A-Za-z0-9_.-]*[A-Za-z0-9])?',session_id):
             raise ValueError('invalid_native_session_id')
+        if absolute_deadline is not None and (type(absolute_deadline) not in (int,float) or not math.isfinite(absolute_deadline)):
+            raise ValueError('finite_absolute_deadline_required')
+        def setup_remaining():
+            remaining=10 if absolute_deadline is None else absolute_deadline-time.monotonic()
+            if remaining<=0:raise RuntimeFailure('setup_deadline_exhausted')
+            return min(10,remaining)
         capabilities=self.preflight_capabilities()
-        version=subprocess.check_output([self.executable,'--version'],text=True,timeout=10,env=self.environment).strip()
+        version=subprocess.check_output([self.executable,'--version'],text=True,timeout=setup_remaining(),env=self.environment).strip()
         if version!=self.expected_version: raise RuntimeFailure('runtime_version_mismatch')
         workspace=Path(workspace).resolve(); config_dir=Path(config_dir).resolve()
         sessions=config_dir/'sessions'; sessions.mkdir(exist_ok=True)
@@ -157,23 +170,47 @@ class PiRuntime:
         env['ASR_SKILL_PATHS']=json.dumps([skill['frozen_path'] for skill in frozen_skills])
         env['ASR_SKILL_PATH']=frozen_skills[0]['frozen_path']
         env['ASR_TOOL_OPERATIONS']=json.dumps([tool.removeprefix('asr.') for tool in capabilities['pack']['tools']])
+        setup_remaining()
+        runtime_deadline=min(time.monotonic()+limits.walltime_seconds,absolute_deadline or float('inf'))
+        engine_started=time.monotonic();engine_budget_ms=max(1,math.ceil((runtime_deadline-engine_started)*1000))
         env.update(PI_CODING_AGENT_DIR=str(config_dir),PI_OFFLINE='1',ASR_BRIDGE_URL=bridge_url,ASR_BRIDGE_TOKEN=bridge_token,
-                   ASR_MAX_TURNS=str(limits.turns),ASR_MAX_TOOLS=str(limits.tool_executions),ASR_DEADLINE_MS=str(int((time.time()+limits.walltime_seconds)*1000)))
+                   ASR_MAX_TURNS=str(limits.turns),ASR_MAX_TOOLS=str(limits.tool_executions),ASR_ABORT_GRACE_MS=str(math.ceil(self.abort_grace_seconds*1000)),ASR_MAX_WALLTIME_MS=str(engine_budget_ms),ASR_DEADLINE_MS=str(int((time.time()+runtime_deadline-time.monotonic())*1000)))
         argv=[self.executable,'--mode','rpc','--provider',self.provider,'--model',self.model,'--thinking',self.thinking,
               '--session-id',session_id,'--session-dir',str(sessions),'--no-extensions','--extension',str(extension),
               '--no-skills','--no-prompt-templates','--no-context-files','--tools','asr,read,write,edit,grep,find,ls']
         for skill in frozen_skills:argv.extend(['--skill',skill['frozen_path']])
         if on_launch: on_launch()
         process=subprocess.Popen(argv,cwd=workspace,env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
-        records=queue.Queue(); stderr=[]
+        records=queue.Queue(maxsize=self.max_pending_records); stderr=[]
+        stream_lock=threading.Lock();queued_bytes=0;stream_failure=[]
         def read_stdout():
+            nonlocal queued_bytes
+            count=0
+            def failed(kind,configured,observed):
+                if not stream_failure:stream_failure.append((kind,configured,observed))
             try:
-                for line in process.stdout:
-                    try: records.put(json.loads(line))
-                    except (ValueError,UnicodeDecodeError): records.put({'type':'protocol_error'})
-            finally: records.put(None)
+                while True:
+                    line=process.stdout.readline(self.max_message_bytes+1)
+                    if not line:break
+                    count+=1
+                    with stream_lock:
+                        if len(line)>self.max_message_bytes:failed('protocol_message_bytes',self.max_message_bytes,len(line));return
+                        if count>self.max_records:failed('protocol_records',self.max_records,count);return
+                        if queued_bytes+len(line)>self.max_buffer_bytes:failed('protocol_buffer_bytes',self.max_buffer_bytes,queued_bytes+len(line));return
+                        try:
+                            record=json.loads(line)
+                            if not isinstance(record,dict):record={'type':'protocol_error'}
+                        except (ValueError,UnicodeDecodeError,RecursionError):record={'type':'protocol_error'}
+                        try:records.put_nowait((record,len(line)))
+                        except queue.Full:failed('protocol_pending_records',self.max_pending_records,self.max_pending_records+1);return
+                        queued_bytes+=len(line)
+            finally:
+                try:records.put_nowait((None,0))
+                except queue.Full:pass
         def drain_stderr():
-            for line in process.stderr:
+            while True:
+                line=process.stderr.read(4096)
+                if not line:break
                 # Diagnostics are deliberately not returned or persisted: providers
                 # and extensions can put credentials in error text.
                 if len(stderr)<20: stderr.append(len(line))
@@ -182,6 +219,11 @@ class PiRuntime:
         def send(command):
             process.stdin.write(json.dumps(command).encode()+b'\n'); process.stdin.flush()
         status='interrupted'; state=None; assistant=[]; turns=tools=0; started=time.monotonic(); settled=False
+        limit_observations=[];pending_tools={};cleanup=dict(native_abort_requested=False,sigterm=False,sigkill=False)
+        def limit(kind,configured,observed,reason):
+            value=dict(type='asr_limit',kind=kind,limit=max(1,int(configured)),observed=max(int(configured),int(observed)),reason=reason,recoverable=True)
+            limit_observations.append(value)
+            if on_event:on_event(value)
         try:
             if on_process:
                 from .process import identify
@@ -189,13 +231,26 @@ class PiRuntime:
             send({'id':'state','type':'get_state'})
             while True:
                 if should_stop and should_stop(): status='cancelled'; break
-                remaining=limits.walltime_seconds-(time.monotonic()-started)
-                if remaining<=0: status='timed_out'; break
-                try: record=records.get(timeout=min(.1,remaining))
+                with stream_lock:failure=stream_failure[0] if stream_failure else None
+                if failure:
+                    status='limit_reached';limit(*failure,'Native transport cap reached; retain the session prefix and inspect state before recovery.');break
+                remaining=runtime_deadline-time.monotonic()
+                if remaining<=0:
+                    status='timed_out'
+                    limit('model_walltime',engine_budget_ms,math.ceil((time.monotonic()-engine_started)*1000),'Engine walltime exhausted; cleanup headroom is reserved. Resume the native journal and read authoritative ASR state.')
+                    break
+                try: record,consumed=records.get(timeout=min(.1,remaining))
                 except queue.Empty: continue
+                with stream_lock:
+                    queued_bytes-=consumed
+                    failure=stream_failure[0] if stream_failure else None
+                if failure:
+                    status='limit_reached';limit(*failure,'Native transport cap reached; retain the session prefix and inspect state before recovery.');break
                 if record is None: break
                 kind=record.get('type')
                 if on_event: on_event(record)
+                if kind=='asr_limit':
+                    limit_observations.append(record);status='limit_reached';break
                 if kind=='protocol_error': status='protocol_error'; break
                 if kind=='response' and record.get('id')=='state':
                     if not record.get('success'): status='startup_failed'; break
@@ -208,8 +263,15 @@ class PiRuntime:
                     if not record.get('success'): status='prompt_rejected'; break
                     if record.get('data',{}).get('disposition')=='handled': status='prompt_handled'; break
                 if kind=='turn_start': turns+=1
-                if kind=='tool_execution_start': tools+=1
-                if turns>limits.turns or tools>limits.tool_executions: status='budget_exhausted'; break
+                if kind=='tool_execution_start':
+                    tools+=1
+                    args=record.get('args') or {}
+                    pending_tools[record.get('toolCallId')]=dict(tool_call_id=record.get('toolCallId'),tool_name=record.get('toolName'),operation=args.get('operation'),request_key=args.get('key'))
+                if kind=='tool_execution_end':pending_tools.pop(record.get('toolCallId'),None)
+                if turns>limits.turns or tools>limits.tool_executions:
+                    status='budget_exhausted'
+                    limit('provider_turns' if turns>limits.turns else 'tool_executions',limits.turns if turns>limits.turns else limits.tool_executions,turns if turns>limits.turns else tools,'Runtime count cap reached; preserve accepted requests and recover by their original IDs.')
+                    break
                 if kind=='message_end' and record.get('message',{}).get('role')=='assistant':
                     msg=record['message']; assistant.append(msg)
                     if msg.get('stopReason') in ('error','aborted'):
@@ -223,19 +285,22 @@ class PiRuntime:
             # Reap the process group even after a settled RPC response. Closing
             # stdin alone can leave descendant tools running after a timeout.
             if process.poll() is None:
+                if status in ('timed_out','limit_reached','budget_exhausted','cancelled'):
+                    try:send({'id':'abort','type':'abort'});cleanup['native_abort_requested']=True
+                    except (OSError,ValueError):pass
                 try: process.stdin.close()
                 except OSError: pass
                 try: process.wait(timeout=.5)
                 except subprocess.TimeoutExpired:
-                    try: os.killpg(process.pid,signal.SIGTERM)
+                    try: os.killpg(process.pid,signal.SIGTERM);cleanup['sigterm']=True
                     except ProcessLookupError: pass
                     try: process.wait(timeout=1)
                     except subprocess.TimeoutExpired:
-                        try: os.killpg(process.pid,signal.SIGKILL)
+                        try: os.killpg(process.pid,signal.SIGKILL);cleanup['sigkill']=True
                         except ProcessLookupError: pass
                         process.wait()
             # Also terminate descendants when the main process exited first.
-            try: os.killpg(process.pid,signal.SIGKILL)
+            try: os.killpg(process.pid,signal.SIGKILL);cleanup['sigkill']=True
             except ProcessLookupError: pass
             for reader in readers: reader.join(timeout=1)
             for stream in (process.stdout,process.stderr): stream.close()
@@ -243,4 +308,8 @@ class PiRuntime:
         if process.returncode==75 and status=='interrupted': status='gate_closed'
         return dict(runtime='pi-rpc/1',runtime_version=version,capability_pack_sha256=capabilities['sha256'],capability_pack_id=capabilities['pack']['id'],capability_skills=frozen_skills,provider=self.provider,model=self.model,status=status,session=state,
                     native_session_id=session_id,settled=settled,turns=turns,tool_executions=tools,
-                    duration_seconds=time.monotonic()-started,assistant_messages=assistant,exit_code=process.returncode)
+                    duration_seconds=time.monotonic()-started,assistant_messages=assistant,exit_code=process.returncode,
+                    limit_observations=limit_observations,cleanup=cleanup,
+                    protocol_caps=dict(message_bytes=self.max_message_bytes,buffer_bytes=self.max_buffer_bytes,pending_records=self.max_pending_records,records=self.max_records,abort_grace_ms=math.ceil(self.abort_grace_seconds*1000)),
+                    recovery=dict(native_session_id=session_id,native_session_file=(state or {}).get('sessionFile'),
+                        pending_tools=list(pending_tools.values()),instruction='Read authoritative state before retrying; reuse accepted request keys and reconcile uncertain execution.'))

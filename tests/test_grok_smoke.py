@@ -8,6 +8,17 @@ from integrations.runtimes import grok_smoke
 
 
 class GrokEvidenceTests(unittest.TestCase):
+    def test_reply_capture_is_byte_bounded_and_reports_omission(self):
+        helper=getattr(grok_smoke,'capture_reply',None)
+        self.assertTrue(callable(helper),'native reply capture must report every omitted byte')
+        state=dict(text='',observed_bytes=0,captured_bytes=0,truncated=False)
+        helper(state,'ab🙂cd',maximum_bytes=7)
+        helper(state,'later',maximum_bytes=7)
+        self.assertLessEqual(state['captured_bytes'],7)
+        self.assertEqual(state['observed_bytes'],13)
+        self.assertTrue(state['truncated'])
+        self.assertEqual(state['text'],'ab🙂c')
+
     def publish(self, path, result):
         helper = getattr(grok_smoke, 'publish_result', None)
         self.assertTrue(callable(helper), 'exclusive evidence publication helper required')

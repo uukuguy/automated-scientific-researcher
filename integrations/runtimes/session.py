@@ -1,8 +1,15 @@
 """Run one fenced runtime session; no scheduler or automatic retry."""
 from pathlib import Path
+import hashlib
+import json
 import time
 import uuid
 from .pi import Limits, RuntimeFailure, prepare_oauth
+
+
+def session_engine_deadline(limits,reserved_walltime_ms,started):
+    cap=min(limits.walltime_seconds,reserved_walltime_ms/1000)
+    return started+cap-min(5,cap/4)
 
 
 def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limits, oauth_source=None, on_event=None):
@@ -14,17 +21,28 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
     bridge.runtime_identity=dict(session_id=claim['session_id'],epoch=claim['epoch'],owner=owner)
     started=time.monotonic()
     exited=False
+    def record_event(record,forward=True):
+        if record.get('type')=='asr_limit':
+            observation={key:record[key] for key in ('kind','limit','observed','reason')}
+            if 'native_checkpointed' in record:
+                observation['reason']+=' Native checkpoint: '+('stored' if record['native_checkpointed'] else str(record.get('checkpoint_failure') or 'unconfirmed'))+'; abort: '+('requested' if record.get('graceful_abort_requested') else str(record.get('abort_failure') or 'unconfirmed'))+'.'
+            identity=hashlib.sha256(json.dumps(observation,sort_keys=True).encode()).hexdigest()
+            service.observe_runtime_limit(bridge.supervisor_token,bridge.project,bridge.run,
+                **bridge.runtime_identity,**observation,idempotency_key='runtime_limit_'+owner+'_'+identity)
+        if forward and on_event:on_event(record)
     try:
         prepare_oauth(Path(oauth_source or Path.home()/'.pi/agent/auth.json'),Path(config_dir))
         effective=Limits(min(limits.walltime_seconds,claim['reserved_walltime_ms']/1000),limits.turns,limits.tool_executions)
         with bridge:
             result=runtime.run(workspace=bridge.workspace,config_dir=config_dir,session_id=native_session_id,
-                prompt=prompt,limits=effective,bridge_url=bridge.url,bridge_token=bridge.token,on_event=on_event,
+                prompt=prompt,limits=effective,bridge_url=bridge.url,bridge_token=bridge.token,on_event=record_event,
+                absolute_deadline=session_engine_deadline(limits,claim['reserved_walltime_ms'],started),
                 on_launch=lambda: service.begin_runtime_launch(bridge.supervisor_token,bridge.project,bridge.run,claim['session_id'],claim['epoch'],owner),
                 on_process=lambda identity: service.attach_runtime_process(bridge.supervisor_token,bridge.project,bridge.run,claim['session_id'],claim['epoch'],owner,identity),
                 should_stop=lambda: service.get_run(bridge.supervisor_token,bridge.project,bridge.run)['state'] in ('stopping','stopped','failed','finishing','finished'))
         exited=True
         result['runtime_claim']=claim
+        for observation in result.get('limit_observations',[]):record_event(observation,False)
         if result['status']=='rate_limited':
             run=service.get_run(bridge.supervisor_token,bridge.project,bridge.run)
             service.command(bridge.supervisor_token,bridge.project,bridge.run,'quota',expected_revision=run['control_revision'],

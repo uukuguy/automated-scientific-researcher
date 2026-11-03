@@ -88,6 +88,10 @@ class CodexAppServerClient:
         self.max_messages = max_messages
         self.max_pending_requests = max_pending_requests
         self._condition = threading.Condition()
+        self._limit_observations=[]
+        self._stderr_read_failed=False
+        self._walltime_seconds=walltime_seconds
+        self._started=time.monotonic()
         self._write_lock = threading.Lock()
         self._closed = threading.Event()
         self._closing = False
@@ -128,7 +132,26 @@ class CodexAppServerClient:
 
     def _watch(self):
         if not self._closed.wait(max(0, self.deadline-time.monotonic())):
+            self._record_limit('connection_walltime_ms',math.ceil(self._walltime_seconds*1000),math.ceil((time.monotonic()-self._started)*1000))
             self.close(error=AppServerTimeout('App Server connection deadline exceeded'))
+
+    def _record_limit(self,kind,configured,observed):
+        with self._condition:
+            self._limit_observations.append(dict(kind=kind,configured=configured,observed=observed,
+                remaining=max(0,configured-observed),recoverable=True,
+                recovery='Retain queued prefix and native thread/turn IDs; reconnect/resume within an authorized budget and reconcile unknown requests before resubmitting.'))
+
+    def _cap_error(self,kind,configured,observed):
+        self._record_limit(kind,configured,observed)
+        return AppServerProtocolError('App Server cap exceeded: '+kind)
+
+    def _close_receipt(self):
+        with self._condition:
+            return dict(direct_child_exited=self.process.poll() is not None,exit_code=self.process.poll(),
+                limit_observations=list(self._limit_observations),queued_events_retained=len(self._events),
+                queued_server_requests_retained=len(self._server_requests),stderr_discarded_bytes=self._stderr_bytes,
+                stderr_read_failed=self._stderr_read_failed,recoverable=True,
+                scope='Native protocol connection only; no ASR binding, automatic resume, general process containment or scientific completion proof.')
 
     def _live(self):
         if self._closing:
@@ -140,7 +163,9 @@ class CodexAppServerClient:
 
     def _write(self, record, deadline):
         encoded = json.dumps(record, ensure_ascii=False, allow_nan=False, separators=(',', ':')).encode()+b'\n'
-        if len(encoded) > self.max_message_bytes: raise ValueError('outgoing protocol message too large')
+        if len(encoded) > self.max_message_bytes:
+            self._record_limit('outgoing_message_bytes',self.max_message_bytes,len(encoded))
+            raise ValueError('outgoing protocol message too large')
         if not self._write_lock.acquire(timeout=max(0, deadline-time.monotonic())):
             raise AppServerTimeout('App Server write deadline exceeded')
         try:
@@ -184,11 +209,15 @@ class CodexAppServerClient:
         return self._exchange(method, {} if params is None else params, timeout=timeout)
 
     def _exchange(self, method, params, *, timeout):
+        began=time.monotonic()
         deadline = self._limit_deadline(timeout)
+        effective_ms=max(1,math.ceil((deadline-began)*1000))
         future = Future()
         with self._condition:
             self._live()
-            if len(self._pending) >= self.max_pending_requests: raise ValueError('too many pending requests')
+            if len(self._pending) >= self.max_pending_requests:
+                self._record_limit('pending_requests',self.max_pending_requests,len(self._pending)+1)
+                raise ValueError('too many pending requests')
             self._sequence += 1
             identity = 'asr-'+str(self._sequence)
             self._pending[identity] = future
@@ -197,6 +226,7 @@ class CodexAppServerClient:
             try: return future.result(timeout=max(0, deadline-time.monotonic()))
             except FutureTimeout:
                 if future.done(): raise
+                self._record_limit('request_deadline_ms',effective_ms,max(effective_ms,math.ceil((time.monotonic()-began)*1000)))
                 error = AppServerTimeout('App Server request deadline exceeded: '+method)
                 self.close(error=error)
                 raise error
@@ -209,8 +239,8 @@ class CodexAppServerClient:
 
     def _enqueue(self, target, record, size):
         with self._condition:
-            if len(target) >= self.max_events or self._buffer_bytes+size > self.max_buffer_bytes:
-                raise AppServerProtocolError('unconsumed App Server stream exceeded buffer limits')
+            if len(target) >= self.max_events:raise self._cap_error('queued_events',self.max_events,len(target)+1)
+            if self._buffer_bytes+size > self.max_buffer_bytes:raise self._cap_error('queued_bytes',self.max_buffer_bytes,self._buffer_bytes+size)
             target.append((size, record)); self._buffer_bytes += size
             self._condition.notify_all()
 
@@ -227,7 +257,7 @@ class CodexAppServerClient:
                 return
             with self._condition:
                 if identity in self._incoming_pending: raise AppServerProtocolError('duplicate server request id')
-                if len(self._incoming_pending) >= self.max_pending_requests: raise AppServerProtocolError('too many server requests')
+                if len(self._incoming_pending) >= self.max_pending_requests:raise self._cap_error('pending_server_requests',self.max_pending_requests,len(self._incoming_pending)+1)
                 self._incoming_pending.add(identity)
             self._enqueue(self._server_requests, record, size); return
         identity = record.get('id')
@@ -257,14 +287,14 @@ class CodexAppServerClient:
                 buffer.extend(chunk)
                 while b'\n' in buffer:
                     index = buffer.index(b'\n')
-                    if index+1 > self.max_message_bytes: raise AppServerProtocolError('protocol message too large')
+                    if index+1 > self.max_message_bytes:raise self._cap_error('protocol_message_bytes',self.max_message_bytes,index+1)
                     raw = bytes(buffer[:index]); del buffer[:index+1]
                     count += 1
-                    if count > self.max_messages: raise AppServerProtocolError('protocol message count exceeded')
+                    if count > self.max_messages:raise self._cap_error('protocol_messages',self.max_messages,count)
                     try: record = json.loads(raw)
                     except (ValueError, UnicodeDecodeError) as error: raise AppServerProtocolError('invalid JSONL protocol record') from error
                     self._dispatch(record, len(raw)+1)
-                if len(buffer) > self.max_message_bytes: raise AppServerProtocolError('protocol message too large')
+                if len(buffer) > self.max_message_bytes:raise self._cap_error('protocol_message_bytes',self.max_message_bytes,len(buffer))
         except Exception as error:
             if not self._closing: self.close(error=error)
         finally: selector.close()
@@ -281,8 +311,8 @@ class CodexAppServerClient:
                 except BlockingIOError: continue
                 if not data: return
                 # Discard raw diagnostics: providers may include sensitive values.
-                self._stderr_bytes = min(2**63-1, self._stderr_bytes+len(data))
-        except OSError: pass
+                self._stderr_bytes += len(data)
+        except OSError:self._stderr_read_failed=True
         finally: selector.close()
 
     def _take(self, target, timeout):
@@ -340,7 +370,7 @@ class CodexAppServerClient:
                 pending = list(self._pending.values()); self._pending.clear()
         if not first:
             if threading.current_thread() not in self._readers: self._closed.wait(2)
-            return {'direct_child_exited':self.process.poll() is not None, 'exit_code':self.process.poll()}
+            return self._close_receipt()
         try:
             try: self.process.stdin.close()
             except OSError: pass
@@ -364,4 +394,4 @@ class CodexAppServerClient:
                     if not reader.is_alive() or reader is threading.current_thread(): stream.close()
             finally:
                 self._closed.set()
-        return {'direct_child_exited':self.process.poll() is not None, 'exit_code':self.process.poll()}
+        return self._close_receipt()

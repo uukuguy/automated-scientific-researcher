@@ -18,6 +18,23 @@ class Response(io.BytesIO):
 
 
 class LiteratureTests(unittest.TestCase):
+    def test_every_metadata_cap_has_explicit_loss_and_recovery_metadata(self):
+        item={'DOI':'10.1234/'+'x'*300,'title':['t'*600],'author':[{'name':'n'*300}]*22}
+        opener,_=self.transport({'status':'ok','message':{'items':[item]*2}})
+        result=search('bounded search',limit=1,opener=opener)
+        diagnostics=result.get('diagnostics')
+        self.assertIsInstance(diagnostics,dict,'metadata caps must not silently omit content')
+        affected={entry['field'] for entry in diagnostics['omissions']}
+        self.assertTrue({'results','doi','title','authors','authors[0].name'}<=affected)
+        self.assertTrue(result['recoverable'])
+        self.assertIn('response_bytes',result['configured_caps'])
+
+    def test_invalid_query_reports_observed_and_configured_length(self):
+        result=search('x'*513,opener=Mock())
+        self.assertEqual(result['error'].get('configured'),512)
+        self.assertEqual(result['error'].get('observed'),513)
+        self.assertTrue(result['error']['recoverable'])
+
     def transport(self, payload=None, raw=None):
         raw = json.dumps(payload).encode() if raw is None else raw
         response = Response(raw)

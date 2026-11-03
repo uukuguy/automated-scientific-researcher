@@ -59,6 +59,18 @@ for line in sys.stdin.buffer:
 
 
 class CodexClientTests(unittest.TestCase):
+    def test_protocol_overflow_retains_explicit_recoverable_receipt(self):
+        client=self.client(max_message_bytes=1024)
+        client.initialize()
+        with self.assertRaises(Exception):client.request('oversize',{})
+        receipt=client.close()
+        self.assertTrue(receipt.get('limit_observations'),'native overflow must not be a bare disconnect')
+        event=receipt['limit_observations'][0]
+        self.assertEqual(event['kind'],'protocol_message_bytes')
+        self.assertEqual(event['configured'],1024)
+        self.assertGreater(event['observed'],1024)
+        self.assertTrue(event['recoverable'])
+
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.addCleanup(self.temp.cleanup)
         self.root=Path(self.temp.name);self.script=self.root/'server.py';self.script.write_text(FAKE)

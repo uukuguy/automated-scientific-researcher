@@ -241,7 +241,7 @@ def execute(args, prepared):
             organization=organization,evaluation_dispatch=evaluate,capability_profile=PROFILE)
 
     def event(record):
-        if record.get('type') in ('message_end','tool_execution_start','tool_execution_end','agent_settled'):
+        if record.get('type') in ('message_end','tool_execution_start','tool_execution_end','agent_settled','asr_limit'):
             events.append(record)
 
     def session(prompt, seconds):

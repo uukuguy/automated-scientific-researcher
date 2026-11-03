@@ -45,16 +45,24 @@ _ERRORS = {
 
 
 class _ResponseError(ValueError):
-    pass
+    def __init__(self,code,*,observed=None,basis='unknown'):
+        super().__init__(code);self.observed=observed;self.basis=basis
 
 
-def _result(*, results=None, error=None):
+def _result(*, results=None, error=None,configured=None,observed=None,diagnostics=None):
+    if configured is None:configured={'invalid_query':512,'invalid_limit':5,'timeout':TIMEOUT_SECONDS,'response_too_large':MAX_BYTES}.get(error)
     return dict(schema_version='asr-literature-search/1', ok=error is None,
                 source='crossref', content_kind='metadata_only',
                 notice='External bibliographic metadata only; no paper text was read or scientific claim validated.',
                 retrieved_at=datetime.now(timezone.utc).isoformat(),
                 results=[] if results is None else results,
+                configured_caps=dict(query_characters=512,results=5,response_bytes=MAX_BYTES,title_characters=512,authors=20,author_name_characters=256,author_part_characters=128,doi_characters=256,socket_timeout_seconds=TIMEOUT_SECONDS),
+                diagnostics=diagnostics or dict(omissions=[],original_response_bytes=None),recoverable=True,
+                recovery='Keep retained metadata. Narrow the query, request fewer results, or inspect the original public source; never silently retry or infer missing text.',
+                deadline_scope='Socket timeout and checks between reads; DNS or a single blocked read may outlast the nominal deadline. The calling runtime supervises its own deadline.',
                 error=None if error is None else dict(code=error, message=_ERRORS[error],
+                    configured=configured,observed=observed,remaining=None,recoverable=True,
+                    recovery='Correct/narrow the request or inspect retained state before an explicitly budgeted retry; this call performs no retry.',
                     retryable=error in ('rate_limited','provider_unavailable','timeout','network_error')))
 
 
@@ -80,7 +88,7 @@ def _read(response, deadline):
         if length < 0:
             raise _ResponseError('invalid_response')
         if length > MAX_BYTES:
-            raise _ResponseError('response_too_large')
+            raise _ResponseError('response_too_large',observed=length,basis='declared_header')
     body = bytearray()
     # HTTPResponse.read1 makes one underlying read instead of waiting for a full
     # chunk while a peer trickles bytes. Check the total read deadline each time.
@@ -93,7 +101,7 @@ def _read(response, deadline):
             break
         body.extend(chunk)
         if len(body) > MAX_BYTES:
-            raise _ResponseError('response_too_large')
+            raise _ResponseError('response_too_large',observed=len(body),basis='at_least')
     if time.monotonic() >= deadline:
         raise TimeoutError
     return body
@@ -103,29 +111,40 @@ def _text(value, limit=512):
     if not isinstance(value, str):
         return None
     value = ' '.join(re.sub(r'[\x00-\x1f\x7f]', ' ', value).split())
-    return value[:limit] or None
+    return (value if limit is None else value[:limit]) or None
 
 
-def _metadata(item):
+def _metadata(item,omissions=None,index=0):
     if not isinstance(item, dict):
         raise _ResponseError('invalid_response')
     # Identifiers must never be truncated or have interior characters changed:
     # that could manufacture a citation to a different work.
+    omissions=[] if omissions is None else omissions
+    def omitted(field,configured,observed,action='truncated'):
+        omissions.append(dict(result_index=index,field=field,configured=configured,observed=observed,action=action,unit='characters' if field not in ('authors','results') else 'items'))
+    def text(value,maximum,field):
+        cleaned=_text(value,None)
+        if cleaned is not None and len(cleaned)>maximum:omitted(field,maximum,len(cleaned))
+        return cleaned[:maximum] if cleaned else None
     doi = item.get('DOI')
     doi = doi.strip() if isinstance(doi, str) else None
     if doi is not None and (len(doi) > 256 or not re.fullmatch(r'10\.\d{4,9}/[^\s<>\x00-\x1f\x7f]+', doi)):
+        omitted('doi',256,len(doi),'omitted_identifier_never_truncated')
         doi = None
     titles = item.get('title')
-    title = _text(titles[0]) if isinstance(titles, list) and titles else None
+    if isinstance(titles,list) and len(titles)>1:omitted('alternate_titles',1,len(titles),'primary_title_only')
+    title = text(titles[0],512,'title') if isinstance(titles, list) and titles else None
     authors = []
     source_authors = item.get('author')
     if isinstance(source_authors, list):
-        for author in source_authors[:20]:
+        if len(source_authors)>20:omitted('authors',20,len(source_authors))
+        for author_index,author in enumerate(source_authors[:20]):
             if not isinstance(author, dict):
                 continue
-            name = _text(author.get('name'), 256)
+            field='authors['+str(author_index)+']'
+            name = text(author.get('name'),256,field+'.name')
             if name is None:
-                name = _text(' '.join(filter(None, (_text(author.get('given'), 128), _text(author.get('family'), 128)))), 256)
+                name = text(' '.join(filter(None, (text(author.get('given'),128,field+'.given'),text(author.get('family'),128,field+'.family')))),256,field+'.name')
             if name:
                 authors.append(name)
     year = None
@@ -151,7 +170,7 @@ def search(query, limit=5, *, opener=None):
     retryable flag is advisory to the caller; this function never retries.
     """
     if not isinstance(query, str) or not query.strip() or len(query) > MAX_QUERY_CHARACTERS:
-        return _result(error='invalid_query')
+        return _result(error='invalid_query',configured=512,observed=len(query) if isinstance(query,str) else None)
     if any(ord(character) < 32 or ord(character) == 127 for character in query):
         return _result(error='invalid_query')
     try:
@@ -159,7 +178,7 @@ def search(query, limit=5, *, opener=None):
     except UnicodeEncodeError:
         return _result(error='invalid_query')
     if type(limit) is not int or not 1 <= limit <= 5:
-        return _result(error='invalid_limit')
+        return _result(error='invalid_limit',configured=5,observed=limit if type(limit) is int else None)
     url = ENDPOINT + '?' + urlencode({'query.bibliographic':query.strip(), 'rows':limit, 'select':SELECT_FIELDS})
     request = Request(url, headers={'Accept':'application/json', 'Accept-Encoding':'identity',
                                   'User-Agent':'ASR-Literature-Metadata/1 (+https://www.crossref.org/documentation/retrieve-metadata/rest-api/)'})
@@ -178,17 +197,21 @@ def search(query, limit=5, *, opener=None):
         message = payload.get('message') if isinstance(payload, dict) else None
         if not isinstance(payload, dict) or payload.get('status') != 'ok' or not isinstance(message, dict) or not isinstance(message.get('items'), list):
             return _result(error='invalid_response')
-        return _result(results=[_metadata(item) for item in message['items'][:limit]])
+        omissions=[]
+        if len(message['items'])>limit:omissions.append(dict(field='results',configured=limit,observed=len(message['items']),action='truncated',unit='items'))
+        results=[_metadata(item,omissions,index) for index,item in enumerate(message['items'][:limit])]
+        return _result(results=results,diagnostics=dict(omissions=omissions,original_response_bytes=len(body),original_result_count=len(message['items'])))
     except HTTPError as error:
         status = error.code
         error.close()
         return _result(error=_http_error(status))
     except TimeoutError:
-        return _result(error='timeout')
+        return _result(error='timeout',configured=TIMEOUT_SECONDS,observed=None)
     except URLError as error:
         return _result(error='timeout' if isinstance(error.reason, TimeoutError) else 'network_error')
     except _ResponseError as error:
-        return _result(error=str(error))
+        return _result(error=str(error),configured=MAX_BYTES if str(error)=='response_too_large' else None,observed=error.observed,
+            diagnostics=dict(omissions=[],original_response_bytes=None,observed_basis=error.basis))
     except OSError:
         return _result(error='network_error')
     except (ValueError, TypeError, KeyError, UnicodeError, RecursionError):

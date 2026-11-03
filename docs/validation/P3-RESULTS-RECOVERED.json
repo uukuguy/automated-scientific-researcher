@@ -1,0 +1,2203 @@
+{
+  "schema": "asr-p3-acceptance-result/1",
+  "checked_at": "2026-11-03T01:12:10.078928+00:00",
+  "status": "incomplete",
+  "private_evidence_root": "artifacts/p3-acceptance-20261103-01",
+  "private_result_file": "result-resumed.json",
+  "prior_results": [
+    {
+      "path": "result.json",
+      "sha256": "064631d99c325054fd06c999294e7c50e94984f9f0475601bf5eff8852c2f061",
+      "failures": [
+        {
+          "stage": "research_trajectory",
+          "category": "RuntimeError",
+          "code": null
+        }
+      ],
+      "runtime_statuses": [
+        "provider_error"
+      ]
+    }
+  ],
+  "native_session_migration": {
+    "config_dir": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p3-acceptance-20261103-01/pi-private-resumed",
+    "journals": [
+      {
+        "original": "pi-private/sessions/2026-11-03T00-58-12-620Z_research_49c26021d0404e1688e344b051ed587a.jsonl",
+        "copy": "pi-private-resumed/sessions/2026-11-03T00-58-12-620Z_research_49c26021d0404e1688e344b051ed587a.jsonl",
+        "sha256": "086575de684f0275919440d1eb6bcab52b18512fb6730b591365a2d79635349a"
+      }
+    ]
+  },
+  "project_id": "p3-689915c3fcd2",
+  "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+  "external_experiment_id": "aar-experiment:1",
+  "runtime": {
+    "status": "ready",
+    "model": "gpt-6.1-sol",
+    "thinking": "high",
+    "provider": "openai-codex",
+    "auth_mode": "subscription_oauth",
+    "runtime_version": "1.5.0",
+    "capability_pack_sha256": "e70125a066e40f76fce780c73d12f30428adee2fac45d1e56aeb23fda4b89260",
+    "limits": {
+      "schema": "asr-runtime-acceptance/1",
+      "provider": "openai-codex",
+      "model": "from validated pi default openai-codex settings",
+      "auth_mode": "subscription_oauth",
+      "billing_mode": "subscription",
+      "total_walltime_seconds": 180,
+      "turns": 20,
+      "tool_executions": 32,
+      "numerical_attempts": 4,
+      "numerical_execution_ms": 80000,
+      "evaluation_attempts": 3,
+      "evaluation_ms": 60000,
+      "per_attempt_timeout_seconds": 20,
+      "max_method_revisions": 2,
+      "paid_api_fallback": false
+    },
+    "pinned_image": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+    "aar_owner": "actual AutonomousAgentLoop.run"
+  },
+  "runtime_sessions": [
+    {
+      "status": "interrupted",
+      "turns": 6,
+      "tool_executions": 8,
+      "native_session_id": "research_49c26021d0404e1688e344b051ed587a",
+      "capability_pack_sha256": "e70125a066e40f76fce780c73d12f30428adee2fac45d1e56aeb23fda4b89260",
+      "runtime_claim": {
+        "project_id": "p3-689915c3fcd2",
+        "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+        "session_id": "session_57fc60d0322f4da6953ae2eca1284f1d",
+        "epoch": 1,
+        "owner": "pi_778adbaff579408fa2beeb650a977d27",
+        "state": "active",
+        "runtime_identity": {
+          "provider": "openai-codex",
+          "model": "gpt-6.1-sol",
+          "auth_mode": "subscription_oauth",
+          "billing_mode": "subscription"
+        },
+        "reserved_walltime_ms": 110000,
+        "started_at": "2026-11-03T01:09:12.014442+00:00",
+        "process_identity": null,
+        "launch_state": "prepared",
+        "replayed": false
+      },
+      "execution_exited": null
+    },
+    {
+      "status": "timed_out",
+      "turns": 12,
+      "tool_executions": 14,
+      "native_session_id": "research_49c26021d0404e1688e344b051ed587a",
+      "capability_pack_sha256": "e70125a066e40f76fce780c73d12f30428adee2fac45d1e56aeb23fda4b89260",
+      "runtime_claim": {
+        "project_id": "p3-689915c3fcd2",
+        "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+        "session_id": "session_28076cd847634cef994b1b692e1df3ab",
+        "epoch": 1,
+        "owner": "pi_34b886a351c247c9a24a7faf65dd02a3",
+        "state": "active",
+        "runtime_identity": {
+          "provider": "openai-codex",
+          "model": "gpt-6.1-sol",
+          "auth_mode": "subscription_oauth",
+          "billing_mode": "subscription"
+        },
+        "reserved_walltime_ms": 124044,
+        "started_at": "2026-11-03T01:10:05.586847+00:00",
+        "process_identity": null,
+        "launch_state": "prepared",
+        "replayed": false
+      },
+      "execution_exited": null
+    }
+  ],
+  "runtime_records": [
+    {
+      "actual_walltime_ms": 2395,
+      "epoch": 1,
+      "execution_exited": true,
+      "exit_receipt": {
+        "execution_exited": true,
+        "identity": {
+          "backend": "host-process",
+          "birth": "1793667492.464738",
+          "boot": "1792019499:650515",
+          "host": "m3max.local",
+          "pgid": 75622,
+          "pid": 75622
+        },
+        "observed_at": 1793667494.8133812,
+        "terminated": false
+      },
+      "finished_at": "2026-11-03T00:58:14.814044+00:00",
+      "launch_authorized_at": "2026-11-03T00:58:12.464318+00:00",
+      "launch_state": "launching",
+      "owner": "pi_f3de5d23e0804861a0d2f8e74de135fc",
+      "process_identity": {
+        "backend": "host-process",
+        "birth": "1793667492.464738",
+        "boot": "1792019499:650515",
+        "host": "m3max.local",
+        "pgid": 75622,
+        "pid": 75622
+      },
+      "project_id": "p3-689915c3fcd2",
+      "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+      "reserved_walltime_ms": 110000,
+      "runtime_identity": {
+        "auth_mode": "subscription_oauth",
+        "billing_mode": "subscription",
+        "model": "gpt-6.1-sol",
+        "provider": "openai-codex"
+      },
+      "session_id": "session_0dcec69996fa486eb1ad3af7b77767a2",
+      "started_at": "2026-11-03T00:58:12.308272+00:00",
+      "state": "exited"
+    },
+    {
+      "actual_walltime_ms": 53268,
+      "epoch": 1,
+      "execution_exited": true,
+      "exit_receipt": {
+        "execution_exited": true,
+        "identity": {
+          "backend": "host-process",
+          "birth": "1793668152.175082",
+          "boot": "1792019499:650515",
+          "host": "m3max.local",
+          "pgid": 95532,
+          "pid": 95532
+        },
+        "observed_at": 1793668205.370062,
+        "terminated": false
+      },
+      "finished_at": "2026-11-03T01:10:05.370673+00:00",
+      "launch_authorized_at": "2026-11-03T01:09:12.174591+00:00",
+      "launch_state": "launching",
+      "owner": "pi_778adbaff579408fa2beeb650a977d27",
+      "process_identity": {
+        "backend": "host-process",
+        "birth": "1793668152.175082",
+        "boot": "1792019499:650515",
+        "host": "m3max.local",
+        "pgid": 95532,
+        "pid": 95532
+      },
+      "project_id": "p3-689915c3fcd2",
+      "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+      "reserved_walltime_ms": 110000,
+      "runtime_identity": {
+        "auth_mode": "subscription_oauth",
+        "billing_mode": "subscription",
+        "model": "gpt-6.1-sol",
+        "provider": "openai-codex"
+      },
+      "session_id": "session_57fc60d0322f4da6953ae2eca1284f1d",
+      "started_at": "2026-11-03T01:09:12.014442+00:00",
+      "state": "exited"
+    },
+    {
+      "actual_walltime_ms": 124374,
+      "epoch": 1,
+      "execution_exited": true,
+      "exit_receipt": {
+        "execution_exited": true,
+        "identity": {
+          "backend": "host-process",
+          "birth": "1793668205.753075",
+          "boot": "1792019499:650515",
+          "host": "m3max.local",
+          "pgid": 97901,
+          "pid": 97901
+        },
+        "observed_at": 1793668330.0505338,
+        "terminated": false
+      },
+      "finished_at": "2026-11-03T01:12:10.051162+00:00",
+      "launch_authorized_at": "2026-11-03T01:10:05.752614+00:00",
+      "launch_state": "launching",
+      "owner": "pi_34b886a351c247c9a24a7faf65dd02a3",
+      "process_identity": {
+        "backend": "host-process",
+        "birth": "1793668205.753075",
+        "boot": "1792019499:650515",
+        "host": "m3max.local",
+        "pgid": 97901,
+        "pid": 97901
+      },
+      "project_id": "p3-689915c3fcd2",
+      "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+      "reserved_walltime_ms": 124044,
+      "runtime_identity": {
+        "auth_mode": "subscription_oauth",
+        "billing_mode": "subscription",
+        "model": "gpt-6.1-sol",
+        "provider": "openai-codex"
+      },
+      "session_id": "session_28076cd847634cef994b1b692e1df3ab",
+      "started_at": "2026-11-03T01:10:05.586847+00:00",
+      "state": "exited"
+    }
+  ],
+  "actor_roles": {
+    "human": "p3-human",
+    "researcher": "p3-researcher",
+    "supervisor": "p3-supervisor",
+    "evaluator": "p3-evaluator"
+  },
+  "hypotheses": [
+    {
+      "author": "p3-researcher",
+      "created_at": "2026-11-03T01:09:32.455612+00:00",
+      "document": {
+        "analysis_timing": "prospective",
+        "change_reason": "Initial prospective bounded hypothesis; no earlier trials exist in state.",
+        "prediction": "Using pf.alg NR, pf.tol 1e-10, pf.nr.max_it 30 and pf.enforce_q_lims 0 will complete within 20 seconds and independently pass equation validity at the evaluator tolerance in both the initial execution and one exact frozen-method replication. No prediction of operating-limit feasibility is made.",
+        "refutation_criteria": "An independently evaluated completed candidate that fails original-equation validity or fixed-input preservation opposes the prediction; timeout or execution failure fails the completion prediction but does not establish physical infeasibility.",
+        "scope": "Only the frozen case118 input, fixed PV/PQ single slack, available MATPOWER implementation. Reference is the independent evaluator's original equations and fixed-input checks, not a speed or accuracy comparison against another solver.",
+        "statement": "On the frozen flat-start case118, MATPOWER polar Newton-Raphson with fixed PV/PQ/slack roles and no reactive-limit switching reaches an original-problem AC equation solution.",
+        "study_type": "confirmatory"
+      },
+      "hypothesis_id": "fixed-nr-tight",
+      "parent_revision": null,
+      "project_id": "p3-689915c3fcd2",
+      "revision": 1,
+      "schema_version": "asr-hypothesis/1",
+      "sha256": "76a4155845ff10654dc2ed6934d37b807458434498c70fd3aa4b401ec7856e8b"
+    },
+    {
+      "author": "p3-researcher",
+      "created_at": "2026-11-03T01:10:55.875372+00:00",
+      "document": {
+        "analysis_timing": "post_hoc",
+        "change_reason": "Completed independent source and replica reports support revision 1's narrow prediction while revealing six persistent reactive-generation bound violations. Narrow precision to the observed solution and explicitly retain negative operational evidence; source and algorithm remain unchanged. This is post-hoc interpretation, not retroactive preregistration.",
+        "prediction": "Post-hoc precision of revision 1, not a new prospective test: both completed executions preserve inputs and achieve max mismatch 3.9307660706864565e-13 pu, while retaining six reactive-generation violations. The exact-method replica has identical solution bytes. No additional experiment is proposed or executed.",
+        "refutation_criteria": "For this retrospective interpretation, evidence of input nonpreservation, equation invalidity, inconsistent replica solution, or absence of the reported Q-bound violations in the completed independent reports would contradict the statement. Existing operating violations oppose any stronger feasibility claim, not revision 1's equation-only prediction.",
+        "scope": "Restricted to source trial_afbad5dec9e64b8d96fe3ec916bbea68 and replica trial_60d58ad443ea4ae1b5818522d6780721, frozen candidate 6ad49cab1e5d5b1379828834c6310b9eb80e8b6701481480bdf58a5759dfe6a6, MATPOWER 8.1/Octave 7.3.0 environment. Equation success is separate from operating feasibility; 186 thermal ratings are unassessed. No solver comparison, novelty or generalization.",
+        "statement": "For this frozen case118 and environment, tight polar Newton-Raphson yields a reproducible original-equation solution, but that solution is not operating-feasible under the evaluated reactive-generation bounds.",
+        "study_type": "exploratory"
+      },
+      "hypothesis_id": "fixed-nr-tight",
+      "parent_revision": 1,
+      "project_id": "p3-689915c3fcd2",
+      "revision": 2,
+      "schema_version": "asr-hypothesis/1",
+      "sha256": "63f90be2b9a9a3e730f7d81aad565f1da5da8e0379aa8bf92f78baae452707d2"
+    }
+  ],
+  "findings": [
+    {
+      "author": "p3-researcher",
+      "created_at": "2026-11-03T01:12:06.445379+00:00",
+      "evidence": [
+        {
+          "execution_attempt_id": "attempt_965e6c0d0aa54e319e1355af68122a54",
+          "manifest_hash": "4d251f992ab37d1480b7dd2089b2a2fb5b2c8300fbdc45e3c451e93b9c8cbf00",
+          "trial_id": "trial_afbad5dec9e64b8d96fe3ec916bbea68"
+        },
+        {
+          "execution_attempt_id": "attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+          "manifest_hash": "c9afa3bb9fd0499be7f815525fd2587a895cbe82085f7bb4bd7d98b770a0e4ac",
+          "trial_id": "trial_60d58ad443ea4ae1b5818522d6780721"
+        }
+      ],
+      "finding_id": "fixed-nr-equations-with-q-violations",
+      "hypothesis_evidence": [
+        {
+          "analysis_timing": "prospective",
+          "assessment": "supports",
+          "assessment_author": "p3-researcher",
+          "assessment_kind": "author_claim",
+          "execution_attempt_id": "attempt_965e6c0d0aa54e319e1355af68122a54",
+          "hypothesis_ref": {
+            "hypothesis_id": "fixed-nr-tight",
+            "project_id": "p3-689915c3fcd2",
+            "revision": 1,
+            "sha256": "76a4155845ff10654dc2ed6934d37b807458434498c70fd3aa4b401ec7856e8b"
+          },
+          "manifest_hash": "4d251f992ab37d1480b7dd2089b2a2fb5b2c8300fbdc45e3c451e93b9c8cbf00",
+          "scope": "Preregistered completion and equation validity only.",
+          "trial_id": "trial_afbad5dec9e64b8d96fe3ec916bbea68"
+        },
+        {
+          "analysis_timing": "prospective",
+          "assessment": "supports",
+          "assessment_author": "p3-researcher",
+          "assessment_kind": "author_claim",
+          "execution_attempt_id": "attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+          "hypothesis_ref": {
+            "hypothesis_id": "fixed-nr-tight",
+            "project_id": "p3-689915c3fcd2",
+            "revision": 1,
+            "sha256": "76a4155845ff10654dc2ed6934d37b807458434498c70fd3aa4b401ec7856e8b"
+          },
+          "manifest_hash": "c9afa3bb9fd0499be7f815525fd2587a895cbe82085f7bb4bd7d98b770a0e4ac",
+          "scope": "Preregistered exact-method replica completion and equation validity only.",
+          "trial_id": "trial_60d58ad443ea4ae1b5818522d6780721"
+        },
+        {
+          "analysis_timing": "post_hoc",
+          "assessment": "supports",
+          "assessment_author": "p3-researcher",
+          "assessment_kind": "author_claim",
+          "execution_attempt_id": "attempt_965e6c0d0aa54e319e1355af68122a54",
+          "hypothesis_ref": {
+            "hypothesis_id": "fixed-nr-tight",
+            "project_id": "p3-689915c3fcd2",
+            "revision": 2,
+            "sha256": "63f90be2b9a9a3e730f7d81aad565f1da5da8e0379aa8bf92f78baae452707d2"
+          },
+          "manifest_hash": "4d251f992ab37d1480b7dd2089b2a2fb5b2c8300fbdc45e3c451e93b9c8cbf00",
+          "scope": "Post-hoc equation success with six Q-bound violations; not feasibility.",
+          "trial_id": "trial_afbad5dec9e64b8d96fe3ec916bbea68"
+        },
+        {
+          "analysis_timing": "post_hoc",
+          "assessment": "supports",
+          "assessment_author": "p3-researcher",
+          "assessment_kind": "author_claim",
+          "execution_attempt_id": "attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+          "hypothesis_ref": {
+            "hypothesis_id": "fixed-nr-tight",
+            "project_id": "p3-689915c3fcd2",
+            "revision": 2,
+            "sha256": "63f90be2b9a9a3e730f7d81aad565f1da5da8e0379aa8bf92f78baae452707d2"
+          },
+          "manifest_hash": "c9afa3bb9fd0499be7f815525fd2587a895cbe82085f7bb4bd7d98b770a0e4ac",
+          "scope": "Post-hoc consistent replication of equation-valid but Q-violating solution on identical input.",
+          "trial_id": "trial_60d58ad443ea4ae1b5818522d6780721"
+        }
+      ],
+      "limitations": "One frozen method, two fixed-case executions; replication is not novelty or held-out generalization. Equation validity is separate from operating feasibility; six Q violations persist and 186 thermal limits are unassessed. No infeasibility, uniqueness, robustness, speed ranking or causal tolerance-benefit proof. No alternative solver, baseline or ablation tested. Evaluator leaves experimental design, hypothesis assessment and generalization unassessed; interpretations are author claims. Artifact verification is recorded, independence basis is evaluator attestation, and isolation_verified_by_service is false despite reported isolation facts. Deliberately interrupted source process was recovered from completed durable evidence without resubmission. Both numerical outcomes retained; no new test proposed or executed. Initial publication request was rejected as invalid_finding; this corrected request tests string-valued limitations without changing numerical evidence.",
+      "project_id": "p3-689915c3fcd2",
+      "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+      "revision": 1,
+      "statement": "Candidate 6ad49cab1e5d5b1379828834c6310b9eb80e8b6701481480bdf58a5759dfe6a6 completed source trial_afbad5dec9e64b8d96fe3ec916bbea68 and fresh frozen-method replica trial_60d58ad443ea4ae1b5818522d6780721 (803/570 ms charged execution). Completed independent Validation IDs validation_evaluation_8ec51898c20d48fbbe26cdad2fb4a169 and validation_evaluation_5f76d36c5f3f4080bff3e23b53cf2307 report preserved inputs and valid original equations, max mismatch 3.9307660706864565e-13 pu in both, but six reactive-generation violations (IDs 8,14,15,42,45,47) and 186 unassessed thermal limits. Comparison Validation validation_replay_evaluation_5f76d36c5f3f4080bff3e23b53cf2307 supersedes the replica Validation and records consistent bytewise replication in distinct containers. Author interpretation supports preregistered p3-689915c3fcd2/fixed-nr-tight revision 1's equation/completion prediction; post-hoc revision 2 retains the operating counterevidence and limits the conclusion to a reproducible equation solution, not operating feasibility. Research note snapshot: bb665f7a92262cb941405f88e84ddb3a84700fddd821bb6dda7b31abb865dbb2.",
+      "status": "candidate"
+    }
+  ],
+  "trials": [
+    {
+      "contract": {
+        "author": "p3-human",
+        "contract_id": "candidate-study",
+        "created_at": "2026-11-03T00:58:12.217358+00:00",
+        "document": {
+          "budget": {
+            "attempts": 4,
+            "evaluation_attempts": 3,
+            "evaluation_ms": 60000,
+            "execution_ms": 80000,
+            "research_walltime_ms": 180000,
+            "tool_executions": 32,
+            "turns": 20
+          },
+          "evaluation_ref": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+          "execution_policy": {
+            "candidate_interface": "asr-candidate/1",
+            "candidate_profiles": [
+              "octave-candidate/1"
+            ],
+            "max_candidate_revisions": 2,
+            "max_concurrency": 1,
+            "output_bytes": 104857600,
+            "researchers": 1,
+            "retry_limit": 0,
+            "timeout_seconds": 20
+          },
+          "intervention_policy": {
+            "guidance_boundary": "next_submission",
+            "pause": "drain"
+          },
+          "objective": {
+            "question": "Investigate a testable solver, initialization or refinement method on the frozen IEEE-118 original power-flow problem.",
+            "scope": "Fixed-PV/PQ single-slack case118 development profile; no generalization or novelty claim.",
+            "success_criteria": "Model-authored frozen method, hypothesis-linked evidence, honest scientific revision, independent material validation and fresh frozen-method replication; negative results are acceptable."
+          },
+          "problem_ref": "3a223ce662524989d9783e74cac5e8eae8301348760377fd80a66e57d49732aa",
+          "provenance": {
+            "aar_upstream": "79a0562fa1a2c246048ed7c009f3684907987b05",
+            "automatic_assessments": "Hypothesis/generalization/design unassessed; separate evaluator identity and artifact proof.",
+            "capability_pack_sha256": "e70125a066e40f76fce780c73d12f30428adee2fac45d1e56aeb23fda4b89260",
+            "capability_profile": "powerflow-candidate-research/1",
+            "organization": "Actual pinned AutonomousAgentLoop and upstream Experiment/Finding ORM; pi owns inner reasoning/tools.",
+            "replication_protocol": "exact-frozen-solution/1; same candidate/input in distinct admitted containers",
+            "source": "bounded-P3-AAR-candidate-acceptance"
+          },
+          "reference_ref": "fba322bcc04305144e9b7b1958c0d16027b2ee089ced75880260e44f14debf3f",
+          "runtime_policy": {
+            "auth_mode": "subscription_oauth",
+            "billing_mode": "subscription",
+            "model": "gpt-6.1-sol",
+            "provider": "openai-codex",
+            "quota_state": "unknown"
+          },
+          "schema_version": "asr-contract/1",
+          "variable_policy": {
+            "schema_version": "asr-variable-policy/1",
+            "variables": {
+              "iterations": {
+                "allowed": {
+                  "maximum": 100,
+                  "minimum": 1
+                },
+                "default": 20,
+                "mode": "bounded",
+                "modifiable_by": [
+                  "human",
+                  "researcher"
+                ],
+                "scope": "trial",
+                "type": "integer",
+                "unit": "iterations",
+                "value": 20
+              },
+              "network": {
+                "default": "case118",
+                "mode": "fixed",
+                "modifiable_by": [
+                  "human"
+                ],
+                "scope": "project",
+                "type": "string",
+                "unit": "case_id",
+                "value": "case118"
+              },
+              "solver": {
+                "default": "newton_raphson",
+                "implementation": {
+                  "execution_permission": "isolated-candidate",
+                  "interface": "asr-candidate/1:solver"
+                },
+                "mode": "open",
+                "modifiable_by": [
+                  "human",
+                  "researcher"
+                ],
+                "scope": "trial",
+                "type": "string",
+                "unit": "method_id",
+                "value": "newton_raphson"
+              }
+            }
+          }
+        },
+        "project_id": "p3-689915c3fcd2",
+        "revision": 1,
+        "sha256": "840cf9bfe625a212bb7fdb0af290b913606d73920711ba410b2126d33940bf2c"
+      },
+      "contract_id": "candidate-study",
+      "contract_revision": 1,
+      "created_at": "2026-11-03T01:10:04.286919+00:00",
+      "execution_attempt_id": "attempt_965e6c0d0aa54e319e1355af68122a54",
+      "execution_request": {
+        "candidate": {
+          "path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p3-acceptance-20261103-01/asr-artifacts/candidates/f6a6f4faec2df17fd56002e90f9f8b815ced4d87b86053222f0026b8a8b0633f/e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee/candidate.m",
+          "sha256": "e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee",
+          "size": 558
+        },
+        "case": "case118",
+        "case_sha256": "bc2e6f22b4b9e776572885ee4b50e4f4ab2ee0c5577e9126e86d906f14c4b5f7",
+        "environment": {
+          "architecture": "arm64",
+          "archive_sha256": "5f08ced1a32e8d0d658ee54b73678c7364a899bae479882f2bc419e91442b69f",
+          "archive_url": "https://codeload.github.com/MATPOWER/matpower/tar.gz/refs/tags/8.1",
+          "base_image": "python:3.12-slim-bookworm@sha256:593bd06efe90efa80dc4eee3948be7c0fde4134606dd40d8dd8dbcade98e669c",
+          "case_sha256": "bc2e6f22b4b9e776572885ee4b50e4f4ab2ee0c5577e9126e86d906f14c4b5f7",
+          "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+          "matpower_version": "8.1",
+          "octave_version": "7.3.0",
+          "package_inventory_sha256": "bf8ee04cf670163780a2937466e00ec91d9b77112cc2fa55fc76f1f866155166",
+          "rebuild_note": "APT repositories are not snapshot-pinned. Execute by the recorded image ID; a rebuild must be revalidated and get a new environment record.",
+          "reference_script_sha256": "438430557c383beb171fd0b40d1e1a04877824e142d56ae897c41d300b33153f",
+          "schema": "asr-numerical-environment/1"
+        },
+        "host_python": "3.12.12 (main, Oct  9 2025, 11:07:00) [Clang 17.0.0 (clang-1700.6.3.2)]",
+        "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+        "initialization": "flat",
+        "max_iterations": 30,
+        "original_input_sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+        "output_bytes": 1048576,
+        "policy": "fixed-pv-pq-single-slack/1",
+        "profile": "octave-candidate/1",
+        "source_hashes": {
+          "reference.py": "cd2a98a5135ac5461bd028948a6e3b998e4d9b218e2b22c83bb69b0dced5587c",
+          "runner.py": "bbc307a89da9cd71d96bdf2ddcf104df4bef5f5fe7fc148afad245b6592f902e",
+          "validation.py": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3"
+        },
+        "timeout_seconds": 20.0,
+        "validation_tolerance_pu": 1e-07,
+        "wrapper_sha256": "cda9abfab75ed9318ca8fa454a6c0fa3b1d78447f12a370eab637f099fe043b9"
+      },
+      "hypothesis_linkage": "linked",
+      "hypothesis_ref": {
+        "hypothesis_id": "fixed-nr-tight",
+        "project_id": "p3-689915c3fcd2",
+        "revision": 1,
+        "sha256": "76a4155845ff10654dc2ed6934d37b807458434498c70fd3aa4b401ec7856e8b"
+      },
+      "project_id": "p3-689915c3fcd2",
+      "references": {
+        "candidate": "6ad49cab1e5d5b1379828834c6310b9eb80e8b6701481480bdf58a5759dfe6a6",
+        "evaluation": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+        "input_manifest": "8398507515e409d3d8b35e2f38c8164b20a200a60a36539e09f56fdb74ffc581",
+        "problem": "3a223ce662524989d9783e74cac5e8eae8301348760377fd80a66e57d49732aa"
+      },
+      "requested_budget": {
+        "attempts": 1,
+        "execution_ms": 20000
+      },
+      "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+      "state": "queued",
+      "trial_id": "trial_afbad5dec9e64b8d96fe3ec916bbea68",
+      "variables": {
+        "iterations": 30,
+        "network": "case118",
+        "solver": "octave-candidate/1"
+      },
+      "dispatch_state": "succeeded",
+      "execution": {
+        "attempt": "attempt_965e6c0d0aa54e319e1355af68122a54",
+        "dispatch": {
+          "contract": {
+            "author": "p3-human",
+            "contract_id": "candidate-study",
+            "created_at": "2026-11-03T00:58:12.217358+00:00",
+            "document": {
+              "budget": {
+                "attempts": 4,
+                "evaluation_attempts": 3,
+                "evaluation_ms": 60000,
+                "execution_ms": 80000,
+                "research_walltime_ms": 180000,
+                "tool_executions": 32,
+                "turns": 20
+              },
+              "evaluation_ref": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+              "execution_policy": {
+                "candidate_interface": "asr-candidate/1",
+                "candidate_profiles": [
+                  "octave-candidate/1"
+                ],
+                "max_candidate_revisions": 2,
+                "max_concurrency": 1,
+                "output_bytes": 104857600,
+                "researchers": 1,
+                "retry_limit": 0,
+                "timeout_seconds": 20
+              },
+              "intervention_policy": {
+                "guidance_boundary": "next_submission",
+                "pause": "drain"
+              },
+              "objective": {
+                "question": "Investigate a testable solver, initialization or refinement method on the frozen IEEE-118 original power-flow problem.",
+                "scope": "Fixed-PV/PQ single-slack case118 development profile; no generalization or novelty claim.",
+                "success_criteria": "Model-authored frozen method, hypothesis-linked evidence, honest scientific revision, independent material validation and fresh frozen-method replication; negative results are acceptable."
+              },
+              "problem_ref": "3a223ce662524989d9783e74cac5e8eae8301348760377fd80a66e57d49732aa",
+              "provenance": {
+                "aar_upstream": "79a0562fa1a2c246048ed7c009f3684907987b05",
+                "automatic_assessments": "Hypothesis/generalization/design unassessed; separate evaluator identity and artifact proof.",
+                "capability_pack_sha256": "e70125a066e40f76fce780c73d12f30428adee2fac45d1e56aeb23fda4b89260",
+                "capability_profile": "powerflow-candidate-research/1",
+                "organization": "Actual pinned AutonomousAgentLoop and upstream Experiment/Finding ORM; pi owns inner reasoning/tools.",
+                "replication_protocol": "exact-frozen-solution/1; same candidate/input in distinct admitted containers",
+                "source": "bounded-P3-AAR-candidate-acceptance"
+              },
+              "reference_ref": "fba322bcc04305144e9b7b1958c0d16027b2ee089ced75880260e44f14debf3f",
+              "runtime_policy": {
+                "auth_mode": "subscription_oauth",
+                "billing_mode": "subscription",
+                "model": "gpt-6.1-sol",
+                "provider": "openai-codex",
+                "quota_state": "unknown"
+              },
+              "schema_version": "asr-contract/1",
+              "variable_policy": {
+                "schema_version": "asr-variable-policy/1",
+                "variables": {
+                  "iterations": {
+                    "allowed": {
+                      "maximum": 100,
+                      "minimum": 1
+                    },
+                    "default": 20,
+                    "mode": "bounded",
+                    "modifiable_by": [
+                      "human",
+                      "researcher"
+                    ],
+                    "scope": "trial",
+                    "type": "integer",
+                    "unit": "iterations",
+                    "value": 20
+                  },
+                  "network": {
+                    "default": "case118",
+                    "mode": "fixed",
+                    "modifiable_by": [
+                      "human"
+                    ],
+                    "scope": "project",
+                    "type": "string",
+                    "unit": "case_id",
+                    "value": "case118"
+                  },
+                  "solver": {
+                    "default": "newton_raphson",
+                    "implementation": {
+                      "execution_permission": "isolated-candidate",
+                      "interface": "asr-candidate/1:solver"
+                    },
+                    "mode": "open",
+                    "modifiable_by": [
+                      "human",
+                      "researcher"
+                    ],
+                    "scope": "trial",
+                    "type": "string",
+                    "unit": "method_id",
+                    "value": "newton_raphson"
+                  }
+                }
+              }
+            },
+            "project_id": "p3-689915c3fcd2",
+            "revision": 1,
+            "sha256": "840cf9bfe625a212bb7fdb0af290b913606d73920711ba410b2126d33940bf2c"
+          },
+          "contract_id": "candidate-study",
+          "contract_revision": 1,
+          "created_at": "2026-11-03T01:10:04.286919+00:00",
+          "execution_attempt_id": "attempt_965e6c0d0aa54e319e1355af68122a54",
+          "execution_request": {
+            "candidate": {
+              "path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p3-acceptance-20261103-01/asr-artifacts/candidates/f6a6f4faec2df17fd56002e90f9f8b815ced4d87b86053222f0026b8a8b0633f/e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee/candidate.m",
+              "sha256": "e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee",
+              "size": 558
+            },
+            "case": "case118",
+            "case_sha256": "bc2e6f22b4b9e776572885ee4b50e4f4ab2ee0c5577e9126e86d906f14c4b5f7",
+            "environment": {
+              "architecture": "arm64",
+              "archive_sha256": "5f08ced1a32e8d0d658ee54b73678c7364a899bae479882f2bc419e91442b69f",
+              "archive_url": "https://codeload.github.com/MATPOWER/matpower/tar.gz/refs/tags/8.1",
+              "base_image": "python:3.12-slim-bookworm@sha256:593bd06efe90efa80dc4eee3948be7c0fde4134606dd40d8dd8dbcade98e669c",
+              "case_sha256": "bc2e6f22b4b9e776572885ee4b50e4f4ab2ee0c5577e9126e86d906f14c4b5f7",
+              "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+              "matpower_version": "8.1",
+              "octave_version": "7.3.0",
+              "package_inventory_sha256": "bf8ee04cf670163780a2937466e00ec91d9b77112cc2fa55fc76f1f866155166",
+              "rebuild_note": "APT repositories are not snapshot-pinned. Execute by the recorded image ID; a rebuild must be revalidated and get a new environment record.",
+              "reference_script_sha256": "438430557c383beb171fd0b40d1e1a04877824e142d56ae897c41d300b33153f",
+              "schema": "asr-numerical-environment/1"
+            },
+            "host_python": "3.12.12 (main, Oct  9 2025, 11:07:00) [Clang 17.0.0 (clang-1700.6.3.2)]",
+            "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+            "initialization": "flat",
+            "max_iterations": 30,
+            "original_input_sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+            "output_bytes": 1048576,
+            "policy": "fixed-pv-pq-single-slack/1",
+            "profile": "octave-candidate/1",
+            "source_hashes": {
+              "reference.py": "cd2a98a5135ac5461bd028948a6e3b998e4d9b218e2b22c83bb69b0dced5587c",
+              "runner.py": "bbc307a89da9cd71d96bdf2ddcf104df4bef5f5fe7fc148afad245b6592f902e",
+              "validation.py": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3"
+            },
+            "timeout_seconds": 20.0,
+            "validation_tolerance_pu": 1e-07,
+            "wrapper_sha256": "cda9abfab75ed9318ca8fa454a6c0fa3b1d78447f12a370eab637f099fe043b9"
+          },
+          "hypothesis_linkage": "linked",
+          "hypothesis_ref": {
+            "hypothesis_id": "fixed-nr-tight",
+            "project_id": "p3-689915c3fcd2",
+            "revision": 1,
+            "sha256": "76a4155845ff10654dc2ed6934d37b807458434498c70fd3aa4b401ec7856e8b"
+          },
+          "project_id": "p3-689915c3fcd2",
+          "references": {
+            "candidate": "6ad49cab1e5d5b1379828834c6310b9eb80e8b6701481480bdf58a5759dfe6a6",
+            "evaluation": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+            "input_manifest": "8398507515e409d3d8b35e2f38c8164b20a200a60a36539e09f56fdb74ffc581",
+            "problem": "3a223ce662524989d9783e74cac5e8eae8301348760377fd80a66e57d49732aa"
+          },
+          "requested_budget": {
+            "attempts": 1,
+            "execution_ms": 20000
+          },
+          "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+          "state": "queued",
+          "trial_id": "trial_afbad5dec9e64b8d96fe3ec916bbea68",
+          "variables": {
+            "iterations": 30,
+            "network": "case118",
+            "solver": "octave-candidate/1"
+          }
+        },
+        "dispatch_id": "attempt_965e6c0d0aa54e319e1355af68122a54",
+        "epoch": 1,
+        "finished_at": 1793668205.093667,
+        "identity": {
+          "backend": "docker-candidate",
+          "container_id": "fa97ee3704e465b35351fadf8377942fd6a2a4de1de1f15139cc59a7020bb36d",
+          "labels": {
+            "asr.attempt": "attempt_965e6c0d0aa54e319e1355af68122a54",
+            "asr.candidate": "e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee",
+            "asr.epoch": "1",
+            "asr.profile": "octave-candidate/1",
+            "asr.run": "research_49c26021d0404e1688e344b051ed587a",
+            "asr.trial": "trial_afbad5dec9e64b8d96fe3ec916bbea68"
+          },
+          "name": "asr-managed-attempt_965e6c0d0aa54e319e1355af68122a54"
+        },
+        "lease_until": 1793668235.033419,
+        "owner": "p3-candidate-supervisor",
+        "project": "p3-689915c3fcd2",
+        "report": {
+          "evidence_path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p3-acceptance-20261103-01/evidence/trial_afbad5dec9e64b8d96fe3ec916bbea68/attempt_965e6c0d0aa54e319e1355af68122a54",
+          "execution_attempt_id": "attempt_965e6c0d0aa54e319e1355af68122a54",
+          "execution_exited": true,
+          "manifest_hash": "4d251f992ab37d1480b7dd2089b2a2fb5b2c8300fbdc45e3c451e93b9c8cbf00",
+          "status": "succeeded",
+          "trial_id": "trial_afbad5dec9e64b8d96fe3ec916bbea68",
+          "usage": {
+            "attempts": 1,
+            "execution_ms": 803
+          },
+          "usage_estimated": false
+        },
+        "run": "research_49c26021d0404e1688e344b051ed587a",
+        "started_at": 1793668204.288756,
+        "state": "succeeded",
+        "trial": "trial_afbad5dec9e64b8d96fe3ec916bbea68"
+      }
+    },
+    {
+      "contract": {
+        "author": "p3-human",
+        "contract_id": "candidate-study",
+        "created_at": "2026-11-03T00:58:12.217358+00:00",
+        "document": {
+          "budget": {
+            "attempts": 4,
+            "evaluation_attempts": 3,
+            "evaluation_ms": 60000,
+            "execution_ms": 80000,
+            "research_walltime_ms": 180000,
+            "tool_executions": 32,
+            "turns": 20
+          },
+          "evaluation_ref": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+          "execution_policy": {
+            "candidate_interface": "asr-candidate/1",
+            "candidate_profiles": [
+              "octave-candidate/1"
+            ],
+            "max_candidate_revisions": 2,
+            "max_concurrency": 1,
+            "output_bytes": 104857600,
+            "researchers": 1,
+            "retry_limit": 0,
+            "timeout_seconds": 20
+          },
+          "intervention_policy": {
+            "guidance_boundary": "next_submission",
+            "pause": "drain"
+          },
+          "objective": {
+            "question": "Investigate a testable solver, initialization or refinement method on the frozen IEEE-118 original power-flow problem.",
+            "scope": "Fixed-PV/PQ single-slack case118 development profile; no generalization or novelty claim.",
+            "success_criteria": "Model-authored frozen method, hypothesis-linked evidence, honest scientific revision, independent material validation and fresh frozen-method replication; negative results are acceptable."
+          },
+          "problem_ref": "3a223ce662524989d9783e74cac5e8eae8301348760377fd80a66e57d49732aa",
+          "provenance": {
+            "aar_upstream": "79a0562fa1a2c246048ed7c009f3684907987b05",
+            "automatic_assessments": "Hypothesis/generalization/design unassessed; separate evaluator identity and artifact proof.",
+            "capability_pack_sha256": "e70125a066e40f76fce780c73d12f30428adee2fac45d1e56aeb23fda4b89260",
+            "capability_profile": "powerflow-candidate-research/1",
+            "organization": "Actual pinned AutonomousAgentLoop and upstream Experiment/Finding ORM; pi owns inner reasoning/tools.",
+            "replication_protocol": "exact-frozen-solution/1; same candidate/input in distinct admitted containers",
+            "source": "bounded-P3-AAR-candidate-acceptance"
+          },
+          "reference_ref": "fba322bcc04305144e9b7b1958c0d16027b2ee089ced75880260e44f14debf3f",
+          "runtime_policy": {
+            "auth_mode": "subscription_oauth",
+            "billing_mode": "subscription",
+            "model": "gpt-6.1-sol",
+            "provider": "openai-codex",
+            "quota_state": "unknown"
+          },
+          "schema_version": "asr-contract/1",
+          "variable_policy": {
+            "schema_version": "asr-variable-policy/1",
+            "variables": {
+              "iterations": {
+                "allowed": {
+                  "maximum": 100,
+                  "minimum": 1
+                },
+                "default": 20,
+                "mode": "bounded",
+                "modifiable_by": [
+                  "human",
+                  "researcher"
+                ],
+                "scope": "trial",
+                "type": "integer",
+                "unit": "iterations",
+                "value": 20
+              },
+              "network": {
+                "default": "case118",
+                "mode": "fixed",
+                "modifiable_by": [
+                  "human"
+                ],
+                "scope": "project",
+                "type": "string",
+                "unit": "case_id",
+                "value": "case118"
+              },
+              "solver": {
+                "default": "newton_raphson",
+                "implementation": {
+                  "execution_permission": "isolated-candidate",
+                  "interface": "asr-candidate/1:solver"
+                },
+                "mode": "open",
+                "modifiable_by": [
+                  "human",
+                  "researcher"
+                ],
+                "scope": "trial",
+                "type": "string",
+                "unit": "method_id",
+                "value": "newton_raphson"
+              }
+            }
+          }
+        },
+        "project_id": "p3-689915c3fcd2",
+        "revision": 1,
+        "sha256": "840cf9bfe625a212bb7fdb0af290b913606d73920711ba410b2126d33940bf2c"
+      },
+      "contract_id": "candidate-study",
+      "contract_revision": 1,
+      "created_at": "2026-11-03T01:10:29.942713+00:00",
+      "execution_attempt_id": "attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+      "execution_request": {
+        "candidate": {
+          "path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p3-acceptance-20261103-01/asr-artifacts/candidates/f6a6f4faec2df17fd56002e90f9f8b815ced4d87b86053222f0026b8a8b0633f/e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee/candidate.m",
+          "sha256": "e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee",
+          "size": 558
+        },
+        "case": "case118",
+        "case_sha256": "bc2e6f22b4b9e776572885ee4b50e4f4ab2ee0c5577e9126e86d906f14c4b5f7",
+        "environment": {
+          "architecture": "arm64",
+          "archive_sha256": "5f08ced1a32e8d0d658ee54b73678c7364a899bae479882f2bc419e91442b69f",
+          "archive_url": "https://codeload.github.com/MATPOWER/matpower/tar.gz/refs/tags/8.1",
+          "base_image": "python:3.12-slim-bookworm@sha256:593bd06efe90efa80dc4eee3948be7c0fde4134606dd40d8dd8dbcade98e669c",
+          "case_sha256": "bc2e6f22b4b9e776572885ee4b50e4f4ab2ee0c5577e9126e86d906f14c4b5f7",
+          "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+          "matpower_version": "8.1",
+          "octave_version": "7.3.0",
+          "package_inventory_sha256": "bf8ee04cf670163780a2937466e00ec91d9b77112cc2fa55fc76f1f866155166",
+          "rebuild_note": "APT repositories are not snapshot-pinned. Execute by the recorded image ID; a rebuild must be revalidated and get a new environment record.",
+          "reference_script_sha256": "438430557c383beb171fd0b40d1e1a04877824e142d56ae897c41d300b33153f",
+          "schema": "asr-numerical-environment/1"
+        },
+        "host_python": "3.12.12 (main, Oct  9 2025, 11:07:00) [Clang 17.0.0 (clang-1700.6.3.2)]",
+        "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+        "initialization": "flat",
+        "max_iterations": 30,
+        "original_input_sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+        "output_bytes": 1048576,
+        "policy": "fixed-pv-pq-single-slack/1",
+        "profile": "octave-candidate/1",
+        "source_hashes": {
+          "reference.py": "cd2a98a5135ac5461bd028948a6e3b998e4d9b218e2b22c83bb69b0dced5587c",
+          "runner.py": "bbc307a89da9cd71d96bdf2ddcf104df4bef5f5fe7fc148afad245b6592f902e",
+          "validation.py": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3"
+        },
+        "timeout_seconds": 20.0,
+        "validation_tolerance_pu": 1e-07,
+        "wrapper_sha256": "cda9abfab75ed9318ca8fa454a6c0fa3b1d78447f12a370eab637f099fe043b9"
+      },
+      "hypothesis_linkage": "linked",
+      "hypothesis_ref": {
+        "hypothesis_id": "fixed-nr-tight",
+        "project_id": "p3-689915c3fcd2",
+        "revision": 1,
+        "sha256": "76a4155845ff10654dc2ed6934d37b807458434498c70fd3aa4b401ec7856e8b"
+      },
+      "project_id": "p3-689915c3fcd2",
+      "references": {
+        "candidate": "6ad49cab1e5d5b1379828834c6310b9eb80e8b6701481480bdf58a5759dfe6a6",
+        "evaluation": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+        "input_manifest": "8398507515e409d3d8b35e2f38c8164b20a200a60a36539e09f56fdb74ffc581",
+        "problem": "3a223ce662524989d9783e74cac5e8eae8301348760377fd80a66e57d49732aa"
+      },
+      "replicates": {
+        "evaluation_ref": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+        "execution_attempt_id": "attempt_965e6c0d0aa54e319e1355af68122a54",
+        "manifest_hash": "4d251f992ab37d1480b7dd2089b2a2fb5b2c8300fbdc45e3c451e93b9c8cbf00",
+        "trial_id": "trial_afbad5dec9e64b8d96fe3ec916bbea68"
+      },
+      "requested_budget": {
+        "attempts": 1,
+        "execution_ms": 20000
+      },
+      "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+      "state": "queued",
+      "trial_id": "trial_60d58ad443ea4ae1b5818522d6780721",
+      "variables": {
+        "iterations": 30,
+        "network": "case118",
+        "solver": "octave-candidate/1"
+      },
+      "dispatch_state": "succeeded",
+      "execution": {
+        "attempt": "attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+        "dispatch": {
+          "contract": {
+            "author": "p3-human",
+            "contract_id": "candidate-study",
+            "created_at": "2026-11-03T00:58:12.217358+00:00",
+            "document": {
+              "budget": {
+                "attempts": 4,
+                "evaluation_attempts": 3,
+                "evaluation_ms": 60000,
+                "execution_ms": 80000,
+                "research_walltime_ms": 180000,
+                "tool_executions": 32,
+                "turns": 20
+              },
+              "evaluation_ref": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+              "execution_policy": {
+                "candidate_interface": "asr-candidate/1",
+                "candidate_profiles": [
+                  "octave-candidate/1"
+                ],
+                "max_candidate_revisions": 2,
+                "max_concurrency": 1,
+                "output_bytes": 104857600,
+                "researchers": 1,
+                "retry_limit": 0,
+                "timeout_seconds": 20
+              },
+              "intervention_policy": {
+                "guidance_boundary": "next_submission",
+                "pause": "drain"
+              },
+              "objective": {
+                "question": "Investigate a testable solver, initialization or refinement method on the frozen IEEE-118 original power-flow problem.",
+                "scope": "Fixed-PV/PQ single-slack case118 development profile; no generalization or novelty claim.",
+                "success_criteria": "Model-authored frozen method, hypothesis-linked evidence, honest scientific revision, independent material validation and fresh frozen-method replication; negative results are acceptable."
+              },
+              "problem_ref": "3a223ce662524989d9783e74cac5e8eae8301348760377fd80a66e57d49732aa",
+              "provenance": {
+                "aar_upstream": "79a0562fa1a2c246048ed7c009f3684907987b05",
+                "automatic_assessments": "Hypothesis/generalization/design unassessed; separate evaluator identity and artifact proof.",
+                "capability_pack_sha256": "e70125a066e40f76fce780c73d12f30428adee2fac45d1e56aeb23fda4b89260",
+                "capability_profile": "powerflow-candidate-research/1",
+                "organization": "Actual pinned AutonomousAgentLoop and upstream Experiment/Finding ORM; pi owns inner reasoning/tools.",
+                "replication_protocol": "exact-frozen-solution/1; same candidate/input in distinct admitted containers",
+                "source": "bounded-P3-AAR-candidate-acceptance"
+              },
+              "reference_ref": "fba322bcc04305144e9b7b1958c0d16027b2ee089ced75880260e44f14debf3f",
+              "runtime_policy": {
+                "auth_mode": "subscription_oauth",
+                "billing_mode": "subscription",
+                "model": "gpt-6.1-sol",
+                "provider": "openai-codex",
+                "quota_state": "unknown"
+              },
+              "schema_version": "asr-contract/1",
+              "variable_policy": {
+                "schema_version": "asr-variable-policy/1",
+                "variables": {
+                  "iterations": {
+                    "allowed": {
+                      "maximum": 100,
+                      "minimum": 1
+                    },
+                    "default": 20,
+                    "mode": "bounded",
+                    "modifiable_by": [
+                      "human",
+                      "researcher"
+                    ],
+                    "scope": "trial",
+                    "type": "integer",
+                    "unit": "iterations",
+                    "value": 20
+                  },
+                  "network": {
+                    "default": "case118",
+                    "mode": "fixed",
+                    "modifiable_by": [
+                      "human"
+                    ],
+                    "scope": "project",
+                    "type": "string",
+                    "unit": "case_id",
+                    "value": "case118"
+                  },
+                  "solver": {
+                    "default": "newton_raphson",
+                    "implementation": {
+                      "execution_permission": "isolated-candidate",
+                      "interface": "asr-candidate/1:solver"
+                    },
+                    "mode": "open",
+                    "modifiable_by": [
+                      "human",
+                      "researcher"
+                    ],
+                    "scope": "trial",
+                    "type": "string",
+                    "unit": "method_id",
+                    "value": "newton_raphson"
+                  }
+                }
+              }
+            },
+            "project_id": "p3-689915c3fcd2",
+            "revision": 1,
+            "sha256": "840cf9bfe625a212bb7fdb0af290b913606d73920711ba410b2126d33940bf2c"
+          },
+          "contract_id": "candidate-study",
+          "contract_revision": 1,
+          "created_at": "2026-11-03T01:10:29.942713+00:00",
+          "execution_attempt_id": "attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+          "execution_request": {
+            "candidate": {
+              "path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p3-acceptance-20261103-01/asr-artifacts/candidates/f6a6f4faec2df17fd56002e90f9f8b815ced4d87b86053222f0026b8a8b0633f/e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee/candidate.m",
+              "sha256": "e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee",
+              "size": 558
+            },
+            "case": "case118",
+            "case_sha256": "bc2e6f22b4b9e776572885ee4b50e4f4ab2ee0c5577e9126e86d906f14c4b5f7",
+            "environment": {
+              "architecture": "arm64",
+              "archive_sha256": "5f08ced1a32e8d0d658ee54b73678c7364a899bae479882f2bc419e91442b69f",
+              "archive_url": "https://codeload.github.com/MATPOWER/matpower/tar.gz/refs/tags/8.1",
+              "base_image": "python:3.12-slim-bookworm@sha256:593bd06efe90efa80dc4eee3948be7c0fde4134606dd40d8dd8dbcade98e669c",
+              "case_sha256": "bc2e6f22b4b9e776572885ee4b50e4f4ab2ee0c5577e9126e86d906f14c4b5f7",
+              "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+              "matpower_version": "8.1",
+              "octave_version": "7.3.0",
+              "package_inventory_sha256": "bf8ee04cf670163780a2937466e00ec91d9b77112cc2fa55fc76f1f866155166",
+              "rebuild_note": "APT repositories are not snapshot-pinned. Execute by the recorded image ID; a rebuild must be revalidated and get a new environment record.",
+              "reference_script_sha256": "438430557c383beb171fd0b40d1e1a04877824e142d56ae897c41d300b33153f",
+              "schema": "asr-numerical-environment/1"
+            },
+            "host_python": "3.12.12 (main, Oct  9 2025, 11:07:00) [Clang 17.0.0 (clang-1700.6.3.2)]",
+            "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+            "initialization": "flat",
+            "max_iterations": 30,
+            "original_input_sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+            "output_bytes": 1048576,
+            "policy": "fixed-pv-pq-single-slack/1",
+            "profile": "octave-candidate/1",
+            "source_hashes": {
+              "reference.py": "cd2a98a5135ac5461bd028948a6e3b998e4d9b218e2b22c83bb69b0dced5587c",
+              "runner.py": "bbc307a89da9cd71d96bdf2ddcf104df4bef5f5fe7fc148afad245b6592f902e",
+              "validation.py": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3"
+            },
+            "timeout_seconds": 20.0,
+            "validation_tolerance_pu": 1e-07,
+            "wrapper_sha256": "cda9abfab75ed9318ca8fa454a6c0fa3b1d78447f12a370eab637f099fe043b9"
+          },
+          "hypothesis_linkage": "linked",
+          "hypothesis_ref": {
+            "hypothesis_id": "fixed-nr-tight",
+            "project_id": "p3-689915c3fcd2",
+            "revision": 1,
+            "sha256": "76a4155845ff10654dc2ed6934d37b807458434498c70fd3aa4b401ec7856e8b"
+          },
+          "project_id": "p3-689915c3fcd2",
+          "references": {
+            "candidate": "6ad49cab1e5d5b1379828834c6310b9eb80e8b6701481480bdf58a5759dfe6a6",
+            "evaluation": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+            "input_manifest": "8398507515e409d3d8b35e2f38c8164b20a200a60a36539e09f56fdb74ffc581",
+            "problem": "3a223ce662524989d9783e74cac5e8eae8301348760377fd80a66e57d49732aa"
+          },
+          "replicates": {
+            "evaluation_ref": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+            "execution_attempt_id": "attempt_965e6c0d0aa54e319e1355af68122a54",
+            "manifest_hash": "4d251f992ab37d1480b7dd2089b2a2fb5b2c8300fbdc45e3c451e93b9c8cbf00",
+            "trial_id": "trial_afbad5dec9e64b8d96fe3ec916bbea68"
+          },
+          "requested_budget": {
+            "attempts": 1,
+            "execution_ms": 20000
+          },
+          "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+          "state": "queued",
+          "trial_id": "trial_60d58ad443ea4ae1b5818522d6780721",
+          "variables": {
+            "iterations": 30,
+            "network": "case118",
+            "solver": "octave-candidate/1"
+          }
+        },
+        "dispatch_id": "attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+        "epoch": 1,
+        "finished_at": 1793668230.517345,
+        "identity": {
+          "backend": "docker-candidate",
+          "container_id": "b86604b7955ba84e97fc53d9139f958873d507afac22d4b0860f1854feda5b63",
+          "labels": {
+            "asr.attempt": "attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+            "asr.candidate": "e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee",
+            "asr.epoch": "1",
+            "asr.profile": "octave-candidate/1",
+            "asr.run": "research_49c26021d0404e1688e344b051ed587a",
+            "asr.trial": "trial_60d58ad443ea4ae1b5818522d6780721"
+          },
+          "name": "asr-managed-attempt_a34e14ba8ca7445a8dd78c8da1f773a6"
+        },
+        "lease_until": 1793668260.448651,
+        "owner": "p3-candidate-supervisor",
+        "project": "p3-689915c3fcd2",
+        "report": {
+          "evidence_path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p3-acceptance-20261103-01/evidence/trial_60d58ad443ea4ae1b5818522d6780721/attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+          "execution_attempt_id": "attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+          "execution_exited": true,
+          "manifest_hash": "c9afa3bb9fd0499be7f815525fd2587a895cbe82085f7bb4bd7d98b770a0e4ac",
+          "status": "succeeded",
+          "trial_id": "trial_60d58ad443ea4ae1b5818522d6780721",
+          "usage": {
+            "attempts": 1,
+            "execution_ms": 570
+          },
+          "usage_estimated": false
+        },
+        "run": "research_49c26021d0404e1688e344b051ed587a",
+        "started_at": 1793668229.945504,
+        "state": "succeeded",
+        "trial": "trial_60d58ad443ea4ae1b5818522d6780721"
+      }
+    }
+  ],
+  "candidate_refs": [
+    {
+      "candidate_ref": "6ad49cab1e5d5b1379828834c6310b9eb80e8b6701481480bdf58a5759dfe6a6",
+      "snapshot_ref": "74607de3294b62e9450e1182937b29c256c387281c0ad9b22f44c1fa0df591ae",
+      "entrypoint": "candidate.m",
+      "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+      "profile": "octave-candidate/1",
+      "size": 558,
+      "source_sha256": "e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee"
+    }
+  ],
+  "evaluations": [
+    {
+      "artifact": {
+        "authority": {
+          "epoch": 1,
+          "evaluation_attempt_id": "eval_attempt_c148f55e79a0483f8598a4d4f8cb91b8",
+          "evaluation_id": "evaluation_8ec51898c20d48fbbe26cdad2fb4a169",
+          "project_id": "p3-689915c3fcd2",
+          "research_run_id": "research_49c26021d0404e1688e344b051ed587a"
+        },
+        "isolation_facts": {
+          "container_id": "50c404bdb17641823e5fcf4571eaedef3704245eeca327f9d06c448fb9a60f9a",
+          "environment_names": [
+            "GPG_KEY",
+            "HOME",
+            "LANG",
+            "OMP_NUM_THREADS",
+            "OPENBLAS_NUM_THREADS",
+            "PATH",
+            "PYTHONDONTWRITEBYTECODE",
+            "PYTHON_SHA256",
+            "PYTHON_VERSION"
+          ],
+          "execution_exited": true,
+          "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+          "labels": {
+            "asr.epoch": "1",
+            "asr.evaluation": "evaluation_8ec51898c20d48fbbe26cdad2fb4a169",
+            "asr.evaluation_attempt": "eval_attempt_c148f55e79a0483f8598a4d4f8cb91b8",
+            "asr.owner": "isolated-material-evaluator",
+            "asr.project": "p3-689915c3fcd2",
+            "asr.run": "research_49c26021d0404e1688e344b051ed587a"
+          },
+          "launch_inspection_present": true,
+          "mounts": [
+            {
+              "destination": "/evaluator",
+              "read_only": true
+            },
+            {
+              "destination": "/inputs",
+              "read_only": true
+            },
+            {
+              "destination": "/output",
+              "read_only": false
+            }
+          ],
+          "security": {
+            "CapDrop": [
+              "ALL"
+            ],
+            "Memory": 268435456,
+            "MemorySwap": 268435456,
+            "NanoCpus": 1000000000,
+            "NetworkMode": "none",
+            "PidsLimit": 32,
+            "Privileged": false,
+            "ReadonlyRootfs": true,
+            "SecurityOpt": [
+              "no-new-privileges"
+            ]
+          },
+          "user": "65532:65532"
+        },
+        "path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p3-acceptance-20261103-01/evaluations/8d34c7bfe933df2b11914b7a797d8f5976962a8adf0c16f69e566923f93122ea",
+        "sha256": "f4ffe88b4203594fea44e4f27571a517a4ee87f4ac52c60b5e93b2a42528d245"
+      },
+      "contract_id": "candidate-study",
+      "contract_revision": 1,
+      "created_at": "2026-11-03T01:10:20.338516+00:00",
+      "epoch": 1,
+      "evaluation_attempt_id": "eval_attempt_c148f55e79a0483f8598a4d4f8cb91b8",
+      "evaluation_id": "evaluation_8ec51898c20d48fbbe26cdad2fb4a169",
+      "execution_epoch": 1,
+      "finished_at": "2026-11-03T01:10:20.718956+00:00",
+      "identity": {
+        "container_id": "50c404bdb17641823e5fcf4571eaedef3704245eeca327f9d06c448fb9a60f9a",
+        "labels": {
+          "asr.epoch": "1",
+          "asr.evaluation": "evaluation_8ec51898c20d48fbbe26cdad2fb4a169",
+          "asr.evaluation_attempt": "eval_attempt_c148f55e79a0483f8598a4d4f8cb91b8",
+          "asr.owner": "isolated-material-evaluator",
+          "asr.project": "p3-689915c3fcd2",
+          "asr.run": "research_49c26021d0404e1688e344b051ed587a"
+        },
+        "name": "asr-eval-eval_attempt_c148f55e79a0483f8598a4d4f8cb91b8"
+      },
+      "launch_authorized_at": "2026-11-03T01:10:20.343544+00:00",
+      "launch_intent": {
+        "labels": {
+          "asr.epoch": "1",
+          "asr.evaluation": "evaluation_8ec51898c20d48fbbe26cdad2fb4a169",
+          "asr.evaluation_attempt": "eval_attempt_c148f55e79a0483f8598a4d4f8cb91b8",
+          "asr.owner": "isolated-material-evaluator",
+          "asr.project": "p3-689915c3fcd2",
+          "asr.run": "research_49c26021d0404e1688e344b051ed587a"
+        },
+        "name": "asr-eval-eval_attempt_c148f55e79a0483f8598a4d4f8cb91b8"
+      },
+      "launch_state": "launching",
+      "lease_until": 1793668250.656617,
+      "owner": "p3-independent-evaluator",
+      "prepared_at": "2026-11-03T01:10:20.339792+00:00",
+      "project_id": "p3-689915c3fcd2",
+      "report": {
+        "artifacts": {
+          "code/entrypoint.py": {
+            "bytes": 2528,
+            "sha256": "5252a4e37adbe19a3d45f2d3bdd3fa513c8cff17a31e21631cf63c667509fd1f"
+          },
+          "code/validation.py": {
+            "bytes": 9037,
+            "sha256": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3"
+          },
+          "exit-inspection.json": {
+            "bytes": 7047,
+            "sha256": "6cf9bf4de743824a1e16ab7d82c305a89485699f253f0088ea4159df806ae491"
+          },
+          "identity.json": {
+            "bytes": 438,
+            "sha256": "8411bb4e862aaa08c26dcb71a1eeb2e2c01ecbc65e645689e51b766f910cedaf"
+          },
+          "inputs/evaluation-request.json": {
+            "bytes": 1239,
+            "sha256": "239cfa4f0661e2d652a6254afb1dcd0d231cde6c0b87177bb3732716bcc96a9c"
+          },
+          "inputs/input.json": {
+            "bytes": 17045,
+            "sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14"
+          },
+          "inputs/request.json": {
+            "bytes": 2212,
+            "sha256": "38d0ad19d5379cc9219bc3dc2f5879ccd5045a0067c72d4ef44afade4a856a6e"
+          },
+          "inputs/solution.json": {
+            "bytes": 35302,
+            "sha256": "672d137ba4ec4bc1c73b7075d5db268f45cf84bc8d6aa2d0a3a79de4e9ebd792"
+          },
+          "inputs/source-manifest.json": {
+            "bytes": 2087,
+            "sha256": "4d251f992ab37d1480b7dd2089b2a2fb5b2c8300fbdc45e3c451e93b9c8cbf00"
+          },
+          "job.json": {
+            "bytes": 1651,
+            "sha256": "431906c0a995bfa725f45164588fadc77a5d440ece6ffe2a4fa97254a59f3d6b"
+          },
+          "launch-inspection.json": {
+            "bytes": 6665,
+            "sha256": "d7ff09b00fa98bc564a333b76013398399a2d21db10f2db8065381bf55adcbbf"
+          },
+          "outcome.json": {
+            "bytes": 200,
+            "sha256": "60fc728425783e85466e2ca63b125f1761bd2c034de17702268fd64aebbbde4f"
+          },
+          "output/result.json": {
+            "bytes": 801,
+            "sha256": "4baf2797af432f26363c34144832ac3ac6efa7f986e6c7a1da6839ee8037df59"
+          }
+        },
+        "authority": {
+          "epoch": 1,
+          "evaluation_attempt_id": "eval_attempt_c148f55e79a0483f8598a4d4f8cb91b8",
+          "evaluation_id": "evaluation_8ec51898c20d48fbbe26cdad2fb4a169",
+          "project_id": "p3-689915c3fcd2",
+          "research_run_id": "research_49c26021d0404e1688e344b051ed587a"
+        },
+        "elapsed_seconds": 0.36516404151916504,
+        "evaluation_id": "evaluation_8ec51898c20d48fbbe26cdad2fb4a169",
+        "evaluation_ref": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+        "evaluator": {
+          "entrypoint_sha256": "5252a4e37adbe19a3d45f2d3bdd3fa513c8cff17a31e21631cf63c667509fd1f",
+          "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+          "policy": "fixed-pv-pq-single-slack/1",
+          "profile": "matpower-case118-flat/1",
+          "validator_sha256": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3"
+        },
+        "execution_exited": true,
+        "execution_status": "succeeded",
+        "exit_code": 0,
+        "limits": [
+          "Frozen-material numerical recheck only; candidate method was not rerun.",
+          "No held-out generalization or independent scientific claim assessment.",
+          "Control owns managed evaluator authorization and budget settlement; numerical material does not itself publish a Validation or establish a scientific claim.",
+          "timeout_seconds bounds running polling; Docker setup and cleanup operations each allow an additional five seconds."
+        ],
+        "request_sha256": "239cfa4f0661e2d652a6254afb1dcd0d231cde6c0b87177bb3732716bcc96a9c",
+        "result": {
+          "equation_valid": true,
+          "errors": [],
+          "input_preserved": true,
+          "max_mismatch_pu": 3.9307660706864565e-13,
+          "operational_status": "violated",
+          "policy": "fixed-pv-pq-single-slack/1",
+          "thermal_limits_unassessed": 186,
+          "violations": [
+            {
+              "high": 24,
+              "id": 8,
+              "kind": "reactive_generation",
+              "low": -8,
+              "value": -14.27417153244683
+            },
+            {
+              "high": 42,
+              "id": 14,
+              "kind": "reactive_generation",
+              "low": -14,
+              "value": -16.284774732525964
+            },
+            {
+              "high": 24,
+              "id": 15,
+              "kind": "reactive_generation",
+              "low": -8,
+              "value": -20.82711173098084
+            },
+            {
+              "high": 9,
+              "id": 42,
+              "kind": "reactive_generation",
+              "low": -3,
+              "value": -13.95624818687517
+            },
+            {
+              "high": 40,
+              "id": 45,
+              "kind": "reactive_generation",
+              "low": -15,
+              "value": 75.42236358206867
+            },
+            {
+              "high": 23,
+              "id": 47,
+              "kind": "reactive_generation",
+              "low": -8,
+              "value": -18.334525252390236
+            }
+          ]
+        },
+        "schema": "asr-isolated-material-evaluation/1",
+        "source": {
+          "identity": {
+            "execution_attempt_id": "attempt_965e6c0d0aa54e319e1355af68122a54",
+            "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+            "trial_id": "trial_afbad5dec9e64b8d96fe3ec916bbea68"
+          },
+          "input_sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+          "manifest_sha256": "4d251f992ab37d1480b7dd2089b2a2fb5b2c8300fbdc45e3c451e93b9c8cbf00",
+          "solution_sha256": "672d137ba4ec4bc1c73b7075d5db268f45cf84bc8d6aa2d0a3a79de4e9ebd792"
+        }
+      },
+      "requested_budget": {
+        "evaluation_attempts": 1,
+        "evaluation_ms": 20000
+      },
+      "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+      "settled": true,
+      "source_path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p3-acceptance-20261103-01/evidence/trial_afbad5dec9e64b8d96fe3ec916bbea68/attempt_965e6c0d0aa54e319e1355af68122a54",
+      "started_at": 1793668220.3397949,
+      "state": "succeeded",
+      "target": {
+        "evaluation_ref": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+        "execution_attempt_id": "attempt_965e6c0d0aa54e319e1355af68122a54",
+        "manifest_hash": "4d251f992ab37d1480b7dd2089b2a2fb5b2c8300fbdc45e3c451e93b9c8cbf00",
+        "trial_id": "trial_afbad5dec9e64b8d96fe3ec916bbea68"
+      },
+      "timeout_seconds": 20.0,
+      "usage_ms": 366
+    },
+    {
+      "artifact": {
+        "authority": {
+          "epoch": 1,
+          "evaluation_attempt_id": "eval_attempt_e0b367b1f81a4e5389cefcccdc41fc48",
+          "evaluation_id": "evaluation_5f76d36c5f3f4080bff3e23b53cf2307",
+          "project_id": "p3-689915c3fcd2",
+          "research_run_id": "research_49c26021d0404e1688e344b051ed587a"
+        },
+        "isolation_facts": {
+          "container_id": "b956972d64c5d25b664d877d135efd008fe18f33388a6b28a82b6b8b1b91534f",
+          "environment_names": [
+            "GPG_KEY",
+            "HOME",
+            "LANG",
+            "OMP_NUM_THREADS",
+            "OPENBLAS_NUM_THREADS",
+            "PATH",
+            "PYTHONDONTWRITEBYTECODE",
+            "PYTHON_SHA256",
+            "PYTHON_VERSION"
+          ],
+          "execution_exited": true,
+          "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+          "labels": {
+            "asr.epoch": "1",
+            "asr.evaluation": "evaluation_5f76d36c5f3f4080bff3e23b53cf2307",
+            "asr.evaluation_attempt": "eval_attempt_e0b367b1f81a4e5389cefcccdc41fc48",
+            "asr.owner": "isolated-material-evaluator",
+            "asr.project": "p3-689915c3fcd2",
+            "asr.run": "research_49c26021d0404e1688e344b051ed587a"
+          },
+          "launch_inspection_present": true,
+          "mounts": [
+            {
+              "destination": "/evaluator",
+              "read_only": true
+            },
+            {
+              "destination": "/inputs",
+              "read_only": true
+            },
+            {
+              "destination": "/output",
+              "read_only": false
+            }
+          ],
+          "security": {
+            "CapDrop": [
+              "ALL"
+            ],
+            "Memory": 268435456,
+            "MemorySwap": 268435456,
+            "NanoCpus": 1000000000,
+            "NetworkMode": "none",
+            "PidsLimit": 32,
+            "Privileged": false,
+            "ReadonlyRootfs": true,
+            "SecurityOpt": [
+              "no-new-privileges"
+            ]
+          },
+          "user": "65532:65532"
+        },
+        "path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p3-acceptance-20261103-01/evaluations/3fdd38af86b2b0f7e41713c185e332638fea548e99697215df6030bc63e231c3",
+        "sha256": "5f54e67a828d0b0a28ef796f5a3207d2ca03f225ca0608fc56acc82dff7aed0e"
+      },
+      "contract_id": "candidate-study",
+      "contract_revision": 1,
+      "created_at": "2026-11-03T01:10:36.485996+00:00",
+      "epoch": 1,
+      "evaluation_attempt_id": "eval_attempt_e0b367b1f81a4e5389cefcccdc41fc48",
+      "evaluation_id": "evaluation_5f76d36c5f3f4080bff3e23b53cf2307",
+      "execution_epoch": 1,
+      "finished_at": "2026-11-03T01:10:36.887330+00:00",
+      "identity": {
+        "container_id": "b956972d64c5d25b664d877d135efd008fe18f33388a6b28a82b6b8b1b91534f",
+        "labels": {
+          "asr.epoch": "1",
+          "asr.evaluation": "evaluation_5f76d36c5f3f4080bff3e23b53cf2307",
+          "asr.evaluation_attempt": "eval_attempt_e0b367b1f81a4e5389cefcccdc41fc48",
+          "asr.owner": "isolated-material-evaluator",
+          "asr.project": "p3-689915c3fcd2",
+          "asr.run": "research_49c26021d0404e1688e344b051ed587a"
+        },
+        "name": "asr-eval-eval_attempt_e0b367b1f81a4e5389cefcccdc41fc48"
+      },
+      "launch_authorized_at": "2026-11-03T01:10:36.494818+00:00",
+      "launch_intent": {
+        "labels": {
+          "asr.epoch": "1",
+          "asr.evaluation": "evaluation_5f76d36c5f3f4080bff3e23b53cf2307",
+          "asr.evaluation_attempt": "eval_attempt_e0b367b1f81a4e5389cefcccdc41fc48",
+          "asr.owner": "isolated-material-evaluator",
+          "asr.project": "p3-689915c3fcd2",
+          "asr.run": "research_49c26021d0404e1688e344b051ed587a"
+        },
+        "name": "asr-eval-eval_attempt_e0b367b1f81a4e5389cefcccdc41fc48"
+      },
+      "launch_state": "launching",
+      "lease_until": 1793668266.837918,
+      "owner": "p3-independent-evaluator",
+      "prepared_at": "2026-11-03T01:10:36.487891+00:00",
+      "project_id": "p3-689915c3fcd2",
+      "report": {
+        "artifacts": {
+          "code/entrypoint.py": {
+            "bytes": 2528,
+            "sha256": "5252a4e37adbe19a3d45f2d3bdd3fa513c8cff17a31e21631cf63c667509fd1f"
+          },
+          "code/validation.py": {
+            "bytes": 9037,
+            "sha256": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3"
+          },
+          "exit-inspection.json": {
+            "bytes": 7047,
+            "sha256": "bbd9ec08319a99e3895d4ff81d45f73f779d2424e6d0dfd2fc2c1fdfe06cfa1f"
+          },
+          "identity.json": {
+            "bytes": 438,
+            "sha256": "dac90241956bc7be2639be99b36550353d5c6d523e36fc6b4255336505caacde"
+          },
+          "inputs/evaluation-request.json": {
+            "bytes": 1239,
+            "sha256": "2e6e3ce6ee4fdb1c9cc91db78744494a84ba80828570de84f50d28aee6f1d93f"
+          },
+          "inputs/input.json": {
+            "bytes": 17045,
+            "sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14"
+          },
+          "inputs/request.json": {
+            "bytes": 2212,
+            "sha256": "38d0ad19d5379cc9219bc3dc2f5879ccd5045a0067c72d4ef44afade4a856a6e"
+          },
+          "inputs/solution.json": {
+            "bytes": 35302,
+            "sha256": "672d137ba4ec4bc1c73b7075d5db268f45cf84bc8d6aa2d0a3a79de4e9ebd792"
+          },
+          "inputs/source-manifest.json": {
+            "bytes": 2087,
+            "sha256": "c9afa3bb9fd0499be7f815525fd2587a895cbe82085f7bb4bd7d98b770a0e4ac"
+          },
+          "job.json": {
+            "bytes": 1649,
+            "sha256": "3e9f8cd9a361dee4abf7a966b42117f1c3370c4f0ad91598a1051be9dac3c952"
+          },
+          "launch-inspection.json": {
+            "bytes": 6665,
+            "sha256": "66f70a1d09624fd43ec835ae0e98b7066243a2598848a40e0845bb2ecd37cc07"
+          },
+          "outcome.json": {
+            "bytes": 199,
+            "sha256": "d8fe467bb877ba877be0be3fa2bf28841cd1c2e103367e0e7ae4b5085ed8d506"
+          },
+          "output/result.json": {
+            "bytes": 801,
+            "sha256": "4baf2797af432f26363c34144832ac3ac6efa7f986e6c7a1da6839ee8037df59"
+          }
+        },
+        "authority": {
+          "epoch": 1,
+          "evaluation_attempt_id": "eval_attempt_e0b367b1f81a4e5389cefcccdc41fc48",
+          "evaluation_id": "evaluation_5f76d36c5f3f4080bff3e23b53cf2307",
+          "project_id": "p3-689915c3fcd2",
+          "research_run_id": "research_49c26021d0404e1688e344b051ed587a"
+        },
+        "elapsed_seconds": 0.3849670886993408,
+        "evaluation_id": "evaluation_5f76d36c5f3f4080bff3e23b53cf2307",
+        "evaluation_ref": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+        "evaluator": {
+          "entrypoint_sha256": "5252a4e37adbe19a3d45f2d3bdd3fa513c8cff17a31e21631cf63c667509fd1f",
+          "image_id": "sha256:d40dc592523126c64abb42a730c4cc9652083efa5593d01e56238202200d9831",
+          "policy": "fixed-pv-pq-single-slack/1",
+          "profile": "matpower-case118-flat/1",
+          "validator_sha256": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3"
+        },
+        "execution_exited": true,
+        "execution_status": "succeeded",
+        "exit_code": 0,
+        "limits": [
+          "Frozen-material numerical recheck only; candidate method was not rerun.",
+          "No held-out generalization or independent scientific claim assessment.",
+          "Control owns managed evaluator authorization and budget settlement; numerical material does not itself publish a Validation or establish a scientific claim.",
+          "timeout_seconds bounds running polling; Docker setup and cleanup operations each allow an additional five seconds."
+        ],
+        "request_sha256": "2e6e3ce6ee4fdb1c9cc91db78744494a84ba80828570de84f50d28aee6f1d93f",
+        "result": {
+          "equation_valid": true,
+          "errors": [],
+          "input_preserved": true,
+          "max_mismatch_pu": 3.9307660706864565e-13,
+          "operational_status": "violated",
+          "policy": "fixed-pv-pq-single-slack/1",
+          "thermal_limits_unassessed": 186,
+          "violations": [
+            {
+              "high": 24,
+              "id": 8,
+              "kind": "reactive_generation",
+              "low": -8,
+              "value": -14.27417153244683
+            },
+            {
+              "high": 42,
+              "id": 14,
+              "kind": "reactive_generation",
+              "low": -14,
+              "value": -16.284774732525964
+            },
+            {
+              "high": 24,
+              "id": 15,
+              "kind": "reactive_generation",
+              "low": -8,
+              "value": -20.82711173098084
+            },
+            {
+              "high": 9,
+              "id": 42,
+              "kind": "reactive_generation",
+              "low": -3,
+              "value": -13.95624818687517
+            },
+            {
+              "high": 40,
+              "id": 45,
+              "kind": "reactive_generation",
+              "low": -15,
+              "value": 75.42236358206867
+            },
+            {
+              "high": 23,
+              "id": 47,
+              "kind": "reactive_generation",
+              "low": -8,
+              "value": -18.334525252390236
+            }
+          ]
+        },
+        "schema": "asr-isolated-material-evaluation/1",
+        "source": {
+          "identity": {
+            "execution_attempt_id": "attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+            "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+            "trial_id": "trial_60d58ad443ea4ae1b5818522d6780721"
+          },
+          "input_sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+          "manifest_sha256": "c9afa3bb9fd0499be7f815525fd2587a895cbe82085f7bb4bd7d98b770a0e4ac",
+          "solution_sha256": "672d137ba4ec4bc1c73b7075d5db268f45cf84bc8d6aa2d0a3a79de4e9ebd792"
+        }
+      },
+      "requested_budget": {
+        "evaluation_attempts": 1,
+        "evaluation_ms": 20000
+      },
+      "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+      "settled": true,
+      "source_path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p3-acceptance-20261103-01/evidence/trial_60d58ad443ea4ae1b5818522d6780721/attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+      "started_at": 1793668236.4878988,
+      "state": "succeeded",
+      "target": {
+        "evaluation_ref": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+        "execution_attempt_id": "attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+        "manifest_hash": "c9afa3bb9fd0499be7f815525fd2587a895cbe82085f7bb4bd7d98b770a0e4ac",
+        "trial_id": "trial_60d58ad443ea4ae1b5818522d6780721"
+      },
+      "timeout_seconds": 20.0,
+      "usage_ms": 385
+    }
+  ],
+  "validations": [
+    {
+      "author": "p3-evaluator",
+      "author_role": "evaluator",
+      "created_at": "2026-11-03T01:10:20.724470+00:00",
+      "document": {
+        "assessments": {
+          "equation_validity": "valid",
+          "experiment_validity": "unassessed",
+          "generalization": "unassessed",
+          "hypothesis_assessment": "unassessed",
+          "operating_checks": "violated",
+          "replication": "unassessed"
+        },
+        "evaluation_artifact": {
+          "artifact_sha256": "f4ffe88b4203594fea44e4f27571a517a4ee87f4ac52c60b5e93b2a42528d245",
+          "evaluation_attempt_id": "eval_attempt_c148f55e79a0483f8598a4d4f8cb91b8",
+          "evaluation_id": "evaluation_8ec51898c20d48fbbe26cdad2fb4a169"
+        },
+        "provenance": {
+          "independence": {
+            "execution": "observed",
+            "frozen_materials": "observed",
+            "mathematics": "observed"
+          },
+          "limits": [
+            "Automatic mapping leaves experimental design, freeform hypotheses and generalization unassessed.",
+            "Equation validity is separate from operating limits; missing thermal ratings remain unassessed.",
+            "A material recheck alone is not candidate-method replication."
+          ],
+          "method": "Isolated frozen-material evaluator; separate admitted method comparison when explicitly recorded"
+        },
+        "summary": "{\"input_preserved\": true, \"max_mismatch_pu\": 3.9307660706864565e-13, \"replication_comparison\": null, \"thermal_limits_unassessed\": 186}",
+        "target": {
+          "evaluation_ref": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+          "execution_attempt_id": "attempt_965e6c0d0aa54e319e1355af68122a54",
+          "manifest_hash": "4d251f992ab37d1480b7dd2089b2a2fb5b2c8300fbdc45e3c451e93b9c8cbf00",
+          "trial_id": "trial_afbad5dec9e64b8d96fe3ec916bbea68"
+        }
+      },
+      "evaluation_artifact": {
+        "artifact_sha256": "f4ffe88b4203594fea44e4f27571a517a4ee87f4ac52c60b5e93b2a42528d245",
+        "evaluation_attempt_id": "eval_attempt_c148f55e79a0483f8598a4d4f8cb91b8",
+        "evaluation_id": "evaluation_8ec51898c20d48fbbe26cdad2fb4a169"
+      },
+      "evaluation_artifact_verified_by_service": true,
+      "hypothesis_ref": null,
+      "independence_basis": "evaluator_attestation",
+      "isolation_verified_by_service": false,
+      "project_id": "p3-689915c3fcd2",
+      "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+      "schema_version": "asr-validation/1",
+      "sha256": "da31f790275b0a5a5e6892d5483b995e7460b222cd831bc2633262c23751962f",
+      "supersedes": null,
+      "validation_id": "validation_evaluation_8ec51898c20d48fbbe26cdad2fb4a169"
+    },
+    {
+      "author": "p3-evaluator",
+      "author_role": "evaluator",
+      "created_at": "2026-11-03T01:10:36.892440+00:00",
+      "document": {
+        "assessments": {
+          "equation_validity": "valid",
+          "experiment_validity": "unassessed",
+          "generalization": "unassessed",
+          "hypothesis_assessment": "unassessed",
+          "operating_checks": "violated",
+          "replication": "unassessed"
+        },
+        "evaluation_artifact": {
+          "artifact_sha256": "5f54e67a828d0b0a28ef796f5a3207d2ca03f225ca0608fc56acc82dff7aed0e",
+          "evaluation_attempt_id": "eval_attempt_e0b367b1f81a4e5389cefcccdc41fc48",
+          "evaluation_id": "evaluation_5f76d36c5f3f4080bff3e23b53cf2307"
+        },
+        "provenance": {
+          "independence": {
+            "execution": "observed",
+            "frozen_materials": "observed",
+            "mathematics": "observed"
+          },
+          "limits": [
+            "Automatic mapping leaves experimental design, freeform hypotheses and generalization unassessed.",
+            "Equation validity is separate from operating limits; missing thermal ratings remain unassessed.",
+            "A material recheck alone is not candidate-method replication."
+          ],
+          "method": "Isolated frozen-material evaluator; separate admitted method comparison when explicitly recorded"
+        },
+        "summary": "{\"input_preserved\": true, \"max_mismatch_pu\": 3.9307660706864565e-13, \"replication_comparison\": null, \"thermal_limits_unassessed\": 186}",
+        "target": {
+          "evaluation_ref": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+          "execution_attempt_id": "attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+          "manifest_hash": "c9afa3bb9fd0499be7f815525fd2587a895cbe82085f7bb4bd7d98b770a0e4ac",
+          "trial_id": "trial_60d58ad443ea4ae1b5818522d6780721"
+        }
+      },
+      "evaluation_artifact": {
+        "artifact_sha256": "5f54e67a828d0b0a28ef796f5a3207d2ca03f225ca0608fc56acc82dff7aed0e",
+        "evaluation_attempt_id": "eval_attempt_e0b367b1f81a4e5389cefcccdc41fc48",
+        "evaluation_id": "evaluation_5f76d36c5f3f4080bff3e23b53cf2307"
+      },
+      "evaluation_artifact_verified_by_service": true,
+      "hypothesis_ref": null,
+      "independence_basis": "evaluator_attestation",
+      "isolation_verified_by_service": false,
+      "project_id": "p3-689915c3fcd2",
+      "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+      "schema_version": "asr-validation/1",
+      "sha256": "fc82f81cbda20b666b58d6d76a56623101eb3d2f558c10e88e581bbfee267438",
+      "supersedes": null,
+      "validation_id": "validation_evaluation_5f76d36c5f3f4080bff3e23b53cf2307"
+    },
+    {
+      "author": "p3-evaluator",
+      "author_role": "evaluator",
+      "created_at": "2026-11-03T01:10:36.899139+00:00",
+      "document": {
+        "assessments": {
+          "equation_validity": "valid",
+          "experiment_validity": "unassessed",
+          "generalization": "unassessed",
+          "hypothesis_assessment": "unassessed",
+          "operating_checks": "violated",
+          "replication": "consistent"
+        },
+        "evaluation_artifact": {
+          "artifact_sha256": "5f54e67a828d0b0a28ef796f5a3207d2ca03f225ca0608fc56acc82dff7aed0e",
+          "evaluation_attempt_id": "eval_attempt_e0b367b1f81a4e5389cefcccdc41fc48",
+          "evaluation_id": "evaluation_5f76d36c5f3f4080bff3e23b53cf2307"
+        },
+        "provenance": {
+          "independence": {
+            "execution": "observed",
+            "frozen_materials": "observed",
+            "mathematics": "observed"
+          },
+          "limits": [
+            "Automatic mapping leaves experimental design, freeform hypotheses and generalization unassessed.",
+            "Equation validity is separate from operating limits; missing thermal ratings remain unassessed.",
+            "A material recheck alone is not candidate-method replication.",
+            "Replication compares bytewise solution reproducibility under identical frozen source/input in distinct admitted containers; it does not assess generalization."
+          ],
+          "method": "Isolated frozen-material evaluator; separate admitted method comparison when explicitly recorded"
+        },
+        "summary": "{\"input_preserved\": true, \"max_mismatch_pu\": 3.9307660706864565e-13, \"replication_comparison\": {\"protocol\": \"exact-frozen-solution/1\", \"replica\": {\"candidate_sha256\": \"e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee\", \"container_id\": \"b86604b7955ba84e97fc53d9139f958873d507afac22d4b0860f1854feda5b63\", \"evaluation_id\": \"evaluation_5f76d36c5f3f4080bff3e23b53cf2307\", \"execution_attempt_id\": \"attempt_a34e14ba8ca7445a8dd78c8da1f773a6\", \"input_sha256\": \"bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14\", \"request_sha256\": \"38d0ad19d5379cc9219bc3dc2f5879ccd5045a0067c72d4ef44afade4a856a6e\", \"solution_sha256\": \"672d137ba4ec4bc1c73b7075d5db268f45cf84bc8d6aa2d0a3a79de4e9ebd792\", \"trial_id\": \"trial_60d58ad443ea4ae1b5818522d6780721\"}, \"source\": {\"candidate_sha256\": \"e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee\", \"container_id\": \"fa97ee3704e465b35351fadf8377942fd6a2a4de1de1f15139cc59a7020bb36d\", \"evaluation_id\": \"evaluation_8ec51898c20d48fbbe26cdad2fb4a169\", \"execution_attempt_id\": \"attempt_965e6c0d0aa54e319e1355af68122a54\", \"input_sha256\": \"bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14\", \"request_sha256\": \"38d0ad19d5379cc9219bc3dc2f5879ccd5045a0067c72d4ef44afade4a856a6e\", \"solution_sha256\": \"672d137ba4ec4bc1c73b7075d5db268f45cf84bc8d6aa2d0a3a79de4e9ebd792\", \"trial_id\": \"trial_afbad5dec9e64b8d96fe3ec916bbea68\"}, \"status\": \"consistent\"}, \"thermal_limits_unassessed\": 186}",
+        "target": {
+          "evaluation_ref": "5db6d70ce63dc5f94edfd0d4e7efd673531ce349fba1eac40e14e9593b3e6321",
+          "execution_attempt_id": "attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+          "manifest_hash": "c9afa3bb9fd0499be7f815525fd2587a895cbe82085f7bb4bd7d98b770a0e4ac",
+          "trial_id": "trial_60d58ad443ea4ae1b5818522d6780721"
+        }
+      },
+      "evaluation_artifact": {
+        "artifact_sha256": "5f54e67a828d0b0a28ef796f5a3207d2ca03f225ca0608fc56acc82dff7aed0e",
+        "evaluation_attempt_id": "eval_attempt_e0b367b1f81a4e5389cefcccdc41fc48",
+        "evaluation_id": "evaluation_5f76d36c5f3f4080bff3e23b53cf2307"
+      },
+      "evaluation_artifact_verified_by_service": true,
+      "hypothesis_ref": null,
+      "independence_basis": "evaluator_attestation",
+      "isolation_verified_by_service": false,
+      "project_id": "p3-689915c3fcd2",
+      "research_run_id": "research_49c26021d0404e1688e344b051ed587a",
+      "schema_version": "asr-validation/1",
+      "sha256": "742eef5969ec8be8987f6cefa486db6bce4698fc3f17d1ee3e133c28d7154b12",
+      "supersedes": "validation_evaluation_5f76d36c5f3f4080bff3e23b53cf2307",
+      "validation_id": "validation_replay_evaluation_5f76d36c5f3f4080bff3e23b53cf2307"
+    }
+  ],
+  "snapshots": [
+    {
+      "snapshot_sha256": "74607de3294b62e9450e1182937b29c256c387281c0ad9b22f44c1fa0df591ae",
+      "files": [
+        {
+          "path": "candidate.m",
+          "sha256": "e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee",
+          "size": 558
+        }
+      ]
+    },
+    {
+      "snapshot_sha256": "bb665f7a92262cb941405f88e84ddb3a84700fddd821bb6dda7b31abb865dbb2",
+      "files": [
+        {
+          "path": "research-note.md",
+          "sha256": "7273157c44cae0e9f8671c0ab5559fd3bdff87456835f808e88b143f24abc6f4",
+          "size": 3862
+        }
+      ]
+    }
+  ],
+  "replication_comparisons": [
+    {
+      "status": "consistent",
+      "protocol": "exact-frozen-solution/1",
+      "source": {
+        "trial_id": "trial_afbad5dec9e64b8d96fe3ec916bbea68",
+        "execution_attempt_id": "attempt_965e6c0d0aa54e319e1355af68122a54",
+        "evaluation_id": "evaluation_8ec51898c20d48fbbe26cdad2fb4a169",
+        "candidate_sha256": "e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee",
+        "request_sha256": "38d0ad19d5379cc9219bc3dc2f5879ccd5045a0067c72d4ef44afade4a856a6e",
+        "input_sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+        "solution_sha256": "672d137ba4ec4bc1c73b7075d5db268f45cf84bc8d6aa2d0a3a79de4e9ebd792",
+        "container_id": "fa97ee3704e465b35351fadf8377942fd6a2a4de1de1f15139cc59a7020bb36d"
+      },
+      "replica": {
+        "trial_id": "trial_60d58ad443ea4ae1b5818522d6780721",
+        "execution_attempt_id": "attempt_a34e14ba8ca7445a8dd78c8da1f773a6",
+        "evaluation_id": "evaluation_5f76d36c5f3f4080bff3e23b53cf2307",
+        "candidate_sha256": "e4e1dc02ad6a748270bd7f5edf87c263d2dd3640d67273dddbc83737c7c375ee",
+        "request_sha256": "38d0ad19d5379cc9219bc3dc2f5879ccd5045a0067c72d4ef44afade4a856a6e",
+        "input_sha256": "bc436a7e82eb7a4d0d571942189795a5ac9aee29672804e603b56b5400b9ca14",
+        "solution_sha256": "672d137ba4ec4bc1c73b7075d5db268f45cf84bc8d6aa2d0a3a79de4e9ebd792",
+        "container_id": "b86604b7955ba84e97fc53d9139f958873d507afac22d4b0860f1854feda5b63"
+      }
+    }
+  ],
+  "comparison_attempts": [],
+  "interruption": {
+    "trial_id": "trial_afbad5dec9e64b8d96fe3ec916bbea68",
+    "execution_attempt_id": "attempt_965e6c0d0aa54e319e1355af68122a54",
+    "manifest_hash": "4d251f992ab37d1480b7dd2089b2a2fb5b2c8300fbdc45e3c451e93b9c8cbf00",
+    "hypothesis_ref": {
+      "hypothesis_id": "fixed-nr-tight",
+      "project_id": "p3-689915c3fcd2",
+      "revision": 1,
+      "sha256": "76a4155845ff10654dc2ed6934d37b807458434498c70fd3aa4b401ec7856e8b"
+    },
+    "runtime_session_id": "session_57fc60d0322f4da6953ae2eca1284f1d",
+    "process_identity": {
+      "backend": "host-process",
+      "birth": "1793668152.175082",
+      "boot": "1792019499:650515",
+      "host": "m3max.local",
+      "pgid": 95532,
+      "pid": 95532
+    },
+    "signal": "SIGKILL",
+    "signal_sent": true
+  },
+  "resource_ledgers": {
+    "schema_version": "asr-logical-ledgers/1",
+    "model": {
+      "research_walltime_ms": {
+        "limit": 180000,
+        "spent": 180037,
+        "reserved": 0,
+        "available": -37
+      },
+      "tool_executions": {
+        "limit": 32,
+        "spent": 22,
+        "reserved": 0,
+        "available": 10
+      },
+      "turns": {
+        "limit": 20,
+        "spent": 19,
+        "reserved": 0,
+        "available": 1
+      }
+    },
+    "compute": {
+      "attempts": {
+        "limit": 4,
+        "spent": 2,
+        "reserved": 0,
+        "available": 2
+      },
+      "evaluation_attempts": {
+        "limit": 3,
+        "spent": 2,
+        "reserved": 0,
+        "available": 1
+      },
+      "evaluation_ms": {
+        "limit": 60000,
+        "spent": 751,
+        "reserved": 0,
+        "available": 59249
+      },
+      "execution_ms": {
+        "limit": 80000,
+        "spent": 1373,
+        "reserved": 0,
+        "available": 78627
+      }
+    },
+    "unclassified": {},
+    "provider_quota": {
+      "state": "unknown"
+    }
+  },
+  "budget": {
+    "attempts": {
+      "limit": 4,
+      "spent": 2,
+      "reserved": 0,
+      "available": 2
+    },
+    "evaluation_attempts": {
+      "limit": 3,
+      "spent": 2,
+      "reserved": 0,
+      "available": 1
+    },
+    "evaluation_ms": {
+      "limit": 60000,
+      "spent": 751,
+      "reserved": 0,
+      "available": 59249
+    },
+    "execution_ms": {
+      "limit": 80000,
+      "spent": 1373,
+      "reserved": 0,
+      "available": 78627
+    },
+    "research_walltime_ms": {
+      "limit": 180000,
+      "spent": 180037,
+      "reserved": 0,
+      "available": -37
+    },
+    "tool_executions": {
+      "limit": 32,
+      "spent": 22,
+      "reserved": 0,
+      "available": 10
+    },
+    "turns": {
+      "limit": 20,
+      "spent": 19,
+      "reserved": 0,
+      "available": 1
+    }
+  },
+  "acceptance_checks": {
+    "actual_aar_owner": true,
+    "candidate_interrupted_after_evidence": true,
+    "same_trial_ids_on_reopen": true,
+    "same_frozen_hypothesis_on_reopen": true,
+    "no_duplicate_method_submission_after_recovery": true,
+    "recovered_model_settled": false,
+    "hypothesis_revision_retained": true,
+    "candidate_method_authored_by_model": true,
+    "candidate_finding_published": true,
+    "independent_validation_published": true,
+    "independent_replication_verified": true,
+    "research_note_snapshot": true,
+    "all_admitted_trials_terminal": true,
+    "all_admitted_evaluations_settled": true,
+    "zero_reservations_and_no_budget_debt": false
+  },
+  "failures": [],
+  "model_events": {
+    "path": "model-events-resumed.json",
+    "sha256": "88059d936270d73284649f64ce2b5c4f4781154c4bf4df5d3fab9a240cea9f95"
+  },
+  "native_transcripts": [
+    {
+      "path": "pi-private-resumed/sessions/2026-11-03T00-58-12-620Z_research_49c26021d0404e1688e344b051ed587a.jsonl",
+      "sha256": "08fbec32d90c356b146d109b9e253996376d3d37694b93d87f1c6243e31ca279"
+    }
+  ],
+  "total_duration_seconds": 178.154,
+  "source_provenance": {
+    "git_head": "542543ae08c3bdc4d01d4fc160aedbcec5454ecc",
+    "tracked_dirty_paths": [
+      "docs/status/JOURNAL.md"
+    ],
+    "source_sha256": {
+      "asr_service/README.md": "73cd2eea65aabc9acb9360da25403e13f3fb7913a1673da432835e40ea977a8f",
+      "asr_service/__init__.py": "e9c7b00c8256089818fea2ba0fb73b1ac0075728a2fbe7a487354dee5ad171f8",
+      "asr_service/admission.py": "4d4af4046093da2ee1fbed034ada90f30c296f8ee7f25c116f69a11ac9aeeeb4",
+      "asr_service/budgets.py": "82c51803b5c30b084e5ccaa2ff0e6ff9c55c5c3261075e5c11c9db22054feb77",
+      "asr_service/candidates.py": "78b9c734cee65de6c8bbe06b3387a9f13f2b7c23c7d6194d5e477ee0bdd9a7fa",
+      "asr_service/contracts.py": "1ba543e83b82330ebde8fc7660f39326d3cdc17747200b03260e0d8517c5988c",
+      "asr_service/control.py": "dd3f753ef0445234a488d4d61efaa70880949fbd1b8373dd7c9ce1a71cc6de26",
+      "asr_service/evaluation_jobs.py": "5746098a2c5dbf0e6c36ffcdd6b1e910977ceb6338e554986cf3424f0e3460af",
+      "asr_service/http.py": "a8400a117cbdfd8260cb4559c7147ba1b0916a90fdc07dd014723d05c9fa5c07",
+      "asr_service/hypotheses.py": "594c5273ec253318085297b36646211174e00bca269f45bcdcdda246f5db76dd",
+      "asr_service/quotas.py": "4cfbe91b198049aa543b9a272170c6aa29121a8d710ac34abf73f4c2cbc2ae56",
+      "asr_service/references.py": "e5eb9b181294119d9f07ae776ee5df8cf2009cbd5f7aac1145a5aa4ff93b5bfd",
+      "asr_service/replication.py": "813295e323436f921385a105b1285ad3b28e99a0eaaaa0616bd54cf6056efed8",
+      "asr_service/validations.py": "a07516a431bec7523833d4cc7de0da6c329ea262ec1129d922e0ac49c42cc41e",
+      "asr_supervisor/README.md": "15de0b44c0ece5712c866cca2e3b1088b98ba91051ba67390f991f194ab118f7",
+      "asr_supervisor/__init__.py": "81cb10b697dfa5a855a40f76ce0027c1cfd87b47f32161d64982cff1274e9a7d",
+      "asr_supervisor/__main__.py": "02445d64817aff97a3f17223c965e3ebd1f47954c05ff72282b4439b57055ccc",
+      "asr_supervisor/candidate.py": "08f00c810874e97c651effb8e7caa07c0481b99082bf824c3299dcef46754a7d",
+      "asr_supervisor/candidate_wrapper.m": "cda9abfab75ed9318ca8fa454a6c0fa3b1d78447f12a370eab637f099fe043b9",
+      "asr_supervisor/docker.py": "381078bd1236d12c8ca8354209b72065c6223f5ad4d109557a6fa4798c4611ab",
+      "asr_supervisor/process.py": "f7ea5b317483bc73bf6ce852f1d702863e74c2844d32cfd9f028bdd75450e99c",
+      "asr_supervisor/store.py": "ed5e41e2e853674160ae3b8e3688100c9733cb593c1d1df01c8d4c6dafa5a0be",
+      "asr_supervisor/supervisor.py": "af1fc22bd0db07b6311b822de1705883fea7f9691519e9779b15020ed21b6227",
+      "asr_evaluation/README.md": "75c2bb06d9dcd6c3cf5bae8e46ae3906c3b0d333a5547ae0fb2c04bfbc2b73c0",
+      "asr_evaluation/__init__.py": "68327629ce5a903a04cb6ee593d74b26acc4d13ead568e7f9e5fe3b15c7e7ae9",
+      "asr_evaluation/entrypoint.py": "5252a4e37adbe19a3d45f2d3bdd3fa513c8cff17a31e21631cf63c667509fd1f",
+      "asr_evaluation/managed.py": "c5597ddb60a63717e3b1ebf430e090f65956e881073629b4ad0b660918c894bb",
+      "asr_evaluation/replay.py": "6614cd259c531d963be29ae442d5a81862e944d4f0a9da506bc0c0bbcd849d2c",
+      "powerflow_lab/__init__.py": "0593119557b619b67dfef822dc3aa661fad1a82e6c8be0522ef9c70be1ddabfa",
+      "powerflow_lab/reference.py": "cd2a98a5135ac5461bd028948a6e3b998e4d9b218e2b22c83bb69b0dced5587c",
+      "powerflow_lab/runner.py": "bbc307a89da9cd71d96bdf2ddcf104df4bef5f5fe7fc148afad245b6592f902e",
+      "powerflow_lab/validation.py": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3",
+      "integrations/aar/README.md": "21ebc73f6794428b1514659ea686c09f0794b8da356b5c924d662c1d8e323c63",
+      "integrations/aar/RUNTIME.md": "70d79791bb62a29f47b55c3254067caaece4dcde414e24984bd43bd18104b4ed",
+      "integrations/aar/bridge.py": "2dec359e59b6fc2140d0820c61c6319ed9f43d46119126aaef938896d6f5c813",
+      "integrations/aar/evaluation_projection.py": "3bbb1d893a2638dbefa7ff9fa014abf184d296a842ccab3280261ba797994120",
+      "integrations/aar/loop_patch.py": "fe0d5b0fb78526b16e3126e84a741e934c683bbc3807ac304b6b8507a08357a2",
+      "integrations/aar/prepare.py": "19b394fdc4176247fc0e86012472f5878704890491e718ce9f705b0124381de5",
+      "integrations/aar/prepare_upstream.py": "63e63d71bdf718549f13937e584ff656b0ec373238a5bbcaaec6bf869a41f2f5",
+      "integrations/aar/researcher.py": "7a4e8ce8a726afa97101b6f41f0a94f1b3c9188bb2f7797df621c82d8a470484",
+      "integrations/aar/source_integrity.py": "7a928774669ddefd752191cbb51b6fcd513e18a9b57651959da5b2a96e1301d3",
+      "integrations/aar/upstream.json": "14d868771772344c9bbeda365b767eeb5e1d9dc2f2d42fe44c945ca54c468cf3",
+      "integrations/aar/upstream_adapter.py": "fee5e10b1b4db749068e57b6d711e6ae438ca9cc08d0dc5c7e1f65565da916be",
+      "integrations/runtimes/README.md": "1adf32c51fae458b5f6223f2d18a51224f5a8202909a625f75763516b6c4e34d",
+      "integrations/runtimes/acceptance-limits.json": "4557db2db3ccd4968ee8d7eb60e5dcf9806de73aa7dd97153c7155d5d53d45a1",
+      "integrations/runtimes/acceptance.py": "912023f847f5e57a32c7383cd97926946384b1ca5f3ce57839d28c18bf5ef57d",
+      "integrations/runtimes/asr-extension.mjs": "1f8a7c092715cccbcb023d938f58de5fc1aab4bac2a23e0f4fa956ec1ff33120",
+      "integrations/runtimes/capabilities.json": "5839a2813de614ba2f55805d3f174b74f890c0cc80bfb768551ef3c7deb618e7",
+      "integrations/runtimes/capability_inventory.py": "f2a543546ed1828b029556b53f48e322c5372df986aec8fd0f09fa54a4f52656",
+      "integrations/runtimes/codex_app_server.py": "6bf3208b4bc850dc070f586ce759276a5ce9d91aa476cee73ce8fdd3743ee0d9",
+      "integrations/runtimes/domain-powergrid.json": "d21131ed2f6b1cd71e830f659722cc72af901f11740e0fcd76f14dadac1af1cc",
+      "integrations/runtimes/environment.py": "38b02319d44de6def69245faa23a5f1bc572309045c8a0559972f5d83311a754",
+      "integrations/runtimes/grok_smoke.py": "ad0c4dcc286eea94cb965ff375b4b1b1330eb60cb96dfad316ea3a79b5db2394",
+      "integrations/runtimes/p3-acceptance-limits.json": "fcbddbf94b4f930394ddc053f7da1767e09f3ee639ec8358b33bbfaf04fb9af3",
+      "integrations/runtimes/p3-capabilities.json": "e70125a066e40f76fce780c73d12f30428adee2fac45d1e56aeb23fda4b89260",
+      "integrations/runtimes/p3-domain-powergrid.json": "0339ad414ae5bc97fe863c38d08a7421ecde3e9c5de45f4d1c42cce5a9daf633",
+      "integrations/runtimes/p3_acceptance.py": "9b899959bb8ff5bb0eaaa3369c4872ed0ed016d1f8bb53ef7c6d8aa7e6e6a1af",
+      "integrations/runtimes/pi.py": "afb259788da76b08b94c1a2ace6df033e61056cf1b9b3a05a194e52a43c92caf",
+      "integrations/runtimes/process.py": "06467b09feabcc9fc0622f2ad1890978b5a8122004e47f718d2bca87f391d2b3",
+      "integrations/runtimes/recover_acceptance.py": "06a48b34e3816f60a42204f4c889ef6808f705c41ab5994b6c2caef23e2de56f",
+      "integrations/runtimes/session.py": "69e06038274a1baaed38a59b3472bccfff8e8ffe96ea5af0656b007d1e310bfd",
+      "integrations/runtimes/skills/code-review/SKILL.md": "f579ba418163f380c8ab3290a45a790300ead845ea236bb575ad0aca4763fed0",
+      "integrations/runtimes/skills/deep-research/SKILL.md": "08b8deb9d6e0a9a963d597052514a2c5f4aa88536c6dc90ac5f8b0a524871e36",
+      "integrations/runtimes/skills/provenance.json": "32f6d0872052cdd096ba05a12416cc8e906e1f6d3daebe44aad5e5b40eba1a9c",
+      "integrations/runtimes/skills/scientific-reasoning/SKILL.md": "eae8c5709306206ee31e97219f33a30c8adb0cba63e2311f6afa65bd7794a66c",
+      "integrations/runtimes/skills/systematic-debugging/SKILL.md": "ed07642cd7eefd8062eb4b4bc6da9fedf7a1014d60e473d225eef55c64146f3a",
+      "integrations/runtimes/skills/verification-before-completion/SKILL.md": "88067fa4c862228008e93112a8d060c2ffe2c4ac007046f839138b56ff53d418",
+      "integrations/runtimes/workspace-path.mjs": "55e9151dad6a3439a3c3c436a1b125116b1680576a05c4d3c7e5f34294d868f5",
+      "contracts/README.md": "decf3515a72a9e67797e4d180b635f6c4596ff6d958b0e59c17a526ce7a4e958",
+      "contracts/examples/research-variables.json": "db210cd45bac6fac4499213a4f56dee26a63690344e27b57e45c92c399207611",
+      "contracts/research-contract.schema.json": "5da1ad1d6122a2a7f4a94a89b06575e3a3872e4961d6d90c9c8231bcaabd7a37",
+      "contracts/variable-policy.schema.json": "64d08fd1ee19ddbef566258593704f6502e49f95d95d4a8c8b95e82f7b0ee8a3",
+      "configs/numerical-environment.json": "9e8c04542866c742f2850ca33b517d927531ecb3c280bbc90414557f8fd5f653"
+    }
+  },
+  "billing": {
+    "mode": "subscription",
+    "actual_dollar_charge": null,
+    "remaining_provider_quota": "unknown",
+    "paid_api_fallback": false
+  },
+  "limits": [
+    "Fixed-case engineering/scientific trajectory only; no novelty or held-out generalization claim.",
+    "Independent automatic mapping does not judge freeform hypotheses or experimental design.",
+    "Typed evaluation_artifact_verified_by_service proves managed artifact binding; isolation_verified_by_service remains separate and is not full runtime-isolation proof."
+  ]
+}

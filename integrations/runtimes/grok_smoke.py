@@ -25,6 +25,17 @@ HINTS = {'startupHints':{'nonInteractive':True,'skipGitStatus':True,'skipProject
 PROMPT = 'Reply with exactly ASR_GROK_OK. Do not use tools.'
 
 
+def capture_reply(state,text,*,maximum_bytes=4096):
+    body=text.encode('utf-8')
+    state['observed_bytes']+=len(body)
+    if state['truncated']:return
+    remaining=max(0,maximum_bytes-state['captured_bytes'])
+    captured=body[:remaining].decode('utf-8',errors='ignore')
+    state['text']+=captured
+    state['captured_bytes']+=len(captured.encode('utf-8'))
+    state['truncated']=state['truncated'] or len(body)>len(captured.encode('utf-8'))
+
+
 def grok_environment(home,grok_home,proxy,*,inherited=None,environment=None):
     allowed=(*COMMON_ENVIRONMENT,'GROK_HOME')
     env=build_environment(allowed,runtime='grok',provider='grok',inherited=inherited,overrides=environment)
@@ -58,11 +69,15 @@ async def probe(output, proxy, expected_model=None,environment=None):
         runtime='grok-acp',runtime_version=subprocess.check_output([binary,'--version'],text=True,timeout=3,env=initial_env).strip(),
         status='not_completed',requested_reply='ASR_GROK_OK',prompt_count=0,tool_call_count=0,permission_request_count=0,
         billing={'authentication_method':'cached_token','api_key_environment_present':False,'paid_api_fallback':False,'actual_charge':None,'remaining_subscription_quota':None},
-        limits={'total_walltime_seconds':45,'model_prompts':1,'research_tools':False,'client_fs':False,'client_terminal':False},
+        limits={'total_walltime_seconds':45,'model_prompts':1,'research_tools':False,'client_fs':False,'client_terminal':False,
+            'protocol_line_bytes':1048576,'protocol_records':4096,'reply_capture_bytes':4096,'reply_preview_characters':500,
+            'stage_seconds':8,'prompt_seconds':30,'engine_deadline_seconds':42},
         correction='Explicit operator-configured HTTP(S)_PROXY; no native model override',expected_model=expected_model,
         prior_failure='GROK-ACP-CONVERSATION.json',prior_model_observation='GROK-ACP-CONVERSATION-PROXY.json',notes=['Native dialogue only, not AAR or scientific acceptance.','Credentials, authentication responses, thoughts and raw transcripts are not retained.'])
-    process=None;identity=None;stderr_task=None;session_id=None;cancelled=False;sequence=0;frames=0;reply=[];terminal=None
+    process=None;identity=None;stderr_task=None;session_id=None;cancelled=False;sequence=0;frames=0;terminal=None
+    reply=dict(text='',observed_bytes=0,captured_bytes=0,truncated=False)
     server_methods=[];stderr_lines=0
+    active_stage={}
     temporary=tempfile.TemporaryDirectory(prefix='asr-grok-acp-proxy-')
     async def send(record):
         process.stdin.write(json.dumps({'jsonrpc':'2.0',**record},ensure_ascii=False).encode()+b'\n')
@@ -86,7 +101,7 @@ async def probe(output, proxy, expected_model=None,environment=None):
         update=params.get('update') or {};kind=update.get('sessionUpdate')
         if kind=='agent_message_chunk':
             content=update.get('content') or {}
-            if content.get('type')=='text' and sum(map(len,reply))<4096:reply.append(content.get('text',''))
+            if content.get('type')=='text':capture_reply(reply,content.get('text',''))
         elif kind=='tool_call':
             result['tool_call_count']+=1;await cancel()
     async def request(method,params,seconds=8):
@@ -94,13 +109,19 @@ async def probe(output, proxy, expected_model=None,environment=None):
         sequence+=1;request_id=sequence
         await send({'id':request_id,'method':method,'params':params})
         until=min(deadline,time.monotonic()+seconds)
+        active_stage.update(method=method,configured_ms=max(1,int((until-time.monotonic())*1000)),started=time.monotonic())
         while True:
             remaining=until-time.monotonic()
             if remaining<=0:raise asyncio.TimeoutError('bounded stage deadline exceeded')
-            raw=await asyncio.wait_for(process.stdout.readline(),remaining)
+            try:raw=await asyncio.wait_for(process.stdout.readline(),remaining)
+            except (ValueError,asyncio.LimitOverrunError):
+                result['limit_observation']=dict(kind='protocol_line_bytes',configured=1048576,observed=1048577,observed_basis='at_least',original_bytes=None,recoverable=True)
+                raise RuntimeError('native ACP line cap exceeded') from None
             if not raw:raise RuntimeError('native ACP process ended')
             frames+=1
-            if frames>4096 or len(raw)>1048576:raise RuntimeError('ACP stream limit exceeded')
+            if frames>4096 or len(raw)>1048576:
+                result['limit_observation']=dict(kind='protocol_records' if frames>4096 else 'protocol_line_bytes',configured=4096 if frames>4096 else 1048576,observed=frames if frames>4096 else len(raw),recoverable=True)
+                raise RuntimeError('ACP stream limit exceeded')
             record=json.loads(raw)
             if 'method' in record:await dispatch(record);continue
             if record.get('id')!=request_id:raise RuntimeError('uncorrelated ACP response')
@@ -145,11 +166,17 @@ async def probe(output, proxy, expected_model=None,environment=None):
         result['prompt_count']=1
         response=await request('session/prompt',{'sessionId':session_id,'prompt':[{'type':'text','text':PROMPT}]},seconds=30)
         terminal=response.get('stopReason');result['terminal_stop_reason']=terminal
-        text=''.join(reply).strip();result['reply']=text[:500]
-        result['status']='passed' if terminal=='end_turn' and text=='ASR_GROK_OK' and result['tool_call_count']==0 and result['permission_request_count']==0 else 'not_passed'
+        text=reply['text'].strip();result['reply']=text[:500]
+        result['reply_capture']={key:value for key,value in reply.items() if key!='text'}
+        result['reply_capture'].update(limit_bytes=4096,preview_limit_characters=500,preview_original_characters=len(text),preview_truncated=len(text)>500)
+        result['status']='passed' if terminal=='end_turn' and text=='ASR_GROK_OK' and not reply['truncated'] and result['tool_call_count']==0 and result['permission_request_count']==0 else 'output_limit_exceeded' if reply['truncated'] else 'not_passed'
     except Exception as error:
         result['status']='timed_out' if isinstance(error,(TimeoutError,asyncio.TimeoutError)) else 'failed'
         result['error_category']=type(error).__name__
+        if result['status']=='timed_out':
+            configured=active_stage.get('configured_ms',42000)
+            result['limit_observation']=dict(kind='request_deadline_ms',phase=active_stage.get('method','setup'),configured=configured,
+                observed=max(configured,int((time.monotonic()-active_stage.get('started',started))*1000)),recoverable=True)
         if process and session_id:
             try:await cancel()
             except Exception:pass
@@ -172,6 +199,11 @@ async def probe(output, proxy, expected_model=None,environment=None):
             except Exception:result['owned_process_group_exit_verified']=False
             result['owned_process_exit_code']=process.returncode
         temporary.cleanup()
+        if 'reply_capture' not in result:
+            result['reply_capture']={key:value for key,value in reply.items() if key!='text'}
+            result['reply_capture'].update(limit_bytes=4096,preview_limit_characters=500,preview_original_characters=len(reply['text']),preview_truncated=len(reply['text'])>500)
+            if reply['text']:result['reply']=reply['text'][:500]
+        result['recovery']='Retain this diagnostic and native login state; any new model prompt requires explicit finite authorization. No automatic retry or ASR binding.'
         result.update(cancel_notification_sent=cancelled,server_request_methods=server_methods,stderr_line_count=stderr_lines,finished_at=datetime.now(timezone.utc).isoformat(),total_duration_seconds=round(time.monotonic()-started,3))
         publish_result(output, result)
     return result

@@ -10,6 +10,22 @@ class Response(io.BytesIO):
 
 
 class Context7Tests(unittest.TestCase):
+    def test_exhaustion_reports_configured_observed_remaining_and_recovery(self):
+        client=Context7Client(opener=lambda *a,**k:Response(b'{}'),max_calls=1)
+        client.resolve_library('pi','SDK')
+        with self.assertRaises(DocumentationError) as error:client.resolve_library('pi','SDK')
+        details=getattr(error.exception,'details',{})
+        self.assertEqual(details.get('configured'),1)
+        self.assertEqual(details.get('observed'),2)
+        self.assertEqual(details.get('remaining'),0)
+        self.assertTrue(details.get('recoverable'))
+
+    def test_unicode_and_deep_json_errors_are_structured_not_uncaught(self):
+        client=Context7Client(opener=lambda *a,**k:Response(b'['*2000+b']'*2000))
+        for query in ('bad\ud800','valid'):
+            with self.subTest(query_ascii=ascii(query)),self.assertRaises(DocumentationError):
+                client.resolve_library('pi',query)
+
     def test_fixed_endpoint_and_returned_version_provenance(self):
         calls = []
         def opener(request, timeout):

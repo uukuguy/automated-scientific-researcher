@@ -179,7 +179,10 @@ class ResearchBridge:
                     code=getattr(error,'code',None)
                     allowed={'explicit_snapshot_paths_required','invalid_snapshot_path','snapshot_too_large','snapshot_corrupt','unsupported_bridge_operation','invalid_bridge_request','candidate_entrypoint_required','candidate_too_large','candidate_profile_required'}
                     if code is None: code=str(error) if str(error) in allowed else 'bridge_rejected'
-                    raw=json.dumps({'error':code}).encode(); self.send_response(422)
+                    response={'error':code}
+                    details=getattr(error,'details',None)
+                    if isinstance(details,dict):response['details']=details
+                    raw=json.dumps(response).encode(); self.send_response(422)
                 self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(raw)))
                 self.end_headers()
                 try:self.wfile.write(raw)
