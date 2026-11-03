@@ -182,3 +182,11 @@
 - Decision: audit every implemented limit for purpose, unit/scope, configurable value and default adequacy. Keep acceptance-test budgets distinct from operational defaults.
 - Decision: exceedance requires detailed inspectable records and explicit recovery. Ordinary exhaustion pauses/defer research rather than dropping the task; forced execution termination requires a safety/resource reason, preserved evidence and exit proof. No silent failure or implicit fallback.
 - Boundary: raising limits is a recorded policy change, never usage reset. Unknown execution stays reserved. Current P3 closure includes re-auditing existing code, not only documenting future rules.
+
+## D023 — Research toward new methods, not rediscovery of known algorithms
+
+- Date: 2026-11-03. Status: user clarification of the scientific objective.
+- Decision: literature search and trying an existing solver are preparation, not sufficient delivery of “find new methods.” The researcher must formulate an unresolved problem, propose a substantive mechanism/method and test its contribution against relevant prior work and controlled evidence.
+- Rationale: do not confuse autonomous tool use or algorithm reproduction with autonomous scientific contribution. Agent-generated code and simple recombination do not establish novelty.
+- Boundary: do not preselect solver research from engineering convenience. Exploration can refine questions; confirmatory claims require frozen protocols and independent validation. Negative outcomes remain valuable and retained, but cannot be relabelled as achieving the new-method objective.
+- Supersession: withdraws this session's suggested solver-first direction; preserves P3 engineering acceptance and P4 planning status. No new run budget or claim of novelty is granted.

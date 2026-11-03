@@ -26,7 +26,7 @@
 
 ## Open Problems (theme-level)
 
-- P4 requires a frozen scientific question, formal development/held-out families, equal-budget comparison and independent claim support; fixed-case P3 replication is not novelty or generalization.
+- P4 targets substantive new-method research beyond retrieving known algorithms: prior knowledge and problem formation precede frozen confirmatory comparisons. Scenario support, hidden-material isolation and independent contribution evidence remain gaps.
 - Explicit octave-candidate/1 supports bounded single-file methods; broader workloads/profiles require separate capability and limit review.
 - Unconfirmed real-world input distribution, OOD definition, failure cases, and downstream task.
 - Formal evaluation policy and expanded operating conventions remain uncalibrated; the implemented reference uses fixed PV/PQ and one Slack.

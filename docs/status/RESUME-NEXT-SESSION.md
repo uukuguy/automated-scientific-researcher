@@ -1,6 +1,6 @@
-# Live Session Checkpoint
+# Recovered Session Checkpoint
 
-> Updated: 2026-11-03. Active recovery point, not a reviewed final handoff.
+> Updated: 2026-11-03. Active recovery point. Prior work continued from a live checkpoint; no final handoff was performed.
 
 ## Current boundary
 
@@ -54,8 +54,14 @@ evaluation rules or budget. This multi-entry mechanism is not yet implemented.
 
 ## Next boundary
 
-Use docs/plans/P4-SCIENTIFIC-COMPARISON.md to define scientific question, frozen
-families/splits/evaluation and finite budget. Do not reuse P3 closeout allowance or
+Use docs/plans/P4-SCIENTIFIC-COMPARISON.md for substantive new-method research.
+User clarified that retrieving and trying known solvers is insufficient. The
+solver-first suggestion was withdrawn; no direction choice is pending. Establish
+prior knowledge and an unresolved problem before selecting a research direction.
+Current Control, candidate wrapper and evaluator only support exact fixed-case
+inputs; do not claim scenario or held-out capability. Confirmatory experiments
+need explicit frozen families/evaluation and finite budget.
+Read-only guard regression: 35 tests, three Docker skips; no model/experiment run. Do not reuse P3 closeout allowance or
 claim fixed-case replication proves scientific improvement. Preserve independent
 Capstone C0–C4 lane; its delivery/acceptance is unconfirmed. Native Codex/Grok
 actual greetings/protocol checks are verified, full AAR binding still pi.

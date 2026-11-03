@@ -130,3 +130,8 @@
 - 2026-11-03: 459b44d synchronizes trusted AAR lifecycle projections from Control with atomic receipts and prevents false closeout on projection failure.
 - 2026-11-03: d298526 records actual AAR completed projection, preserving authoritative Control, scientific evidence, usage and historical reports.
 - 2026-11-03: P3 closure verified; P4 contract planning becomes successor without granting new model or experiment budget.
+
+- 2026-11-03 — 938fc70: Closed P3 acceptance and limit audit; recorded P4 contract-planning boundary without new execution authorization.
+
+- 2026-11-03: P4 readiness review confirmed fixed-input and held-out isolation gaps; 35 guard tests ran, three Docker checks skipped.
+- 2026-11-03: D023 clarifies substantive new-method research; withdrew solver-first suggestion, preserving autonomous question formation and honest negative outcomes.
