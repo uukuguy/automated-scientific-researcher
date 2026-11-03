@@ -12,8 +12,8 @@ Python electrical checks and immutable trial evidence. Local authenticated contr
 and a fenced execution supervisor support the pinned reference profile, durable
 commands, budgets and recovery. The pinned AAR loop and Experiment/Finding ORM have actual subscription-backed
 pi/Codex evidence, including a negative numerical outcome and notebook snapshot.
-See docs/validation/P2-SUBSCRIPTION.md for measured scope; arbitrary candidate
-execution is restricted to the explicit octave-candidate/1 profile. Candidate isolation, fresh method replication and Control-budgeted evaluator recovery have real Docker tests; the complete P3 model-driven trajectory remains under acceptance. Typed evaluator artifact links are verified separately from scientific claims.
+See docs/validation/P2-SUBSCRIPTION.md and docs/validation/P3-SYSTEM-ACCEPTANCE.md for measured scope; arbitrary candidate
+execution is restricted to the explicit octave-candidate/1 profile. Candidate isolation, fresh method replication and Control-budgeted evaluator recovery have real Docker tests; the complete bounded P3 model-driven trajectory and lifecycle closeout are verified. P4 contract planning is the next work package; no scientific improvement or held-out generalization is established by P3. Typed evaluator artifact links are verified separately from scientific claims.
 Researcher runtimes are replaceable and subscription-first; pi is the lightweight
 baseline. Subscription runtime children must not receive any *_API_KEY; only pi explicitly using a non-openai-codex provider may allow such settings. That exception does not authorize paid API usage or fallback. Use `uv sync --locked` and `uv run python -m
 unittest discover -s tests -v` for the base suite. Add `--extra aar` to `uv run`

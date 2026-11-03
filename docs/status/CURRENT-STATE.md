@@ -4,10 +4,10 @@
 
 - Project: Automated Scientific Researcher — durable research system with power-grid sampling and solver-method research as its first scientific deliverable.
 - Current branch: main
-- Theme-level focus: Versioned research contracts, runtime control and AAR integration over verified numerical evidence.
+- Theme-level focus: Formal scientific comparison contracts over a verified bounded single-researcher foundation.
 - Project route: managed
 - Canonical worklist: docs/plans/WORKLIST.md
-- Active work package: P3 — independent verification and system acceptance
+- Active work package: P4 — scientific comparison contract planning (no new run budget admitted)
 
 ## Current Architecture
 
@@ -15,22 +15,22 @@
 - Current design: `docs/PROJECT-DESIGN.md`; detailed behavior: `docs/architecture/ASR-MINIMUM-LOOP.md`. Sampling and solver methods are configurable research variables.
 - Deployment: local OrbStack Docker Engine and Compose; no additional VM.
 - Research reference: `docs/IEEE118_OOD_Sample_Expansion_Task_v2_2.md`; accepted user decisions in `docs/status/DECISIONS.md` govern scope.
-- Implemented numerical slice: fixed case118 reference, independent residual/operating checks, immutable local trial evidence; generalized scenarios and candidate execution remain planned.
-- Research layer: actual pinned AAR AutonomousAgentLoop with replaceable subscription runtime; original Experiment/Finding ORM shares the ASR SQLite database. The measured profile supports bounded reference experiments, native file tools, curated skill, findings and snapshots.
+- Implemented numerical slice: fixed case118 reference, independent residual/operating checks, immutable local trial evidence; explicit octave-candidate/1 source execution and replication are verified; generalized scenarios and broader profiles remain planned.
+- Research layer: actual pinned AAR AutonomousAgentLoop with replaceable subscription runtime; original Experiment/Finding ORM shares the ASR SQLite database. The measured profile supports model-authored frozen candidates, hypothesis revisions, isolated evaluation, method replication, curated skills, findings, snapshots and interruption recovery. This researcher is the future Research Lead prototype; the multi-Lead organization is not deployed.
 - Human interaction: asynchronous guidance and versioned controls; Capstone scientific-research mode is the accepted workbench architecture; preparation is defined in `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md`.
 - Local upstream: `3th-party/automated-w2s-research/`, ignored by the parent repository; tracked deterministic preparation/patches live in integrations/aar/.
 
 - Supervisor: fenced attempts, frozen request dispatch, external timeout and conservative process reconciliation.
 
-- Control: authenticated local HTTP, reference-profile executable contracts, atomic admission, project budgets, command receipts, candidate findings and evaluator-only immutable Validation attestations. Shared budget rows expose separate logical model/compute balances; provider quota remains unknown.
+- Control: authenticated local HTTP, reference-profile executable contracts, atomic admission, project budgets, command receipts, candidate findings and evaluator-only immutable Validation attestations. Shared budget rows expose model/compute balances and evaluator dimensions; sourced quota observations preserve unknown values. Managed evaluator artifacts and lifecycle projections have verified receipts.
 
 ## Open Problems (theme-level)
 
-- D016 requires immutable hypothesis evolution, separate scientific outcome semantics, three-layer evaluator independence and model/compute ledgers; local hypothesis revision/binding/author-evidence APIs exist; evaluator-only immutable attestations and logical model/compute views exist; a standalone frozen-material evaluator has actual isolation evidence; full scientific lifecycle, evaluator budget integration and provider quota observation remain incomplete.
-- Local authenticated control API and reference execution supervision exist; generalized candidate execution remains unavailable.
+- P4 requires a frozen scientific question, formal development/held-out families, equal-budget comparison and independent claim support; fixed-case P3 replication is not novelty or generalization.
+- Explicit octave-candidate/1 supports bounded single-file methods; broader workloads/profiles require separate capability and limit review.
 - Unconfirmed real-world input distribution, OOD definition, failure cases, and downstream task.
 - Formal evaluation policy and expanded operating conventions remain uncalibrated; the implemented reference uses fixed PV/PQ and one Slack.
-- Standalone fixed-profile material evaluation runs in a verified restricted Docker container; arbitrary candidate-code isolation, candidate replication and evaluator Control-budget integration remain incomplete.
+- Verified managed isolation does not establish universal researcher-runtime isolation; raw evaluator artifacts, attested scientific judgments and formal claim validation remain distinct.
 - Numerical image execution is pinned; APT rebuild sources and cross-machine image distribution remain unresolved.
 
 ## Key Files
@@ -84,10 +84,14 @@
 
 - `asr_service/references.py` — immutable scoped metadata registry and content-addressed bundles.
 - `asr_service/validations.py` — evaluator-only immutable reports with orthogonal scientific assessment axes.
-- `asr_evaluation/` — standalone isolated fixed-profile frozen-material recheck and conservative recovery.
+- `asr_evaluation/` — standalone and Control-managed isolated checks, identity-bound artifacts and conservative recovery.
 
 - `asr_service/admission.py` — local transactional preparation; control.py owns authenticated run admission.
 
 - Research runtime: subscription-first replaceable adapters; pi/Codex baseline. omp/AAR capability base and separate power-grid scientific pack.
 - `docs/architecture/RESEARCHER-RUNTIMES.md` — runtime and capability boundaries.
 - `docs/validation/P2-SUBSCRIPTION.md` — bounded real model trajectory evidence and remaining limits.
+
+- `docs/validation/P3-SYSTEM-ACCEPTANCE.md` — bounded scientific lifecycle, retained failures and actual final receipts.
+- `docs/validation/LIMITS-AUDIT.md` — purpose/default/exceedance/recovery inventory and explicit limits.
+- `docs/plans/P4-SCIENTIFIC-COMPARISON.md` — governed successor contract-planning boundary.

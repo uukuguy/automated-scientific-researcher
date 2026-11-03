@@ -1,94 +1,66 @@
 # Live Session Checkpoint
 
-> Updated: 2026-11-03. Active recovery point, not a final handoff or P3 closure.
+> Updated: 2026-11-03. Active recovery point, not a reviewed final handoff.
 
-## Current intent
+## Current boundary
 
-The user explicitly requested completion of P3 without incremental stops. Native Codex/Grok dialogue checks are complete. P2 bounded AAR/pi acceptance
-remains complete; P3 is active. No permission question is pending. Preserve
-negative results and frozen evidence. Never infer unlimited subscription quota
-or fall back to a paid API.
+User requested complete P3, subscription API-key prohibition, and all-limit audit
+written into AGENTS.md. P3 is now complete within the bounded fixed-case scope.
+P4 contract planning is the governed successor; no new P4 model/experiment budget
+has been admitted. No research model, candidate or evaluator is still running.
+No permission question is pending.
 
-## Verified work
+## Verified outcome
 
-- Codex App Server: 3a2b0dc adds the bounded protocol client and 12 tests. Actual
-  gpt-6.1-sol/high returned ASR_CODEX_OK in 25.409 seconds, with ChatGPT auth,
-  no tools and child exit 0.
-- Grok ACP: 1895c32 adds the diagnostic and actual grok-4.7 dialogue evidence:
-  ASR_GROK_OK, end_turn, 10.065 seconds, no tools, owned process group exited.
-  1c55964 makes evidence publication exclusive and success depend on exit proof.
-- Grok's first isolated child lacked the existing local proxy. Direct inference
-  connectivity timed out; proxy 127.0.0.1:7897 reached the endpoint. Preserve the
-  first timeout and the zero-prompt guard observation: the connected service
-  advertised default 4.7 instead of 4.6. No further model calls are needed.
-- c48ba1c and earlier skill commits supply five frozen, hash-verified skills and
-  bounded Context7/Crossref tools through pi pack /3. Network clients were checked;
-  exact Context7 served version remains unverified. No general MCP/Claude binding.
-- 067c352 gives model/compute ledger views and atomic bundles over existing rows.
-  Legacy usage remains unchanged; provider quota is unknown, not a local balance.
-- 630cc3e adds evaluator-only immutable Validation records, exact evidence checks,
-  separate scientific axes and retained negative history. a1868cd lets researchers
-  read those reports through state, without publication authority.
-- 7555f3b and 45f3a8a add standalone fixed-profile Docker material rechecks.
-  Actual read-only mounts, network/nonroot probes, invalid input/voltage cases,
-  timeout and interrupted publication recovery passed. Derived manifest fields
-  must match hashed raw outputs, request, job, exit inspection and outcome.
-- Actual AAR trajectory05 was rechecked in isolation: original input preserved,
-  mismatch 0.8253756289466181, equations invalid, nine Q violations and 186 thermal
-  ratings unassessed. Source IDs/hashes remain unchanged. See ISOLATED-EVALUATION.json.
-- Root appended that result to the original05 database via real evaluator HTTP.
-  POST/GET, idempotency and service reopen passed; run/trial/finding counts did
-  not change. See P3-ACTUAL05-VALIDATION.json. Experimental design, hypothesis,
-  replication and generalization remain unassessed. Control's isolation flag
-  remains false; the external report hash is a textual provenance link.
-- Final parent suite: 185 tests in 7.933 seconds, with two Docker opt-ins skipped.
-  The explicit Docker suite passed all 12 checks. Reviewers cleared known blockers.
+- Real pinned AAR/actual ORM + pi1.5/Codex OAuth: model-authored candidate, two
+  immutable hypotheses, two frozen-method trials in distinct containers, two
+  independent material evaluations, three Validation reports, notebook and one
+  candidate finding. Deliberate SIGKILL recovery preserved original identities.
+- Equations valid, mismatch 3.9307660706864565e-13 pu; six Q violations and 186 thermal
+  ratings unassessed. No operating-feasibility, improvement, novelty or held-out
+  generalization claim. Hypothesis/design formal assessments remain unassessed.
+- First expired OAuth failure preserved. Private browser login used existing
+  Vivaldi session; global credentials unchanged. No API keys or paid fallback.
+- Original 180s acceptance cutoff recorded 180037ms, including 37ms debt. It remains
+  in immutable history. Recorded contract revision 2 added only 30s / 2 turns / 3 tools for
+  read-only low-thinking closeout. Native model settled; original reports/scientific
+  counts unchanged; total 193820/210000ms, 21/22 turns, 23/35 tools; all reservations zero.
+- Actual Control finish command_7cd3cec371ec4d8695b850b6008abfda applied; state completed.
+  Trusted actual AAR projection reconciled to completed at revision 4; six historical
+  report hashes, Control bytes, scientific rows and usage unchanged.
+- Latest full optional suite: 291 tests, 15 explicit Docker skips; 59 combined real
+  Docker tests separately passed. See P3-SYSTEM-ACCEPTANCE.md and LIMITS-AUDIT.md.
 
-## Accepted architecture
+## Durable implementation
 
-D019 names the human-facing Super Agent Research Organizer. Research Leads retain
-scientific autonomy and direct cross-review; Workers perform concrete tasks.
-Role capability profiles are separate from runtime bindings. D020 retains pi,
-then adds native Codex and Grok. Dialogue acceptance does not establish their AAR
-tool/budget integration. P5 is not deployed; proposed concurrency 1/2/2/1 is not
-a permanent limit. Capstone handoffs are prepared locally, not confirmed delivered.
+483553a/d40aa84 implement candidate/evaluation admission and managed execution.
+b36e6ef enforces D021 no subscription *_API_KEY environment. 58a288b/4aa7db7 fix
+budget/start/recovery gates, finite leases and detailed recoverable cap receipts.
+c3ff486/ffa207a add runtime/network/native overflow and truncation diagnostics.
+68f48c2 retains failed setup cost. ddb0509 bounds Docker CLI streams/group cleanup and
+preserves sealed publication recovery. ae2d808 adds deadline headroom/read-only closeout.
+459b44d synchronizes AAR lifecycle projection; d298526 records actual reconciliation.
+All model/evidence reports remain immutable. Root documentation records the final acceptance boundary.
 
-## Next mainline work
+## Architecture discussion to preserve
 
-1. Integrate evaluator admission, resource reservations, execution identity and
-   report artifacts into Control. Standalone Replay currently has local pending
-   recovery, but no Control budget or execution authentication boundary.
-2. Add one contract-permitted candidate-code profile with actual OS isolation and
-   immutable snapshots, then rerun the candidate method separately. Material
-   rechecking is not solver replication.
-3. Complete a model-driven hypothesis → candidate → experiment → revision →
-   finding → independent validation trajectory using verified pi. Check A12–A14
-   and budget recovery before closing P3. Native Codex/Grok require ASR tool and
-   permit bindings before substituting for pi.
-4. Provider quota observations and machine-resolved evaluator artifact references
-   remain open; unknown values stay unknown.
+Current single AAR researcher is Research Lead's predecessor. Each Lead owns an
+outer scientific loop; runtime owns inner reasoning/tool loop. Organizer handles
+human communication and cross-direction coordination; Control/Supervisor retain
+budget/permission/execution authority. Future multi-Lead/Workers organization is P5.
+Directions may be proposed by humans, Organizer or Leads; proposed organization
+policy coordinates admission within existing authority and escalates new scope,
+evaluation rules or budget. This multi-entry mechanism is not yet implemented.
 
-Credentials and sessions remain in private ignored artifacts. Do not print them
-or repeat accepted model checks unnecessarily. The actual05 database now contains
-an appended Validation; its original trial and evidence remain immutable. Consult
-JOURNAL and Git for the final documentation commit. No background model work remains.
+## Next boundary
 
-## Active P3 implementation checkpoint
+Use docs/plans/P4-SCIENTIFIC-COMPARISON.md to define scientific question, frozen
+families/splits/evaluation and finite budget. Do not reuse P3 closeout allowance or
+claim fixed-case replication proves scientific improvement. Preserve independent
+Capstone C0–C4 lane; its delivery/acceptance is unconfirmed. Native Codex/Grok
+actual greetings/protocol checks are verified, full AAR binding still pi.
 
-Commit d47135d records the closure plan in docs/plans/P3-CLOSURE.md. Existing workers implement disjoint lanes: control owns candidate registration, managed evaluator jobs and quota observations; supervisor owns isolated candidate/evaluator execution and real Docker tests; aar owns the P3 capability pack and actual trajectory harness. Root owns integration review and documentation. Changes are in progress, not acceptance evidence.
-
-P3 acceptance uses a tracked finite subscription-only configuration: 180 seconds model sessions, 20 turns, 32 tools, four numerical attempts, three evaluations. No P3 model call has launched at this checkpoint. First require focused backend and actual isolation tests, then run the pinned AAR/pi trajectory with retained interruption and recovery. P3 remains active until A8/A9/A12–A14 evidence is verified.
-
-## P3 implementation ready; latest user constraint
-
-Service483553a and executiond40aa84 are committed;41 combined real Docker checks passed. AAR pack/harnessbe73274 and projection91c6d21 are committed. Root and AAR cross-review fixed timeout-policy and cross-run revision-cap bypasses. Actual model trajectory has not launched. User D021 now forbids every subscription child *_API_KEY; AAR worker is adding shared environment guards and tests before launch. Root owns docs; existing workers have finished service/execution. Next: guard tests/commit, final suite, then explicit finite tracked P3 harness run and independent evidence inspection.
-
-## Actual P3-01 credential failure retained
-
-D021 environment guard committed b36e6ef; root final242 tests passed8.925s (13 Docker opt-ins skipped),41 realDocker checks separately passed. P3-01 actual AAR/pi ended provider_error expired OAuth before tools/trials. Immutable public docs/validation/P3-RESULTS.json and private artifacts/p3-acceptance-20261103-01/result.json retain failure. Original180000ms ledger charged2395ms,1turn;177605ms/19turns/32tools and all numerical/evaluator budget remain. No fallback. User previously authorized browser re-login once if expired. AAR worker diagnoses supported OAuth refresh and same-run remaining-budget harness recovery; root continues P3, not closed.
-
-## Scientific evidence verified; bounded closeout in progress
-
-Private browserOAuth login succeeded through installedpi SDK +existingVivaldi consent; globalcredentials unchanged. Same-run recovered trajectory completed modelcandidate/h1/trial/SIGKILL/reopen/twoindepchecks/freshreplica/h2/notebook/finding. P3-RESULTS-RECOVERED.json remains incomplete because finalsessiontimed_out:180037ms spent vs180000limit (37ms debt), allreservations0. Scientific rawmaterial independently verified byroot in private root-evidence-review.json: residual3.9307660706864565e-13,6Qviolations,186thermalunassessed; distinctcontainers/samecode-input-solution, oldtrials h1 unchanged.
-
-Root announced explicit closeout contractrevision +30000modelms/+2turns/+3tools, numerical/evaluation allowances unchanged. AARworker implements deadlinecleanupheadroom and same-run finalization; no additionalmodel untilrootgo. Preserve everyprior report/hash/consumption, no numericalretry or criterion removal. Pending finalreport P3-RESULTS-FINAL.json. P3 not closed yet. Controlworker read-only finalaudit underway.
+Known limits: legacy direct reference CLI publication errors remain generic; managed
+Supervisor records detailed caps. DNS/request timeouts are not hard total network bounds.
+Handled PID/tmp failures may be externally unobservable; never invent measurements.
+Private OAuth/native journals stay in ignored artifacts; never print credentials.

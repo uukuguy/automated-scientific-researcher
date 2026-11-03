@@ -227,3 +227,12 @@ convert `isolation_verified_by_service: false` into a verified badge. Negative
 superseded reports remain visible. Run reads add `resource_ledgers` alongside
 legacy budget; provider quota unknown is not zero or unlimited. This local
 contract update has not been delivered/accepted by Capstone.
+
+
+## P3 verified handoff update (2026-11-03)
+
+ASR's bounded P3 acceptance is complete; see `docs/validation/P3-SYSTEM-ACCEPTANCE.md` and `LIMITS-AUDIT.md`. Actual Control lifecycle and AAR Experiment projection have separate verified receipts. Display retained failures, the original timeout/overrun, subsequent explicit budget revision, scientific assessment axes and unknown values. Do not derive research completion from a stale AAR label or equation convergence.
+
+Candidate/evaluation/replication and quota-observation local routes are documented in `asr_service/README.md`; this does not imply wire compatibility with Capstone. Typed artifact verification and evaluator attestations remain distinct. Show limit name, configured/observed values, action and recovery; do not silently discard a research task on exhaustion. Current single researcher is the Research Lead prototype, not a deployed Organizer/Lead/Worker hierarchy.
+
+This update is prepared in ASR only. Delivery, acceptance and Capstone implementation remain unconfirmed. P4 formal scientific comparison requires its own frozen contract and finite budget.

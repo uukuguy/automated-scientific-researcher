@@ -116,3 +116,17 @@
 - 2026-11-03: Root verified both raw trial inventories, distinct replay containers, typed evaluator artifacts and unchanged hypothesis bindings.
 - 2026-11-03: 58a288b reused Control budget gates before numerical claims and starts, preventing queued launches after overruns.
 - 2026-11-03: User requires AGENTS limit rules and full current-implementation audit for justified defaults, explicit exceedance records and recoverable tasks.
+- 2026-11-03: f6d4bea requires justified limits, detailed exceedance records and recoverable tasks in AGENTS, making existing implementation audit mandatory.
+- 2026-11-03: 4aa7db7 retained structured limit causes and denied intents, fencing finite recovery leases without reopening uncertain work.
+- 2026-11-03: c3ff486 preserves recovered scientific evidence and records recoverable runtime/tool limit receipts.
+- 2026-11-03: ffa207a clarifies bibliographic omission units and invalid identifier reasons.
+- 2026-11-03: 68f48c2 retained measured prelaunch setup costs, preventing runtime preparation failures from resetting consumed walltime.
+- 10:07 Recorded explicit execution limit diagnostics and bounded Docker CLI output to retain recoverable research tasks. [ddb0509]
+- 2026-11-03: ae2d808 prepares finite read-only closeout and retains measured setup cost plus cleanup headroom.
+- 2026-11-03: Root verified 288 tests, 15 Docker opt-ins skipped; separate 59 real Docker checks passed before readonly closeout.
+- 2026-11-03: f4c6040 records completed read-only P3 closeout while retaining original timeout and budget overrun.
+- 2026-11-03: Clarified current single AAR researcher becomes a Research Lead, retaining scientific judgment while future workers handle delegated execution.
+- 2026-11-03: Confirmed each Research Lead owns an outer research loop; runtime tool loops and external Control enforcement remain separate.
+- 2026-11-03: 459b44d synchronizes trusted AAR lifecycle projections from Control with atomic receipts and prevents false closeout on projection failure.
+- 2026-11-03: d298526 records actual AAR completed projection, preserving authoritative Control, scientific evidence, usage and historical reports.
+- 2026-11-03: P3 closure verified; P4 contract planning becomes successor without granting new model or experiment budget.

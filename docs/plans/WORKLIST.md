@@ -12,31 +12,31 @@ Exactly one package is active. Status records evidence, not elapsed time.
 | P0 | Research contract, upstream code mapping and initial system design. | complete | none | Accepted D001–D006; written design with observed source anchors, data boundaries and acceptance steps. |
 | P1 | Reproducible real numerical trials and evidence. Pin AAR source and numerical environment; implement case/config provenance, validation, trial manifests and idempotent execution. The reference solver is a baseline, not a candidate-method restriction. | complete | P0 | One real IEEE-118 baseline trial, independent residual validation, retained failure evidence, replay from frozen inputs, tests for duplicate requests and interrupted publication. |
 | P2 | AAR single-researcher loop. Apply user-controlled variable contracts to domain prompt/tools, findings and snapshots; enforce external stopping and recovery. | complete | P1 | Real research session calls numerical tools, submits evidence-linked findings, survives interruption without losing completed trial identities or budget. |
-| P3 | Independent verification and system acceptance, including D016 hypothesis lineage, scientific outcome semantics and model/compute ledgers. Isolate evaluation and replay frozen evidence. | active | P2 | Separate replay report, failed validation cases, process-recovery checks and one complete research trajectory. A supported negative result is acceptable; A12–A14 verify hypothesis history, outcome separation and resource accounting. |
-| P4 | First scientific deliverable: sample-generation, solver-method or joint research. Freeze evaluation contract; compare candidates and replicate on held-out families. | pending | P3 | Equal-budget comparisons, separate equation/operational validity, defined coverage proxies, reproducible methods and independent evidence; report null results honestly. |
+| P3 | Independent verification and system acceptance, including D016 hypothesis lineage, scientific outcome semantics and model/compute ledgers. Isolate evaluation and replay frozen evidence. | complete | P2 | Separate replay report, failed validation cases, process-recovery checks and one complete research trajectory. A supported negative result is acceptable; A12–A14 verify hypothesis history, outcome separation and resource accounting. |
+| P4 | First scientific deliverable: sample-generation, solver-method or joint research. Freeze evaluation contract; compare candidates and replicate on held-out families. | active (contract planning) | P3 | Equal-budget comparisons, separate equation/operational validity, defined coverage proxies, reproducible methods and independent evidence; report null results honestly. |
 | P5 | Three-layer organization: Capstone-facing Research Organizer (Super Agent), multiple AAR Research Leads and task Workers (D018). | pending | P3, P4 | Cross-direction coordination and science guidance remain distinct; unique task ownership, same-budget comparison, independent validation and authoritative Control ledger preserved. |
 
 
 ## Design and parallel preparation
 
-The accepted architecture is detailed in [Minimum-loop design](../architecture/ASR-MINIMUM-LOOP.md). Its reference-profile control/admission, budget reservations, immutable publication and fenced recovery mechanisms have P1/P2 evidence; general candidate execution remains unimplemented; P3 now includes hypothesis lineage, evaluator report identity, logical ledger views and standalone isolated material recheck. Acceptance IDs A1–A14 map to P1–P4. Capstone owns its separate C0–C4 preparation lane; no Capstone completion is inferred here.
+The accepted architecture is detailed in [Minimum-loop design](../architecture/ASR-MINIMUM-LOOP.md). P1/P2 reference controls remain verified. P3 adds the explicit octave-candidate/1 profile, managed isolated evaluation, actual frozen-method replication, hypothesis revisions and system recovery. See [P3 acceptance](../validation/P3-SYSTEM-ACCEPTANCE.md) and [limit audit](../validation/LIMITS-AUDIT.md). Acceptance IDs A1–A14 map to P1–P4. Capstone owns C0–C4 separately; no Capstone completion is inferred here.
 
 ## Current evidence
 
 - P2 implemented: authenticated local control API, complete pinned-reference contract validation, immutable revisions, atomic trial/budget/dispatch, commands, candidate findings, fenced numerical execution and conservative recovery.
 - P2 real subscription evidence: pi/Codex default gpt-6.1-sol/high produced one actual numerical trial and evidence-linked candidate finding; native-session reopen retained trial identity. See `docs/validation/P2-SUBSCRIPTION.md` and sanitized results. Clean reopen is not crash recovery.
 - P2 accepted (bounded reference profile): actual pinned AAR loop/Experiment/Finding ORM, pi1.5 subscription trajectory05 with snapshot and candidate finding; process interruption/reopen04 retains native session and numerical IDs. Curated pack hashes, external stopping and source-integrity checks are enforced. Combined suite109 tests and scientific environment5 tests pass; evidence manifests independently checked. Tool-only calibration does not prove arbitrary candidate coding isolation.
-- P3 active: independent evaluation environment and frozen replay report, negative validation cases and system trajectory acceptance. D016 accepts hypothesis revisions, outcome separation and separate logical model/compute ledgers (main design §§6.1,8,9). Implement and verify these within P3; do not rewrite historical P2 acceptance.
+- P3 accepted within its fixed-case scope: actual model-authored method, two trials, two isolated evaluations, three Validation reports, two hypothesis revisions and one candidate finding; interruption/recovery and read-only final closeout preserve all evidence. Authentication failure, timeout and original 37ms overrun remain retained. No novelty, operating feasibility or held-out generalization claim. D021/D022 credential and limit requirements are implemented/audited.
 - Runtime direction accepted: subscription-first replaceable coding agents, pi baseline. GPT/Grok available; Claude pending. Other runtime subscription support is verified before activation.
 
 - P0: `docs/status/DECISIONS.md` and the linked design.
 - P1: `docs/validation/P1-NUMERICAL-LAB.md` and `P1-REFERENCE-RESULTS.json`; 28 focused tests, real baseline/replay/truncated/timeout trials. Original preflight is historical discovery evidence.
-- Implementation slice: `docs/superpowers/plans/2026-11-02-container-lab.md`. The planned local reference slice is implemented and verified. Runtime database admission/budgets are implemented for the reference profile; generalized candidate service remains P2/P3 work.
+- Implementation slice: `docs/superpowers/plans/2026-11-02-container-lab.md`. The planned local reference slice is implemented and verified. Runtime database admission/budgets are implemented for the reference profile; octave-candidate/1 is now verified; broader execution profiles remain future admitted work.
 - Real reference power-flow trials have been demonstrated. A pi subscription-backed calibration trajectory is verified; the pinned upstream AAR loop/ORM is demonstrated in trajectory05; scientific improvement has not been demonstrated. Paid API research requires separate explicit authorization.
 
 ## Execution constraints
 
-- Human intervention follows main design §9.1 (accepted basic model). Capstone scientific-research architecture is accepted in §9.2/D009. Its parallel preparation follows `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md`; protocol details remain to be aligned. Capstone owns C0–C4 in its ledger; P2 bounded single-researcher acceptance is complete; P3 is this repository’s active package.
+- Human intervention follows main design §9.1 (accepted basic model). Capstone scientific-research architecture is accepted in §9.2/D009. Its parallel preparation follows `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md`; protocol details remain to be aligned. Capstone owns C0–C4 in its ledger; P2 bounded single-researcher acceptance is complete; P3 is complete; P4 contract planning is the active successor, without a new model/experiment budget.
 - Solver methods and sampling are research variables from the start. Variable defaults and permitted changes come from the user-controlled contract.
 - Preserve the user's bounded-autonomy model. Research workflow is autonomous; scope and evaluation remain governed.
 - Preserve AAR collaboration capabilities while separating W2S dependencies. Ignored local changes alone are not reproducible integration.
@@ -46,22 +46,23 @@ The accepted architecture is detailed in [Minimum-loop design](../architecture/A
 - Never treat author-supplied scores as independently verified results.
 - Real-case materials and downstream requirements remain open. Public prototype results do not establish business benefit.
 
-## P3 implementation order under D016
+## P3 closure and P4 transition
 
-1. Hypothesis revision and evidence relations: first local slice implemented with immutable revisions, optional frozen trial bindings, project checks, legacy replay, candidate author assessments and pi/AAR sharing. Interface tests exercise service reopen and opposing-evidence retention (A12); actual model-driven hypothesis revision and full trajectory remain outstanding.
-2. Orthogonal outcome and Validation lifecycle: evaluator-only immutable report API and distinct experiment/equation/operating/replication/generalization/hypothesis axes implemented; original execution and candidate finding unchanged. Hash/identity checks and negative supersession are tested; evaluator attestations do not establish actual isolation or complete scientific validation (A13).
-3. Two logical resource ledgers: first view/reservation slice implemented in BudgetStore; existing consumption and unknown in-flight reservations remain unchanged, cross-ledger bundles are atomic, provider quota stays unknown. Provider observations and full failure/recovery system acceptance remain A14 work.
-4. Isolated frozen-material evaluator implemented and verified with actual Docker mounts/probes, negative inputs, timeout/recovery and actual retained AAR trajectory05. A real evaluator-only HTTP report was appended to the original run without changing trials/findings. Remaining: integrate evaluation reservations and receipt publication into Control; implement one contract-permitted candidate-code slice and actual method replication, then complete a model-driven hypothesis/revision/validation trajectory (A8/A9/A12–A14). Frozen-material recheck alone cannot close P3.
+- A8/A9: real restricted candidate containers, fresh method replication, independent material checks and typed evaluator artifact references.
+- A12/A13: immutable prospective/post-hoc hypothesis history, retained operating counterevidence, separate scientific axes and candidate findings.
+- A14/D021/D022: subscription-only credential environment, two ledgers, explicit cap receipts, preserved failure costs, conservative unknown-state recovery, reviewed limits and finite policy revisions.
+- Actual Control finish receipt closes the research; AAR lifecycle projection is synchronized separately from scientific evidence. See the acceptance report chain.
+- P4 starts with [scientific comparison planning](P4-SCIENTIFIC-COMPARISON.md). Freeze question/families/evaluation and admit a new finite budget before running models or experiments. P5 remains pending.
 
-## Risk checks during P3
+## Continuing risk checks
 
 - Highest: scientific trust. Inspect failure denominators, original-problem preservation, evaluator independence, exposed evaluation data and claim scope. Do not promote a metric improvement into a scientific finding.
 - High: AAR coupling. Audit active prompt/tools/loop overrides and tracked patch size; keep upstream W2S/PGR task goals out of ASR contracts.
-- High: infrastructure replacing research. Every P3 slice must serve the single-researcher hypothesis → candidate method → experiment → revision → finding → independent replay trajectory. Current reference-only iteration experiments do not prove candidate-method autonomy. No speculative multi-agent/distributed/plugin-platform work.
+- High: infrastructure replacing research. Every P3 slice must serve the single-researcher hypothesis → candidate method → experiment → revision → finding → independent replay trajectory. P3 proves a narrow model-authored method trajectory; scientific improvement still requires P4. No speculative multi-agent/distributed/plugin-platform work.
 
 ## Accepted native-runtime integration lane (D020)
 
-Keep P3 active and preserve pi acceptance. User confirmed existing local Codex
+Preserve completed P3/pi acceptance. User confirmed existing local Codex
 and Grok login/coding on 2026-11-03. Codex App Server precedes Grok ACP: bounded
 protocol foundation → ASR tool/budget binding → actual interruption/recovery and
 research acceptance. Detailed files and gates are in RESEARCHER-RUNTIMES.md.

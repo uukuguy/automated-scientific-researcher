@@ -69,3 +69,6 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 - `docs/plans/P3-CLOSURE.md` — remaining P3 implementation and actual acceptance gates under the accepted design.
 
 - `docs/validation/LIMITS-AUDIT.md` — limit purposes, defaults, exceedance receipts and recovery audit required by repository rules.
+
+- `docs/validation/P3-SYSTEM-ACCEPTANCE.md`, `P3-RESULTS.json`, `P3-RESULTS-RECOVERED.json`, `P3-RESULTS-FINAL.json` and `P3-PROJECTION-RECONCILIATION.json` — retained real research, failures, closeout and actual lifecycle projection evidence.
+- `docs/plans/P4-SCIENTIFIC-COMPARISON.md` — successor planning boundary; no new model/experiment budget.

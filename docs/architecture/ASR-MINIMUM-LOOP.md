@@ -375,3 +375,12 @@ ISOLATED-EVALUATION.json 和 P3-ACTUAL05-VALIDATION.json。
 Standalone 执行尚未接入 Control 预算预留/结算；报告发布不追补历史执行成本，
 也不把服务的 isolation_verified_by_service 改成 true。完整 P3 仍需候选代码
 隔离、评价执行准入与实际模型驱动的新科研轨迹。
+
+
+## P3 verified boundary and next package (2026-11-03)
+
+A8/A9/A12–A14 have bounded acceptance in [P3 system acceptance](../validation/P3-SYSTEM-ACCEPTANCE.md): explicit octave-candidate/1 source registration and restricted execution, fresh method replication, Control-owned evaluator jobs and typed artifacts, immutable hypotheses, distinct scientific axes and two resource ledgers. Authentication failure, interruption, timeout and original budget overrun remain retained. Explicit finite read-only closeout and lifecycle projection receipts complete the run without changing scientific evidence.
+
+D021 forbids subscription runtime *_API_KEY settings except the explicitly permitted non-Codex pi case (which grants no billing authority). D022 requires purposeful limits, adequate defaults, detailed exceedance receipts and recoverable research. [Limit audit](../validation/LIMITS-AUDIT.md) records implemented boundaries and limitations, including legacy direct-debug diagnostics and non-hard-total DNS timeouts.
+
+The single researcher is the Research Lead prototype: AAR owns its outer scientific loop and runtime owns inner reasoning/tools. Organizer/Lead/Worker deployment remains P5. P4 now plans formal comparison and held-out evaluation; P3's fixed-case replication is not a substitute. No new P4 model/experiment allowance follows from P3 closeout.
