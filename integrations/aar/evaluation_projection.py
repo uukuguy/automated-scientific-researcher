@@ -12,6 +12,7 @@ def validation_document(job, *, replication='unassessed', comparison=None):
     preserved=result.get('input_preserved')
     equation=result.get('equation_valid')
     operating=result.get('operational_status')
+    if operating=='not_fully_assessed':operating='partially_assessed'
     if operating not in ('satisfied','violated','partially_assessed'):
         operating='unassessed'
     limits=[

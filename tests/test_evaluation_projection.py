@@ -41,6 +41,12 @@ class EvaluationProjectionTests(unittest.TestCase):
         self.assertEqual(axes['equation_validity'],'unassessed')
         self.assertEqual(axes['operating_checks'],'unassessed')
 
+    def test_partial_operating_checks_are_retained_when_ratings_are_missing(self):
+        job=self.job();job['report']['result']['operational_status']='not_fully_assessed'
+        document=self.module().validation_document(job)
+        self.assertEqual(document['assessments']['operating_checks'],'partially_assessed')
+        self.assertIn('186',document['summary'])
+
     def test_unsettled_job_cannot_be_projected(self):
         module=self.module();job=self.job();job['settled']=False
         with self.assertRaisesRegex(ValueError,'settled_evaluation_required'):

@@ -281,7 +281,8 @@ INITIAL TASK HISTORY: '''+research_prompt(refs)
             source_provenance=provenance,
             billing=dict(mode='subscription',actual_dollar_charge=None,remaining_provider_quota='unknown',paid_api_fallback=False),
             limits=['Fixed-case engineering/scientific trajectory only; no novelty or held-out generalization claim.',
-                'Independent automatic mapping does not judge freeform hypotheses or experimental design.'])
+                'Independent automatic mapping does not judge freeform hypotheses or experimental design.',
+                'Typed evaluation_artifact_verified_by_service proves managed artifact binding; isolation_verified_by_service remains separate and is not full runtime-isolation proof.'])
         write_once(args.report,public)
         print(json.dumps(dict(status=public['status'],report=str(args.report),checks=checks,failures=failures)))
     return 0 if public['status']=='passed' else 1
