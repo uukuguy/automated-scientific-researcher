@@ -15,6 +15,7 @@ import signal
 import subprocess
 import threading
 import time
+from .capability_inventory import PROFILE_TOOLS
 
 
 class RuntimeFailure(RuntimeError):
@@ -72,7 +73,7 @@ class PiRuntime:
             if not isinstance(pack,dict):raise RuntimeFailure('invalid_capability_pack')
             if pack.get('schema')!='asr-research-capability-pack/1' or pack.get('runtime_protocol')!='pi-rpc/1':
                 raise RuntimeFailure('capability_pack_schema_mismatch')
-            if pack.get('runtime_version')!=self.expected_version or pack.get('id')!='powerflow-calibration-smoke/3':
+            if pack.get('runtime_version')!=self.expected_version or pack.get('id') not in PROFILE_TOOLS:
                 raise RuntimeFailure('capability_pack_version_mismatch')
             if pack.get('ambient_resources') is not False:
                 raise RuntimeFailure('ambient_capabilities_forbidden')
@@ -112,7 +113,7 @@ class PiRuntime:
                 if declared!=name:raise RuntimeFailure('capability_skill_name_mismatch')
                 verified.append(dict(id=identity,name=name,path=relative,sha256=digest,content=content))
             expected=['pi.read','pi.edit','pi.write','pi.grep','pi.find','pi.ls']
-            tools={'asr.state','asr.publish_hypothesis','asr.submit_trial','asr.publish_finding','asr.snapshot','asr.ack_guidance','asr.resolve_library','asr.query_docs','asr.search_literature'}
+            tools=PROFILE_TOOLS[pack['id']]
             if pack.get('coding_tools')!=expected or set(pack.get('tools',[]))!=tools:
                 raise RuntimeFailure('capability_tool_inventory_mismatch')
             return dict(sha256=hashlib.sha256(raw).hexdigest(),pack=pack,skills=verified)
@@ -152,6 +153,7 @@ class PiRuntime:
         env['ASR_OWNED_PROCESS_GROUP']='1'
         env['ASR_SKILL_PATHS']=json.dumps([skill['frozen_path'] for skill in frozen_skills])
         env['ASR_SKILL_PATH']=frozen_skills[0]['frozen_path']
+        env['ASR_TOOL_OPERATIONS']=json.dumps([tool.removeprefix('asr.') for tool in capabilities['pack']['tools']])
         env.update(PI_CODING_AGENT_DIR=str(config_dir),PI_OFFLINE='1',ASR_BRIDGE_URL=bridge_url,ASR_BRIDGE_TOKEN=bridge_token,
                    ASR_MAX_TURNS=str(limits.turns),ASR_MAX_TOOLS=str(limits.tool_executions),ASR_DEADLINE_MS=str(int((time.time()+limits.walltime_seconds)*1000)))
         argv=[self.executable,'--mode','rpc','--provider',self.provider,'--model',self.model,'--thinking',self.thinking,

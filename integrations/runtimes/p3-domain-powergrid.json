@@ -1,0 +1,25 @@
+{
+  "schema": "asr-domain-capability-pack/1",
+  "id": "powergrid-candidate-research/1",
+  "scope": "Frozen IEEE-118 fixed-PV/PQ single-slack input; solver implementation is a research variable",
+  "candidate": {
+    "profile": "octave-candidate/1",
+    "entrypoint": "candidate.m",
+    "interface": "function result=candidate(mpc)",
+    "input": "Canonical baseMVA, bus, gen, branch; flat V=1 and reference original angle",
+    "output": ["baseMVA", "bus", "gen", "branch"],
+    "optional_author_diagnostics": ["solver_success", "iterations", "method"],
+    "maximum_source_bytes": 65536,
+    "available_dependencies": "Pinned existing Octave/MATPOWER reference image; no automatic installation",
+    "authorization": "Explicit contract candidate_profiles opt-in, frozen source registry and admitted attempt budget"
+  },
+  "tools": ["asr.freeze_candidate", "asr.submit_candidate", "asr.request_replication", "asr.request_evaluation", "asr.state"],
+  "replication": "New admitted attempt using the exact frozen source and input, then separately evaluated",
+  "evaluation": "Separate trusted evaluator, immutable typed artifact references and evaluator-only Validation publication",
+  "limitations": [
+    "No researcher host Bash or evaluator filesystem access",
+    "Container execution enforces walltime; a custom method may ignore its iteration parameter",
+    "No automatic interpretation of freeform hypotheses or generalization claims",
+    "No sampling, topology changes, hidden-family generalization or method-novelty acceptance in this profile"
+  ]
+}

@@ -15,11 +15,15 @@ import threading
 
 
 class ResearchBridge:
-    def __init__(self, service, *, project, run, researcher_token, supervisor_token, workspace, snapshots, dispatch=None, organization=None):
+    def __init__(self, service, *, project, run, researcher_token, supervisor_token, workspace, snapshots, dispatch=None, organization=None, evaluation_dispatch=None, capability_profile='powerflow-calibration-smoke/3'):
+        from integrations.runtimes.capability_inventory import PROFILE_TOOLS
+        if capability_profile not in PROFILE_TOOLS:raise ValueError('unsupported_capability_profile')
+        self.allowed_operations={tool.removeprefix('asr.') for tool in PROFILE_TOOLS[capability_profile]}|{'permit'}
         self.service=service; self.project=project; self.run=run
         self.researcher_token=researcher_token; self.supervisor_token=supervisor_token
         self.workspace=Path(workspace).resolve(); self.snapshots=Path(snapshots).resolve()
         self.dispatch=dispatch
+        self.evaluation_dispatch=evaluation_dispatch
         self.organization=organization
         self.dispatch_lock=threading.Lock()
         self.token=secrets.token_urlsafe(32); self.server=None
@@ -30,6 +34,7 @@ class ResearchBridge:
     def call(self, operation, arguments, key):
         if not isinstance(arguments,dict) or not isinstance(key,str) or not key:
             raise ValueError('invalid_bridge_request')
+        if operation not in self.allowed_operations:raise ValueError('unsupported_bridge_operation')
         s=self.service; p=self.project; r=self.run; t=self.researcher_token
         if operation in ('resolve_library','query_docs'):
             if self.documentation is None:
@@ -44,15 +49,22 @@ class ResearchBridge:
             self.permits.append(result); return result
         if operation=='state':
             return self.state()
-        if operation=='submit_trial':
+        if operation=='freeze_candidate':
+            return self.freeze_candidate(arguments,key)
+        if operation in ('submit_trial','submit_candidate'):
+            if operation=='submit_candidate' and arguments.get('variables',{}).get('solver')!='octave-candidate/1':
+                raise ValueError('candidate_profile_required')
             receipt=s.submit_trial(t,p,r,request_key=key,**arguments)
-            # Optional trusted local supervisor executes the actual accepted ID.
-            # Never infer completion from a model response or make a second trial.
-            if self.dispatch:
+            return self.dispatch_trial(receipt)
+        if operation=='request_replication':
+            receipt=s.submit_replication(t,p,r,request_key=key,**arguments)
+            return self.dispatch_trial(receipt)
+        if operation=='request_evaluation':
+            receipt=s.admit_evaluation(t,p,r,request_key=key,**arguments)
+            if self.evaluation_dispatch:
                 with self.dispatch_lock:
-                    current=s.get_run(t,p,r)
-                    trial=next(x for x in current['trials'] if x['execution_attempt_id']==receipt['execution_attempt_id'])
-                    if trial['dispatch_state']=='queued': self.dispatch(receipt)
+                    current=s.get_evaluation(t,p,r,receipt['evaluation_id'])
+                    if current['state']=='queued':self.evaluation_dispatch(receipt)
             return dict(receipt=receipt,state=self.state())
         if operation=='ack_guidance':
             return s.ack_guidance(t,p,r,idempotency_key=key,**self.runtime_identity,**arguments)
@@ -68,17 +80,49 @@ class ResearchBridge:
             return receipt
         raise ValueError('unsupported_bridge_operation')
 
+    def dispatch_trial(self,receipt):
+        # Replayed admission returns its original receipt. Only a still-queued
+        # authoritative attempt may be dispatched; the supervisor claims it.
+        if self.dispatch:
+            with self.dispatch_lock:
+                current=self.service.get_run(self.researcher_token,self.project,self.run)
+                trial=next(x for x in current['trials'] if x['execution_attempt_id']==receipt['execution_attempt_id'])
+                if trial['dispatch_state']=='queued':self.dispatch(receipt)
+        return dict(receipt=receipt,state=self.state())
+
+    def freeze_candidate(self,arguments,key):
+        if arguments!={'path':'candidate.m'}:raise ValueError('candidate_entrypoint_required')
+        path=self.workspace/'candidate.m'
+        if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(self.workspace):
+            raise ValueError('invalid_snapshot_path')
+        if path.stat().st_size>65536:raise ValueError('candidate_too_large')
+        snapshot=self.call('snapshot',{'paths':['candidate.m']},key+'-snapshot')
+        frozen=self.snapshots/snapshot['snapshot_sha256']/'files/candidate.m'
+        with frozen.open('rb') as stream:source=stream.read(65537)
+        if len(source)>65536:raise ValueError('candidate_too_large')
+        digest=hashlib.sha256(source).hexdigest()
+        if digest!=snapshot['manifest']['files'][0]['sha256']:raise ValueError('snapshot_corrupt')
+        registered=self.service.register_candidate(self.researcher_token,self.project,request_key=key,
+            source=source.decode('utf-8'),entrypoint='candidate.m',profile='octave-candidate/1',
+            snapshot_ref=snapshot['snapshot_sha256'],run=self.run)
+        public_registration={field:value for field,value in registered.items() if field!='path'}
+        return dict(candidate_ref=registered['digest'],registration=public_registration,
+                    snapshot_sha256=snapshot['snapshot_sha256'],code_sha256=digest)
+
     def state(self):
         run=self.service.get_run(self.researcher_token,self.project,self.run)
-        observations=[]
+        observations=[];evaluation_targets=[]
         for trial in run['trials']:
             report=(trial.get('execution') or {}).get('report')
             if not report: continue
+            if report.get('execution_exited') is True:
+                evaluation_targets.append(dict(trial_id=trial['trial_id'],execution_attempt_id=trial['execution_attempt_id'],
+                    manifest_hash=report['manifest_hash'],evaluation_ref=trial['references']['evaluation']))
             path=Path(report['evidence_path'])
             validation=path/'validation.json'
             if validation.is_file():
                 observations.append(dict(trial_id=trial['trial_id'],manifest_hash=report['manifest_hash'],validation=json.loads(validation.read_text())))
-        return dict(run=run,validations=self.service.validations(self.researcher_token,self.project,self.run),hypotheses=self.service.hypotheses(self.researcher_token,self.project),findings=self.service.findings(self.researcher_token,self.project,self.run),observations=observations,snapshot_refs=self._snapshot_refs(),shared_findings=self.organization.forum(self.supervisor_token,self.project) if self.organization else [])
+        return dict(run=run,evaluation_targets=evaluation_targets,evaluations=run.get('evaluations',[]),validations=self.service.validations(self.researcher_token,self.project,self.run),hypotheses=self.service.hypotheses(self.researcher_token,self.project),findings=self.service.findings(self.researcher_token,self.project,self.run),observations=observations,snapshot_refs=self._snapshot_refs(),shared_findings=self.organization.forum(self.supervisor_token,self.project) if self.organization else [])
 
     def _snapshot_refs(self):
         if not self.snapshots.exists(): return []
@@ -133,11 +177,13 @@ class ResearchBridge:
                 except Exception as error:
                     # Only structured code leaves service; no secrets in diagnostics.
                     code=getattr(error,'code',None)
-                    allowed={'explicit_snapshot_paths_required','invalid_snapshot_path','snapshot_too_large','snapshot_corrupt','unsupported_bridge_operation','invalid_bridge_request'}
+                    allowed={'explicit_snapshot_paths_required','invalid_snapshot_path','snapshot_too_large','snapshot_corrupt','unsupported_bridge_operation','invalid_bridge_request','candidate_entrypoint_required','candidate_too_large','candidate_profile_required'}
                     if code is None: code=str(error) if str(error) in allowed else 'bridge_rejected'
                     raw=json.dumps({'error':code}).encode(); self.send_response(422)
                 self.send_header('Content-Type','application/json');self.send_header('Content-Length',str(len(raw)))
-                self.end_headers();self.wfile.write(raw)
+                self.end_headers()
+                try:self.wfile.write(raw)
+                except (BrokenPipeError,ConnectionResetError):pass  # Interrupted native client; durable work remains.
         self.server=ThreadingHTTPServer(('127.0.0.1',0),Handler)
         self.thread=threading.Thread(target=self.server.serve_forever,daemon=True);self.thread.start()
         self.url=f'http://127.0.0.1:{self.server.server_port}/bridge'
