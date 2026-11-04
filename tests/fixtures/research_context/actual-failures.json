@@ -1,0 +1,133 @@
+{
+  "schema": "asr-context-failure-corpus/1",
+  "source_run": "research_2fdee65a1c2f4bd5b107bfc388469d8d",
+  "scope": "从真实结果摘录的故障与验收要求，不是压缩器测试结果；不含私有推理。",
+  "cases": [
+    {
+      "id": "007-organizer",
+      "role": "organizer",
+      "source": "artifacts/p5-project-001/steps/007-organizer/result.json",
+      "source_sha256": "56b3d5d902a7fbd1b0ca36343ae899e0470f22fe34d658875290c62a0dbadae8",
+      "status": "provider_error",
+      "errors": [
+        "WebSocket error"
+      ],
+      "observed_category": "connection_error",
+      "duration_seconds": 38.439509332878515,
+      "expected_behavior": [
+        "保留原始失败和累计消耗",
+        "核查已接纳实验和进程，避免重复执行",
+        "恢复当前任务与尚未发布的产物"
+      ],
+      "unsupported_inferences": [
+        "不能把调用失败判为科学假说失败",
+        "不能从连接错误推断凭据过期或上下文超限"
+      ]
+    },
+    {
+      "id": "018-organizer",
+      "role": "organizer",
+      "source": "artifacts/p5-project-001/steps/018-organizer/result.json",
+      "source_sha256": "73edfe1dbdf814e63a6f42a092736696b124e0442c3a88ec873ac4ac961beb4c",
+      "status": "provider_error",
+      "errors": [
+        "WebSocket error"
+      ],
+      "observed_category": "connection_error",
+      "duration_seconds": 259.7012762920931,
+      "expected_behavior": [
+        "保留原始失败和累计消耗",
+        "核查已接纳实验和进程，避免重复执行",
+        "恢复当前任务与尚未发布的产物"
+      ],
+      "unsupported_inferences": [
+        "不能把调用失败判为科学假说失败",
+        "不能从连接错误推断凭据过期或上下文超限"
+      ]
+    },
+    {
+      "id": "021-lead_2",
+      "role": "lead_2",
+      "source": "artifacts/p5-project-001/steps/021-lead_2/result.json",
+      "source_sha256": "9ed32df2ab1727ecc3a0e3a4f6566e6ffc0b6cf4b6deca971b3538ea6a984df2",
+      "status": "provider_error",
+      "errors": [
+        "WebSocket idle timeout after 300000ms"
+      ],
+      "observed_category": "connection_idle_timeout",
+      "duration_seconds": 56.90132779092528,
+      "expected_behavior": [
+        "保留原始失败和累计消耗",
+        "核查已接纳实验和进程，避免重复执行",
+        "恢复当前任务与尚未发布的产物"
+      ],
+      "unsupported_inferences": [
+        "不能把调用失败判为科学假说失败",
+        "不能从连接错误推断凭据过期或上下文超限"
+      ]
+    },
+    {
+      "id": "022-lead_2",
+      "role": "lead_2",
+      "source": "artifacts/p5-project-001/steps/022-lead_2/result.json",
+      "source_sha256": "0d926e84f2e6b11f5748198bec93af64e13dc0b488956e57d9de61efdaa82b52",
+      "status": "provider_error",
+      "errors": [
+        "terminated"
+      ],
+      "observed_category": "connection_terminated",
+      "duration_seconds": 169.5146397498902,
+      "expected_behavior": [
+        "保留原始失败和累计消耗",
+        "核查已接纳实验和进程，避免重复执行",
+        "恢复当前任务与尚未发布的产物"
+      ],
+      "unsupported_inferences": [
+        "不能把调用失败判为科学假说失败",
+        "不能从连接错误推断凭据过期或上下文超限"
+      ]
+    },
+    {
+      "id": "028-lead_1",
+      "role": "lead_1",
+      "source": "artifacts/p5-project-001/steps/028-lead_1/result.json",
+      "source_sha256": "c735751cc8731505fe20917072f04cded5552f1ff01517bba921cf471e0ab7c3",
+      "status": "provider_error",
+      "errors": [
+        "Codex error: Your input exceeds the context window of this model. Please adjust your input and try again."
+      ],
+      "observed_category": "context_capacity",
+      "duration_seconds": 22.13975016702898,
+      "expected_behavior": [
+        "保留原始失败和累计消耗",
+        "核查已接纳实验和进程，避免重复执行",
+        "恢复当前任务与尚未发布的产物"
+      ],
+      "unsupported_inferences": [
+        "不能把调用失败判为科学假说失败",
+        "不能从连接错误推断凭据过期或上下文超限"
+      ]
+    },
+    {
+      "id": "030-organizer",
+      "role": "organizer",
+      "source": "artifacts/p5-project-001/steps/030-organizer/result.json",
+      "source_sha256": "f59fe070360bb60f914a8beff840290ccb5361cfed9f2198b208f8f0fe034f5e",
+      "status": "provider_error",
+      "errors": [
+        "terminated"
+      ],
+      "observed_category": "connection_terminated",
+      "duration_seconds": 118.68248670804314,
+      "expected_behavior": [
+        "保留原始失败和累计消耗",
+        "核查已接纳实验和进程，避免重复执行",
+        "恢复当前任务与尚未发布的产物"
+      ],
+      "unsupported_inferences": [
+        "不能把调用失败判为科学假说失败",
+        "不能从连接错误推断凭据过期或上下文超限"
+      ]
+    }
+  ]
+}
