@@ -303,3 +303,22 @@ inventory. The current exporter reads each source into memory; it has no tested
 unbounded-size guarantee or automatic retention/deletion policy. Original native
 journals remain in the restricted run directory; raw provider stderr was already
 omitted for credential protection and cannot be reconstructed retrospectively.
+
+## Workspace snapshot correction (observed during project001)
+
+The old1MiB ceiling rejected the actual2,281,626-byte utility synthesis, and its
+plain snapshot_too_large error omitted size/purpose/recovery details. This was an
+inadequate general sharing default. The new16MiB ceiling bounds in-memory snapshot
+publication and copies to role workspaces while allowing observed model/report
+bundles. It is not a scientific computation allowance or a retention limit.
+41–62MB raw analysis evidence remains in the immutable experiment store; use exact
+references or an explicit external export instead of repeating computation.
+
+Oversize requests now include limit, observed-at-least requested size, source
+relative path, purpose and recovery instructions. Control records a recoverable
+request_deferred event without pausing the run or changing its budget. Originals
+remain untouched. Two tests reproduce the prior2.3MiB rejection and verify detailed
+oversize recording/preservation. An actual byte-identical2,281,626-byte export is
+at artifacts/p5-snapshot-capacity-001, snapshot6eaa428654e3b2de9a03635b8ef3a27f79c8ae970085fea052b6816e4629c001.
+This external capacity check was not injected into the live team; its process
+loaded the old ceiling, whose actual failures remain in the research record.

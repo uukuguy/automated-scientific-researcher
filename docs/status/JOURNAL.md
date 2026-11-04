@@ -267,3 +267,9 @@
 - 2026-11-04: Project001 Organizer WebSocket failure reconciled;8processes exited/no reservations; resumed unchanged login/budget with lifecycle intervention recorded.
 
 - 2026-11-04: Communication archive/event recording verified:417tests/392pass/25skip; second actual snapshot10sessions/49sources retains active-session gap.
+
+- 2026-11-04: f2be6a1 commits complete visible-communication retention, indexed immutable exports, explicit gaps and verified event recording.
+
+- 2026-11-04: Team labelled512points; author audit retained incorrect initial-voltage assertion, froze repair and withheld fits pending recheck.
+
+- 2026-11-04: Fixed observed snapshot cap/diagnostic gap; real2.28MB export exact;419tests/394pass/25skip; active team history unchanged.

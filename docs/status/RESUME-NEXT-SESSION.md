@@ -158,3 +158,13 @@ only009-lead_1notfinalizedgap; includesControlcommands/contracts/hypotheses/find
 recoveryreasons/currentbriefs. Nativeoriginals preserved; seeRESEARCH-COMMUNICATION.md.
 Recovery now progressed toseq24: Organizer assignedaugmentation-utility-study, Lead1
 claimed;7successfuldispatches atlastcheck (preflight pluslabels). No hostsciencechange.
+
+Atseq25, all8labeljobs succeeded64/64,512labels. External inventory checks passed
+10completedjobs/74880execms; all512hostequation/inputchecks true, all512operationally
+violated andthermalunassessed. Teamauthoraudit11thjob trial_9242c815b4cb41ec8e0cdcaac67fd60b
+failed128controlled-voltageassertions: usedinitialbusVm ratherthan onlinegenVg.
+Teamdocumented+froze repair70f685fc.../source26c83f4a...; nofit yet. Failed41.7MB
+output retained despite snapshot_too_large; smallsource/report snapshot preserved.
+No hostscientificfix. Exec82321 stillactive009-lead_1; nextaudit4targetthen2+2mixed
+isteamchoice. Controlspent11jobs512slots, modelsettled1154187ms+1800000reserved.
+Communicationcommit f2be6a1; do notendturnwhileactualrunactive.

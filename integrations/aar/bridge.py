@@ -14,6 +14,20 @@ import os
 import threading
 
 
+SNAPSHOT_BYTES = 16 * 1024 * 1024
+
+
+class SnapshotLimit(ValueError):
+    code = 'snapshot_too_large'
+
+    def __init__(self, observed, path):
+        super().__init__(self.code)
+        self.details = dict(dimension='snapshot_bytes',limit=SNAPSHOT_BYTES,requested=observed,
+            observed_kind='at_least',scope='workspace_snapshot',path=path,recoverable=True,
+            reason='Bound in-memory publication and replication of shared workspace snapshots.',
+            recovery='Original workspace and experiment evidence are retained. Publish smaller explicit snapshots or reference immutable evidence by hash; do not rerun experiments.')
+
+
 class ResearchBridge:
     def __init__(self, service, *, project, run, researcher_token, supervisor_token, workspace, snapshots, dispatch=None, organization=None, evaluation_dispatch=None, capability_profile='powerflow-calibration-smoke/3'):
         from integrations.runtimes.capability_inventory import PROFILE_TOOLS
@@ -84,7 +98,12 @@ class ResearchBridge:
             if self.organization:self.organization.sync_findings(self.supervisor_token,p,r)
             return receipt
         if operation=='snapshot':
-            receipt=self.snapshot(arguments.get('paths',[]))
+            try:
+                receipt=self.snapshot(arguments.get('paths',[]))
+            except SnapshotLimit as error:
+                block=s._record_budget_block(t,p,r,'snapshot',(),dict(request_key=key,paths=arguments.get('paths',[])),error.details,pause=False)
+                error.details['block_id']=block['block_id']
+                raise
             if self.organization:self.organization.register_snapshot(self.supervisor_token,p,r,snapshot_root=self.snapshots,digest=receipt['snapshot_sha256'])
             return receipt
         raise ValueError('unsupported_bridge_operation')
@@ -174,10 +193,11 @@ class ResearchBridge:
             path=self.workspace/name
             if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(self.workspace):
                 raise ValueError('invalid_snapshot_path')
-            if path.stat().st_size>1048576-total: raise ValueError('snapshot_too_large')
-            with path.open('rb') as stream: body=stream.read(1048577-total)
+            size=path.stat().st_size
+            if size>SNAPSHOT_BYTES-total: raise SnapshotLimit(total+size,name)
+            with path.open('rb') as stream: body=stream.read(SNAPSHOT_BYTES+1-total)
             total+=len(body)
-            if total>1048576: raise ValueError('snapshot_too_large')
+            if total>SNAPSHOT_BYTES: raise SnapshotLimit(total,name)
             content[name]=body; entries.append(dict(path=name,sha256=hashlib.sha256(body).hexdigest(),size=len(body)))
         manifest=dict(schema='asr-workspace-snapshot/1',project_id=self.project,research_run_id=self.run,files=sorted(entries,key=lambda e:e['path']))
         raw=json.dumps(manifest,sort_keys=True,separators=(',',':')).encode(); digest=hashlib.sha256(raw).hexdigest()
