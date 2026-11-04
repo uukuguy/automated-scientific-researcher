@@ -1,0 +1,34 @@
+{
+  "schema": "asr-p5-training-engineering/1",
+  "date": "2026-11-04",
+  "scope": "Task-bound engineering; no model-driven scientific benefit claim",
+  "checks": {
+    "full_suite": 374,
+    "passed": 350,
+    "skipped": 24,
+    "real_container_test_passed": 1,
+    "proposed": 64,
+    "labelled": 64,
+    "training_rows": 192
+  },
+  "model_sha256": "cb31e669f408668b9d29d164619fc3699fb52add4e732ac7a3ac69b7801ba019",
+  "label_reference": {
+    "execution_attempt_id": "attempt_f8c5828103e64e77bb6517251a2c42df",
+    "manifest_hash": "8fcafbfb46981b853d6bca4b1c4423d9d56b2593bf66419fc5ffaa78a2029a86",
+    "trial_id": "trial_ad54dbb4726c44d39ddc8481cac94fea"
+  },
+  "fit_reference": {
+    "execution_attempt_id": "attempt_7bbec97cf8354b4a9a2c9f3cd54940ea",
+    "manifest_hash": "e3f81429838bd4f9c18f7a087172dec7fe1b31ab24dd7df68cfb58280f610394",
+    "trial_id": "trial_8a52092fb77743d88f4604bd7f313d97"
+  },
+  "evidence_root": "artifacts/p5-training-binding-002",
+  "inventory_sha256": "0b897d4a8fd8581148e38cbdacd1d9794efc0e7e3f27e8daf261b6829315725c",
+  "preserved_failed_fixture": "artifacts/p5-training-binding-001",
+  "limitations": [
+    "No model calls",
+    "No independent model replay",
+    "No new held-out panel",
+    "No scientific utility claim"
+  ]
+}

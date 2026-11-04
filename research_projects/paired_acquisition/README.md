@@ -24,7 +24,17 @@ limits, exception types, equation-invalid results and elapsed time.
 The caller must verify Control dispatch, immutable evidence manifests, complete
 slot coverage, and externally frozen contract/source/plan pins. These functions
 are not an authentication service or an automatic experiment scheduler. The
-adapter has not yet been wired into a model-driven team science run. Training
-manifest and model receipt binding still need end-to-end verification with the
-frozen original 128 training rows and the actual trainer. A one-row ingestion
+adapter has not yet been wired into a model-driven team science run. A full 64-slot arm, the unchanged original128, and actual 192-row training now
+have task-bound container verification through `training_adapter.py`. A one-row ingestion
 check is not validation of a 3584-slot scientific comparison.
+
+`training_adapter.py` derives source/material/environment pins from a caller-pinned
+scientific build manifest and frozen public materials. It prepares expected
+inputs before dispatch, authenticates completed label/fit artifacts against
+Control, preserves native IDs in source evidence, and compares the ordered x/y
+payload across the native and prototype representations. The model binding
+includes both immutable trial references, model hash and training-payload hash.
+It establishes execution provenance; it is not independent model replay or a
+scientific-benefit verdict. The caller must persist preparation/ledger/manifest
+pins at the appropriate boundaries. The controlled test does this on disk; a
+model-driven research run still needs its governed artifact/tool integration.

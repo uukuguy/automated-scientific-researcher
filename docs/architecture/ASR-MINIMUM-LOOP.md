@@ -435,3 +435,12 @@ Publication budget rejection is recorded without pausing existing runs. Changed
 protocols are rejected at new submission after the first paired dispatch.
 See [engineering verification](../validation/P5-PAIRED-ADAPTER.md); this does not
 authorize the team's proposed full experiment or establish scientific benefit.
+
+The research-specific `research_projects/paired_acquisition/training_adapter.py`
+connects a caller-pinned pre-dispatch preparation to completed Control label and
+fit evidence. It verifies manifest/request/arm/image identities, exact slot order,
+original128 membership and ordered training x/y equality. Model receipts bind the
+actual fit and label manifests, native payload and returned model hashes. The
+module is an evidence adapter, not a scheduler or a new runtime authority. Actual
+full-arm task-bound containers are verified; model-driven artifact persistence
+and fresh scientific comparison remain open.

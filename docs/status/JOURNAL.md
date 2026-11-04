@@ -219,3 +219,5 @@
 - 2026-11-03: Bound scientific experiments to explicit role tasks so ownership and failures survive execution and recovery. [6a04b18]
 
 - 2026-11-04: Paired admission and prototype adapter verified; 344 tests passed,23 skipped; real container recovery preserves floating-point failure evidence.
+- 2026-11-04: ddab838 freezes paired accounting and verifies prototype receipts to preserve fair comparisons and independent scientific checks.
+- 2026-11-04: Full-arm task-bound training verified;192 rows,64 labels,actual model binding;350 tests passed,24 skipped; retained failed fixture.

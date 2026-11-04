@@ -82,12 +82,36 @@ retained (cross-Python residual rounding; independent verdicts now govern); vali
 Regression367 tests:344pass,23skip; /tmp/asr-paired-final-tests.log.
 Real Docker final1/1pass; extension syntax checked.
 
-Next: complete full-arm training-manifest and actual model-receipt binding,
-then integrate the adapter into task-bound organization execution. All trusted
-contract/source pins must be frozen from authoritative configuration; fixture
-placeholders are not production pins. Team's3584-slot design remains a proposal,
-not compute authority. No new model calls; no P4/design-run reopening. Fresh
-hidden evaluation assets are still needed for new science. P5 remains active.
+## Full-arm training slice
+
+research_projects/paired_acquisition/training_adapter.py now derives genuine
+source/material/environment pins, prepares64 inputs before dispatch, reads
+completed Control label/fit evidence, assembles the team's unchanged original128
+plus valid arm labels, and binds actual fit model to ordered native training
+payload and immutable label/fit manifests. Native/proposal IDs remain preserved.
+Unicode protocol hashes use Control canonicalization. Externally pinned bundle
+and manifest checks reject replacement even with recomputed self-hashes.
+
+Real task-bound ResearchBridge fixture002 passed:64 labelled,192 training rows,
+2 attempts,10,173ms,64 sample permits,zero reservations. Fixture001 retained after
+test-script invalid task state; Control correctly rejected. Test corrected to
+complete label task then assign/claim fit. Model hash and trial references in
+docs/validation/P5-TRAINING-BINDING.json. Archives artifacts/p5-training-binding-001
+and002 include DB/raw evidence/pins/logs/relocation maps/inventories. Original DB
+absolute paths retained. A prior intentional red-test64-label fixture was temporary;
+not included in002 totals. No model calls or full3584-slot proposal execution.
+
+Full suite374tests:350passed,24skipped; /tmp/asr-training-final-tests.log.
+Real full-arm container1/1passed; /tmp/asr-training-docker-002.log. A synthetic
+failed-slot test yields191rows while keeping64 proposed slots and all costs.
+
+Next: integrate these adapters and external artifact pins into the model-driven
+team's scientific execution workflow. Preparation/bundle/manifest persistence
+in the real test is controller-driven; not yet a researcher tool flow. Team must
+implement its proposed coordinate generator; no platform-hardcoded new sampler.
+New scientific runtime/compute authorization and fresh independent panels remain
+required. Existing design/P4 runs stay closed. No P5 completion or scientific
+benefit claim follows from the engineering fixtures.
 
 ## P4 anchors
 
@@ -100,6 +124,6 @@ No new novelty/real-industrial/generalization claim follows from P5 design work.
 
 ## Workspace
 
-Pilot/auth changes committed as2564854. Task-bound execution slice committed as6a04b18; paired sampling/adapter work is the current uncommitted slice. No active native model owner.
+Pilot/auth changes committed as2564854. Task-bound execution slice committed as6a04b18; paired sampling/adapter slice committed asddab838. Full-arm training/receipt slice is currently uncommitted. No active native model owner.
 Recovery logs /tmp/asr-p5-organization-001-resumed.log and
 /tmp/asr-p5-organization-001-network-recovery.log. Preserve ignored evidence.

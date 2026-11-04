@@ -86,3 +86,54 @@ Full regression: `uv run --extra aar python -m unittest discover -s tests -v`
 ran367 tests,344 passed,23 environment skips; `/tmp/asr-paired-final-tests.log`.
 Runtime extension syntax passed `node --check`. These checks supplement the
 explicit real Docker run; skipped tests are not counted as passed.
+
+## Full-arm training correspondence (2026-11-04)
+
+`training_adapter.py` now derives all prototype contract pins from frozen public
+materials, an externally pinned scientific build manifest, matching local source
+files, fixed fit policy and explicit measurement masks. The protocol hash uses
+Control's canonicalization, including Unicode group names. Build/source mismatch,
+public-coordinate overlap, incomplete arm and altered original-row status reject
+before preparation. Build-manifest authentication remains the caller's duty.
+
+The explicit real task-bound fixture `artifacts/p5-training-binding-002` saved
+64 expected inputs before dispatch. ResearchBridge submitted an assigned worker's
+label task, all64 native slots were independently checked, and a pinned bundle
+and training manifest were saved before fit. After closing the label task, the
+same worker claimed an assigned fit task. The unchanged pinned worker trained
+original128 plus this arm's64 labels. Two attempts consumed10,173ms and64 sample
+permits; no reservations remained. The actual model's training_count was192.
+
+The adapter reads completed evidence through authenticated Control access,
+checks manifest/request/arm/image bindings, matches the exact label dependency,
+and compares every native augmentation row with the checked ledger hash. It
+then verifies ordered x/y agreement between native and prototype representations,
+original128, label counts and fixed model shape/policy. The receipt binds the
+actual model, training hash, native payload, worker source and both trial
+manifests. Different native/proposal sample IDs remain in their original evidence.
+Changing a training target is rejected even if the caller recalculates its hash.
+
+A constructed negative fixture kept one failed slot and its cost while yielding
+63 augmentation labels and191 training rows; no replacement was generated.
+This is a mechanical negative test, not a new observed solver failure.
+
+First full-path fixture001 stopped after64 successful labels because the test
+script used an unsupported pending task state. Control rejected it; no fit was
+launched. Its database, labels and attempted-path log are preserved. The test
+script was corrected to close the first task and assign/claim the second. No
+production task transition rules changed. An earlier red test intentionally
+reached the then-missing ingestion function; its disposable fixture generated64
+labels and did not fit. It is not included in the archived002 budget totals.
+
+Full regression:374 tests,350 passed,24 environment skips. Explicit real Docker
+full-arm test1/1passed. See [machine-readable receipt](P5-TRAINING-BINDING.json).
+Both archived fixtures include raw evidence, source records, preparation,
+produced bindings as applicable, logs, relocation maps and file inventories.
+Historical absolute DB paths are preserved; archive copying is not recovery of a
+live run. Tests used explicit local compute fixtures and made no model calls.
+
+This proves the full-arm execution correspondence, not independent training
+replay, OOD improvement or autonomous team science. Research-runtime integration
+must persist externally pinned artifacts at each boundary and supply genuinely
+admitted new runtime/compute budgets. New panels and the team's full eight-seed
+comparison remain unexecuted; P5 stays active.
