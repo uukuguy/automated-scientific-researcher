@@ -277,3 +277,9 @@
 - 2026-11-04: 2cb73d7 enlarges snapshot capacity and records recoverable diagnostics after actual model-delivery rejection.
 
 - 2026-11-04: Project001 closed15sessions/24jobs/512labels/9models; full communication and raw delivery verified; independent science acceptance remains open.
+
+- 2026-11-04: e15f835 archives autonomous team research and complete recorded communication, preserving failures and unmet independent-validation requirements.
+
+- 2026-11-04: D032 delegates verification follow-up and external-result interpretation to the continuing research organization; black-box interface boundaries recorded.
+
+- 2026-11-04: Delivered D032 follow-up as organizationseq32; resumed same project/org/history/remaining budget; no hidden-evaluator capability claimed.

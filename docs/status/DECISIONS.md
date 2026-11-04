@@ -279,3 +279,30 @@ originals remain restricted. Existing runtime stderr omission and unavailable fu
 external developer-chat export remain disclosed limitations. Do not manufacture
 historical messages/timestamps. New human requirement is recorded as Control
 guidance in project001; no scientific direction, experiment or budget is altered.
+
+
+## D032 — Delegate follow-up verification work to the continuing research organization (2026-11-04)
+
+User directs the training-input evidence, reproduction and hidden-evaluation
+requirements back to the existing research organization, then returns external
+results for further reasoning. This supersedes a developer-led scientific
+closeout of those steps. Preserve the same project, organization, research
+history and consumed budget; a concrete new human commission permits continued
+work after the prior direction closed. The team owns decomposition, roles,
+methods and evidence requests; no preset scientific sequence or fixed deliverable
+roster is injected. Developers supply generic trusted capabilities and externally
+assess continuation, not author the team's scientific response.
+
+Independent evaluation remains outside researcher write/read authority over
+formal evaluator code and hidden data. Researchers can organize/commission it
+and interpret returned evidence without becoming their own formal evaluator.
+A team request is not proof of service availability, approval or execution.
+Acceptance must observe history recovery, substantive follow-up, explicit
+capability requests and response to actual returned external results. Merely
+resuming a session or repeating the previous report is insufficient.
+
+The user also proposes human-provided black-box evaluators. The interface design
+will distinguish repeatable development feedback from frozen final acceptance
+with separate unseen data. Versioned inputs/outputs/errors and calls must be
+retained; hidden implementation does not eliminate adaptive overfitting. No
+human-provided black-box service has been connected or claimed available yet.

@@ -1,7 +1,31 @@
 # Live Session Checkpoint
 
-Updated2026-11-04. P5 active; **no research process remains active**.
+Updated2026-11-04. P5 active; **same-project follow-up is RUNNING: exec80279**.
 This is a recovery checkpoint, not a request for handoff approval.
+
+## ACTIVE D032 follow-up — inspect before action
+
+User asks to return custody/reproduction/hidden-evaluation requirements to the
+same research organization, then return external results for sustained research.
+User also proposes human black-box evaluator feedback; none is connected yet.
+D032/main design/worklist updated. Human message32 was actually delivered to
+Organizer, entity human-continuation-verification. Exact user request/question
+appended human-instructions.jsonl; current capability facts supplied as
+EXTERNAL-DELIVERY-FEEDBACK.json to role workspaces, SHA
+7c422ac65b60f01b4ffa95aab76f698c9fb0429c3679c63e395d97c4488a7fec.
+
+Same root artifacts/p5-project-001/projectorganization-97ad1aee4ff4/run unchanged.
+Explicit --resume for NEW HUMAN COMMISSION, not retrying old delivery or resetting
+budget. Exec80279; log/tmp/asr-p5-followup-001.log. Initial spent3392304modelms,
+24jobs/96833execms/512slots; remaining11007696modelms/232jobs/3584slots.
+Current code includes EventRecorder/autoarchive/snapshot16MiB and labeled
+controller closeout. Preflight /tmp/asr-p5-followup-preflight.json ready.
+Do not launch duplicate or end turn while actual owner active. Let team choose
+follow-up decomposition and requests; no formal evaluator/hidden access granted.
+Need monitor actual outcomes and external-capability requests, verify closure,
+new communication archive (old003 remains historical pre-follow-up snapshot),
+record receipt and distinguish continuation proof from independent science.
+Next service work should answer actual requests generically, not prescribe study.
 
 ## User decisions that govern continuation
 
@@ -84,7 +108,7 @@ report and authenticated links, disclosed unavailable direct raw-file access.
 -2cb73d7 snapshot16MiB instead of1MiB withdurable detailedControldeferred events,
   no research pause/charge/deletion. Actual byte-identical2.28MB export verified
   atartifacts/p5-snapshot-capacity-001; not injected into live team.
-- Final project source/report/receipt and alignment commit prepared thiscycle.
+- e15f835 commits final project source/report/receipt and alignment. Only post-commit journal/checkpoint bookkeeping remains uncommitted.
 
 ## Next substantive P5 work
 
