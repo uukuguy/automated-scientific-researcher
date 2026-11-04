@@ -119,7 +119,7 @@ def observe(path,*,expected_session_id,leaf_id,scope,keep_recent_groups,max_jour
                 rows.append(Message(key,normalized,_encode(visible).decode(),calls=calls,result_for=result_for,tool_name=tool_name,
                                     negative=message.get('isError') is True or message.get('stopReason') in ('error','aborted'),protected=unknown or images or role=='custom'))
                 mapping.append(dict(message_id=key,native_entry_id=origin,projected_index=index))
-        witness=dict(session_id=expected_session_id,leaf_id=leaf_id,journal_sha256=hashlib.sha256(raw).hexdigest(),branch_sha256=_digest(branch),
+        witness=dict(journal_file=str(path),session_id=expected_session_id,leaf_id=leaf_id,journal_sha256=hashlib.sha256(raw).hexdigest(),branch_sha256=_digest(branch),branch_entries=len(branch),branch_ids_sha256=_digest([e['id'] for e in branch]),
                      projection_sha256=_digest([dict(id=r.id,role=r.role,text=r.text,calls=r.calls,result_for=r.result_for,tool_name=r.tool_name,negative=r.negative,protected=r.protected) for r in rows]),
                      source_mapping=mapping,call_mapping=[dict(native_call_id=k,call_id=v) for k,v in call_mapping.items()],redactions=redactions,projection_source='pinned_sdk' if projector is sdk_projection else 'injected_projector',sdk_index_sha256=projection.get('sdk_index_sha256'),active_cursor_verified=False,provider_payload_verified=False)
         snapshot=capture(scope,rows,source_revision=_digest(witness),keep_recent_groups=keep_recent_groups)

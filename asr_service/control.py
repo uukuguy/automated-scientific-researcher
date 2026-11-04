@@ -113,6 +113,14 @@ class ControlService(PolicyStore):
         from .organization import records
         return records(self, token, project, run, **arguments)
 
+    def bind_runtime_context(self, token, project, run, *arguments, **options):
+        from .context_cursors import bind
+        return bind(self, token, project, run, *arguments, **options)
+
+    def observe_context_cursor(self, token, project, run, *arguments, **options):
+        from .context_cursors import observe
+        return observe(self, token, project, run, *arguments, **options)
+
     def register_context_source(self, token, project, run, **arguments):
         from .context_sources import register
         return register(self, token, project, run, **arguments)

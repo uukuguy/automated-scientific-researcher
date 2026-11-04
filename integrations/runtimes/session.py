@@ -5,6 +5,8 @@ import json
 import math
 import time
 import uuid
+import sqlite3
+from asr_service.control import ControlError
 from .pi import Limits, RuntimeFailure, prepare_oauth, synchronize_oauth
 
 
@@ -33,6 +35,7 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
     bridge.runtime_identity=dict(session_id=claim['session_id'],epoch=claim['epoch'],owner=owner)
     started=time.monotonic()
     exited=False
+    cursor_receipts=[]
     def record_event(record,forward=True):
         if record.get('type')=='asr_limit':
             observation={key:record[key] for key in ('kind','limit','observed','reason')}
@@ -41,11 +44,26 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
             identity=hashlib.sha256(json.dumps(observation,sort_keys=True).encode()).hexdigest()
             service.observe_runtime_limit(bridge.supervisor_token,bridge.project,bridge.run,
                 **bridge.runtime_identity,**observation,idempotency_key='runtime_limit_'+owner+'_'+identity)
+        if record.get('type')=='asr_context_cursor' and organization_arguments:
+            try:
+                receipt=service.observe_context_cursor(bridge.supervisor_token,bridge.project,bridge.run,
+                    **bridge.runtime_identity,observation=record)
+            except (ControlError,OSError,sqlite3.Error,ValueError) as error:
+                receipt=dict(status='deferred',reason=getattr(error,'code','context_cursor_record_failed'),
+                             installation_authorized=False,active_cursor_verified=False,
+                             recovery='Keep the native journal; retry at a stable owned boundary. Research execution is unchanged.')
+            cursor_receipts.append(receipt)
+            if forward and on_event:on_event(dict(type='asr_context_cursor_binding',**receipt))
         if forward and on_event:on_event(record)
     try:
         source=Path(oauth_source or Path.home()/'.pi/agent/auth.json')
         oauth_baseline=prepare_oauth(source,Path(config_dir))
         effective=Limits(min(limits.walltime_seconds,claim['reserved_walltime_ms']/1000),limits.turns,limits.tool_executions)
+        if organization_arguments:
+            generation=getattr(runtime,'context_generation',0)
+            directory=Path(config_dir).resolve()/('sessions' if generation==0 else f'sessions-generation-{generation}')
+            service.bind_runtime_context(bridge.supervisor_token,bridge.project,bridge.run,**bridge.runtime_identity,
+                native_session_id=native_session_id,journal_directory=str(directory))
         with bridge:
             result=runtime.run(workspace=bridge.workspace,config_dir=config_dir,session_id=native_session_id,
                 prompt=prompt,limits=effective,bridge_url=bridge.url,bridge_token=bridge.token,on_event=record_event,
@@ -55,6 +73,7 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
                 should_stop=lambda: service.runtime_stop_requested(bridge.supervisor_token,bridge.project,bridge.run))
         exited=True
         result['runtime_claim']=claim
+        result['context_cursor_receipts']=cursor_receipts
         try:
             result['oauth_sync']=synchronize_oauth(source,Path(config_dir),oauth_baseline)
         except (RuntimeFailure,OSError,ValueError) as error:

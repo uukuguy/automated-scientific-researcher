@@ -359,3 +359,5 @@ responsibility. Tests use deliberate prelaunch failures and fake OAuth only;
 actual autonomous organization and concurrent role execution remain unverified.
 
 上下文来源登记：register_context_source为human/supervisor专用本机接口，服务自行读取固定pi SDK投影并存入原请求账本。prepare_context可指定source_registration；admit_context重读原件，变化时返回deferred与指纹/恢复说明。离线登记不能证明活动游标，也不授权上下文安装；没有新增研究员工具或HTTP路由。
+
+运行游标身份：宿主bind_runtime_context在启动前绑定原生会话和私有日志目录；observe_context_cursor核对运行epoch/owner、成员和存活进程出生身份，保存观测。register_context_source可加cursor_reference={session_id,observation_id}核对最新观测与原文件/分支。它们仍不授权安装：异步回执不能锁住活动会话。

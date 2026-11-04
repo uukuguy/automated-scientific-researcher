@@ -39,3 +39,11 @@ provider_payload_verified=false：这是SDK逻辑上下文，未证明提供方�
 另有3项Node检查覆盖原生游标读取、读取中游标变化、缺失会话管理器和模型请求前的事件发出。回调使用pi公开sessionManager接口，原生会话和分支ID指纹进入已有事件记录链；不包含消息正文或私有思考。尚未发起真实订阅会话验证该回调，Control尚未验证回执与运行身份绑定，未完成安装时联合核查。因此历史三日志回执与离线性质保持原样，活动核验和安装许可仍为false。
 
 组合验证：`uv run python -m unittest discover -s tests -v`共502项，477通过、25环境跳过；日志`/tmp/asr-context-source-cursor-final-tests.log`。两个修改的Node模块语法检查和git diff --check通过。
+
+## 运行身份绑定与来源联合核查
+
+9项新增工程检查验证启动前不可变绑定、成员/所有权与进程出生身份、退出进程拒绝、错误/过期分支、同编号异文件替换、冲突回执、畸形输入和启动前失败后继续正确绑定。正式会话包装器测试使用实际本机短命进程和模拟事件，未调用模型；来源核查调用已安装pi SDK。结果分别记录runtime_binding_verified及cursor_source_verified。
+
+游标事件发出后原生会话可继续前进，不能据此证明安装时的当前状态；active_cursor_verified与installation_authorized保持false。尚需同步安装边界及安装前后证据。原历史三份日志与既有模型试验未改写，也未重复科研实验。
+
+完整验证共511项，486通过、25环境跳过；日志`/tmp/asr-cursor-binding-final-tests.log`。

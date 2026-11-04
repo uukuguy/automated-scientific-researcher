@@ -138,7 +138,7 @@ def archive(root, destination):
             if type(project) is str and type(run) is str:
                 requests=[]
                 for scope,key,payload,record in db.execute('SELECT scope,request_key,payload,record FROM asr_requests WHERE project=? ORDER BY scope,request_key',(project,)):
-                    if not scope.startswith(('context-prepare:','context-admission:','context-source:')):continue
+                    if not scope.startswith(('context-prepare:','context-admission:','context-source:','context-cursor:')):continue
                     try:
                         binding=json.loads(scope.split(':',1)[1])
                         if type(binding) is not list or len(binding)!=2 or any(type(v) is not str for v in binding):raise ValueError('invalid_context_scope')

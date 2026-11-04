@@ -18,7 +18,7 @@ def _observe(arguments):
                    scope=arguments['scope'],keep_recent_groups=arguments['keep_recent_groups'],max_journal_bytes=arguments['max_journal_bytes'])
 
 
-def register(service,token,project,run,*,subject,idempotency_key,path,native_session_id,leaf_id,keep_recent_groups,max_journal_bytes):
+def register(service,token,project,run,*,subject,idempotency_key,path,native_session_id,leaf_id,keep_recent_groups,max_journal_bytes,cursor_reference=None):
     from .context_admission import _scope
     service._auth(token,project,{'human','supervisor'})
     service._identity(run,subject,idempotency_key,native_session_id,leaf_id)
@@ -28,12 +28,18 @@ def register(service,token,project,run,*,subject,idempotency_key,path,native_ses
     with service._connect() as db:
         db.execute('BEGIN IMMEDIATE')
         member(db,project,run,subject);service._run(db,project,run)
+        if cursor_reference is not None:arguments['cursor_reference']=cursor_reference
         scope=_scope('source',run,subject)
         replay=service._replay(db,project,scope,idempotency_key,arguments)
         if replay:return replay  # Historical registration, not a fresh cursor check.
         observed=_observe(arguments)
-        result=dict(status='registered' if observed['status']=='observed' else 'deferred',registration_id=idempotency_key,
-                    subject=subject,reader=arguments,observation=observed,active_cursor_verified=False,installation_authorized=False)
+        cursor_check=None
+        if cursor_reference is not None:
+            from .context_cursors import check
+            cursor_check=check(service,db,project,run,subject,cursor_reference,observed,require_live=True)
+        ready=observed['status']=='observed' and (cursor_check is None or cursor_check['status']=='verified')
+        result=dict(status='registered' if ready else 'deferred',registration_id=idempotency_key,
+                    subject=subject,reader=arguments,observation=observed,cursor_check=cursor_check,cursor_source_verified=bool(cursor_check and cursor_check['status']=='verified'),active_cursor_verified=False,installation_authorized=False)
         service._remember(db,project,scope,idempotency_key,arguments,result)
         service._event(db,project,run,'context_source_'+result['status'],subject=subject,registration_id=idempotency_key,
                        reason=observed.get('reason'),active_cursor_verified=False)
@@ -54,4 +60,8 @@ def read(service,db,project,run,subject,registration):
                            observed_journal_sha256=observed.get('witness',{}).get('journal_sha256'),
                            recovery='Register a fresh source under a new key and repeat preparation and review. Original journal and experiments are unchanged.')
         raise error
+    if source['reader'].get('cursor_reference') is not None:
+        from .context_cursors import check
+        checked=check(service,db,project,run,subject,source['reader']['cursor_reference'],observed,require_live=False)
+        if checked['status']!='verified':raise ControlError(checked['reason'])
     return materials(observed['conversation'])
