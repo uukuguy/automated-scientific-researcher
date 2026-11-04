@@ -20,15 +20,16 @@
 - Human interaction: asynchronous guidance and versioned controls; Capstone scientific-research mode is the accepted workbench architecture; preparation is defined in `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md`.
 - Local upstream: `3th-party/automated-w2s-research/`, ignored by the parent repository; tracked deterministic preparation/patches live in integrations/aar/.
 
-- Organization: existing Control records drive serial AAR role wakeups and durable delivery receipts; roles keep separate conversations while OAuth refreshes reconcile with the canonical account source. The verified pilot produces untested designs/source, not numerical evidence.
+- Organization: existing Control records drive serial AAR role wakeups and durable delivery receipts; roles keep separate conversations while OAuth refreshes reconcile with the canonical account source. Verified serial roles deliver designs and executable coordinate-generation research artifacts, with task-gated isolated analysis and adversarial review. Qualified source acceptance remains distinct from scientific utility.
 
 - Supervisor: fenced attempts, frozen request dispatch, external timeout and conservative process reconciliation.
+- Subscription resource revisions: explicit model-only Control contracts preserve costs and old evidence; generous completion-first failsafes govern the current implementation profile (D029). Progress-aware anomaly detection remains separate work.
 
 - Control: authenticated local HTTP, reference-profile executable contracts, atomic admission, project budgets, command receipts, candidate findings and evaluator-only immutable Validation attestations. Shared budget rows expose model/compute balances and evaluator dimensions; sourced quota observations preserve unknown values. Managed evaluator artifacts and lifecycle projections have verified receipts.
 
 ## Open Problems (theme-level)
 
-- Control organization records, role binding and serial AAR design collaboration are verified; task-scoped scientific admission and real container execution are verified. Model-driven team experiments, concurrent roles and comparative scientific acceptance remain gaps.
+- Control organization records, role binding and serial AAR design collaboration are verified; task-scoped scientific admission and real container execution are verified. Model-driven generator implementation/review is verified; concurrent roles and comparative scientific acceptance remain gaps.
 - Long native conversations require explicit context recovery; final AAR report publication needed controller archival after a time cap. Automatic report-first/context recovery is not verified.
 
 - P4 provides measured training benefit on a synthetic client project, with actual AAR experiments, independent final scoring and exact selected-training replay. Broader topology/distribution transfer, mechanistic attribution and actual client utility remain untested.

@@ -459,3 +459,17 @@ execution or on state recovery, returning compact verification diagnostics.
 Blocked checks require explicit original-key submission replay; finished attempts
 are not re-executed. Saved evidence/artifacts are rechecked before cached success.
 See [actual recovery checks](../validation/P5-STUDY-ADAPTER-FLOW.md).
+
+
+### Explicit subscription model-policy revision (D029)
+
+organization_resources revises only model budget/session envelopes for a paused,
+healthy, exited, unreserved run. It archives old/new policy and reason, publishes
+a new contract and applies it using existing Control APIs. Stable request keys
+recover interruptions without a second revision or reset of consumption. Runtime,
+scientific contract, compute allowances and role capacity remain fixed. Resume
+uses the current policy's exact bytes; old accepted experiments retain their
+original contract. Current implementation defaults4h total/30min role are broad
+failsafes for complete delivery, not automatic anomaly classification. Task
+completion, final report publication and acknowledged deliveries must still be
+checked independently of timeouts or direction closure.

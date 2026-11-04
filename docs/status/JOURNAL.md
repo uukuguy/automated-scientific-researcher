@@ -227,3 +227,17 @@
 - 2026-11-04: Adapter flow verification passed357/382 tests with25 environment skips; real tool recovery and syntax checks passed.
 - 2026-11-04: bb8b386 persists paired adapter evidence through research tools, enabling recovery without duplicate execution or hidden verification failures.
 - 2026-11-04: Prepared analysis-only team implementation launcher;385 tests,360pass,25skip; frozen source/image preflight passed; no model launched yet.
+- 2026-11-04: c9a1dbc adds bounded analysis-only team implementation so real researchers can implement and review their proposed generator.
+- 2026-11-04: Launched research_2ab7884ffbcb46b7bbff0a8e7108e077; fresh subscription implementation budget, analysis-only, canonical login reused, prior runs unchanged.
+- 2026-11-04: Worker review timed out after successful analysis; all processes exited,464863ms remain; recorded controller recovery without rerunning calculations.
+
+- 2026-11-04: Reconciled Lead WebSocket failure; all nine processes exited,244424ms remain; resumed unchanged subscription budget without login or computation replay.
+
+- 2026-11-04: Implementation001 delivered generator/review; two jobs,768 coordinates; oracle defect retained; direction closed but four deliveries pending after timeout.
+- 2026-11-04: User rejected short normal-work limits; D029 adopts completion-first subscription policy with explicit model-only revision and retained costs.
+- 2026-11-04: Applied implementation001 contract2:4h total/30min role,1195198ms prior cost retained; resumed final delivery without login or scientific rerun.
+
+- 2026-11-04: Extended allowance needed only162578ms; final report and all receipts complete,17sessions/2analysis jobs; oracle defect retained, no scientific rerun.
+- 2026-11-04: Verified15 snapshots,66-file final archive, unchanged public materials; original incomplete archive preserved; model-cost revision retains1195198ms.
+
+- 2026-11-04: Final regression390 tests:365passed,25skipped; revision replay retains historical receipt after later consumption.

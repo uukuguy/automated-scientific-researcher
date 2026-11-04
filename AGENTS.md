@@ -14,7 +14,7 @@ commands, budgets and recovery. The pinned AAR loop and Experiment/Finding ORM h
 pi/Codex evidence, including a negative numerical outcome and notebook snapshot.
 See docs/validation/P2-SUBSCRIPTION.md and docs/validation/P3-SYSTEM-ACCEPTANCE.md for measured scope; candidate
 execution is restricted to explicit profiles: octave-candidate/1 for numerical methods and offline ood-study-worker/1 for admitted Python analysis. Candidate isolation, fresh method replication and Control-budgeted evaluator recovery have real Docker tests; the complete bounded P3 model-driven trajectory and lifecycle closeout are verified. P4 completed a simulated OOD augmentation project: actual AAR-designed sampling/training, frozen independent held-out scoring (83.23% target RMSE reduction with allowed ID degradation), exact training replay and usable data/model delivery. See docs/validation/P4-SCIENTIFIC-RESULTS.md. Final AAR report was controller-archived after a recorded model walltime limit; this is not a fully unattended lifecycle or real-industrial generalization claim. Typed evaluator artifact links are verified separately from scientific claims.
-P5 has versioned organization/member/direction/task/discussion records in the same Control database, authenticated HTTP and an explicit coordination tool profile. A real bounded serial Organizer/Lead/Worker design pilot has verified autonomous direction proposals, delegation, substantive review and source revision; see docs/validation/P5-ORGANIZATION-PILOT.md. It used zero compute and does not complete P5 or prove parallel execution/scientific gains. Task-bound OOD admission and Lead/worker scientific tool binding now have engineering checks, including real successful/failed containers. Frozen paired-arm reuse and separate accounting now have real container checks; the preserved team prototype has trusted numerical/training adapters with actual 64-label,192-row task-bound container checks and model receipt binding. An opt-in contract adapter now persists and reconciles these artifacts through submit_study, with real tool interruption/corruption recovery checks. These do not yet establish a model-driven team scientific trajectory.
+P5 has versioned organization/member/direction/task/discussion records in the same Control database, authenticated HTTP and an explicit coordination tool profile. A real bounded serial Organizer/Lead/Worker design pilot has verified autonomous direction proposals, delegation, substantive review and source revision; see docs/validation/P5-ORGANIZATION-PILOT.md. It used zero compute and does not complete P5 or prove parallel execution/scientific gains. Task-bound OOD admission and Lead/worker scientific tool binding now have engineering checks, including real successful/failed containers. Frozen paired-arm reuse and separate accounting now have real container checks; the preserved team prototype has trusted numerical/training adapters with actual 64-label,192-row task-bound container checks and model receipt binding. An opt-in contract adapter now persists and reconciles these artifacts through submit_study, with real tool interruption/corruption recovery checks. A subsequent real model-driven implementation run delivered a coordinate generator and adversarial review through two isolated analysis jobs, retaining a confirmed self-check oracle defect. This is qualified pinned-source acceptance, not OOD utility or full P5 science; see docs/validation/P5-IMPLEMENTATION-PILOT.md.
 Keep subscription account authentication separate from role conversations: stage canonical OAuth and reconcile refreshed credentials after process exit, preserving concurrent logins and recording conflicts. Never interpret transport errors as a reason for automatic browser login.
 Researcher runtimes are replaceable and subscription-first; pi is the lightweight
 baseline. Subscription runtime children must not receive any *_API_KEY; only pi explicitly using a non-openai-codex provider may allow such settings. That exception does not authorize paid API usage or fallback. Use `uv sync --locked` and `uv run python -m
@@ -130,3 +130,22 @@ JOURNAL is append-only. Record durable decisions, checks and commits promptly;
 refresh RESUME as an active-session checkpoint at recovery boundaries. Keep
 CURRENT-STATE structural. Register status files in INDEX. Stage only task-owned
 changes and preserve unrelated tracked, untracked and runtime data.
+
+
+## Completion-first subscription limits
+
+Subscription runtime limits must leave enough room for complete research and
+report delivery. The former20-minute run/4-minute role windows interrupted
+normal work and must not be reused as production defaults. Normal elapsed time
+alone is not evidence of abnormal behavior. Finish useful work and stop promptly;
+do not consume a budget merely because it remains available. Separate model
+allowances from scientific permissions, compute quotas and data/evaluation scope.
+Use generous explicit failsafes, record their purpose, and preserve checkpoints,
+failures, pending deliveries and all costs if reached. Never silently drop work,
+claim completion from a timeout, or silently switch to paid API billing.
+User-authorized extensions use versioned Control contracts and replayable receipts;
+existing consumption never resets. Current implementation policy is4 aggregate
+model hours/30-minute role sessions,1600/3200 total turns/tools and200/400 per
+session. These are current configurable failsafes, not permanent scientific limits.
+Progress-aware no-progress/repetition detection is not yet implemented; do not
+claim that these duration ceilings detect anomalies.

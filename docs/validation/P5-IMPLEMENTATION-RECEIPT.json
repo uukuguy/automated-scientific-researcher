@@ -1,0 +1,498 @@
+{
+  "schema": "asr-p5-implementation-receipt/1",
+  "project_id": "organization-dd58b2d04033",
+  "research_run_id": "research_2ab7884ffbcb46b7bbff0a8e7108e077",
+  "runtime": "pi-rpc/1",
+  "provider": "openai-codex",
+  "model": "gpt-6.1-sol",
+  "state": "paused",
+  "health": "ok",
+  "contract_revision": 2,
+  "all_runtime_executions_exited": true,
+  "budget": {
+    "attempts": {
+      "limit": 12,
+      "spent": 2,
+      "reserved": 0,
+      "available": 10
+    },
+    "execution_ms": {
+      "limit": 720000,
+      "spent": 3407,
+      "reserved": 0,
+      "available": 716593
+    },
+    "research_walltime_ms": {
+      "limit": 14400000,
+      "spent": 1357776,
+      "reserved": 0,
+      "available": 13042224
+    },
+    "sample_proposals": {
+      "limit": 0,
+      "spent": 0,
+      "reserved": 0,
+      "available": 0
+    },
+    "tool_executions": {
+      "limit": 3200,
+      "spent": 212,
+      "reserved": 0,
+      "available": 2988
+    },
+    "turns": {
+      "limit": 1600,
+      "spent": 123,
+      "reserved": 0,
+      "available": 1477
+    }
+  },
+  "steps": [
+    {
+      "step": "000-organizer",
+      "status": "settled",
+      "duration_seconds": 91.13953720778227,
+      "turns": 10,
+      "tool_executions": 20
+    },
+    {
+      "step": "001-lead_1",
+      "status": "settled",
+      "duration_seconds": 108.92443862510845,
+      "turns": 14,
+      "tool_executions": 25
+    },
+    {
+      "step": "002-organizer",
+      "status": "settled",
+      "duration_seconds": 37.007536832941696,
+      "turns": 6,
+      "tool_executions": 7
+    },
+    {
+      "step": "003-lead_1",
+      "status": "settled",
+      "duration_seconds": 49.83188945800066,
+      "turns": 7,
+      "tool_executions": 8
+    },
+    {
+      "step": "004-worker_1",
+      "status": "settled",
+      "duration_seconds": 211.00640754099004,
+      "turns": 15,
+      "tool_executions": 31
+    },
+    {
+      "step": "005-worker_2",
+      "status": "timed_out",
+      "duration_seconds": 234.83550858288072,
+      "turns": 11,
+      "tool_executions": 24
+    },
+    {
+      "step": "006-worker_2",
+      "status": "settled",
+      "duration_seconds": 40.70759783289395,
+      "turns": 4,
+      "tool_executions": 4
+    },
+    {
+      "step": "007-organizer",
+      "status": "settled",
+      "duration_seconds": 116.97068587481044,
+      "turns": 10,
+      "tool_executions": 20
+    },
+    {
+      "step": "008-lead_1",
+      "status": "provider_error",
+      "duration_seconds": 61.660477083176374,
+      "turns": 4,
+      "tool_executions": 13
+    },
+    {
+      "step": "009-lead_1",
+      "status": "settled",
+      "duration_seconds": 148.58555262489244,
+      "turns": 10,
+      "tool_executions": 12
+    },
+    {
+      "step": "010-worker_1",
+      "status": "settled",
+      "duration_seconds": 56.27085304213688,
+      "turns": 7,
+      "tool_executions": 14
+    },
+    {
+      "step": "011-organizer",
+      "status": "timed_out",
+      "duration_seconds": 33.36047379206866,
+      "turns": 6,
+      "tool_executions": 9
+    },
+    {
+      "step": "012-organizer",
+      "status": "settled",
+      "duration_seconds": 39.910059249959886,
+      "turns": 4,
+      "tool_executions": 3
+    },
+    {
+      "step": "013-worker_2",
+      "status": "settled",
+      "duration_seconds": 24.262141667073593,
+      "turns": 3,
+      "tool_executions": 6
+    },
+    {
+      "step": "014-lead_1",
+      "status": "settled",
+      "duration_seconds": 29.578373624943197,
+      "turns": 3,
+      "tool_executions": 5
+    },
+    {
+      "step": "015-organizer",
+      "status": "settled",
+      "duration_seconds": 43.68749958300032,
+      "turns": 6,
+      "tool_executions": 7
+    },
+    {
+      "step": "016-lead_1",
+      "status": "settled",
+      "duration_seconds": 22.86814450006932,
+      "turns": 3,
+      "tool_executions": 4
+    }
+  ],
+  "trials": [
+    {
+      "evidence_path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p5-implementation-001/study-evidence/trial_ec62b369aab54cb5932462a0e2b037fa/attempt_2daa6fd5135f4fc995235a0cc9fb8a06",
+      "execution_attempt_id": "attempt_2daa6fd5135f4fc995235a0cc9fb8a06",
+      "execution_exited": true,
+      "manifest_hash": "304a2cd22107ccf69b971332ba5f0fce2f1a26240a734e06eb21ef39ad22b7d3",
+      "status": "succeeded",
+      "trial_id": "trial_ec62b369aab54cb5932462a0e2b037fa",
+      "usage": {
+        "attempts": 1,
+        "execution_ms": 1881,
+        "sample_proposals": 0
+      },
+      "usage_estimated": true
+    },
+    {
+      "evidence_path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/p5-implementation-001/study-evidence/trial_7e01fb758353401cb051b8b59690d68d/attempt_f36ba22b112a49d1ac89712bd80a3918",
+      "execution_attempt_id": "attempt_f36ba22b112a49d1ac89712bd80a3918",
+      "execution_exited": true,
+      "manifest_hash": "fae0a4de615a411940aabc917bef578d45a0b46da5ea65c68df0b8088abe06f1",
+      "status": "succeeded",
+      "trial_id": "trial_7e01fb758353401cb051b8b59690d68d",
+      "usage": {
+        "attempts": 1,
+        "execution_ms": 1526,
+        "sample_proposals": 0
+      },
+      "usage_estimated": true
+    }
+  ],
+  "snapshots": [
+    {
+      "snapshot": "044870fa16118d9a8942ebd193ff2c8483b89c59c42eb1596bfe7bd7c67e79b9",
+      "files": [
+        {
+          "path": "paired_generator.py",
+          "sha256": "ad498577d9d919bb6cc17c71a5ab970adf5370f8555ed6216a55683a682086ca",
+          "size": 6837
+        },
+        {
+          "path": "study-result-trial_ec62b369aab54cb5932462a0e2b037fa.json",
+          "sha256": "da0d957422f56f9340b0856799872b3969ddaa0a0645853c9f62f894faaec385",
+          "size": 502854
+        }
+      ]
+    },
+    {
+      "snapshot": "09808c6a9549445702f73e4fbc7db34b5ee8181ea829396495478e8662b2baf1",
+      "files": [
+        {
+          "path": "LEAD-IMPLEMENTATION-PLAN.md",
+          "sha256": "406113d5de96d7a61c92536ea37c0e4a608d5f5208db464296920ced1f7408cf",
+          "size": 3303
+        }
+      ]
+    },
+    {
+      "snapshot": "1a82d0de58a2e4c2f3bbf3e187ad21e3c57d8e2b87436363ae3d75e814f65705",
+      "files": [
+        {
+          "path": "ORGANIZATION-REPORT.md",
+          "sha256": "3672d4d76bb1e1aa8bd36429beebc9a55f19b0cb01300b2d6665e78e24c0b64c",
+          "size": 12208
+        }
+      ]
+    },
+    {
+      "snapshot": "238ad9b487a182c25f2fa2e8900497e04c6b80a9adb6d4e84b89dfb3ff05f26d",
+      "files": [
+        {
+          "path": "paired_generator.py",
+          "sha256": "ad498577d9d919bb6cc17c71a5ab970adf5370f8555ed6216a55683a682086ca",
+          "size": 6837
+        }
+      ]
+    },
+    {
+      "snapshot": "26420237ce7a9dfe080b04dff658b26b672bc3ceb396997b27bafb3df1fecb1c",
+      "files": [
+        {
+          "path": "LEAD-IMPLEMENTATION-PLAN.md",
+          "sha256": "bb3afbadf8f25e9a2816aec12e20086a924863404d38a07fcc8556a47c6d83c1",
+          "size": 4219
+        }
+      ]
+    },
+    {
+      "snapshot": "27960e0079e105cd84d5ebd0856f1f435e6b090c571d5fdbc468efad13cc4a6f",
+      "files": [
+        {
+          "path": "ORGANIZATION-REPORT.md",
+          "sha256": "0c2254634f5079a6360b0fe6d9a74966fee8e02bf5b313c74a161a68e598b3c9",
+          "size": 3536
+        }
+      ]
+    },
+    {
+      "snapshot": "30fed1e0505b80b7a45362c2d0f1dcca5b0315106ca20ce9fa7599a8ca6a7164",
+      "files": [
+        {
+          "path": "ORGANIZATION-REPORT.md",
+          "sha256": "a1ca48da2b3caea5eadf6f190b3ac614b22d0bd39ee1f0e728d0f8b19d1234f9",
+          "size": 9321
+        }
+      ]
+    },
+    {
+      "snapshot": "37c2f8f779f1e1989a837743f4e444c0116e32c4d649d36d33454e24b3bf6e0c",
+      "files": [
+        {
+          "path": "WORKER-IMPLEMENTATION-REPORT.md",
+          "sha256": "8bfb6ebcf1ed4645a80c9e76c21c07e2a059e3fcee4959df0a73b2a5349f1b83",
+          "size": 3296
+        }
+      ]
+    },
+    {
+      "snapshot": "484cd031b789aaa00caa7a222c619f681c8b7ed91843188d7fc09f986dcc41a3",
+      "files": [
+        {
+          "path": "ORGANIZATION-REPORT.md",
+          "sha256": "d0039b14d12a8df26add8923f90e95a170abe0b7fc2c006c366137c52338a35c",
+          "size": 10343
+        }
+      ]
+    },
+    {
+      "snapshot": "52a8e124ab56594cbdd07ac08e430335995b11de7e7817758dc29a3b4192b247",
+      "files": [
+        {
+          "path": "WORKER-IMPLEMENTATION-REPORT.md",
+          "sha256": "c65b4b508c34950dcc7f50b05796b27c8a8ec158f89ae06be00bc3c58df9f2f8",
+          "size": 5495
+        }
+      ]
+    },
+    {
+      "snapshot": "7767e3a73a627fec818d400f7ee1c9d23d79ba13a480d7d7a4169d063e87aaa7",
+      "files": [
+        {
+          "path": "ORGANIZATION-REPORT.md",
+          "sha256": "7dfcb82e23aca516bab611b597df67a081e3add0b934c00d7c2b59f1e22f111b",
+          "size": 4332
+        }
+      ]
+    },
+    {
+      "snapshot": "c749bdf201af77dcacc0ba5fca751c0877fca70bca4ea10757c766d976327671",
+      "files": [
+        {
+          "path": "LEAD-FINAL-DISPOSITION.md",
+          "sha256": "a4128c022df27e83a46739694a0fb923ab6566a8b0d8de25a23d39a2f0fc9e10",
+          "size": 6557
+        }
+      ]
+    },
+    {
+      "snapshot": "dd752cda09fafa51f2e02f43eb89b256b21f862614c3c0cd438c779b25b71853",
+      "files": [
+        {
+          "path": "review_generator.py",
+          "sha256": "05aadf2fdf6d1a6490258a1842e757b26a3fe164ff435767c64c395343f2eb93",
+          "size": 10309
+        }
+      ]
+    },
+    {
+      "snapshot": "f86243592044b9e17d0cb6708c71f42712b3af5496e13afa7d132f08ea087b01",
+      "files": [
+        {
+          "path": "WORKER-REVIEW-REPORT.md",
+          "sha256": "459fe1ded2a4241e0cde4097e0fd0fe41eb874041bc5a6f1a0cce2b0a366d61b",
+          "size": 5004
+        },
+        {
+          "path": "review_generator.py",
+          "sha256": "05aadf2fdf6d1a6490258a1842e757b26a3fe164ff435767c64c395343f2eb93",
+          "size": 10309
+        },
+        {
+          "path": "study-result-trial_7e01fb758353401cb051b8b59690d68d.json",
+          "sha256": "4c640caea14bf6bf95486ec5652cccc5a59ede9b1a33fc0a5531cd026d2ecc4d",
+          "size": 545769
+        }
+      ]
+    },
+    {
+      "snapshot": "f8f3e419c5bdd884b32dce8bb54ea5bb692b5e756e8753b362e0b3b63ee98313",
+      "files": [
+        {
+          "path": "LEAD-FINAL-DISPOSITION.md",
+          "sha256": "5136b98757bc377a46c83b6f8173689d6ea9a56640b1bb809a2b1f44cf863968",
+          "size": 6722
+        }
+      ]
+    }
+  ],
+  "public_materials_unchanged": true,
+  "pending_deliveries": [],
+  "direction": {
+    "author": "organizer",
+    "author_role": "organizer",
+    "created_at": "2026-11-04T02:38:11.794629+00:00",
+    "document": {
+      "evidence_trial_ids": [
+        "trial_ec62b369aab54cb5932462a0e2b037fa",
+        "trial_7e01fb758353401cb051b8b59690d68d"
+      ],
+      "owner": "lead_1",
+      "question": "Does a self-contained implementation of the exact previous five-stream, eight-seed recipe produce a deterministic, collision-free 768-coordinate / 2048-slot proposed manifest independent of labels?",
+      "rationale": "Organizer inspected final Lead scientific disposition snapshot f8f3e419c5bdd884b32dce8bb54ea5bb692b5e756e8753b362e0b3b63ee98313, updated author report52a8e124ab56594cbdd07ac08e430335995b11de7e7817758dc29a3b4192b247 and actual candidate finding pinned-generator-qualified-acceptance r1 shared_findings/11_r1. Close bounded implementation direction with qualified exact-baseline acceptance only. Two actual analysis jobs,3407ms; both workers completed r3. Baseline candidate f28262870d046f46d3c22c61e06df639b789966ee459c9d4723348bd3bad0176 reproduced and literal order checked. Preserve confirmed medium wrong-TT-order oracle defect; generic validator approval withheld, no patch/retest. Descriptive manifest not adapter admitted; no labels/fits/hidden evaluation/utility/full paired/P5 verdict. Controller timeout recovery retained without numerical rerun. Organizational closure is not research-run lifecycle/process completion.",
+      "status": "closed",
+      "title": "Executable acceptance of frozen coordinate-only paired generator"
+    },
+    "entity_id": "paired-generator-acceptance",
+    "evidence": [
+      {
+        "execution_attempt_id": "attempt_2daa6fd5135f4fc995235a0cc9fb8a06",
+        "manifest_hash": "304a2cd22107ccf69b971332ba5f0fce2f1a26240a734e06eb21ef39ad22b7d3",
+        "trial_id": "trial_ec62b369aab54cb5932462a0e2b037fa"
+      },
+      {
+        "execution_attempt_id": "attempt_f36ba22b112a49d1ac89712bd80a3918",
+        "manifest_hash": "fae0a4de615a411940aabc917bef578d45a0b46da5ea65c68df0b8088abe06f1",
+        "trial_id": "trial_7e01fb758353401cb051b8b59690d68d"
+      }
+    ],
+    "kind": "direction",
+    "project_id": "organization-dd58b2d04033",
+    "research_run_id": "research_2ab7884ffbcb46b7bbff0a8e7108e077",
+    "revision": 3,
+    "schema": "asr-organization-record/1",
+    "seq": 27
+  },
+  "tasks": [
+    {
+      "author": "worker_1",
+      "author_role": "worker",
+      "created_at": "2026-11-04T02:18:48.483398+00:00",
+      "document": {
+        "assignee": "worker_1",
+        "direction_id": "paired-generator-acceptance",
+        "evidence_trial_ids": [
+          "trial_ec62b369aab54cb5932462a0e2b037fa"
+        ],
+        "experiment_operations": [
+          "study:analysis"
+        ],
+        "instructions": "Claim in_progress current task revision. Read CLIENT-BRIEF, state/guidance, PREVIOUS-PROTOCOL actual source and shared-artifacts/09808c6a9549445702f73e4fbc7db34b5ee8181ea829396495478e8662b2baf1/LEAD-IMPLEMENTATION-PLAN.md. Implement self-contained main(data), not importing old prototype. Bind every trial to hypothesis_ref {project_id:'organization-dd58b2d04033',hypothesis_id:'paired-generator-conformance',revision:1}. Initial cap <=3 analysis jobs <=60s each, no automatic repeats of failed jobs, no labels/fits. All 8 seeds, 5 named blocks, full proposed paired_sampling manifest. Execute deterministic rerun and changed/poisoned-label invariance checks. Counts/ranges/public exact AND rounded-six-decimal/cross-seed collision checks/shared-block reuse/no silent resampling. Record versions, coordinate-only input hashes and B anchor indices/fractions. Snapshot source before submit and complete exported result JSON before handoff. Preserve structured failures and generated candidate; no assertion-only output loss. Send actual snapshots and returned trial IDs to lead_1 and worker_2 through organization records. Scientific computation only through authorized task-gated analysis. Review frozen source/input/order carefully; no recipe changes without prospective revision. Budget is global max12 analysis attempts; your initial cap is3, not permission to spend all12.",
+        "result": "Implemented exact self-contained generator; trial_ec62b369aab54cb5932462a0e2b037fa exited successfully (1881ms), author checks all true; 768 unique named coordinates/2048 arm slots; deterministic rerun and poisoned/deleted-label invariance; no public exact/rounded6 or within/cross-seed collisions. Source+complete coordinate/check output snapshot 044870fa16118d9a8942ebd193ff2c8483b89c59c42eb1596bfe7bd7c67e79b9. Report shared-artifacts/37c2f8f779f1e1989a837743f4e444c0116e32c4d649d36d33454e24b3bf6e0c/WORKER-IMPLEMENTATION-REPORT.md. Exact handoff to lead_1/worker_2/organizer in message seq17. Used1 of <=3 jobs; zero labels/fits. Separate adversarial role review pending; descriptive proposed manifest only, no scientific utility/independent validation/P5 completion claim.",
+        "status": "completed",
+        "title": "Implement exact paired coordinate generator and run isolated acceptance analysis"
+      },
+      "entity_id": "implement-frozen-generator",
+      "evidence": [
+        {
+          "execution_attempt_id": "attempt_2daa6fd5135f4fc995235a0cc9fb8a06",
+          "manifest_hash": "304a2cd22107ccf69b971332ba5f0fce2f1a26240a734e06eb21ef39ad22b7d3",
+          "trial_id": "trial_ec62b369aab54cb5932462a0e2b037fa"
+        }
+      ],
+      "kind": "task",
+      "project_id": "organization-dd58b2d04033",
+      "research_run_id": "research_2ab7884ffbcb46b7bbff0a8e7108e077",
+      "revision": 3,
+      "schema": "asr-organization-record/1",
+      "seq": 18
+    },
+    {
+      "author": "worker_2",
+      "author_role": "worker",
+      "created_at": "2026-11-04T02:26:37.055951+00:00",
+      "document": {
+        "assignee": "worker_2",
+        "direction_id": "paired-generator-acceptance",
+        "evidence_trial_ids": [
+          "trial_ec62b369aab54cb5932462a0e2b037fa",
+          "trial_7e01fb758353401cb051b8b59690d68d"
+        ],
+        "experiment_operations": [
+          "study:analysis"
+        ],
+        "instructions": "Claim in_progress then read CLIENT-BRIEF/state/guidance, PREVIOUS-PROTOCOL.md, actual prototype/sampler and prospective plan shared-artifacts/09808c6a9549445702f73e4fbc7db34b5ee8181ea829396495478e8662b2baf1/LEAD-IMPLEMENTATION-PLAN.md. Worker_1 implement-frozen-generator is producing source and analysis evidence and will send exact snapshot/trial IDs. Until source arrives prepare concise review checklist; do NOT invent execution results or repeatedly poll. On handoff inspect actual full source and actual trial output, independently trace stream seeds/counts/bounds/interpolation/rounding/arm order/label access/collision policy. Conduct <=2 targeted isolated analysis jobs <=60s after source snapshot, binding hypothesis_ref {project_id:'organization-dd58b2d04033',hypothesis_id:'paired-generator-conformance',revision:1} and own in_progress task revision. Useful adversarial checks: diagnostic labels poisoned/deleted, nonfinite or degenerate public coordinates, public/cross-block collisions, malicious arm block/order changes and no silent resampling. Test actual implementation via self-contained copied source in analysis, not import absent utilities; explain any harness changes. Preserve every failure and snapshot complete reviewer source/output before handoff. Distinguish source inspection, author analysis checks, and unavailable independent physics/utility validation. No labels/fits/host numerical work or automatic failed-job repeats. Send concrete review result, snapshots and real trial IDs to lead_1/organizer; do not mark completed before full implementation evidence review.",
+        "result": "Actual source/original trial evidence reviewed and baseline candidate fully regenerated with identical hash. One reviewer analysis trial_7e01fb758353401cb051b8b59690d68d succeeded/exited (1526ms), all12 expected observations true. Confirmed medium acceptance-test oracle gap: reversed TT block order remains accepted by built-in checks; correct baseline separately passes literal frozen-order checker. No baseline coordinate defect found; recommend exact pinned artifact acceptance only with independent literal contract checks. Source/report/full output snapshot f86243592044b9e17d0cb6708c71f42712b3af5496e13afa7d132f08ea087b01. Directed evidence handoff seq21 to lead_1/organizer/worker_1. No labels/fits/utility/P5 claim. Controller-reviewed session recovery retained evidence; no calculations rerun. Remaining unexecuted checks and limitations explicit in WORKER-REVIEW-REPORT.md.",
+        "status": "completed",
+        "title": "Independent role review of actual generator source and trial evidence"
+      },
+      "entity_id": "adversarial-generator-review",
+      "evidence": [
+        {
+          "execution_attempt_id": "attempt_2daa6fd5135f4fc995235a0cc9fb8a06",
+          "manifest_hash": "304a2cd22107ccf69b971332ba5f0fce2f1a26240a734e06eb21ef39ad22b7d3",
+          "trial_id": "trial_ec62b369aab54cb5932462a0e2b037fa"
+        },
+        {
+          "execution_attempt_id": "attempt_f36ba22b112a49d1ac89712bd80a3918",
+          "manifest_hash": "fae0a4de615a411940aabc917bef578d45a0b46da5ea65c68df0b8088abe06f1",
+          "trial_id": "trial_7e01fb758353401cb051b8b59690d68d"
+        }
+      ],
+      "kind": "task",
+      "project_id": "organization-dd58b2d04033",
+      "research_run_id": "research_2ab7884ffbcb46b7bbff0a8e7108e077",
+      "revision": 3,
+      "schema": "asr-organization-record/1",
+      "seq": 22
+    }
+  ],
+  "candidate_sha256": "f28262870d046f46d3c22c61e06df639b789966ee459c9d4723348bd3bad0176",
+  "final_report": {
+    "sha256": "3672d4d76bb1e1aa8bd36429beebc9a55f19b0cb01300b2d6665e78e24c0b64c",
+    "snapshots": [
+      "1a82d0de58a2e4c2f3bbf3e187ad21e3c57d8e2b87436363ae3d75e814f65705"
+    ]
+  },
+  "boundary": "Completed bounded implementation delivery with qualified pinned-source acceptance. Generic oracle defect unresolved. Host-reviewed timeout/transport recovery and user-authorized model-budget revision disclosed. No labels/fits/utility/P5 completion.",
+  "archive": "artifacts/p5-implementation-delivery-002",
+  "prior_archive": {
+    "path": "artifacts/p5-implementation-delivery-001",
+    "inventory_sha256": "101245fd6323548d84eac86b049457da6aaabace8d5e0598b2f5f00858e0dca2"
+  },
+  "extension": {
+    "prior_spent_ms": 1195198,
+    "additional_spent_ms": 162578,
+    "authorization": "User explicit completion-first direction, D029"
+  },
+  "archive_inventory_sha256": "3ace4ff89a0fa021ce6e9eb5f0b4d2a38afe710b68906b3882e377a98f0e644c"
+}

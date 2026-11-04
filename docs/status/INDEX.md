@@ -83,3 +83,6 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 - `docs/ASR-PLAIN-LANGUAGE.md` — 中文通俗说明：P4实际成果、当前自动研究过程与规划中的多研究员协作；区分已实现和待实现。
 
 - `docs/plans/P5-RESEARCH-ORGANIZATION.md` — P5 scope, first implemented organization-record slice and remaining runtime/scientific acceptance; autonomous direction formation without preset topics.
+
+- `docs/validation/P5-IMPLEMENTATION-PILOT.md` and `P5-IMPLEMENTATION-RECEIPT.json` — real team generator/review, retained oracle defect and lifecycle evidence.
+- D029 in `DECISIONS.md` — completion-first subscription allowances and explicit cost-preserving revision.

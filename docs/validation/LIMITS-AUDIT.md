@@ -237,3 +237,39 @@ recovery in the same Control event history and state projection. Replaying the
 original request only retries verification of completed evidence. Artifacts stay
 outside model output; state returns hashes/counts/diagnostics. Full raw evidence
 and immutable adapter JSON remain in the authoritative local stores.
+
+
+## Completion-first subscription correction (2026-11-04, D029)
+
+Actual implementation001 disproved adequacy of the old20-minute aggregate and
+four-minute role windows: a reviewer delivered computation but timed out during
+reporting, and Organizer had only38.515seconds after normal review/handoff.
+Organization direction closed, but report refresh and four deliveries remained.
+These are operational interruptions, not scientific failures. User explicitly
+requested complete execution rather than strict controls except clear anomalies.
+
+| Setting | Old → current | Purpose and evidence |
+| --- | --- | --- |
+| Aggregate model walltime | 20min → 4h | Broad unattended-run failsafe; not an expected duration. Stop on complete delivery. |
+| Role model walltime | 4min → 30min | Allows inspection, reasoning, tool work and report publication in one session. |
+| Aggregate turns/tools | 160/320 → 1600/3200 | Generous runaway-volume ceiling; counts alone do not establish no progress. |
+| Role turns/tools | 40/80 → 200/400 | Allows substantial coding/review; detailed runtime records remain. |
+| Analysis compute | 12 attempts,60s/job,720s total | Unchanged case-specific verification allowance; actual2jobs/3.407s, no exhaustion. |
+| Labels/fits | zero labels; contract analysis-only | Scientific scope, not runtime economy; model extension cannot change it. |
+| Capacity | two Lead/two Worker slots,serial execution | Unchanged ownership/concurrency boundary. |
+
+Policy: integrations/runtimes/organization-implementation-limits.json.
+Explicit revision: integrations.runtimes.organization_resources publishes and
+applies a new Control contract only while paused, healthy, exited and unreserved.
+Old policy/contract/balances and reason persist before change; interrupted receipt
+publication replays the original API commands. Budget consumed does not reset.
+Compute, capacity, billing, source and evaluation scope cannot change through
+this model-only path. Recovery is explicit, never automatically granted.
+Exact original source bytes are required when local JSON was reformatted.
+
+Emergency ceilings still pause and reconcile; no claim of adaptive/progress-aware
+anomaly detection is made. Genuine no-progress/repetition detection and proactive
+durable handoff before emergency deadlines remain implementation work. Existing
+unknown-process fencing, isolation/resource limits, provider failures and raw
+failure retention continue. Default adequacy beyond this observed workload still
+requires real evidence, not just larger numbers.

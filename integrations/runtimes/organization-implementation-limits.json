@@ -1,14 +1,28 @@
 {
   "schema": "asr-organization-implementation-resources/1",
-  "budget": {"attempts": 12, "execution_ms": 720000, "sample_proposals": 0, "research_walltime_ms": 1200000, "turns": 160, "tool_executions": 320},
-  "session_limits": {"walltime_seconds": 240, "turns": 40, "tool_executions": 80},
-  "capacity": {"max_active_leads": 2, "max_active_workers": 2},
+  "budget": {
+    "attempts": 12,
+    "execution_ms": 720000,
+    "sample_proposals": 0,
+    "research_walltime_ms": 14400000,
+    "turns": 1600,
+    "tool_executions": 3200
+  },
+  "session_limits": {
+    "walltime_seconds": 1800,
+    "turns": 200,
+    "tool_executions": 400
+  },
+  "capacity": {
+    "max_active_leads": 2,
+    "max_active_workers": 2
+  },
   "analysis_timeout_seconds": 60,
   "image_manifest": "artifacts/p4-final-image-002/manifest.json",
   "public_directory": "artifacts/p4-simulated-client-001/public",
-  "purpose": "User-authorized P5 continuation: a fresh subscription-only team implementation and isolated coordinate-generator verification run. Zero new labels. Existing closed runs and their budgets stay unchanged.",
-  "basis": "Twenty aggregate model minutes and four-minute role sessions reuse the measured design-pilot envelope. Twelve analysis jobs allow implementation, adversarial checks and review without label acquisition. Each job reserves at most60 seconds; all share the same Control budget. This is bounded implementation acceptance, not the proposed3584-slot scientific comparison.",
-  "exceedance": "Record limit/usage, preserve snapshots, task history and failed attempts, and pause under existing recovery. No silent retry, budget increase, provider change or paid API fallback.",
+  "purpose": "Completion-first subscription team implementation authorized by the user. Stop when useful task delivery is complete; zero new labels, no API fallback.",
+  "basis": "Observed normal work exceeded the old four-minute session and twenty-minute aggregate windows. Four aggregate model hours and thirty-minute role sessions provide completion headroom;1600 turns/3200 tools aggregate and200 turns/400 tools per session are failsafes, not targets or evidence of abnormality. Scientific jobs and permissions are unchanged. Progress-aware loop detection remains a separate implementation gap.",
+  "exceedance": "Record exact dimension, observed usage, pending work and recovery; preserve evidence, tasks and spent costs. Emergency ceilings pause recoverably, never mark research failed or complete. Model-only extensions require explicit recorded user direction through Control contract revision; no silent retry, allowance increase or paid fallback.",
   "paid_api_authorized": false,
   "paid_api_fallback": false
 }

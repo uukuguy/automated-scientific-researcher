@@ -230,3 +230,17 @@
 - Decision: stage Codex OAuth from the explicit canonical source; after confirmed process exit, reconcile refreshes under a short compatible file lock and compare-before-write check. Preserve other providers and newer logins. Store conflicts pause and retain results/costs; do not open login automatically.
 - Roles retain separate conversations/tool configuration. No API keys, paid fallback or credential values in receipts. A successful isolated browser login was explicitly consolidated to the same-account canonical source after the pilot.
 - Boundary: tested serial reconciliation and conflict detection, not yet a fully validated concurrent refresh broker. This supersedes the implementation convention of never returning a private refresh to the user's source, not historical P2 evidence.
+
+
+## D029 — Subscription completion takes priority over short acceptance windows (2026-11-04)
+
+User explicitly corrected limits after normal Organizer finalization was cut off.
+The previous20-minute aggregate/four-minute role limits were developer-selected
+pilot envelopes, not user scientific constraints. Adopt generous configurable
+failsafes (current4h aggregate/30min role), stop upon complete useful delivery,
+and retain separate compute/scientific admission. Current user direction permits
+an explicit model-only extension of implementation001, preserving spent costs,
+old contracts and failed sessions. No hidden budget reset or automatic paid
+fallback. The existing Control publication/application path owns revisions;
+local policy intent/receipt is recovery evidence, not another ledger. True
+progress-aware anomaly detection remains unimplemented and separately tracked.
