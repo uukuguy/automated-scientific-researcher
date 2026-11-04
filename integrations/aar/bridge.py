@@ -33,7 +33,7 @@ class ResearchBridge:
         from integrations.runtimes.capability_inventory import PROFILE_TOOLS
         if capability_profile not in PROFILE_TOOLS:raise ValueError('unsupported_capability_profile')
         self.allowed_operations={tool.removeprefix('asr.') for tool in PROFILE_TOOLS[capability_profile]}|{'permit'}
-        if capability_profile in ('research-organization/1','research-organization-study/1'):self.allowed_operations.add('context_boundary')
+        if capability_profile in ('research-organization/1','research-organization-study/1'):self.allowed_operations.update({'context_boundary','context_installed'})
         self.capability_profile=capability_profile
         self.service=service; self.project=project; self.run=run
         self.researcher_token=researcher_token; self.supervisor_token=supervisor_token
@@ -45,6 +45,7 @@ class ResearchBridge:
         self.token=secrets.token_urlsafe(32); self.server=None
         self.permits=[]
         self.runtime_identity={}
+        self.context_installation_id=None
         self.documentation=None
 
     def call(self, operation, arguments, key):
@@ -61,18 +62,33 @@ class ResearchBridge:
             from integrations.research_tools.literature import search
             return search(**arguments)
         if operation=='context_boundary':
-            if set(arguments)!={'observation'} or type(arguments['observation']) is not dict or arguments['observation'].get('observation_id')!=key or arguments['observation'].get('boundary')!='session_before_compact':
+            if not {'observation'}<=set(arguments)<= {'observation','tokens_before'} or type(arguments['observation']) is not dict or arguments['observation'].get('observation_id')!=key or arguments['observation'].get('boundary')!='session_before_compact':
                 raise ValueError('invalid_bridge_request')
             receipt=s.observe_context_cursor(self.supervisor_token,p,r,**self.runtime_identity,observation=arguments['observation'])
+            if self.context_installation_id and receipt['status']=='bound':
+                try:
+                    return s.authorize_context_installation(self.supervisor_token,p,r,**self.runtime_identity,stage_id=self.context_installation_id,
+                        observation=receipt['observation'],tokens_before=arguments.get('tokens_before'))
+                except ValueError as error:
+                    with s._connect() as db:s._event(db,p,r,'context_installation_deferred',session_id=self.runtime_identity.get('session_id'),stage_id=self.context_installation_id,reason=getattr(error,'code','context_installation_check_failed'))
+                    return dict(action='cancel',reason=getattr(error,'code','context_installation_check_failed'),installation_authorized=False,context_installed=False)
             reason='context_installation_not_ready' if receipt['status']=='bound' else receipt['reason']
             result=dict(action='cancel',reason=reason,context_installed=False,installation_authorized=False,cursor_receipt=receipt)
             with s._connect() as db:
                 s._event(db,p,r,'context_boundary_deferred',session_id=self.runtime_identity.get('session_id'),observation_id=key,reason=reason,context_installed=False)
             return result
+        if operation=='context_installed':
+            if set(arguments)!={'boundary_id','ticket_id','entry_id','cursor'}:raise ValueError('invalid_bridge_request')
+            cursor=arguments['cursor']
+            if type(cursor) is not dict or cursor.get('status')!='observed' or cursor.get('leaf_id')!=arguments['entry_id']:raise ValueError('invalid_bridge_request')
+            return s.complete_context_installation(self.supervisor_token,p,r,**self.runtime_identity,idempotency_key=key,
+                **{k:v for k,v in arguments.items() if k!='cursor'})
         if operation=='permit':
             result=s.admit_activity(self.supervisor_token,p,r,kind=arguments['kind'],idempotency_key=key,**self.runtime_identity)
             self.permits.append(result); return result
         if operation=='research_note':
+            if arguments.get('operation')=='conversation_read':
+                return s.read_context_source(t,p,r,**{k:v for k,v in arguments.items() if k!='operation'})
             return s.research_note(t,p,r,idempotency_key=key,**arguments)
         if operation=='organization_records':
             return s.organization_records(t,p,r,**arguments)

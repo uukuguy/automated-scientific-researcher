@@ -103,6 +103,7 @@ def archive(root, destination):
         request = step/'request.json'; result = step/'result.json'
         capture(request, 'steps/'+step.name+'/request.json')
         capture(step/'events.jsonl', 'steps/'+step.name+'/events.jsonl', True)
+        if (step/'reply.json').is_file():capture(step/'reply.json','steps/'+step.name+'/reply.json')
         session = dict(step=step.name, finalized=result.is_file())
         if not result.is_file():
             gaps.append(dict(code='step_not_finalized', step=step.name))
@@ -138,7 +139,7 @@ def archive(root, destination):
             if type(project) is str and type(run) is str:
                 requests=[]
                 for scope,key,payload,record in db.execute('SELECT scope,request_key,payload,record FROM asr_requests WHERE project=? ORDER BY scope,request_key',(project,)):
-                    if not scope.startswith(('context-prepare:','context-admission:','context-source:','context-cursor:')):continue
+                    if not scope.startswith(('context-prepare:','context-admission:','context-source:','context-cursor:','context-installation:','context-ticket:','context-installed:')):continue
                     try:
                         binding=json.loads(scope.split(':',1)[1])
                         if type(binding) is not list or len(binding)!=2 or any(type(v) is not str for v in binding):raise ValueError('invalid_context_scope')
@@ -151,6 +152,12 @@ def archive(root, destination):
             gaps.append(dict(code='unsafe_note_path',path=str(path.relative_to(root))))
             continue
         capture(path,str(path.relative_to(root)))
+    for directory in sorted(root.glob('installation-*')):
+        if not directory.is_dir():continue
+        paths={directory/name for name in ('configured.json','summary-request.json','installation-plan.json','success.json','source-retrieval-receipt.json','source-retrieval-closeout.json','communication-receipt.json','communication-final-receipt.json')}
+        paths.update(directory.glob('closeout-*.json'));paths.update(directory.glob('installation-recovery-*.json'))
+        for path in sorted(paths):
+            if path.is_file():capture(path,str(path.relative_to(root)))
     for name in ('identity.json','resource-policy.json','human-instructions.jsonl'):
         if (root/name).is_file():
             capture(root/name, name, name.endswith('.jsonl'))

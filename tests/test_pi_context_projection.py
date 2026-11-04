@@ -68,3 +68,19 @@ class PiContextProjectionTests(unittest.TestCase):
         result=self.call(projector=stalled)
         self.assertEqual(result['reason'],'projection_helper_timeout');self.assertEqual(result['limit'],3)
         self.assertEqual(self.path.read_bytes(),original)
+
+    @unittest.skipUnless(shutil.which('pi'),'pinned pi SDK unavailable')
+    def test_helper_preserves_utf8_character_split_across_pipe_chunks(self):
+        import subprocess,time
+        binary=Path(shutil.which('pi')).resolve();index=binary.parents[1]/'index.js'
+        payload=json.dumps(dict(entries=[dict(type='message',id='a',parentId=None,message=dict(role='user',content='中文证据'))],leafId='a'),ensure_ascii=False).encode()
+        split=payload.index('中'.encode())+1
+        process=subprocess.Popen(['node',str(Path('integrations/runtimes/pi_context_projection.mjs').resolve()),str(index)],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        try:
+            process.stdin.write(payload[:split]);process.stdin.flush();time.sleep(.15)
+            process.stdin.write(payload[split:]);process.stdin.close();process.stdin=None
+            stdout,stderr=process.communicate(timeout=5)
+            self.assertEqual(process.returncode,0,stderr.decode())
+            result=json.loads(stdout);self.assertEqual(result['entries'][0]['messages'][0]['content'],'中文证据')
+        finally:
+            if process.poll() is None:process.kill();process.wait()

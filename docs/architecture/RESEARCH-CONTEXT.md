@@ -1,6 +1,6 @@
-# 长程研究的上下文与记忆：设计起点
+# 长程研究的上下文与记忆
 
-2026-11-04，依据D034及用户指定的Asterion Prime/P7实现。本文记录实际代码观察与ASR待实现方案，不宣称已完成集成。主设计仍以[项目设计](../PROJECT-DESIGN.md)为准。
+2026-11-04，依据D034及用户指定的Asterion Prime/P7实现。本文区分参考代码观察、当前实现与待验收范围。指定触发的真实安装、接续与原文回查闭环已验收，见[实际验收](../validation/RESEARCH-CONTEXT-INSTALLATION.md)；自动容量触发与任意长程恢复仍待完成。主设计仍以[项目设计](../PROJECT-DESIGN.md)为准。
 
 ## 要解决的问题
 
@@ -172,7 +172,7 @@ Context7与本机pi 1.5.0文档均确认session_before_compact能返回自定义
 
 10项专项检查通过，包含真实安装SDK的压缩/编辑投影、错误分支/部分文件/解析超时、私有内容隔离及拆组/遗漏拒绝。真实三份历史日志映射345/57/328条可见记录，分组146/18/126；结构覆盖演练通过，原件未修改、模型调用为零。详见[验证报告](../validation/RESEARCH-CONTEXT-COVERAGE.md)。
 
-离线游标由审查者明确选取，active_cursor_verified和provider_payload_verified仍为false。结构覆盖不能证明语义压缩或代码跨消息依赖保真。来源登记及运行身份绑定已接通，下一步需要安装前阻止会话继续变化的同步边界与生效回执。当前不授权安装。
+离线游标由审查者明确选取，active_cursor_verified和provider_payload_verified仍为false。结构覆盖不能证明语义压缩或代码跨消息依赖保真。来源登记及运行身份绑定已接通；离线覆盖结果本身不授权安装，需走后述同步票据及生效核查。
 
 ### 原会话来源登记与活动游标采集
 
@@ -184,14 +184,28 @@ pi已在before_provider_request回调采集原生sessionManager的会话ID、文
 
 register_context_source可指定cursor_reference，联合核对最新已绑定游标与服务读取的原文件路径、原生会话、叶节点、分支条目数量及ID指纹；不同文件即使使用相同条目编号也不能替换。准备/准入继续核对原件和最新游标，历史登记重放没有新授权。context-cursor请求沿用原Control账本并进入按项目/运行归档。
 
-当前限制：runtime_binding_verified和cursor_source_verified分别表示已绑定的运行观测及原件对应，不表示当前会话已停止变化。before_provider_request采集后模型仍可继续执行，宿主收到事件时原生进程可能已经前进，故active_cursor_verified和installation_authorized保持false。下一步需要同步安装边界、安装时再次核对、完整交互覆盖和安装后回执；异步游标事件不能当安装锁。9项新增检查包含真实OS进程探针、固定SDK投影及正式包装器的无模型模拟；尚无真实长程模型会话使用新链路的验收。
+当前限制：runtime_binding_verified和cursor_source_verified分别表示已绑定的运行观测及原件对应，不表示当前会话已停止变化。before_provider_request采集后模型仍可继续执行，宿主收到事件时原生进程可能已经前进，故active_cursor_verified和installation_authorized保持false。同步票据和安装后核查现已另行接通；异步游标仍不能当安装锁。原9项工程检查不冒充真实模型；后续实际订阅安装证据见本文件末节。
 
 ### 同步压缩握手及失败保护
 
 pi适配层现已注册session_before_compact，并等待内部context_boundary HTTP请求。该操作不在模型工具枚举中，仅组织运行桥接可使用；桥接使用宿主已有运行身份调用Control，研究员不能指定epoch/owner或提交安装权限。Control将session_before_compact边界观测绑定到现有运行会话并保存处理原因。扩展保存进入/释放记录、边界ID和等待时长，结束前再次读取并比较原生游标。
 
-目前安装器尚未完成，所以所有路径都明确返回cancel:true，保留原上下文；即使宿主回复一个installation_authorized标志，也不能安装未经联合核验的摘要。网络失败、超时、原生取消、游标变化或日志回调失败均不能让pi自动采用内置摘要。已核查本机固定SDK源码：原生压缩流程会等待此钩子；没有明确cancel或自定义compaction时才可能走默认生成器。ASR不以钩子存在就宣称摘要已经安装。
+没有合法安装票据的路径明确返回cancel:true，保留原上下文；一个installation_authorized标志本身不能授权。已有票据时还需复算完整包指纹、当前游标、切点及摘要哈希，才返回自定义compaction。网络失败、超时、原生取消、游标变化或日志回调失败均不能让pi自动采用内置摘要。已核查本机固定SDK源码：原生压缩流程会等待此钩子；没有明确cancel或自定义compaction时才可能走默认生成器。ASR不以钩子存在就宣称摘要已经安装。
 
 等待上限由宿主设置ASR_CONTEXT_BOUNDARY_TIMEOUT_MS=30000，约束的是本机Control握手挂起，不是研究或摘要生成预算。超时回执记录limit_ms、elapsed_ms、恢复说明，取消本次压缩而不主动取消科研实验；原有运行总预算仍有效。测试用更短显式上限检验超时。网络异常不触发登录、模型重试或API计费回退。
 
-5项Node检查覆盖等待、超时、异常、提前/中途取消、游标变化、伪造安装标志及事件记录失败；另有真实HTTP桥接和独立Node进程贯通检查。进程身份和HTTP为实际本机执行，原生会话管理器为模拟，未启动真实pi模型会话或执行摘要写入。下一步接通过来源、覆盖、语义复核和现行状态核验的安装内容，再核对原生压缩条目与实际投影。
+5项Node检查覆盖等待、超时、异常、提前/中途取消、游标变化、伪造安装标志及事件记录失败；另有真实HTTP桥接和独立Node进程贯通检查。进程身份和HTTP为实际本机执行，原生会话管理器为模拟，未启动真实pi模型会话或执行摘要写入。该阶段工程探针保留为接入测试；后续已完成实际安装与接续，不将探针当模型验收。
+
+## 已接通的安装、核验与原文闭环
+
+核心installation.compile_plan重算来源、摘要和分开会话复核，按完整交互确定前缀/后缀；需移出的保护项必须逐字重放。适配器仅可声明原生重放的单独系统记录，写入后须逐字核对，避免在摘要和SDK里重复系统说明。summary正文保持模型原答，安装器只封装可核验的来源与重放元数据。
+
+Control.stage_context_installation沿用原请求账本保存准备内容，不授予安装权限。在session_before_compact同步握手中，Control核对当前运行/成员/进程、原文件与当前分支、来源及研究状态；一次性票据绑定该回调。仅允许不改变可见材料的原生元数据推进，新增或改动可见消息仍拒绝。
+
+原生写入后，complete_context_installation重读原始字节前缀、原生条目及固定SDK投影，核对父节点/fromHook、摘要/切点/票据、保留尾部与原生系统重放，并再次核对研究状态。失败记录native_write_observed，不能把“已经写过但未获核验”当作可以继续。Runtime必须先收到Control的verified回执，才发送继续请求；原生compact成功响应单独不够。
+
+真实RPC通过ctx.ui.notify发送带固定前缀的元数据，宿主保留原通知并解析规范化事件；不依赖扩展stdout。SDK投影辅助程序用UTF-8流解码，防止管道拆分中文导致投影不稳定，辅助程序指纹进入来源见证。
+
+本人可用research_note conversation_read读取冻结的可见历史材料，按Unicode分页、完整哈希核对，不暴露私有思考、任意本机路径或跨成员来源。摘要携带来源登记和查询方式；历史读取不自动采纳笔记或增加权限。JSON记忆的引文只允许原始字符串或明确的asr-installed-context/1.summary解码视图，仍要求逐字连续，不接受转述。
+
+三次真实订阅写入、接续、七项事实与实际原文工具回查已通过，所有失败和消耗保留。最新可见字节36595→18681，provider_payload_verified仍false；这不是自动容量调度、多天代码引用保真或科学验证。详见[验收](../validation/RESEARCH-CONTEXT-INSTALLATION.md)。

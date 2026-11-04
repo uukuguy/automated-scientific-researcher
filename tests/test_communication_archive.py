@@ -88,3 +88,12 @@ class CommunicationArchiveTests(unittest.TestCase):
         text=(self.out/'control/context_requests.json').read_text()
         self.assertIn('original context preparation',text);self.assertIn('admission record',text);self.assertIn('frozen conversation source',text);self.assertIn('runtime cursor binding',text)
         self.assertNotIn('unrelated private content',text)
+
+    def test_context_failures_and_decoded_model_replies_are_preserved(self):
+        from integrations.runtimes.communication_archive import archive
+        directory=self.root/'installation-001';directory.mkdir()
+        (directory/'closeout-failed.json').write_text(json.dumps(dict(failure='source_changed',budget_reset=False)))
+        (self.step/'reply.json').write_text(json.dumps(dict(scope='shared_service')))
+        archive(self.root,self.out)
+        self.assertTrue((self.out/'installation-001/closeout-failed.json').is_file())
+        self.assertEqual(json.loads((self.out/'steps/000-lead/reply.json').read_text())['scope'],'shared_service')

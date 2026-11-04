@@ -1,5 +1,6 @@
 /** Read-only SDK projection helper. No Pi agent, auth client or model is started. */
 import {pathToFileURL} from 'node:url';
+process.stdin.setEncoding('utf8');
 let input='';
 for await (const chunk of process.stdin) input+=chunk;
 const {entries,leafId}=JSON.parse(input);

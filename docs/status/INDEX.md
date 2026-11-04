@@ -96,3 +96,5 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 - `docs/validation/RESEARCH-COMMUNICATION.md` — recorded communication coverage, archival command and honest historical gaps.
 
 - `docs/validation/P5-PROJECT-PILOT.md` and `P5-PROJECT-RECEIPT.json` — actual team-owned public comparison, complete communication and lifecycle/export verification; independent acceptance remains open.
+
+- `docs/validation/RESEARCH-CONTEXT-INSTALLATION.md`及同名JSON — 真实订阅安装/核验/接续/原文回查闭环，失败、预算、归档及边界。

@@ -112,10 +112,12 @@ class PiRuntime:
     provider='openai-codex'
 
     def __init__(self, *, executable='pi', model, thinking='high', expected_version='1.5.0', capabilities_path=None, environment=None,
-                 max_message_bytes=4194304,max_buffer_bytes=16777216,max_pending_records=256,max_records=100000,abort_grace_seconds=1.5,context_generation=0):
+                 max_message_bytes=4194304,max_buffer_bytes=16777216,max_pending_records=256,max_records=100000,abort_grace_seconds=1.5,context_generation=0,compact_before_prompt=False):
         if not isinstance(model,str) or not model or ':' in model or '/' in model:
             raise ValueError('explicit_codex_model_id_required')
         if type(context_generation) is not int or context_generation<0:raise ValueError('invalid_context_generation')
+        if type(compact_before_prompt) is not bool:raise ValueError('invalid_compaction_request')
+        self.compact_before_prompt=compact_before_prompt
         self.context_generation=context_generation
         self.executable=executable
         self.model=model
@@ -236,6 +238,10 @@ class PiRuntime:
         env=build_environment(COMMON_ENVIRONMENT,runtime='pi',provider=self.provider,inherited=self.environment)
         env['GIT_CEILING_DIRECTORIES']=str(workspace.parent)
         env['ASR_WORKSPACE']=str(workspace)
+        if self.compact_before_prompt:
+            settings_path=config_dir/'settings.json'
+            settings=json.loads(settings_path.read_text());settings.setdefault('compaction',{}).update(enabled=False,keepRecentTokens=1)
+            settings_path.write_text(json.dumps(settings))
         env['ASR_CONTEXT_OBSERVATION']='1'
         env['ASR_CONTEXT_BOUNDARY_TIMEOUT_MS']='30000'
         env['ASR_OWNED_PROCESS_GROUP']='1'
@@ -305,6 +311,7 @@ class PiRuntime:
         def send(command):
             process.stdin.write(json.dumps(command).encode()+b'\n'); process.stdin.flush()
         status='interrupted'; state=None; assistant=[]; turns=tools=0; started=time.monotonic(); settled=False
+        context_installation_verified=False
         limit_observations=[];pending_tools={};cleanup=dict(native_abort_requested=False,sigterm=False,sigkill=False)
         def limit(kind,configured,observed,reason):
             value=dict(type='asr_limit',kind=kind,limit=max(1,int(configured)),observed=max(int(configured),int(observed)),reason=reason,recoverable=True)
@@ -336,6 +343,17 @@ class PiRuntime:
                 if record is None: break
                 kind=record.get('type')
                 if on_event: on_event(record)
+                if kind=='extension_ui_request' and record.get('method')=='notify' and type(record.get('message')) is str and record['message'].startswith('ASR_CONTEXT_EVENT '):
+                    try:
+                        decoded=json.loads(record['message'][len('ASR_CONTEXT_EVENT '):])
+                        if type(decoded) is not dict or decoded.get('type') not in ('asr_context_cursor','asr_context_boundary','asr_context_installation'):raise ValueError('unsupported_context_event')
+                    except ValueError:
+                        status='context_recovery_required';break
+                    record=decoded;kind=record['type']
+                    if on_event:on_event(record)
+                if kind=='asr_context_installation':
+                    context_installation_verified=record.get('status')=='verified' and record.get('context_installed') is True and record.get('original_journal_preserved') is True and bool(record.get('ticket_id'))
+                    if not context_installation_verified:status='context_recovery_required';break
                 if kind=='asr_limit':
                     limit_observations.append(record);status='limit_reached';break
                 if kind=='protocol_error': status='protocol_error'; break
@@ -345,6 +363,10 @@ class PiRuntime:
                     model=state.get('model',{})
                     if model.get('provider')!=self.provider or model.get('id')!=self.model:
                         status='model_mismatch'; break
+                    if self.compact_before_prompt:send({'id':'context-install','type':'compact'})
+                    else:send({'id':'prompt','type':'prompt','message':prompt})
+                if kind=='response' and record.get('id')=='context-install':
+                    if not record.get('success') or not context_installation_verified:status='context_recovery_required';break
                     send({'id':'prompt','type':'prompt','message':prompt})
                 if kind=='response' and record.get('id')=='prompt':
                     if not record.get('success'): status='prompt_rejected'; break
@@ -374,7 +396,7 @@ class PiRuntime:
             # Reap the process group even after a settled RPC response. Closing
             # stdin alone can leave descendant tools running after a timeout.
             if process.poll() is None:
-                if status in ('timed_out','limit_reached','budget_exhausted','cancelled'):
+                if status in ('timed_out','limit_reached','budget_exhausted','cancelled','context_recovery_required'):
                     try:send({'id':'abort','type':'abort'});cleanup['native_abort_requested']=True
                     except (OSError,ValueError):pass
                 try: process.stdin.close()
@@ -396,7 +418,7 @@ class PiRuntime:
             if process.stdin and not process.stdin.closed: process.stdin.close()
         if process.returncode==75 and status=='interrupted': status='gate_closed'
         return dict(runtime='pi-rpc/1',runtime_version=version,capability_pack_sha256=capabilities['sha256'],capability_pack_id=capabilities['pack']['id'],capability_skills=frozen_skills,provider=self.provider,model=self.model,status=status,session=state,
-                    native_session_id=session_id,settled=settled,turns=turns,tool_executions=tools,
+                    native_session_id=session_id,context_installation_verified=context_installation_verified,settled=settled,turns=turns,tool_executions=tools,
                     duration_seconds=time.monotonic()-started,assistant_messages=assistant,exit_code=process.returncode,
                     limit_observations=limit_observations,cleanup=cleanup,protocol_flow=flow,
                     protocol_caps=dict(message_bytes=self.max_message_bytes,buffer_bytes=self.max_buffer_bytes,pending_records=self.max_pending_records,records=self.max_records,abort_grace_ms=math.ceil(self.abort_grace_seconds*1000)),

@@ -54,3 +54,13 @@ class ContextSourcesTests(unittest.TestCase):
         self.assertEqual(result['status'],'deferred');self.assertEqual(result['observation']['reason'],'journal_memory_limit')
         with self.assertRaisesRegex(ControlError,'context_source_unavailable'):
             self.s.prepare_context('human-secret','p','r',subject='lead',reviewer_subject='lead2',idempotency_key='limited-prep',source_registration='limited')
+
+    def test_frozen_conversation_can_be_paged_by_owner_after_context_replacement(self):
+        receipt=self.register();rows=receipt['observation']['conversation']['body']['messages'];key=rows[0]['id'];original=rows[0]['text']
+        self.path.unlink()
+        page=self.s.read_context_source('lead','p','r',source_registration='source',message_id=key,offset=0,limit=5)
+        self.assertEqual(page['text'],original[:5]);self.assertTrue(page['has_more']);self.assertTrue(page['historical'])
+        rest=self.s.read_context_source('lead','p','r',source_registration='source',message_id=key,offset=page['next_offset'],limit=8000)
+        self.assertEqual(page['text']+rest['text'],original)
+        with self.assertRaisesRegex(ControlError,'context_source_unavailable'):
+            self.s.read_context_source('lead2','p','r',source_registration='source',message_id=key,offset=0,limit=8000)

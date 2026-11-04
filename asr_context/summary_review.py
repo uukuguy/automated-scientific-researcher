@@ -16,8 +16,20 @@ def prepare_review(request,candidate,*,max_bytes):
     return result
 
 
+def _quote_view(text,quote):
+    if quote in text:return 'raw_source'
+    try:
+        outer=json.loads(text)
+        if type(outer) is not dict or outer.get('role')!='memory' or type(outer.get('content')) is not str:return None
+        inner=json.loads(outer['content'])
+        if type(inner) is dict and inner.get('schema')=='asr-installed-context/1' and type(inner.get('summary')) is str and quote in inner['summary']:
+            return 'installed_memory_summary'
+    except (ValueError,TypeError):pass
+    return None
+
+
 def assess(request,review,*,author_session,reviewer_session):
-    failures=[]
+    failures=[];quote_views=[]
     try:
         if any(type(v) is not str or not v for v in [author_session,reviewer_session]) or author_session==reviewer_session:raise ValueError('separate_review_session_required')
         if request['status']!='prepared' or _digest(request['payload'])!=request['review_sha256']:raise ValueError('review_request_changed')
@@ -28,11 +40,14 @@ def assess(request,review,*,author_session,reviewer_session):
         quotes=review['source_quotes'];sources={s['id']:s['text'] for s in request['payload']['original']['payload']['sources']}
         if type(quotes) is not list or not quotes:raise ValueError('review_sources_required')
         for quote in quotes:
-            if type(quote) is not dict or set(quote)!={'source','quote'} or type(quote['source']) is not str or type(quote['quote']) is not str or not quote['quote'].strip() or quote['quote'] not in sources.get(quote['source'],''):raise ValueError('review_quote_unavailable')
+            if type(quote) is not dict or set(quote)!={'source','quote'} or type(quote['source']) is not str or type(quote['quote']) is not str or not quote['quote'].strip():raise ValueError('review_quote_unavailable')
+            view=_quote_view(sources.get(quote['source'],''),quote['quote'])
+            if view is None:raise ValueError('review_quote_unavailable')
+            quote_views.append(dict(source=quote['source'],view=view))
         if review['verdict']!='accept' or review['issues']:failures.append('review_not_accepted')
     except (KeyError,TypeError,ValueError) as error:
         failures.append(str(error) if isinstance(error,ValueError) else 'malformed_review')
     return dict(schema='asr-summary-review-assessment/1',status='rejected' if failures else 'reviewed',
-        model_opinion=review.get('verdict') if type(review) is dict else None,failures=failures,
+        quote_views=quote_views,model_opinion=review.get('verdict') if type(review) is dict else None,failures=failures,
         eligible_for_application=False,author_session=author_session,reviewer_session=reviewer_session,
         boundary='独立会话模型意见及原文引文检查，不证明复核判断正确、执行环境隔离或科学结论；尚未安装上下文。')

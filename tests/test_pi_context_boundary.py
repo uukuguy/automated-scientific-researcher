@@ -52,3 +52,11 @@ console.log(JSON.stringify({{result,operations:tool.parameters.properties.operat
         self.assertEqual(result['result'],dict(cancel=True));self.assertEqual(result['events'][-1]['reason'],'boundary_aborted')
         result=self.node('const result=await beforeCompact(event,ctx,{timeoutMs:1000,emit:()=>{throw new Error("sink failed")},request:()=>({action:"cancel"})});console.log(JSON.stringify(result));')
         self.assertEqual(result,dict(cancel=True))
+
+    def test_verified_host_ticket_returns_custom_compaction(self):
+        module=Path('integrations/runtimes/pi_context_boundary.mjs').resolve().as_uri()
+        code=f'import {{beforeCompact,sealTicket}} from {json.dumps(module)};'+'''const events=[];const ctx={sessionManager:{getSessionId:()=> 'native',getSessionFile:()=> '/private/session.jsonl',getLeafId:()=> 'a',getBranch:()=>[{id:'a'}]}};const result=await beforeCompact({signal:new AbortController().signal},ctx,{timeoutMs:1000,emit:e=>events.push(e),request:cursor=>{const ticket=sealTicket({schema:'asr-installation-ticket/1',ticket_id:'ticket',boundary_id:cursor.observation_id,native_session_id:'native',source_cursor:cursor,compaction:{summary:'reviewed',firstKeptEntryId:'a',tokensBefore:10,details:{asr_installation_ticket:'ticket'}}});return {action:'install',status:'authorized',installation_authorized:true,ticket};}});console.log(JSON.stringify({result,events}));'''
+        result=subprocess.run(['node','--input-type=module','-e',code],capture_output=True,text=True,timeout=5)
+        self.assertEqual(result.returncode,0,result.stderr)
+        record=json.loads(result.stdout);self.assertEqual(record['result']['compaction']['summary'],'reviewed')
+        self.assertEqual(record['events'][-1]['action'],'install')

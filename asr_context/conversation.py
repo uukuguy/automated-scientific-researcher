@@ -75,7 +75,7 @@ def materials(snapshot):
     return [Material(r.id,_digest(asdict(r)),r.text,protected=r.id in rebuilt['protected_ids'],group=membership[r.id]['id'],complete=membership[r.id]['complete']) for r in rows]
 
 
-def verify(snapshot,*,summarized_ids,retained_ids,summary_source_ids,replayed_ids=()):
+def verify(snapshot,*,summarized_ids,retained_ids,summary_source_ids,replayed_ids=(),replay_messages=None):
     base=dict(schema='asr-conversation-coverage/1',installation_authorized=False)
     try:
         rebuilt,rows=_rebuild(snapshot)
@@ -85,7 +85,10 @@ def verify(snapshot,*,summarized_ids,retained_ids,summary_source_ids,replayed_id
         if summary&retained or summary&replayed or retained&replayed or summary|retained|replayed!=all_ids:raise ValueError('coverage_gap_or_overlap')
         if not summary<=set(summary_source_ids):raise ValueError('summary_source_coverage_missing')
         if summary.intersection(rebuilt['protected_ids']):raise ValueError('protected_interaction_removed')
-        if any(r.id in replayed and r.role!='system' for r in rows):raise ValueError('only_system_context_can_be_replayed')
+        if replay_messages is None:
+            if any(r.id in replayed and r.role!='system' for r in rows):raise ValueError('only_system_context_can_be_replayed')
+        elif type(replay_messages) is not dict or set(replay_messages)!=replayed or any(_encode(replay_messages[r.id])!=_encode(asdict(r)) for r in rows if r.id in replayed):
+            raise ValueError('exact_replay_required')
         for group in rebuilt['groups']:
             if sum(bool(set(group['ids'])&bucket) for bucket in (summary,retained,replayed))!=1:raise ValueError('interaction_split')
         if rebuilt['open_calls']:return dict(base,status='deferred',reason='open_tool_calls',open_calls=rebuilt['open_calls'])

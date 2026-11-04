@@ -29,6 +29,7 @@ def sdk_projection(entries,leaf):
         env=build_environment(COMMON_ENVIRONMENT,runtime='pi',provider='openai-codex'))
     if result.returncode:raise ValueError('pi_projection_failed')
     projection=json.loads(result.stdout)
+    projection['projection_helper_sha256']=hashlib.sha256(Path(__file__).with_name('pi_context_projection.mjs').read_bytes()).hexdigest()
     projection['sdk_index_sha256']=hashlib.sha256(index.read_bytes()).hexdigest()
     return projection
 
@@ -121,7 +122,7 @@ def observe(path,*,expected_session_id,leaf_id,scope,keep_recent_groups,max_jour
                 mapping.append(dict(message_id=key,native_entry_id=origin,projected_index=index))
         witness=dict(journal_file=str(path),session_id=expected_session_id,leaf_id=leaf_id,journal_sha256=hashlib.sha256(raw).hexdigest(),branch_sha256=_digest(branch),branch_entries=len(branch),branch_ids_sha256=_digest([e['id'] for e in branch]),
                      projection_sha256=_digest([dict(id=r.id,role=r.role,text=r.text,calls=r.calls,result_for=r.result_for,tool_name=r.tool_name,negative=r.negative,protected=r.protected) for r in rows]),
-                     source_mapping=mapping,call_mapping=[dict(native_call_id=k,call_id=v) for k,v in call_mapping.items()],redactions=redactions,projection_source='pinned_sdk' if projector is sdk_projection else 'injected_projector',sdk_index_sha256=projection.get('sdk_index_sha256'),active_cursor_verified=False,provider_payload_verified=False)
+                     source_mapping=mapping,call_mapping=[dict(native_call_id=k,call_id=v) for k,v in call_mapping.items()],redactions=redactions,projection_source='pinned_sdk' if projector is sdk_projection else 'injected_projector',sdk_index_sha256=projection.get('sdk_index_sha256'),projection_helper_sha256=projection.get('projection_helper_sha256'),active_cursor_verified=False,provider_payload_verified=False)
         snapshot=capture(scope,rows,source_revision=_digest(witness),keep_recent_groups=keep_recent_groups)
         return dict(status='observed',adapter='pi-session-projection/1',runtime_version='1.5.0',witness=witness,conversation=snapshot,installation_authorized=False)
     except subprocess.TimeoutExpired as error:

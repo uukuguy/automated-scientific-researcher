@@ -1,0 +1,251 @@
+{
+  "schema": "asr-context-installation-audit/1",
+  "status": "passed",
+  "cycles": [
+    {
+      "cycle": "installation-001",
+      "ticket_id": "install_6e8f7bc90b3a4744b76a885362d139f9",
+      "entry_id": "6aab604b",
+      "checks": {
+        "source_snapshot_redecoded_equal": true,
+        "original_prefix_preserved": true,
+        "native_from_hook": true,
+        "parent_matches": true,
+        "native_content_matches": true,
+        "summary_hash_matches": true,
+        "protected_replay_exact": true,
+        "native_system_replay_exact": true,
+        "summarized_ids_absent": true,
+        "retained_ids_present": true,
+        "candidate_prose_unchanged": true,
+        "separate_review_sessions": true,
+        "review_accepted": true,
+        "continued_with_subscription": true,
+        "recalled_facts": true
+      },
+      "guard_observed": false,
+      "source_messages": 5,
+      "projected_messages": 4,
+      "summarized_messages": 2,
+      "replayed_messages": 1,
+      "retained_messages": 2,
+      "before_visible_bytes": 26153,
+      "after_visible_bytes": 38331,
+      "before_journal_bytes": 28527,
+      "before_journal_sha256": "6b90c9841b03cb67a064de33331cdbf7160f30b8188e09e8fd72d556907fd7ce",
+      "summary_sha256": "9166d594569111614f76c014cd030764940e4eb0bcd6810aca17b9f48fe54d1f",
+      "projection_sha256": "56ef86c7552050d3abd8556078cba014348b1d80f9f994d8f719336207667d43",
+      "fact_checks": {
+        "input_custody": true,
+        "function_argument_receipt": true,
+        "reproduction_scope": true,
+        "independent_evaluation": true,
+        "new_label_count": true,
+        "max_weight_difference": true,
+        "id_error_ratio": true
+      }
+    },
+    {
+      "cycle": "installation-003",
+      "ticket_id": "install_0e94090609f14caea9b1930f1ec1d246",
+      "entry_id": "ad1de9b9",
+      "checks": {
+        "source_snapshot_redecoded_equal": true,
+        "original_prefix_preserved": true,
+        "native_from_hook": true,
+        "parent_matches": true,
+        "native_content_matches": true,
+        "summary_hash_matches": true,
+        "protected_replay_exact": true,
+        "native_system_replay_exact": true,
+        "summarized_ids_absent": true,
+        "retained_ids_present": true,
+        "candidate_prose_unchanged": true,
+        "separate_review_sessions": true,
+        "review_accepted": true,
+        "continued_with_subscription": true,
+        "recalled_facts": true,
+        "verified_before_next_prompt": true
+      },
+      "guard_observed": true,
+      "source_messages": 6,
+      "projected_messages": 4,
+      "summarized_messages": 3,
+      "replayed_messages": 1,
+      "retained_messages": 2,
+      "before_visible_bytes": 39208,
+      "after_visible_bytes": 35718,
+      "before_journal_bytes": 70232,
+      "before_journal_sha256": "fbaf584b60944cc5f61047f4c5662876bdf146694c191388386139890d1537e4",
+      "summary_sha256": "fba1dbcc6e778af3d071b2e18244d75ab092a20d16501338cc583ffa48373ef3",
+      "projection_sha256": "a928d0e1da7e7d9ef6510f200273d2a307acd51380a15e0eec8b61f7cbcecd27",
+      "fact_checks": {
+        "input_custody": true,
+        "function_argument_receipt": true,
+        "reproduction_scope": true,
+        "independent_evaluation": true,
+        "new_label_count": true,
+        "max_weight_difference": true,
+        "id_error_ratio": true
+      }
+    },
+    {
+      "cycle": "installation-005",
+      "ticket_id": "install_40ddd8aeb4c143ef92157f623d3c3f5a",
+      "entry_id": "d0108a05",
+      "checks": {
+        "source_snapshot_redecoded_equal": true,
+        "original_prefix_preserved": true,
+        "native_from_hook": true,
+        "parent_matches": true,
+        "native_content_matches": true,
+        "summary_hash_matches": true,
+        "protected_replay_exact": true,
+        "native_system_replay_exact": true,
+        "summarized_ids_absent": true,
+        "retained_ids_present": true,
+        "candidate_prose_unchanged": true,
+        "separate_review_sessions": true,
+        "review_accepted": true,
+        "continued_with_subscription": true,
+        "recalled_facts": true,
+        "verified_before_next_prompt": true
+      },
+      "guard_observed": true,
+      "source_messages": 6,
+      "projected_messages": 4,
+      "summarized_messages": 3,
+      "replayed_messages": 1,
+      "retained_messages": 2,
+      "before_visible_bytes": 36595,
+      "after_visible_bytes": 18681,
+      "before_journal_bytes": 107054,
+      "before_journal_sha256": "26bfb6fb69f45800e451b5d202b85a97b5190a410d22fc0c86fbbf1e2bb44aaa",
+      "summary_sha256": "5fc5bebccef3e77a61bc0fba676ae4b9eb9203ad05715478e56e0b7acbe8a230",
+      "projection_sha256": "fce462b6bd1395ab09ebfb6f5515668c2e2f847ec0b7db9395f771b1771e5d5b",
+      "fact_checks": {
+        "input_custody": true,
+        "function_argument_receipt": true,
+        "reproduction_scope": true,
+        "independent_evaluation": true,
+        "new_label_count": true,
+        "max_weight_difference": true,
+        "id_error_ratio": true
+      }
+    }
+  ],
+  "model": "gpt-6.1-sol",
+  "total_model_sessions": 20,
+  "all_processes_exited": true,
+  "new_scientific_trials": 0,
+  "budget_limits": {
+    "attempts": 0,
+    "execution_ms": 0,
+    "research_walltime_ms": 1800000,
+    "tool_executions": 100,
+    "turns": 100
+  },
+  "total_model_walltime_ms": 395231,
+  "provider_payload_verified": false,
+  "boundary": "实际订阅、固定pi SDK写入/投影与后续事实任务；同模型分开复核，不是科学验证或任意长期自动恢复。",
+  "budget": {
+    "attempts": {
+      "limit": 0,
+      "spent": 0,
+      "reserved": 0,
+      "available": 0
+    },
+    "execution_ms": {
+      "limit": 0,
+      "spent": 0,
+      "reserved": 0,
+      "available": 0
+    },
+    "research_walltime_ms": {
+      "limit": 1800000,
+      "spent": 395231,
+      "reserved": 0,
+      "available": 1404769
+    },
+    "tool_executions": {
+      "limit": 100,
+      "spent": 1,
+      "reserved": 0,
+      "available": 99
+    },
+    "turns": {
+      "limit": 100,
+      "spent": 21,
+      "reserved": 0,
+      "available": 79
+    }
+  },
+  "all_reservations_zero": true,
+  "actual_installs": 3,
+  "additional_model_sessions": 14,
+  "additional_model_walltime_ms": 286579,
+  "source_retrieval": {
+    "status": "passed",
+    "checks": {
+      "actual_source_tool_called": true,
+      "input_quote_exact": true,
+      "scope_quote_exact": true
+    },
+    "source_registration": "installation-001:source",
+    "message_id": "message:a9e219fbbd518a5d4b36b1b6d1109b86aadda7cccba86c8ba2549711e72e818a",
+    "source_text_sha256": "a88b1226d13a39ad9c4e94ed45ebc572f4ac38dae1c901d6c39f219b3244911a",
+    "session_id": "session_e4c4bbcca6c6417299a7567c6af52ab9",
+    "tool_executions": 1
+  },
+  "latest_archive": "artifacts/research-context-model-001/installation-005/communications-final-complete",
+  "archive_gaps": [],
+  "archive_sessions": 20,
+  "archive_sources": 122,
+  "archive_inventory_sha256": "85e54ef3fd04606269f7f48c82d412866d00704d415a69cf1e7fcdfbad45f8c5",
+  "engineering_failures_preserved": [
+    {
+      "scope": "installation-001",
+      "failure": "context_note_sources_changed",
+      "meaning": "恢复改变控制版本后旧笔记被拒绝；更新笔记并复用已结束会话。"
+    },
+    {
+      "scope": "installation-002",
+      "failure": "review_quote_unavailable",
+      "meaning": "模型接受，但引文检查拒绝JSON转义层；增加有明确路径的解码视图，另起新复核。",
+      "workflow_code": "semantic_review_rejected"
+    },
+    {
+      "scope": "installation-004",
+      "failure": "context_source_changed",
+      "meaning": "同一文件投影不一致；定位UTF8跨管道块解码，修复后新登记；未消耗模型调用。"
+    }
+  ],
+  "prototype_limitations": [
+    "installation-001使用stdout诊断，真实RPC未透传；后续通过正式notify通道，installation-003/005核验回执先于继续请求。",
+    "installation-001系统重放重复及JSON转义造成文本增大；installation-005原生系统重放逐字核对后去重，36595到18681个UTF8字节。",
+    "首轮success.json的source_bytes_before字段实际在接续后采集；原文件保留，before_journal_bytes以安装票据为准。"
+  ],
+  "source_codec_recheck": {
+    "successful_installation_sources_redecoded_equal": true,
+    "rejected_installation_004_source_mismatch": true
+  },
+  "verification": {
+    "command": "uv run python -m unittest discover -s tests -v",
+    "tests": 535,
+    "passed": 510,
+    "environment_skips": 25,
+    "log": "/tmp/asr-context-loop-final-verification.log"
+  },
+  "implementation_sources_at_final_audit": {
+    "asr_context/installation.py": "07e6bf583a58b6aa9b6d362435a2ab74ba079477f010b575b9f829af307f798b",
+    "asr_context/conversation.py": "876c1639e2ec644f319a89358cb8fbae62ab8fd01a34aa164110512fb679421b",
+    "asr_context/summary_review.py": "4ab2db2239807cd26fe0a51b4ec9d60a56c4003ea8d9db45dc78156681dd2266",
+    "asr_service/context_installation.py": "55ad9c27488328e32a026ca4938c2c1cda530831d6155fa96426b90888529840",
+    "asr_service/context_sources.py": "9c81400ba685f69b25a17637b3d29a89ec57fa035f75ce181b4878b824f2f51e",
+    "integrations/runtimes/pi_context_boundary.mjs": "c1012e5c3ceb67843aed6a92e8c5f63b6bd8eca8e7ecd36c7d56816e9c2dd311",
+    "integrations/runtimes/pi_context_projection.mjs": "89504cf164886516eafdb9b38ef04f775b323d03bcde0230236272e2cb6e6047",
+    "integrations/runtimes/asr-extension.mjs": "86c0977cb0dd2bfdaa8e025ba303f304d2992062717191b49acf5bee6c0c070e",
+    "integrations/runtimes/pi.py": "18e40ec3e5ad4643dcab3d8b5f625e40c8aab9e490f7407b15e443372fc6bdce",
+    "integrations/aar/bridge.py": "2b05807d2693b036a37d9040f6387f1701719a401a099715a41d0e640623af38"
+  }
+}

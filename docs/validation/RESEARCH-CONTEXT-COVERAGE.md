@@ -55,3 +55,5 @@ provider_payload_verified=false：这是SDK逻辑上下文，未证明提供方�
 Control保存边界观测和处理原因，扩展输出进入/释放阶段、边界ID、等待上限/耗时和恢复说明。当前没有可接纳的安装器输出，宿主明确返回context_installation_not_ready；保留原上下文不是成功安装。下一步是经过完整联合核验的实际摘要写入与生效检查。
 
 组合检查共518项，493通过、25环境跳过；日志`/tmp/asr-context-boundary-final-tests.log`。两个Node模块语法检查与git diff --check通过。
+
+实际安装与原文接续闭环已完成，包含三次原生写入、后验核查、真实订阅继续调用及历史查询；最终535项检查通过（25环境跳过）。本文件之前的离线阶段结果保持原义，实际闭环与失败修正见[安装验收](RESEARCH-CONTEXT-INSTALLATION.md)。

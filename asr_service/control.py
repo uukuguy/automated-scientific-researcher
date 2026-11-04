@@ -113,6 +113,22 @@ class ControlService(PolicyStore):
         from .organization import records
         return records(self, token, project, run, **arguments)
 
+    def read_context_source(self, token, project, run, **options):
+        from .context_sources import source_read
+        return source_read(self, token, project, run, **options)
+
+    def stage_context_installation(self, token, project, run, **options):
+        from .context_installation import stage
+        return stage(self, token, project, run, **options)
+
+    def authorize_context_installation(self, token, project, run, *arguments, **options):
+        from .context_installation import authorize
+        return authorize(self, token, project, run, *arguments, **options)
+
+    def complete_context_installation(self, token, project, run, *arguments, **options):
+        from .context_installation import complete
+        return complete(self, token, project, run, *arguments, **options)
+
     def bind_runtime_context(self, token, project, run, *arguments, **options):
         from .context_cursors import bind
         return bind(self, token, project, run, *arguments, **options)
