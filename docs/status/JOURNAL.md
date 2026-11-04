@@ -221,3 +221,7 @@
 - 2026-11-04: Paired admission and prototype adapter verified; 344 tests passed,23 skipped; real container recovery preserves floating-point failure evidence.
 - 2026-11-04: ddab838 freezes paired accounting and verifies prototype receipts to preserve fair comparisons and independent scientific checks.
 - 2026-11-04: Full-arm task-bound training verified;192 rows,64 labels,actual model binding;350 tests passed,24 skipped; retained failed fixture.
+- 2026-11-04: 3a86789 binds full-arm training to actual task-scoped models, preventing sample and model provenance substitution.
+- 2026-11-04: Study tool now preserves/reconciles paired artifacts; real interruption/corruption recovery passed; original requests never rerun completed experiments.
+- 2026-11-04: Preserved old inventories; corrected transient SQLite entries after verifying every durable hash and empty WAL.
+- 2026-11-04: Adapter flow verification passed357/382 tests with25 environment skips; real tool recovery and syntax checks passed.

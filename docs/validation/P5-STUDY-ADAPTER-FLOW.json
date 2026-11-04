@@ -1,0 +1,90 @@
+{
+  "schema": "asr-p5-study-adapter-flow/1",
+  "date": "2026-11-04",
+  "scope": "Actual task-bound tool recovery engineering; no model inference or scientific benefit claim",
+  "evidence_root": "artifacts/p5-adapter-flow-002",
+  "inventory_sha256": "c339dee416b99a8bb084fd0e9e1a8077852ff7a829e3b62469ca0f41508a2596",
+  "usage": {
+    "attempts": 2,
+    "execution_ms": 10007,
+    "sample_proposals": 64
+  },
+  "final_checks": [
+    {
+      "artifacts": {
+        "label_bundle": {
+          "kind": "label_bundle",
+          "sha256": "f15732e9084b868d47c12b2dd3cf49759161c1fc67f0ffa407156c656fd94b04",
+          "trial_id": "trial_7925df90eb7347a1915f1b3c4a48c6a4"
+        },
+        "preparation": {
+          "kind": "preparation",
+          "sha256": "c287e940ece79203cd1fa9a33b22d6cf9c0eed7f87531de9295bd8b36beddffe",
+          "trial_id": "trial_7925df90eb7347a1915f1b3c4a48c6a4"
+        },
+        "training_manifest": {
+          "kind": "training_manifest",
+          "sha256": "de8e7e06e069d7f5c016314e965bfe62b570633efb699bc0581875c2bfcc5e5c",
+          "trial_id": "trial_7925df90eb7347a1915f1b3c4a48c6a4"
+        }
+      },
+      "details": {
+        "labelled": 64,
+        "proposed": 64,
+        "training_rows": 192
+      },
+      "status": "verified",
+      "trial_id": "trial_7925df90eb7347a1915f1b3c4a48c6a4"
+    },
+    {
+      "artifacts": {
+        "label_bundle": {
+          "kind": "label_bundle",
+          "sha256": "f15732e9084b868d47c12b2dd3cf49759161c1fc67f0ffa407156c656fd94b04",
+          "trial_id": "trial_7925df90eb7347a1915f1b3c4a48c6a4"
+        },
+        "model_binding": {
+          "kind": "model_binding",
+          "sha256": "a5a6ec54b01fa7aa69eb46434efc673d6f9a69281175f44fe6b98a3e6bfc93d0",
+          "trial_id": "trial_537c310745b041aa939904a222adc887"
+        },
+        "preparation": {
+          "kind": "preparation",
+          "sha256": "c287e940ece79203cd1fa9a33b22d6cf9c0eed7f87531de9295bd8b36beddffe",
+          "trial_id": "trial_7925df90eb7347a1915f1b3c4a48c6a4"
+        },
+        "training_manifest": {
+          "kind": "training_manifest",
+          "sha256": "de8e7e06e069d7f5c016314e965bfe62b570633efb699bc0581875c2bfcc5e5c",
+          "trial_id": "trial_7925df90eb7347a1915f1b3c4a48c6a4"
+        }
+      },
+      "details": {
+        "model_sha256": "cb31e669f408668b9d29d164619fc3699fb52add4e732ac7a3ac69b7801ba019",
+        "training_rows": 192
+      },
+      "status": "verified",
+      "trial_id": "trial_537c310745b041aa939904a222adc887"
+    }
+  ],
+  "real_container_test": {
+    "passed": 1,
+    "seconds": 25.988
+  },
+  "checks": [
+    "Preparation committed before solver launch",
+    "Crash after label execution recovered by state",
+    "Unverified label blocks direct fit admission",
+    "Fit and label artifact pointers survive new bridge",
+    "Completed request replay never dispatches",
+    "Raw evidence and preparation corruption recorded without exposing altered results",
+    "Blocked checks need explicit original request replay",
+    "All compute consumed once, zero outstanding reservations"
+  ],
+  "regression": {
+    "total": 382,
+    "passed": 357,
+    "skipped": 25,
+    "log": "/tmp/asr-adapter-flow-final-tests.log"
+  }
+}

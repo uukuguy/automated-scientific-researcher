@@ -137,3 +137,6 @@ replay, OOD improvement or autonomous team science. Research-runtime integration
 must persist externally pinned artifacts at each boundary and supply genuinely
 admitted new runtime/compute budgets. New panels and the team's full eight-seed
 comparison remain unexecuted; P5 stays active.
+
+Subsequent tool integration and an audit-preserving correction to the old archive
+inventories are documented in [tool recovery verification](P5-STUDY-ADAPTER-FLOW.md).

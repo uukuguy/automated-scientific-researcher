@@ -57,6 +57,7 @@ class ResearchBridge:
         if operation=='freeze_candidate':
             return self.freeze_candidate(arguments,key)
         if operation=='submit_study':
+            self._reconcile_studies(s.get_run(t,p,r))
             receipt=s.submit_study(t,p,r,request_key=key,**arguments)
             return self.dispatch_trial(receipt)
         if operation in ('submit_trial','submit_candidate'):
@@ -96,7 +97,16 @@ class ResearchBridge:
                 current=self.service.get_run(self.researcher_token,self.project,self.run)
                 trial=next(x for x in current['trials'] if x['execution_attempt_id']==receipt['execution_attempt_id'])
                 if trial['dispatch_state']=='queued':self.dispatch(receipt)
+        if 'paired_adapter' in receipt:
+            from asr_service.study_adapters import reconcile
+            reconcile(self.service,self.researcher_token,self.project,self.run,receipt['trial_id'],retry=True)
         return dict(receipt=receipt,state=self.state())
+
+    def _reconcile_studies(self,run):
+        from asr_service.study_adapters import reconcile
+        for trial in run['trials']:
+            if 'paired_adapter' in trial:
+                trial['study_adapter_check']=reconcile(self.service,self.researcher_token,self.project,self.run,trial['trial_id'])
 
     def freeze_candidate(self,arguments,key):
         if arguments!={'path':'candidate.m'}:raise ValueError('candidate_entrypoint_required')
@@ -129,6 +139,7 @@ class ResearchBridge:
         run=self.service.get_run(self.researcher_token,self.project,self.run)
         if self.capability_profile in ('ood-study-development/1','ood-study-synthesis/1','research-organization-study/1'):
             from .study_projection import project_state
+            self._reconcile_studies(run)
             return project_state(self,run)
         if self.capability_profile=='powerflow-readonly-finalization/1':
             return dict(projection='readonly-finalization/1',run={key:run[key] for key in ('project_id','research_run_id','experiment_id','state','contract_revision','budget')},

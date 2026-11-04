@@ -96,6 +96,8 @@ class ControlService(PolicyStore):
             initialize_evaluations(db)
             from .organization import initialize as initialize_organization
             initialize_organization(db)
+            from .study_adapters import initialize as initialize_study_adapters
+            initialize_study_adapters(db)
 
     def change_organization(self, token, project, run, **arguments):
         from .organization import change
@@ -206,6 +208,9 @@ class ControlService(PolicyStore):
                 raise ControlError('paired_profile_unavailable')
             from .paired_sampling import validate
             validate(doc['provenance']['paired_sampling'],doc['budget'])
+        if 'paired_adapter' in doc['provenance']:
+            from .study_adapters import validate as validate_adapter
+            validate_adapter(doc['provenance'])
         if execution['output_bytes']!=104857600 or execution['retry_limit']!=0 or execution['timeout_seconds']>3600: raise ControlError('capability_unavailable')
         if next(CONTRACT_VALIDATOR.iter_errors(doc),None) is not None: raise ControlError('invalid_contract_schema')
         return doc

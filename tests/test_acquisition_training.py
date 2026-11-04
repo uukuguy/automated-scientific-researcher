@@ -58,7 +58,12 @@ class TrainingBundleTests(unittest.TestCase):
     def setUp(self):
         import hashlib
         root=Path('artifacts/p5-training-binding-002')
-        for entry in json.loads((root/'inventory.json').read_text()):
+        receipt=json.loads(Path('docs/validation/P5-TRAINING-BINDING.json').read_text())
+        self.assertEqual(hashlib.sha256((root/'inventory.json').read_bytes()).hexdigest(),receipt['inventory_sha256'])
+        correction=receipt.get('archive_correction')
+        inventory=root/(correction['inventory'] if correction else 'inventory.json')
+        if correction:self.assertEqual(hashlib.sha256(inventory.read_bytes()).hexdigest(),correction['sha256'])
+        for entry in json.loads(inventory.read_text()):
             self.assertEqual(hashlib.sha256((root/entry['path']).read_bytes()).hexdigest(),entry['sha256'])
         self.prepared=json.loads((root/'fixture/preparation.json').read_text())
         self.bundle=json.loads((root/'fixture/label-bundle.json').read_text())

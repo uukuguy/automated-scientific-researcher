@@ -220,3 +220,20 @@ prior process or obtain a new budget ledger. Failed setup costs remain charged
 when a different member subsequently reserves time. No new session timeout or
 automatic retry is added; old membership revisions and tool profiles are rejected
 before admission. Parallel model execution needs a separate reviewed integration.
+
+### P5 paired research adapter (2026-11-04)
+
+The optional paired-acquisition/1 adapter keeps the team's64-slot arm and
+1101–1108 seed set as explicit scientific-protocol constraints. These are not
+new default ASR capacity limits. Its fixed original128 and IEEE118 checks bind
+the proposed training comparison; other methods remain possible without this
+project-specific adapter. Violations reject preparation before execution and do
+not resize, truncate or resample. Ordinary study batch/payload/budget limits
+continue to use their existing detailed diagnostics and owning ledger.
+
+No new runtime timeout or automatic execution retry was introduced. Failed
+processes keep their consumption; blocked verification records code/message and
+recovery in the same Control event history and state projection. Replaying the
+original request only retries verification of completed evidence. Artifacts stay
+outside model output; state returns hashes/counts/diagnostics. Full raw evidence
+and immutable adapter JSON remain in the authoritative local stores.

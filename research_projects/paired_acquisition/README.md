@@ -36,5 +36,7 @@ payload across the native and prototype representations. The model binding
 includes both immutable trial references, model hash and training-payload hash.
 It establishes execution provenance; it is not independent model replay or a
 scientific-benefit verdict. The caller must persist preparation/ledger/manifest
-pins at the appropriate boundaries. The controlled test does this on disk; a
-model-driven research run still needs its governed artifact/tool integration.
+pins at the appropriate boundaries. Control now supports this persistence through the explicit `paired_adapter`
+contract setting and existing study tool; its DB owns the artifact pins.
+Actual Bridge interruption/recovery is tested, while model-driven team science
+remains outstanding. See `docs/validation/P5-STUDY-ADAPTER-FLOW.md`.

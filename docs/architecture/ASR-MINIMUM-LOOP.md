@@ -444,3 +444,18 @@ actual fit and label manifests, native payload and returned model hashes. The
 module is an evidence adapter, not a scheduler or a new runtime authority. Actual
 full-arm task-bound containers are verified; model-driven artifact persistence
 and fresh scientific comparison remain open.
+
+### Study adapter artifact recovery (2026-11-04)
+
+`paired_adapter` provenance opts into `paired-acquisition/1`, with a pinned image
+manifest/hash and group_seeds. `asr_study_artifacts` stores immutable JSON and
+hashes scoped to project/run/trial/kind in Control's database. Dispatch freezes
+preparation and fit dependency references; Supervisor evidence binds them.
+`asr_study_adapter_checks` is a derived latest check projection, with transitions
+retained in the existing event history. It neither owns attempts nor costs.
+Label preparation commits in the original admission transaction. A fit requires
+verified label/manifest references. Bridge reconciles completed work after
+execution or on state recovery, returning compact verification diagnostics.
+Blocked checks require explicit original-key submission replay; finished attempts
+are not re-executed. Saved evidence/artifacts are rechecked before cached success.
+See [actual recovery checks](../validation/P5-STUDY-ADAPTER-FLOW.md).

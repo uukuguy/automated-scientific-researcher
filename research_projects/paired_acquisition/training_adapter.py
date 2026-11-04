@@ -85,7 +85,7 @@ def read_trial(service, token, project, run, trial_id):
         request = trial['execution_request']
         p.require(manifest['trial_id']==trial_id and manifest['execution_attempt_id']==reference['execution_attempt_id'], 'evidence identity mismatch')
         p.require(manifest['request_sha256']==hashlib.sha256(canonical(request)).hexdigest(), 'evidence request mismatch')
-        for field in ('paired_sampling','organization_task'):
+        for field in ('paired_sampling','organization_task','paired_adapter'):
             p.require(manifest.get(field)==trial.get(field), 'evidence binding mismatch')
         p.require(digest(root/'study-input.json')==request['payload_sha256'], 'native payload mismatch')
         payload = json.loads((root/'study-input.json').read_text())

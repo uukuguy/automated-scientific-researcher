@@ -105,13 +105,41 @@ Full suite374tests:350passed,24skipped; /tmp/asr-training-final-tests.log.
 Real full-arm container1/1passed; /tmp/asr-training-docker-002.log. A synthetic
 failed-slot test yields191rows while keeping64 proposed slots and all costs.
 
-Next: integrate these adapters and external artifact pins into the model-driven
-team's scientific execution workflow. Preparation/bundle/manifest persistence
-in the real test is controller-driven; not yet a researcher tool flow. Team must
-implement its proposed coordinate generator; no platform-hardcoded new sampler.
-New scientific runtime/compute authorization and fresh independent panels remain
-required. Existing design/P4 runs stay closed. No P5 completion or scientific
-benefit claim follows from the engineering fixtures.
+## Research tool recovery slice
+
+Optional provenance.paired_adapter={profile:paired-acquisition/1,image_manifest,
+image_manifest_sha256,group_seeds} is explicitly admitted. Control's own DB stores
+asr_study_artifacts (immutable scoped JSON/hash) and derived latest
+asr_study_adapter_checks; transitions remain in the existing event log.
+Label preparation freezes before dispatch in the budget/admission transaction;
+fit requires verified label bundle/training manifest. No new scheduler/ledger.
+Supervisor evidence includes adapter refs. Existing submit_study and state tools
+reconcile completed attempts, including restart after execution but before tool
+return. Original request replay retries verification only; no finished job rerun.
+Corrupt artifacts/raw evidence produce durable blocked status and readable state
+without altered results. Repair then explicit replay restores checks; history stays.
+
+Real fixture artifacts/p5-adapter-flow-002 passed64 labels/192row fit,2 attempts,
+10,007ms,64 sample permits,zero reservations.001 also retained. Both full stores,
+raw evidence, final state/check history/logs/maps/inventories archived. Receipt
+and readable report: docs/validation/P5-STUDY-ADAPTER-FLOW.{json,md}.
+Full regression382tests:357passed,25skipped; explicit Docker1/1passed.
+Logs /tmp/asr-adapter-flow-final-tests.log and /tmp/asr-adapter-flow-docker-002.log.
+No model calls, no new scientist-generated coordinates or utility claim.
+
+Regression found prior training-binding001/002 inventories included transient
+SQLite SHM and an empty WAL from an open read connection. All durable hashes
+verified unchanged. Original inventories remain; inventory-v2.json plus correction
+record now excludes those transient entries. P5-TRAINING-BINDING.json pins both
+original and corrected002 inventories. Tests verify both; archive inspection now
+uses closed immutable SQLite reads. Never remove/ignore a nonempty WAL.
+
+Next: prepare an actual model-driven scientific run using these tool flows.
+Team must implement its proposed coordinate generator; platform does not choose
+new sampler. Prospective paired coordinates/adapter settings and runtime/compute
+budget need new-run admission; old P4/design runs stay closed. Fresh independent
+panels and full scientific comparison, parallelism and Capstone remain open.
+Current evidence proves actual tools/recovery but not autonomous team science.
 
 ## P4 anchors
 
@@ -124,6 +152,6 @@ No new novelty/real-industrial/generalization claim follows from P5 design work.
 
 ## Workspace
 
-Pilot/auth changes committed as2564854. Task-bound execution slice committed as6a04b18; paired sampling/adapter slice committed asddab838. Full-arm training/receipt slice is currently uncommitted. No active native model owner.
+Pilot/auth changes committed as2564854. Task-bound execution slice committed as6a04b18; paired sampling/adapter slice committed asddab838. Full-arm training/receipt slice committed as3a86789; study tool recovery slice currently uncommitted. No active native model owner.
 Recovery logs /tmp/asr-p5-organization-001-resumed.log and
 /tmp/asr-p5-organization-001-network-recovery.log. Preserve ignored evidence.

@@ -124,6 +124,10 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
         paired_policy=doc['provenance'].get('paired_sampling')
         paired_sampling.check_run(db,project,run,paired_policy)
         pairing=None
+        adapter_binding=None
+        from . import study_adapters
+        study_adapters.check_run(db,project,run,doc['provenance'])
+        trial = 'trial_' + uuid.uuid4().hex
         if type(timeout_seconds) is not int or timeout_seconds <= 0:
             raise StudyRequestError('study timeout exceeds admitted execution policy')
         check_limit('study_timeout_limit','study_timeout_seconds',min(300,doc['execution_policy']['timeout_seconds']),timeout_seconds)
@@ -160,6 +164,7 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
             if any(point in exposed for point in points):
                 raise StudyRequestError('proposal duplicates a prior label/probe trial; preserve original purpose and evidence')
             proposed = len(points)
+            adapter_binding=study_adapters.prepare_label(db,project,run,trial,doc['provenance'],pairing,materials)
             materials = {'case': materials['case']}
             worker_request = {key:request[key] for key in ('operation','purpose','coordinates')}
             variables = dict(operation=operation, purpose=request['purpose'])
@@ -187,6 +192,7 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
             check_limit('study_dependency_limit','study_input_trials',12,len(ids))
             materials['augmentation'] = []
             pairing=paired_sampling.fit_binding(db,project,run,paired_policy,ids)
+            adapter_binding=study_adapters.prepare_fit(db,project,run,doc['provenance'],ids)
             for trial_id in ids:
                 material, reference = completed_material(db, project, run, trial_id)
                 if material['variables'] != {'operation': 'label', 'purpose': 'augmentation'}:
@@ -214,7 +220,6 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
             with os.fdopen(fd, 'wb') as stream:
                 stream.write(body); stream.flush(); os.fsync(stream.fileno())
         attempt = 'attempt_' + uuid.uuid4().hex
-        trial = 'trial_' + uuid.uuid4().hex
         budget = dict(attempts=1, execution_ms=timeout_seconds * 1000, sample_proposals=proposed)
         service.budgets.reserve_many_in_transaction(db, project, attempt, budget)
         execution_request = dict(profile=PROFILE, image_id=config['image_id'], payload_path=str(path.resolve()),
@@ -227,6 +232,7 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
                       proposal_accounting='Conservative permits: all admitted proposals charged once execution starts; partial results retained.')
         if task_binding is not None:record['organization_task']=task_binding
         if pairing is not None:record['paired_sampling']=pairing
+        if adapter_binding is not None:record['paired_adapter']=adapter_binding
         db.execute('INSERT INTO asr_dispatch VALUES (?,?,?,?,?,?,?)', (attempt, project, run, trial, attempt, 'queued', encoded(record)))
         service._remember(db, project, 'study:' + run, request_key, payload, record)
         service._event(db, project, run, 'trial_admitted', trial_id=trial, execution_attempt_id=attempt, profile=PROFILE)

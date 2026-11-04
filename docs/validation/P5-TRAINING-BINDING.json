@@ -30,5 +30,10 @@
     "No independent model replay",
     "No new held-out panel",
     "No scientific utility claim"
-  ]
+  ],
+  "archive_correction": {
+    "inventory": "inventory-v2.json",
+    "sha256": "bc5beddfb0efb1e243e69d6b140b406da437255988b0c06b492d8dd39bf5c444",
+    "note": "Original inventory unchanged; only transient SHM and proven-empty WAL excluded. All durable original hashes verified."
+  }
 }

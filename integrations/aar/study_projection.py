@@ -12,6 +12,8 @@ def project_state(bridge, run):
     for trial in run['trials']:
         item = {key: trial[key] for key in ('trial_id', 'execution_attempt_id', 'dispatch_state', 'variables', 'hypothesis_ref')}
         if 'paired_sampling' in trial:item['paired_sampling']=trial['paired_sampling']
+        if 'paired_adapter' in trial:item['paired_adapter']=trial['paired_adapter']
+        if 'study_adapter_check' in trial:item['study_adapter_check']=trial['study_adapter_check']
         binding=trial.get('organization_task')
         if binding:
             item['organization_task']=dict(subject=binding['subject'],operation=binding['operation'],
@@ -22,8 +24,15 @@ def project_state(bridge, run):
         if report:
             item['report'] = {key: report[key] for key in ('status', 'manifest_hash', 'usage', 'execution_exited')}
             path = Path(report['evidence_path'])
-            if digest(path / 'manifest.json') != report['manifest_hash'] or json.loads((path / 'manifest.json').read_text())['artifacts'] != publication_inventory(path):
-                raise ValueError('study evidence corrupt')
+            try:
+                if digest(path / 'manifest.json') != report['manifest_hash'] or json.loads((path / 'manifest.json').read_text())['artifacts'] != publication_inventory(path):
+                    raise ValueError('study evidence corrupt')
+            except Exception as error:
+                if trial.get('study_adapter_check',{}).get('status')!='blocked':raise
+                item['evidence_error']=dict(error_type=type(error).__name__,message=str(error),
+                    recovery='Raw evidence is unavailable or corrupt. Keep this attempt; repair from its immutable copy before explicit verification replay.')
+                trials.append(item)
+                continue
             result_path = path / 'study-result.json'
             if result_path.exists():
                 result = json.loads(result_path.read_text())
