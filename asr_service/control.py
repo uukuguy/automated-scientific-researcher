@@ -96,6 +96,8 @@ class ControlService(PolicyStore):
             initialize_evaluations(db)
             from .organization import initialize as initialize_organization
             initialize_organization(db)
+            from .research_notes import initialize as initialize_research_notes
+            initialize_research_notes(db)
             from .study_adapters import initialize as initialize_study_adapters
             initialize_study_adapters(db)
 
@@ -110,6 +112,10 @@ class ControlService(PolicyStore):
     def organization_records(self, token, project, run, **arguments):
         from .organization import records
         return records(self, token, project, run, **arguments)
+
+    def research_note(self, token, project, run, **arguments):
+        from .research_notes import operation
+        return operation(self, token, project, run, **arguments)
 
     def _auth(self, token, project, roles=None):
         principal = None

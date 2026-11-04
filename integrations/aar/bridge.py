@@ -62,6 +62,8 @@ class ResearchBridge:
         if operation=='permit':
             result=s.admit_activity(self.supervisor_token,p,r,kind=arguments['kind'],idempotency_key=key,**self.runtime_identity)
             self.permits.append(result); return result
+        if operation=='research_note':
+            return s.research_note(t,p,r,idempotency_key=key,**arguments)
         if operation=='organization_records':
             return s.organization_records(t,p,r,**arguments)
         if operation=='organization_change':

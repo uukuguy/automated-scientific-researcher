@@ -291,7 +291,7 @@ write durable output early and finish each session promptly after your handoff.
             effective=remaining_session_limits(caps,budget)
             step=root/'steps'/f'{len(steps):03d}-{actor}';step.mkdir(parents=True)
             work=root/'workspaces'/actor;sync_snapshots(root,work)
-            denied=[ROOT/'artifacts/p4-intake-001',ROOT/'artifacts/p4-simulated-client-001',root/'control.db',root/'control.db-wal',root/'control.db-shm',root/'steps',root/'snapshots',Path.home()/'.pi/agent']
+            denied=[ROOT/'artifacts/p4-intake-001',ROOT/'artifacts/p4-simulated-client-001',root/'control.db',root/'control.db-wal',root/'control.db-shm',root/'research-notes',root/'steps',root/'snapshots',Path.home()/'.pi/agent']
             denied += [root/'workspaces'/name for name in ACTORS if name!=actor]
             if scientific:denied += [root/'study-evidence',root/'asr-artifacts']
             for name,role in ACTORS.items():

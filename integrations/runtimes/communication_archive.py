@@ -129,6 +129,14 @@ def archive(root, destination):
         for table in ('asr_organization','asr_events','asr_runtime_sessions','asr_commands','asr_contracts','asr_hypotheses','asr_findings'):
             rows = [json.loads(row[0]) for row in db.execute('SELECT record FROM '+table+' ORDER BY rowid')]
             write('control/'+table+'.json', clean(rows, table))
+        if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='asr_note_heads'").fetchone():
+            heads=[dict(zip(('project','run','owner','revision'),row)) for row in db.execute('SELECT project,run,owner,revision FROM asr_note_heads ORDER BY project,run,owner')]
+            write('control/asr_note_heads.json',clean(heads,'asr_note_heads'))
+    for path in sorted((root/'research-notes').glob('*/revisions/*.json')):
+        if path.is_symlink() or any(parent.is_symlink() for parent in path.parents if parent!=root and parent.is_relative_to(root)):
+            gaps.append(dict(code='unsafe_note_path',path=str(path.relative_to(root))))
+            continue
+        capture(path,str(path.relative_to(root)))
     for name in ('identity.json','resource-policy.json','human-instructions.jsonl'):
         if (root/name).is_file():
             capture(root/name, name, name.endswith('.jsonl'))

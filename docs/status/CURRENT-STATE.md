@@ -117,3 +117,5 @@ See docs/validation/P5-PROJECT-PILOT.md and RESEARCH-COMMUNICATION.md.
 研究组织支持显式角色会话换代：各代原生日志保留，身份/工作区/累计预算保持不变；交流归档涵盖各代来源。研究上下文压缩尚未实现，已作为D034专项登记，参考Asterion Prime/P7，见`docs/architecture/RESEARCH-CONTEXT.md`。
 
 独立`asr_context`提供原文引用投影和本地不可变研究笔记。笔记不持有权威采纳指针，恢复前核对当前来源；Runtime、模型调用和Control接入仍独立待实现。接口见`asr_context/README.md`。
+
+Control现有数据库记录组织成员私有研究笔记的采用状态；ResearchBridge的research_note工具按当前身份处理save/adopt/read，恢复检查控制/组织来源。笔记文件与采用指针进入交流归档。没有自动语义压缩或Runtime安装。

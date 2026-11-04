@@ -64,3 +64,15 @@ class CommunicationArchiveTests(unittest.TestCase):
         self.assertEqual([r['sequence'] for r in records],[1,2])
         self.assertEqual(records[0]['event'],event)
         self.assertIsNotNone(datetime.fromisoformat(records[0]['recorded_at']).tzinfo)
+
+    def test_private_note_versions_and_accepted_heads_are_archived(self):
+        from integrations.runtimes.communication_archive import archive
+        path=self.root/'research-notes/member/revisions';path.mkdir(parents=True)
+        (path/'version.json').write_text(json.dumps(dict(text='preserved research note',access_token='secret-note-token')))
+        with sqlite3.connect(self.root/'control.db') as db:
+            db.execute('CREATE TABLE asr_note_heads(project TEXT,run TEXT,owner TEXT,revision TEXT)')
+            db.execute("INSERT INTO asr_note_heads VALUES ('p','r','lead','version')")
+        archive(self.root,self.out)
+        self.assertTrue((self.out/'control/asr_note_heads.json').is_file())
+        text=(self.out/'research-notes/member/revisions/version.json').read_text()
+        self.assertIn('preserved research note',text);self.assertNotIn('secret-note-token',text)

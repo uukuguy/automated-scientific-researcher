@@ -40,7 +40,8 @@
     "asr.ack_guidance",
     "asr.submit_study",
     "asr.organization_records",
-    "asr.organization_change"
+    "asr.organization_change",
+    "asr.research_note"
   ],
   "hooks": [
     "before_provider_request: turn permit",

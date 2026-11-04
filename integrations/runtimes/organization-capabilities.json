@@ -36,7 +36,8 @@
     "asr.state",
     "asr.organization_records",
     "asr.organization_change",
-    "asr.snapshot"
+    "asr.snapshot",
+    "asr.research_note"
   ],
   "hooks": [
     "before_provider_request: turn permit",
