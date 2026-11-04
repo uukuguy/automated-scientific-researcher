@@ -273,3 +273,16 @@ durable handoff before emergency deadlines remain implementation work. Existing
 unknown-process fencing, isolation/resource limits, provider failures and raw
 failure retention continue. Default adequacy beyond this observed workload still
 requires real evidence, not just larger numbers.
+
+
+## Project-directed run policy (D030)
+
+organization-project-limits.json declares4h aggregate/30min role model failsafes,
+1600/3200 total turns/tools and200/400 per session;256 scientific tasks,4096
+label slots and7200000ms cumulative local compute. Per-job60s is the observed
+small case118 batch envelope, not a universal researcher deadline. Counts are
+capacity, not a mandated experiment schedule. Existing Control reserves and
+retains all failed consumption; profile payload/batch restrictions still apply.
+The project brief reads current state instead of repeating stale20min/4min values.
+No paid fallback, automatic retry or hidden-evaluation grant. User continuation
+under D030 authorizes the configured new project run, not old-budget reopening.

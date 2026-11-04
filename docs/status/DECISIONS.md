@@ -244,3 +244,24 @@ old contracts and failed sessions. No hidden budget reset or automatic paid
 fallback. The existing Control publication/application path owns revisions;
 local policy intent/receipt is recovery evidence, not another ledger. True
 progress-aware anomaly detection remains unimplemented and separately tracked.
+
+
+## D030 — Researchers own the scientific process; development observes externally (2026-11-04)
+
+User corrected the tendency to encode a team's intermediate products and research
+sequence in ASR. Organizer/Leads/Workers must produce and evolve research plans,
+project implementations and intermediate artifacts themselves. ASR supplies
+execution/evidence/permission/budget/contract infrastructure and independent
+validation boundaries. Developers externally monitor/evaluate behavior and repair
+infrastructure; they must not act as an invisible scientist or scheduler.
+
+The four-arm/eight-seed/33-model comparison is one historical team proposal, not
+ASR architecture. Explicitly admitted evaluation criteria can be frozen and
+verified, without making the research path universal. Preserve previous project
+adapters as transparently developer-authored, opt-in integration evidence, not
+proof that the team autonomously performed those steps. Supersedes the immediate
+plan for developer-built fixed P5 comparison orchestration. Uncommitted selection
+math moved out of asr_evaluation into tests/paired_selection_reference.py as an
+external test reference only; no runtime path may import or invoke it. Next step
+is to expose adequate generic capabilities and let the team determine its own
+continuation, while retaining independent evaluation and hidden-data boundaries.

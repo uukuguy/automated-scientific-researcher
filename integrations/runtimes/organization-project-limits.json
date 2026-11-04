@@ -1,0 +1,33 @@
+{
+  "schema": "asr-organization-project-resources/1",
+  "budget": {
+    "attempts": 256,
+    "execution_ms": 7200000,
+    "sample_proposals": 4096,
+    "research_walltime_ms": 14400000,
+    "turns": 1600,
+    "tool_executions": 3200
+  },
+  "session_limits": {
+    "walltime_seconds": 1800,
+    "turns": 200,
+    "tool_executions": 400
+  },
+  "capacity": {
+    "max_active_leads": 2,
+    "max_active_workers": 2
+  },
+  "analysis_timeout_seconds": 60,
+  "image_manifest": "artifacts/p4-final-image-002/manifest.json",
+  "public_directory": "artifacts/p4-simulated-client-001/public",
+  "purpose": "User-authorized continuation under project-level requirements; team determines the research path. Subscription-only models and local isolated computation.",
+  "basis": "Four model hours and thirty-minute role sessions retain completion headroom.4096 label slots and256 jobs cover substantial exploratory computation without prescribing a sampler, direction count or experiment sequence. Two compute hours bound local CPU use;60 seconds per small case118 batch reflects measured fast batches, not a general solver limit. Unknown outcomes retain reservations. This does not authorize hidden-test release or paid billing.",
+  "exceedance": "Record exact dimension, observed usage, pending work and recovery; preserve evidence, tasks and spent costs. Emergency ceilings pause recoverably, never mark research failed or complete. Model-only extensions require explicit recorded user direction through Control contract revision; no silent retry, allowance increase or paid fallback.",
+  "paid_api_authorized": false,
+  "paid_api_fallback": false,
+  "study_operations": [
+    "analysis",
+    "label",
+    "fit"
+  ]
+}

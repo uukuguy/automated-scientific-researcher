@@ -247,3 +247,11 @@
 - 2026-11-04: Independently converted team coordinates; actual wrong-order hash rejected;32arms/2048inputs prepared without model calls or numerical jobs.
 
 - 2026-11-04: Generator admission verified:9focused tests;399regression/374pass/25skip; exact archive/source hashes and original run costs unchanged.
+
+- 2026-11-04: 78485e6 binds team coordinates to independently checked protocols, blocking the observed circular-oracle defect before experiment admission.
+
+- 2026-11-04: User requests visualization when comparison interfaces stabilize; plan Capstone views with separate human/researcher evaluation access.
+
+- 2026-11-04: User clarified external development oversight; moved fixed selection code out of runtime, preserving research-team ownership of process.
+
+- 2026-11-04: Added project-spec entry with explicit resources and optional history;412tests/387pass/25skip; fixed selection remains external test reference.

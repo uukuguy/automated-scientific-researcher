@@ -149,3 +149,22 @@ model hours/30-minute role sessions,1600/3200 total turns/tools and200/400 per
 session. These are current configurable failsafes, not permanent scientific limits.
 Progress-aware no-progress/repetition detection is not yet implemented; do not
 claim that these duration ceilings detect anomalies.
+
+
+## Research autonomy and external development oversight
+
+Under the research organization, the Organizer/Leads/Workers own scientific
+problem decomposition, direction formation, project algorithms, intermediate
+artifacts, experiment planning and iteration. ASR must not turn one team's
+proposal into a hard-coded research workflow or require its particular artifact
+sequence as a universal process. Core controls own permissions, explicit resource
+policies, immutable evidence, effective contract versions and independent
+validation boundaries. Enforcing an explicitly frozen evaluation rule is distinct
+from prescribing how researchers reach a result.
+Development work observes and evaluates real team behavior from outside; repair
+generic infrastructure defects without silently supplying scientific decisions,
+project code or next-step orchestration. Record any lifecycle intervention and
+any developer-authored project adapter/reference separately from team outcomes.
+Project-specific validators remain opt-in to that contract, never universal ASR
+rules. No hard-coded four-arm/eight-seed/33-model sequence in the core. Scientific
+changes require explicit prospective protocol revision, not hidden evaluator edits.

@@ -1,0 +1,57 @@
+{
+  "schema": "asr-research-project/1",
+  "title": "Useful OOD training samples for a fixed power-flow surrogate",
+  "objective": {
+    "question": "For the specified trainable power-flow surrogate that performs poorly on OOD conditions, investigate how to generate usable similar-distribution training samples and improve generalization.",
+    "success_criteria": "Deliver a reproducible, evidence-backed assessment of generalization benefit and ID retention under the client acceptance rules. Negative or inconclusive findings are valid; independent confirmation and unavailable capabilities must be distinguished from exploratory results.",
+    "scope": "Fixed synthetic IEEE118 client problem, supplied target trainer/features and public materials. Research organization chooses directions, methods, intermediate products and experiments. Historical studies are development knowledge, not fresh held-out evidence."
+  },
+  "requirements": [
+    "Organize the research autonomously. Historical proposals may be adopted, revised or rejected with reasons; no prescribed sampler, direction count, model roster, seed set or experiment sequence.",
+    "Keep the client problem, fixed target method and formal acceptance rules explicit. Distinguish scenario, method and problem-definition changes; any requested change needs prospective versioned agreement.",
+    "Use governed execution and evidence tools within the effective contract. Preserve code, inputs, environments, costs, failures and every attempt; no selective reporting or silent replacement of failed samples.",
+    "Link hypotheses, experimental choices, evidence and conclusions. Distinguish execution success, equation validity, operating feasibility, reproducibility and generalization.",
+    "Prevent evaluation leakage. Do not train on evaluation labels or treat known P4 outcomes as new hidden evidence. Formal success requires independent evaluation; report what current tooling cannot establish.",
+    "Developers observe and assess externally. Do not attribute host-authored adapters, lifecycle recovery or reference checks to team scientific contributions.",
+    "Complete useful project work and human-facing delivery. If a genuine capability gap prevents a requirement, document the exact gap, retained evidence and unmet criterion rather than inventing a result."
+  ],
+  "deliverables": [
+    "Team-authored research rationale and project code with traceable provenance.",
+    "Reproducible experimental materials and actual execution evidence, including failed and negative outcomes.",
+    "A human-readable synthesis separating supported findings, limitations, independent validation status and remaining project requirements."
+  ],
+  "materials": {
+    "CLIENT-TASK.json": {
+      "path": "artifacts/p4-simulated-client-001/public/task.json",
+      "sha256": "a7e9b6bfda58f82ebf509a90e46721b2a0c7c26437c15aa231363fb804cd75dd"
+    },
+    "TARGET-METHOD.py": {
+      "path": "research_projects/ood_augmentation/project.py",
+      "sha256": "61feddeef8add21223b22da0199616afd1a2395c5761b77548927768a5cc3c97"
+    },
+    "HISTORY-P4-RESULTS.md": {
+      "path": "docs/validation/P4-SCIENTIFIC-RESULTS.md",
+      "sha256": "cae2cdc25dae0ab6830282d249b2f5dc21f6e2c31e725a967797d962754c3578"
+    },
+    "HISTORY-P4-RESEARCHER.md": {
+      "path": "docs/validation/P4-RESEARCHER-FINAL.md",
+      "sha256": "568592bdcd044132450e7563cf4e8537b4fe06dd31190236af5de5aecabbe2fa"
+    },
+    "HISTORY-TEAM-PROPOSAL.md": {
+      "path": "artifacts/p5-organization-delivery-001/snapshots/29c1fa7302d7ded1492ce5b7b9b17457f8ad3fe3401c7be2a3587b1354dac262/files/NEXT-EXPERIMENT.md",
+      "sha256": "e86753380cd077d0fee3e77c201a367b083e1cc9a5275d4e603ccd5f45e529b9"
+    },
+    "HISTORY-TEAM-REPORT.md": {
+      "path": "research_projects/paired_acquisition/delivered_implementation/ORGANIZATION-REPORT.md",
+      "sha256": "3672d4d76bb1e1aa8bd36429beebc9a55f19b0cb01300b2d6665e78e24c0b64c"
+    },
+    "HISTORY-GENERATOR.py": {
+      "path": "research_projects/paired_acquisition/delivered_implementation/paired_generator.py",
+      "sha256": "ad498577d9d919bb6cc17c71a5ab970adf5370f8555ed6216a55683a682086ca"
+    },
+    "HISTORY-REVIEW.md": {
+      "path": "research_projects/paired_acquisition/delivered_implementation/WORKER-REVIEW-REPORT.md",
+      "sha256": "459fe1ded2a4241e0cde4097e0fd0fe41eb874041bc5a6f1a0cce2b0a366d61b"
+    }
+  }
+}

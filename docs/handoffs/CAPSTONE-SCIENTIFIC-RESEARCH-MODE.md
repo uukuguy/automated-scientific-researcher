@@ -236,3 +236,21 @@ ASR's bounded P3 acceptance is complete; see `docs/validation/P3-SYSTEM-ACCEPTAN
 Candidate/evaluation/replication and quota-observation local routes are documented in `asr_service/README.md`; this does not imply wire compatibility with Capstone. Typed artifact verification and evaluator attestations remain distinct. Show limit name, configured/observed values, action and recovery; do not silently discard a research task on exhaustion. Current single researcher is the Research Lead prototype, not a deployed Organizer/Lead/Worker hierarchy.
 
 This update is prepared in ASR only. Delivery, acceptance and Capstone implementation remain unconfirmed. P4 formal scientific comparison requires its own frozen contract and finite budget.
+
+
+## Planned visualization entry point (2026-11-04)
+
+User requests a visual research dashboard at the appropriate stage. Start integration
+once actual comparison data, evidence references and development/final evaluation
+interfaces are stable. Initial views: organization/task progress, sample distributions,
+training/evaluation comparisons and retained failures. Render authoritative ASR records;
+do not create another scheduler or budget ledger. Separate human inspection views from
+researcher tool access; unreleased final coordinates/labels must not flow into agent
+context. This is an ASR-side plan, not delivered or accepted Capstone implementation.
+
+
+D030: visualize actual team-authored plans, decisions and artifacts rather than a
+fixed developer-prescribed scientific workflow. Mark human/developer lifecycle
+interventions and developer-authored project adapters distinctly. The workbench
+observes and communicates with the Organizer; it must not silently direct research
+steps or convert one four-arm/eight-seed proposal into a universal process.

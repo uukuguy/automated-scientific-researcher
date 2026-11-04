@@ -54,7 +54,7 @@ Verification:390tests,365pass,25environment skips;
 actual final run/evidence hashes independently audited. No processes running.
 
 ## Independent generator admission completed
-New project-local generator_admission.py verifies actual analysis manifest/source/
+Committed78485e6 project-local generator_admission.py verifies actual analysis manifest/source/
 candidate pins, independent literal seed/block/count/order correspondence, public
 input hashes/collisions and native protocol structure. Actual reviewer wrong-order
 candidate was reconstructed by permutation and matched its realhash897d3f9c...
@@ -68,19 +68,39 @@ Artifacts p5-generator-admission-001; reportdocs/validation/P5-GENERATOR-ADMISSI
 Nine focused tests pass; fullregression399tests/374pass/25skip,
 log/tmp/asr-generator-admission-full.log; archive and converter hashes verified.
 
-## Next substantive P5 work
-Prepare actual new research contract and independent development/final panel
-execution/selection for the frozen team comparison.2048augmentation slots are
-only part of original3584-slot proposal;1536panel slots,33fits,replay and scoring
-are not executed. Existing source/generatorpins and nativeprotocol now available.
-Preserve delivered source; version any repair. Do not reuse knownP4 outcomes as
-held-out evidence, mix arms, or reopen completed analysis run for labels.
-Parallel roles, same-budget team scientific benefit and Capstone remain open.
-Need progress-aware anomaly detection and graceful durable emergency handoff,
-not simply progressively larger defaults.
+## Next substantive P5 work — D030 correction
+User explicitly rejects developer-hardcoded scientific process/intermediate
+artifacts. Actual organization is Organizer+oneLead+twoWorkers, serial; multiple
+concurrent directions not yet demonstrated. Let the team determine continuation,
+project code and experiments. Developers externally monitor/evaluate and fix
+generic infrastructure, not secretly drive a fixed33-model study.
+Audit generic tools and role context, then hand existing facts/defects/constraints
+to the organization without prescribing research departments or execution sequence.
+Frozen admitted evaluation rules and hidden-data protections remain enforced.
+Earlier generator/training adapters remain developer-authored opt-in project
+integration, not autonomous team contributions. No old run/budget reopened.
+Uncommitted fixed selection math was moved from asr_evaluation to
+tests/paired_selection_reference.py; synthetic tests only, no runtime imports.
+New panels/fit/scoring not implemented or executed. P5 scientific/parallel and
+Capstone acceptance remain open. Keep D029 generous completion-first model limits.
 
 ## History anchors
 c9a1dbc implementation launcher; bb8b386study adapter tool recovery;
 3a86789full-arm training; ddab838paired admission;6a04b18task gates;
 2564854design pilot/canonical OAuth synchronization. 784c241 commits the explicit policy revision, completed team-delivery artifacts
 and aligned docs. Only post-commit journal/checkpoint bookkeeping remains.
+
+## Visualization timing
+User confirmed eventual visual dashboard. Trigger Capstone integration when actual comparison data/evidence/evaluation interfaces stabilize; show progress, distributions, comparisons and failures. Keep unreleased final data out of researcher context. Plan only; no Capstone delivery yet.
+
+
+## Project-spec launch prepared
+New organization_project module and organization_pilot --project-spec accept
+project requirements plus hashed historical materials, not a fixed scientific
+sequence. New policy4h models/30minrole,4096labels/256jobs/2hcompute/60sjob.
+Preflight /tmp/asr-project-preflight.json ready;412tests/387pass/25skip,
+/tmp/asr-project-entry-full.log. Next new root artifacts/p5-project-001; checkout
+artifacts/p2-aar-private-20261102-final-preflight, proxy127.0.0.1:7897, spec
+research_projects/paired_acquisition/PROJECT-REQUIREMENTS.json. Do not duplicate
+if identity/control/process already exists. Need monitor actual launch through
+report and receipts; no fixed labelling/fit schedule supplied by developer.
