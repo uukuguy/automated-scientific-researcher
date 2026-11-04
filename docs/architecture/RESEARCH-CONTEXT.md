@@ -155,3 +155,13 @@ TypeScript文件位于 `packages/typescript/asterion-prime-extension/src/`，Pyt
 应用前计划重新核对候选对应复核、来源指纹、现行契约/控制、任务与未结算执行；状态变化或交互未结束时不生成待准入计划。成功仅为admission_required，不授予应用资格，也不改变研究账本。
 
 实际只读检查复用了第二轮真实摘要/复核和新的Control状态快照：正常生成待准入计划；受控模拟控制版本变化则deferred。没有修改真实Control状态、调用模型或安装上下文，见[核查回执](../validation/RESEARCH-CONTEXT-PREAPPLICATION.json)。长期轨迹、复杂代码、自动测量/准入/安装仍待完成。
+
+## Control材料准入及运行时覆盖边界
+
+已增加仅人类控制端/Supervisor可调用的prepare_context/admit_context，沿用Control原请求和事件账本。准备时从服务读取本人已采用笔记及当前来源、相关任务与未结算执行，并明确指定复核成员；后续仅接受这两名成员已启动、已退出且身份仍有效的会话登记。它不替代宿主对模型输出来源的收集，也不证明模型判断正确。
+
+服务在事务中重新核对状态和原件，不使用模型自报current_state；研究员不能自行批准材料。拒绝/延迟和准备材料均保留，归档按项目/运行导出相关请求。旧笔记新增本人history_read，便于规则改变后追查和修订，不能直接当成现行记忆。
+
+重要边界：准入仅覆盖已采用笔记与指定来源，尚未覆盖原生会话全部待替换范围。回执明确installation_authorized=false及runtime_coverage_verified=false，不能直接交给pi覆盖原会话。下一步需要：原会话稳定游标和可见交互分组、待替换范围与摘要材料的对应、保留尾部与未完成交互、安装时状态复核，以及安装后摘要/父记录/覆盖边界的指纹回执。原始完整会话继续保存。原生游标映射由各Runtime适配器负责，核心保持通用来源标识。
+
+Context7与本机pi 1.5.0文档均确认session_before_compact能返回自定义compaction，session_compact可报告fromExtension；这只证明接入点存在。它不能证明ASR的覆盖与安装链已经实现。当前服务工程测试使用受管短命进程探针，不把探针冒充新的真实模型准入实验。

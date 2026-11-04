@@ -132,6 +132,20 @@ def archive(root, destination):
         if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='asr_note_heads'").fetchone():
             heads=[dict(zip(('project','run','owner','revision'),row)) for row in db.execute('SELECT project,run,owner,revision FROM asr_note_heads ORDER BY project,run,owner')]
             write('control/asr_note_heads.json',clean(heads,'asr_note_heads'))
+        if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='asr_requests'").fetchone() and (root/'identity.json').is_file():
+            identity=json.loads((root/'identity.json').read_text())
+            project=identity.get('project_id');run=identity.get('research_run_id')
+            if type(project) is str and type(run) is str:
+                requests=[]
+                for scope,key,payload,record in db.execute('SELECT scope,request_key,payload,record FROM asr_requests WHERE project=? ORDER BY scope,request_key',(project,)):
+                    if not scope.startswith(('context-prepare:','context-admission:')):continue
+                    try:
+                        binding=json.loads(scope.split(':',1)[1])
+                        if type(binding) is not list or len(binding)!=2 or any(type(v) is not str for v in binding):raise ValueError('invalid_context_scope')
+                    except ValueError:
+                        gaps.append(dict(code='invalid_context_scope',request_key=key));continue
+                    if binding[0]==run:requests.append(dict(scope=scope,request_key=key,payload=json.loads(payload),record=json.loads(record)))
+                write('control/context_requests.json',clean(requests,'context_requests'))
     for path in sorted((root/'research-notes').glob('*/revisions/*.json')):
         if path.is_symlink() or any(parent.is_symlink() for parent in path.parents if parent!=root and parent.is_relative_to(root)):
             gaps.append(dict(code='unsafe_note_path',path=str(path.relative_to(root))))

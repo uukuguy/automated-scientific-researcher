@@ -33,15 +33,15 @@ def _operation(service, token, project, run, *, operation, idempotency_key, text
               source_sequences=None, revision=None, expected_note=None, artifact_references=None, artifact_reference=None, offset=0, limit=8000):
     principal=service._auth(token,project,{'researcher'})
     service._identity(run,idempotency_key)
-    if operation not in ('save','adopt','read','source_read'):raise ControlError('invalid_note_operation')
+    if operation not in ('save','adopt','read','source_read','history_read'):raise ControlError('invalid_note_operation')
     owner=principal['subject'];scope=encoded([project,run,owner])
     payload=[operation,text,source_sequences,revision,expected_note,artifact_references]
     with service._connect() as db:
         db.execute('BEGIN IMMEDIATE')
         state=service._run(db,project,run);principal_role(db,project,run,principal)
-        if operation not in ('read','source_read') and state['state'] not in ('running','paused'):raise ControlError('note_run_closed')
+        if operation not in ('read','source_read','history_read') and state['state'] not in ('running','paused'):raise ControlError('note_run_closed')
         request_scope='research-note:'+scope
-        if operation not in ('read','source_read'):
+        if operation not in ('read','source_read','history_read'):
             replay=service._replay(db,project,request_scope,idempotency_key,payload)
             if replay:return replay
         row=db.execute('SELECT revision FROM asr_note_heads WHERE project=? AND run=? AND owner=?',(project,run,owner)).fetchone()
@@ -60,6 +60,9 @@ def _operation(service, token, project, run, *, operation, idempotency_key, text
                     if operation in ('adopt','source_read'):raise ControlError('note_revision_required')
                     return dict(status='empty',accepted_revision=head)
                 note=store.read(selected)
+                if operation=='history_read':
+                    service._event(db,project,run,'research_note_history_read',owner=owner,revision=selected)
+                    return dict(status='historical_note',revision=selected,note=note,eligible_for_current_context=False)
                 sequences=[int(ref['id'].split(':',1)[1]) for ref in note['sources'] if ref['id'].startswith('organization:')]
                 from .note_artifacts import resolve
                 refs=[json.loads(ref['id'][len('artifact:'):]) for ref in note['sources'] if ref['id'].startswith('artifact:')]

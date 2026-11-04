@@ -78,3 +78,13 @@ class ControlResearchNotesTests(unittest.TestCase):
         self.s.command('human-secret','p','r','pause',expected_revision=state['control_revision'],idempotency_key='pause')
         with self.assertRaisesRegex(ControlError,'note_sources_changed'):
             self.call('adopt',revision=draft['revision'],expected_note=None)
+
+    def test_stale_note_can_be_audited_without_restoring_it_as_current_memory(self):
+        draft=self.save();self.call('adopt',key='adopt',revision=draft['revision'],expected_note=None)
+        state=self.s.get_run('human-secret','p','r')
+        self.s.command('human-secret','p','r','pause',expected_revision=state['control_revision'],idempotency_key='pause-history')
+        self.assertEqual(self.call('read')['restoration']['status'],'deferred')
+        history=self.call('history_read',revision=draft['revision'])
+        self.assertEqual(history['note']['text'],'方向尚待验证，保留反证。')
+        self.assertFalse(history['eligible_for_current_context'])
+        with self.assertRaises(ControlError):self.call('history_read',token='lead2',revision=draft['revision'])

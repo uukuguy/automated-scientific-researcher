@@ -129,3 +129,5 @@ research_note/source_read提供成员私有笔记引用的原件分页查询，�
 独立核心已有摘要复核请求/意见协议；Runtime侧summary_acceptance提供有Control预算的只读订阅验证。实际两轮小材料摘要与反例验证已记录；自动容量预警/上下文安装仍未接入。
 
 独立上下文核心提供容量决策和应用前计划检查；计划不授予安装权限。Runtime自动测量、请求拦截和安装仍待接入。
+
+Control支持宿主限定的上下文材料准备/准入，沿用原请求/事件账本；校验当前笔记来源和指定成员会话登记。当前installation_authorized/runtime_coverage_verified均为false。原生会话覆盖及安装回执尚未接通。

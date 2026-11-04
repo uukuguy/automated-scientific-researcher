@@ -1,0 +1,118 @@
+"""Host-only context preparation/admission using Control's existing ledger.
+
+Admission records permission to proceed to an installer, not actual installation.
+The model cannot supply its own current state or mark itself accepted.
+"""
+from dataclasses import asdict
+import hashlib
+import json
+
+from asr_context import Material, material_digest
+from asr_context.application import plan
+from asr_context.notes import NoteStore, restore
+from .contracts import encoded
+from .control import ControlError
+from .organization import member,current
+from .research_notes import _materials
+from .note_artifacts import resolve
+
+
+def _scope(phase,run,subject):
+    return 'context-'+phase+':'+encoded([run,subject])
+
+
+def snapshot(service,db,project,run,subject):
+    role=member(db,project,run,subject);state=service._run(db,project,run)
+    if state['health']!='ok' or state['state'] not in ('running','paused'):raise ControlError('context_run_unavailable')
+    row=db.execute('SELECT revision FROM asr_note_heads WHERE project=? AND run=? AND owner=?',(project,run,subject)).fetchone()
+    if not row:raise ControlError('context_note_required')
+    scope=encoded([project,run,subject]);store=NoteStore(service.path.parent/'research-notes'/hashlib.sha256(scope.encode()).hexdigest(),scope=scope)
+    note=store.read(row[0])
+    sequences=[int(ref['id'].split(':',1)[1]) for ref in note['sources'] if ref['id'].startswith('organization:')]
+    refs=[json.loads(ref['id'][len('artifact:'):]) for ref in note['sources'] if ref['id'].startswith('artifact:')]
+    materials=_materials(db,service,project,run,sequences)+resolve(db,service,project,run,refs)
+    restored=restore(store,accepted_revision=row[0],materials=materials,role=subject)
+    if restored['status']!='ready':raise ControlError('context_note_sources_changed')
+    materials.append(restored['material'])
+    owned={d['entity_id'] for d in current(db,project,run,'direction') if d['document']['owner']==subject}
+    tasks={t['entity_id']:t['revision'] for t in current(db,project,run,'task') if role=='organizer' or t['document']['assignee']==subject or t['document']['direction_id'] in owned}
+    executions=sorted(r[0] for r in db.execute("SELECT attempt FROM asr_dispatch WHERE project=? AND run=? AND state NOT IN ('succeeded','failed','cancelled','timed_out','interrupted')",(project,run)))
+    stamp=dict(project_id=project,run_id=run,contract_revision=state['contract_revision'],control_revision=state['control_revision'],task_revisions=tasks,
+               unsettled_executions=executions,source_fingerprints={m.id:material_digest(m) for m in materials})
+    return materials,stamp
+
+
+def source_rows(materials):
+    return [dict(id=m.id,revision=m.revision,sha256=material_digest(m),text=m.text) for m in materials]
+
+
+def prepare(service,token,project,run,*,subject,reviewer_subject,idempotency_key):
+    service._auth(token,project,{'human','supervisor'});service._identity(run,subject,reviewer_subject,idempotency_key)
+    with service._connect() as db:
+        db.execute('BEGIN IMMEDIATE')
+        member(db,project,run,subject);member(db,project,run,reviewer_subject)
+        if subject==reviewer_subject:raise ControlError('context_separate_reviewer_required')
+        scope=_scope('prepare',run,subject);payload=[subject,reviewer_subject]
+        replay=service._replay(db,project,scope,idempotency_key,payload)
+        if replay:return replay
+        materials,stamp=snapshot(service,db,project,run,subject)
+        record=dict(preparation_id=idempotency_key,subject=subject,reviewer_subject=reviewer_subject,
+                    materials=[asdict(m) for m in materials],state_stamp=stamp,note_revision=materials[-1].revision)
+        record=json.loads(encoded(record))
+        service._remember(db,project,scope,idempotency_key,payload,record)
+        service._event(db,project,run,'context_prepared',subject=subject,reviewer_subject=reviewer_subject,preparation_id=idempotency_key)
+        return record
+
+
+def _session(db,project,run,session_id,subject):
+    raw=db.execute('SELECT record FROM asr_runtime_sessions WHERE project=? AND run=? AND session_id=?',(project,run,session_id)).fetchone()
+    session=json.loads(raw[0]) if raw else {}
+    binding=session.get('organization_binding') or {}
+    if session.get('state')!='exited' or session.get('execution_exited') is not True or not session.get('process_identity') or binding.get('subject')!=subject:
+        raise ControlError('context_review_session_unavailable')
+    from .organization_runtime import validate
+    validate(db,project,run,binding)
+
+
+def _admit(service,token,project,run,*,subject,preparation_id,idempotency_key,request,candidate,review_request,review,author_session,reviewer_session):
+    service._auth(token,project,{'human','supervisor'});service._identity(run,subject,preparation_id,idempotency_key,author_session,reviewer_session)
+    if any(type(v) is not dict for v in (request,candidate,review_request,review)) or type(request.get('payload')) is not dict:raise ControlError('invalid_context_bundle')
+    payload=[subject,preparation_id,request,candidate,review_request,review,author_session,reviewer_session]
+    with service._connect() as db:
+        db.execute('BEGIN IMMEDIATE')
+        member(db,project,run,subject)
+        scope=_scope('admission',run,subject)
+        replay=service._replay(db,project,scope,idempotency_key,payload)
+        if replay:return replay  # Historical receipt only; not an installation bearer token.
+        raw=db.execute('SELECT record FROM asr_requests WHERE project=? AND scope=? AND request_key=?',(project,_scope('prepare',run,subject),preparation_id)).fetchone()
+        if not raw:raise ControlError('context_preparation_unavailable')
+        prepared=json.loads(raw[0]);member(db,project,run,prepared['reviewer_subject'])
+        _session(db,project,run,author_session,subject);_session(db,project,run,reviewer_session,prepared['reviewer_subject'])
+        if db.execute("SELECT 1 FROM asr_runtime_sessions WHERE project=? AND run=? AND state!='exited'",(project,run)).fetchone():raise ControlError('context_runtime_active')
+        try:
+            materials,stamp=snapshot(service,db,project,run,subject)
+            frozen=[Material(**{k:tuple(v) if k in ('references','citations','roles') else v for k,v in row.items()}) for row in prepared['materials']]
+            if request.get('payload',{}).get('role')!=subject or request['payload'].get('sources')!=source_rows(frozen):raise ControlError('context_request_sources_mismatch')
+            checked=plan(request,candidate,review_request,review,author_session=author_session,reviewer_session=reviewer_session,
+                         expected_state=prepared['state_stamp'],current_state=stamp)
+            if checked['status']!='admission_required':
+                result=dict(status='deferred',context_installed=False,check=checked)
+            else:
+                result=dict(status='admitted',context_installed=False,requires_runtime_receipt=True,installation_authorized=False,runtime_coverage_verified=False,requires_fresh_installation_check=True,subject=subject,
+                            preparation_id=preparation_id,plan=checked,admission_id=idempotency_key)
+        except (ControlError,ValueError) as error:
+            result=dict(status='deferred',context_installed=False,check=dict(reason=getattr(error,'code',str(error)),details=getattr(error,'details',None)))
+        service._remember(db,project,scope,idempotency_key,payload,result)
+        service._event(db,project,run,'context_'+result['status'],subject=subject,preparation_id=preparation_id,admission_id=idempotency_key)
+        return result
+
+
+def admit(service,token,project,run,**arguments):
+    try:return _admit(service,token,project,run,**arguments)
+    except ControlError as error:
+        if error.code not in ('unauthorized','forbidden'):
+            service._auth(token,project,{'human','supervisor'})
+            with service._connect() as db:
+                service._event(db,project,run,'context_admission_rejected',reason=error.code,subject=arguments.get('subject'),
+                               preparation_id=arguments.get('preparation_id'),request_key=arguments.get('idempotency_key'))
+        raise

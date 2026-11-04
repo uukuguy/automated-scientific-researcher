@@ -76,3 +76,15 @@ class CommunicationArchiveTests(unittest.TestCase):
         self.assertTrue((self.out/'control/asr_note_heads.json').is_file())
         text=(self.out/'research-notes/member/revisions/version.json').read_text()
         self.assertIn('preserved research note',text);self.assertNotIn('secret-note-token',text)
+
+    def test_context_preparation_and_admission_records_are_exported_with_scope(self):
+        from integrations.runtimes.communication_archive import archive
+        (self.root/'identity.json').write_text(json.dumps(dict(project_id='p',research_run_id='r')))
+        with sqlite3.connect(self.root/'control.db') as db:
+            db.execute('CREATE TABLE asr_requests(project TEXT,scope TEXT,request_key TEXT,payload TEXT,record TEXT)')
+            for project,scope,text in [('p','context-prepare:'+json.dumps(['r','lead']),'original context preparation'),('p','context-admission:'+json.dumps(['r','lead']),'admission record'),('other','context-prepare:'+json.dumps(['r','lead']),'unrelated private content')]:
+                db.execute('INSERT INTO asr_requests VALUES (?,?,?,?,?)',(project,scope,'key','[]',json.dumps(dict(text=text))))
+        archive(self.root,self.out)
+        text=(self.out/'control/context_requests.json').read_text()
+        self.assertIn('original context preparation',text);self.assertIn('admission record',text)
+        self.assertNotIn('unrelated private content',text)

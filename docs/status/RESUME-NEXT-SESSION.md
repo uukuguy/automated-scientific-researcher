@@ -2,7 +2,7 @@
 
 2026-11-04。当前无活动模型或科研进程。D034已完成引用投影、版本化笔记、Control采用、原件绑定与分页，以及摘要结构/分开会话复核协议。真实订阅试验root artifacts/research-context-model-001已结束：4548字符冻结报告两轮摘要524/460字符获复核接受，正文夸大反例被拒绝。6个会话全部退出、预留零，累计108652ms、6轮/0工具/0科研实验。
 首次额外claims被结构拒绝，明确说明后同预算显式恢复；第一轮收尾幂等键冲突由外部补回执，没有重复模型。第二轮exec81202退出0。最终交流档案root/communications-round2，最终两轮回执root/two-round-receipt.json；中文报告docs/validation/RESEARCH-CONTEXT-MODEL.md，机器回执RESEARCH-CONTEXT-MODEL-RECEIPT.json。旧result.json仍是首次失败，勿当作最终状态；首轮final-receipt.json和交流档案也保留历史。
-同模型分开会话复核只是模型意见，eligible_for_application=false。尚未接自动采用、容量预警、Runtime安装，也未做长期跨窗口/复杂代码引用验证。已增加独立capacity.decide/application.plan，11项专项测试通过，真实摘要与新Control快照只读生成admission_required计划，回执docs/validation/RESEARCH-CONTEXT-PREAPPLICATION.json。未接Runtime可靠测量、拦截或安装，eligible_for_application仍false。下一步接宿主实际状态/测量与正式准入，再验证首个Runtime安装并扩大长程/代码覆盖。P5仍active，科学隐藏验收/并行/面板未完成。不要为了剩余试验额度重启已完成运行。
+同模型分开会话复核只是模型意见，eligible_for_application=false。尚未接自动采用、容量预警、Runtime安装，也未做长期跨窗口/复杂代码引用验证。已增加独立capacity.decide/application.plan，11项专项测试通过，真实摘要与新Control快照只读生成admission_required计划，回执docs/validation/RESEARCH-CONTEXT-PREAPPLICATION.json。未接Runtime可靠测量、拦截或安装，eligible_for_application仍false。已接Control.prepare_context/admit_context，服务冻结来源/相关任务/未结算执行、指定生成和复核成员；7项服务检查通过，history_read支持本人旧笔记审查，准备与准入请求纳入按项目归档。当前installation_authorized=false/runtime_coverage_verified=false。下一步补原生可见对话的稳定游标/完整分组和摘要覆盖，再接pi安装/生效回执；不把笔记准入当整段会话安装授权。P5仍active，科学隐藏验收/并行/面板未完成。不要为了剩余试验额度重启已完成运行。
 
 
 ## 用户最新要求
