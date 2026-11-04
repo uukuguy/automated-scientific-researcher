@@ -119,3 +119,5 @@ See docs/validation/P5-PROJECT-PILOT.md and RESEARCH-COMMUNICATION.md.
 独立`asr_context`提供原文引用投影和本地不可变研究笔记。笔记不持有权威采纳指针，恢复前核对当前来源；Runtime、模型调用和Control接入仍独立待实现。接口见`asr_context/README.md`。
 
 Control现有数据库记录组织成员私有研究笔记的采用状态；ResearchBridge的research_note工具按当前身份处理save/adopt/read，恢复检查控制/组织来源。笔记文件与采用指针进入交流归档。没有自动语义压缩或Runtime安装。
+
+Control的研究笔记来源适配器可核对typed代码快照与已发布实验文件，原件路径由现有目录/执行登记解析，返回绑定信息，不提供隐藏评价或任意宿主文件访问。

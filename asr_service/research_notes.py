@@ -30,12 +30,12 @@ def _materials(db, service, project, run, sequences, *, saving=False):
 
 
 def _operation(service, token, project, run, *, operation, idempotency_key, text=None,
-              source_sequences=None, revision=None, expected_note=None):
+              source_sequences=None, revision=None, expected_note=None, artifact_references=None):
     principal=service._auth(token,project,{'researcher'})
     service._identity(run,idempotency_key)
     if operation not in ('save','adopt','read'):raise ControlError('invalid_note_operation')
     owner=principal['subject'];scope=encoded([project,run,owner])
-    payload=[operation,text,source_sequences,revision,expected_note]
+    payload=[operation,text,source_sequences,revision,expected_note,artifact_references]
     with service._connect() as db:
         db.execute('BEGIN IMMEDIATE')
         state=service._run(db,project,run);principal_role(db,project,run,principal)
@@ -50,6 +50,8 @@ def _operation(service, token, project, run, *, operation, idempotency_key, text
         try:
             if operation=='save':
                 sources=_materials(db,service,project,run,[] if source_sequences is None else source_sequences,saving=True)
+                from .note_artifacts import resolve
+                sources+=resolve(db,service,project,run,[] if artifact_references is None else artifact_references)
                 new=store.save(text,sources=sources,parent=head)
                 result=dict(status='saved',revision=new,accepted_revision=head)
             else:
@@ -59,7 +61,10 @@ def _operation(service, token, project, run, *, operation, idempotency_key, text
                     return dict(status='empty',accepted_revision=head)
                 note=store.read(selected)
                 sequences=[int(ref['id'].split(':',1)[1]) for ref in note['sources'] if ref['id'].startswith('organization:')]
-                restored=restore(store,accepted_revision=selected,materials=_materials(db,service,project,run,sequences),role=owner)
+                from .note_artifacts import resolve
+                refs=[json.loads(ref['id'][len('artifact:'):]) for ref in note['sources'] if ref['id'].startswith('artifact:')]
+                sources=_materials(db,service,project,run,sequences)+resolve(db,service,project,run,refs)
+                restored=restore(store,accepted_revision=selected,materials=sources,role=owner)
                 if operation=='adopt':
                     if head!=expected_note or note['parent']!=head:raise ControlError('revision_conflict')
                     if restored['status']!='ready':raise ControlError('note_sources_changed')
@@ -79,11 +84,11 @@ def _operation(service, token, project, run, *, operation, idempotency_key, text
 def operation(service, token, project, run, **arguments):
     try:return _operation(service,token,project,run,**arguments)
     except ControlError as error:
-        if error.code in ('note_sources_changed','note_source_not_current','note_source_unavailable','revision_conflict'):
+        if error.code in ('note_sources_changed','note_source_not_current','note_source_unavailable','note_artifact_unavailable','revision_conflict'):
             principal=service._auth(token,project,{'researcher'})
             with service._connect() as db:
                 principal_role(db,project,run,principal)
                 service._event(db,project,run,'research_note_deferred',owner=principal['subject'],
-                               reason=error.code,operation=arguments.get('operation'),request_key=arguments.get('idempotency_key'))
-            error.details=dict(reason=error.code,action='not_applied',recovery='Read current sources and accepted note. Preserve old notes; revise explicitly without repeating experiments.')
+                               reason=error.code,operation=arguments.get('operation'),request_key=arguments.get('idempotency_key'),details=getattr(error,'details',None))
+            error.details=dict(getattr(error,'details',{}),reason=error.code,action='not_applied',recovery='Read current sources and accepted note. Preserve old notes; revise explicitly without repeating experiments.')
         raise

@@ -1,6 +1,6 @@
 # Live Session Checkpoint
 
-2026-11-04。当前没有研究进程在运行。D034独立核心第一步已实现asr_context引用投影及7项离线测试；无模型/Runtime依赖，尚无语义摘要与自动预警。第二步已实现本地版本化笔记与来源核对，asr-research-context/2区分references和citations。14项相关检查、435项组合检查通过（25环境跳过），日志/tmp/asr-research-notes-tests.log。第三步已接Control私有采用指针与research_note组织工具（save/adopt/read），7项服务/桥接与6项归档检查通过。当前来源仅组织记录及控制版本；无新模型会话。下一步代码/实验原件引用和语义摘要保真，再做预警与Runtime应用。P5仍active；当前委托的组织接续研究已完成交付，下一项为研究上下文管理专项。此为实际状态检查点，不是请求交接批准。
+2026-11-04。当前没有研究进程在运行。D034独立核心第一步已实现asr_context引用投影及7项离线测试；无模型/Runtime依赖，尚无语义摘要与自动预警。第二步已实现本地版本化笔记与来源核对，asr-research-context/2区分references和citations。14项相关检查、435项组合检查通过（25环境跳过），日志/tmp/asr-research-notes-tests.log。第三步已接Control私有采用指针与research_note组织工具（save/adopt/read），7项服务/桥接与6项归档检查通过。当前来源仅组织记录及控制版本；无新模型会话。第四步已接代码快照/发布实验原件typed引用与原件核对；5项专项检查、447项组合检查（25跳过）通过，日志/tmp/asr-note-artifact-tests.log。真实P5三项产物只读检查回执artifacts/p5-note-artifact-check-001/receipt.json，未重跑科研。下一步原文取回和语义摘要保真，再做预警与Runtime应用。P5仍active；当前委托的组织接续研究已完成交付，下一项为研究上下文管理专项。此为实际状态检查点，不是请求交接批准。
 
 ## 用户最新要求
 

@@ -1,0 +1,41 @@
+{
+  "schema": "asr-note-artifact-check/1",
+  "scope": "对历史快照和已发布实验文件的只读来源解析，不是模型压缩、科学评价或新的研究实验。",
+  "read_only": true,
+  "model_calls": 0,
+  "artifacts": [
+    {
+      "id": "artifact:{\"kind\":\"snapshot\",\"path\":\"worker1_compare_frozen_models.py\",\"snapshot_sha256\":\"8c0d814645d44518abb218607e6d51b4b827df42294536ee9d30a93076dc6a3c\"}",
+      "revision": "66ea21311292f6333fca712ba42136e04e62f79cf06df67d0a601e841c55ddf7",
+      "text": "{\"bytes\":9479,\"provenance\":{\"snapshot_sha256\":\"8c0d814645d44518abb218607e6d51b4b827df42294536ee9d30a93076dc6a3c\"},\"reference\":{\"kind\":\"snapshot\",\"path\":\"worker1_compare_frozen_models.py\",\"snapshot_sha256\":\"8c0d814645d44518abb218607e6d51b4b827df42294536ee9d30a93076dc6a3c\"},\"sha256\":\"66ea21311292f6333fca712ba42136e04e62f79cf06df67d0a601e841c55ddf7\"}",
+      "references": [],
+      "roles": [],
+      "protected": false,
+      "group": "",
+      "complete": true,
+      "citations": []
+    },
+    {
+      "id": "artifact:{\"kind\":\"trial\",\"path\":\"study-result.json\",\"trial_id\":\"trial_23963ca78758468c8d0dcc9c51467131\"}",
+      "revision": "e49e8de441cbee0cfbe6133ed2540ab5efbbb2678e9d9f636aef9e5a7d44be07",
+      "text": "{\"bytes\":49343,\"provenance\":{\"execution_attempt_id\":\"attempt_6e6cafcc26464e539ea1bce6899df371\",\"manifest_sha256\":\"b873244acd5695e979527fae4d04cf70fca33decb18fe4bb1eefd4636cf00a53\",\"trial_id\":\"trial_23963ca78758468c8d0dcc9c51467131\"},\"reference\":{\"kind\":\"trial\",\"path\":\"study-result.json\",\"trial_id\":\"trial_23963ca78758468c8d0dcc9c51467131\"},\"sha256\":\"e49e8de441cbee0cfbe6133ed2540ab5efbbb2678e9d9f636aef9e5a7d44be07\"}",
+      "references": [],
+      "roles": [],
+      "protected": false,
+      "group": "",
+      "complete": true,
+      "citations": []
+    },
+    {
+      "id": "artifact:{\"kind\":\"trial\",\"path\":\"study-result.json\",\"trial_id\":\"trial_35f3681cc0a94302a44f04a3877d5f42\"}",
+      "revision": "c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3",
+      "text": "{\"bytes\":102200,\"provenance\":{\"execution_attempt_id\":\"attempt_76bfa08fbc114902a22a02ce0b084b31\",\"manifest_sha256\":\"e3dfb11a21c1800ffdb133cce1cd9514a5a4d2487cdd86e23846ee1057e5ce19\",\"trial_id\":\"trial_35f3681cc0a94302a44f04a3877d5f42\"},\"reference\":{\"kind\":\"trial\",\"path\":\"study-result.json\",\"trial_id\":\"trial_35f3681cc0a94302a44f04a3877d5f42\"},\"sha256\":\"c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3\"}",
+      "references": [],
+      "roles": [],
+      "protected": false,
+      "group": "",
+      "complete": true,
+      "citations": []
+    }
+  ]
+}
