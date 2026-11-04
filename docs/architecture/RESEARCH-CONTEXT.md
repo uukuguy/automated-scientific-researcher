@@ -165,3 +165,11 @@ TypeScript文件位于 `packages/typescript/asterion-prime-extension/src/`，Pyt
 重要边界：准入仅覆盖已采用笔记与指定来源，尚未覆盖原生会话全部待替换范围。回执明确installation_authorized=false及runtime_coverage_verified=false，不能直接交给pi覆盖原会话。下一步需要：原会话稳定游标和可见交互分组、待替换范围与摘要材料的对应、保留尾部与未完成交互、安装时状态复核，以及安装后摘要/父记录/覆盖边界的指纹回执。原始完整会话继续保存。原生游标映射由各Runtime适配器负责，核心保持通用来源标识。
 
 Context7与本机pi 1.5.0文档均确认session_before_compact能返回自定义compaction，session_compact可报告fromExtension；这只证明接入点存在。它不能证明ASR的覆盖与安装链已经实现。当前服务工程测试使用受管短命进程探针，不把探针冒充新的真实模型准入实验。
+
+## 原生会话映射与结构覆盖
+
+独立conversation核心已接通用消息、完整工具交互组、保护集合及覆盖检查；pi只读适配器用固定1.5.0 SDK公开投影接口解释分支、已有压缩和上下文编辑，不在核心重写pi算法。明确分开原始日志、SDK逻辑视图和提供方最终载荷。原生ID映射、来源指纹及隔离数量留痕。
+
+10项专项检查通过，包含真实安装SDK的压缩/编辑投影、错误分支/部分文件/解析超时、私有内容隔离及拆组/遗漏拒绝。真实三份历史日志映射345/57/328条可见记录，分组146/18/126；结构覆盖演练通过，原件未修改、模型调用为零。详见[验证报告](../validation/RESEARCH-CONTEXT-COVERAGE.md)。
+
+离线游标由审查者明确选取，active_cursor_verified和provider_payload_verified仍为false。结构覆盖不能证明语义压缩或代码跨消息依赖保真。下一步将活动Runtime捕获的稳定游标与来源注册接入Control，再进行首个实际安装及生效回执测试。当前不授权安装。

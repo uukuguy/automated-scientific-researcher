@@ -1,0 +1,57 @@
+{
+  "schema": "asr-conversation-coverage-audit/1",
+  "scope": "真实历史会话的SDK投影、分组与覆盖演练；没有生成摘要、调用模型或安装上下文。",
+  "model_calls": 0,
+  "semantic_summary_generated": false,
+  "active_cursor_verified": false,
+  "installation_authorized": false,
+  "parser_limit_bytes": 134217728,
+  "parser_limit_purpose": "Bound offline parser memory; preserve original journals without truncation.",
+  "results": [
+    {
+      "source_step": "028-lead_1",
+      "source_file": "pi-private/organization/48a5bcc2c19d606194d6b11348ec466fdd95c6370252160cceb84edb163e5144/sessions/2026-11-04T04-51-12-470Z_research_2fdee65a1c2f4bd5b107bfc388469d8d.jsonl",
+      "branch_selection": "operator-selected last recorded leaf for offline audit, not an active-runtime cursor witness",
+      "status": "observed",
+      "messages": 345,
+      "groups": 146,
+      "summarized_messages": 338,
+      "retained_messages": 6,
+      "replayed_system_messages": 1,
+      "proof_status": "coverage_verified",
+      "redactions": 82,
+      "journal_sha256": "a69e97e7dc7a47245ef3b39fe42d3850df3f4a6e1c8948a27b7cd05a964d0642",
+      "conversation_sha256": "45b91ff25f8734f9a0f676e5010a993504241bfffef310aa3c5c931c2a7584b0"
+    },
+    {
+      "source_step": "029-lead_1",
+      "source_file": "pi-private/organization/48a5bcc2c19d606194d6b11348ec466fdd95c6370252160cceb84edb163e5144/sessions-generation-1/2026-11-04T07-43-25-997Z_research_2fdee65a1c2f4bd5b107bfc388469d8d.jsonl",
+      "branch_selection": "operator-selected last recorded leaf for offline audit, not an active-runtime cursor witness",
+      "status": "observed",
+      "messages": 57,
+      "groups": 18,
+      "summarized_messages": 51,
+      "retained_messages": 5,
+      "replayed_system_messages": 1,
+      "proof_status": "coverage_verified",
+      "redactions": 8,
+      "journal_sha256": "8ab0fad6d2beb8753f191e8fb7e121d4abbfaa64fd7d7197ee114a493c3c0900",
+      "conversation_sha256": "02b6c8f48512b626fe2871d61ad63414a89a9e7d7c48613f557e4e6d59ca686c"
+    },
+    {
+      "source_step": "031-organizer",
+      "source_file": "pi-private/organization/b2f8184b92681f714a4b3c4b0190d1e4e073eec87fcfc57e75811995775e3aa9/sessions/2026-11-04T04-49-35-748Z_research_2fdee65a1c2f4bd5b107bfc388469d8d.jsonl",
+      "branch_selection": "operator-selected last recorded leaf for offline audit, not an active-runtime cursor witness",
+      "status": "observed",
+      "messages": 328,
+      "groups": 126,
+      "summarized_messages": 322,
+      "retained_messages": 5,
+      "replayed_system_messages": 1,
+      "proof_status": "coverage_verified",
+      "redactions": 55,
+      "journal_sha256": "70f62c155a05e36a228562e423a43ace16100978850a79da1c65adc0efa03bfe",
+      "conversation_sha256": "60a56baeff97bcc8cf13c755fb9729cdcac2226b01d79ee27903934473fd2823"
+    }
+  ]
+}
