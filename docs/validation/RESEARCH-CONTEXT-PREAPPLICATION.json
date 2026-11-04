@@ -1,0 +1,36 @@
+{
+  "schema": "asr-context-preapplication-check/1",
+  "scope": "使用已存在真实摘要/复核与本次只读状态快照检查计划；未发生安装或新模型调用。",
+  "actual_control_snapshot": {
+    "project_id": "context-validation",
+    "run_id": "summary_9dcb9ad4e386498abf43d89f03b3e433",
+    "contract_revision": 1,
+    "control_revision": 6,
+    "task_revisions": {},
+    "unsettled_executions": [],
+    "source_fingerprints": {
+      "team-replay-report": "10e75a65e30de6456dd56fd3b2b1e0c9c2eb0ad3902325e2b24bcb06230873b7"
+    }
+  },
+  "plan": {
+    "schema": "asr-context-application-plan/1",
+    "eligible_for_application": false,
+    "boundary": "只读准备检查；仍须Control准入、实际安装及生效核对，不是科学验证。",
+    "status": "admission_required",
+    "request_sha256": "908b9a11eba052d5e8ef98da30b0d04a372b219352398a543a90c8959cf7d056",
+    "candidate_sha256": "44a34077fa9325329eba29990cf3850db9c452fd5c59444760228283466ed279",
+    "review_sha256": "f1b11d73c18678cb2e5fc81b13f1baa2bfbda33ccfe2d1461da71d83c5eff137",
+    "review_reply_sha256": "998b38179679b5d76abd723fbb5f921be2ce33f5d3d246b62fccd807b026bab7",
+    "state_sha256": "559ae110dfea4f542f470103a53f27cecb1124b0244ac7ea713680d5a3c016a3",
+    "preserve_unsettled_executions": []
+  },
+  "controlled_state_change_case": {
+    "schema": "asr-context-application-plan/1",
+    "eligible_for_application": false,
+    "boundary": "只读准备检查；仍须Control准入、实际安装及生效核对，不是科学验证。",
+    "status": "deferred",
+    "reason": "research_state_changed"
+  },
+  "context_installed": false,
+  "new_model_calls": 0
+}
