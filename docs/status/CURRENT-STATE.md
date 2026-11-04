@@ -121,3 +121,5 @@ See docs/validation/P5-PROJECT-PILOT.md and RESEARCH-COMMUNICATION.md.
 Control现有数据库记录组织成员私有研究笔记的采用状态；ResearchBridge的research_note工具按当前身份处理save/adopt/read，恢复检查控制/组织来源。笔记文件与采用指针进入交流归档。没有自动语义压缩或Runtime安装。
 
 Control的研究笔记来源适配器可核对typed代码快照与已发布实验文件，原件路径由现有目录/执行登记解析，返回绑定信息，不提供隐藏评价或任意宿主文件访问。
+
+research_note/source_read提供成员私有笔记引用的原件分页查询，每页验证指纹与绑定；原文查询与当前笔记恢复分开，返回片段标志及后续位置。

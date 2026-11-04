@@ -121,3 +121,11 @@ TypeScript文件位于 `packages/typescript/asterion-prime-extension/src/`，Pyt
 已对真实P5材料做只读解析：9479字节比较源快照、49343字节新训练结果、102200字节比较结果均通过清单身份/长度/指纹检查，零模型调用、零新实验。回执artifacts/p5-note-artifact-check-001/receipt.json，SHA b10c548c9ae40882a7ed38da756640c73c64fecec0ef4939a3eb4df5bb062b77。这是外部工程来源检查，不是新研究结论或模型压缩验收。
 
 真实来源核查回执另保存于[RESEARCH-NOTE-ARTIFACT-CHECK.json](../validation/RESEARCH-NOTE-ARTIFACT-CHECK.json)，便于审查来源绑定与验证范围。
+
+## 第五步：授权原文分页取回
+
+组织research_note工具新增source_read：从调用者自己的笔记已绑定的原件中取回UTF-8片段，指定offset/limit，每页重新验证原件身份与来源绑定。默认8000/最多16000个Unicode字符，用于限制单次工具返回造成的上下文增长；超过范围明确拒绝并记录恢复办法，不截断原件或关闭研究。完整指纹、原件字节数、起止位置、has_more、next_offset和partial均明确返回。
+
+历史查询与现行记忆采用分开：规则更新后旧笔记恢复仍会deferred，但其已绑定的历史原件可在当前会员权限下查询；版本/字节变化时仍拒绝，不将新版偷偷替换旧原件。按需查询不授予隐藏评价访问，不提供任意宿主路径。
+
+真实只读核查：9479字节代码经2页、102200字节比较结果经13页重组，完整UTF-8指纹与原件相同。回执[RESEARCH-NOTE-SOURCE-PAGES.json](../validation/RESEARCH-NOTE-SOURCE-PAGES.json)，零模型、零新实验。专项测试还验证中文分片重组、未引用文件拒绝、单页范围拒绝及旧笔记历史查询。仍未实施科学语义摘要、预警或Runtime安装。

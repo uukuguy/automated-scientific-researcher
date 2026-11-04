@@ -30,18 +30,18 @@ def _materials(db, service, project, run, sequences, *, saving=False):
 
 
 def _operation(service, token, project, run, *, operation, idempotency_key, text=None,
-              source_sequences=None, revision=None, expected_note=None, artifact_references=None):
+              source_sequences=None, revision=None, expected_note=None, artifact_references=None, artifact_reference=None, offset=0, limit=8000):
     principal=service._auth(token,project,{'researcher'})
     service._identity(run,idempotency_key)
-    if operation not in ('save','adopt','read'):raise ControlError('invalid_note_operation')
+    if operation not in ('save','adopt','read','source_read'):raise ControlError('invalid_note_operation')
     owner=principal['subject'];scope=encoded([project,run,owner])
     payload=[operation,text,source_sequences,revision,expected_note,artifact_references]
     with service._connect() as db:
         db.execute('BEGIN IMMEDIATE')
         state=service._run(db,project,run);principal_role(db,project,run,principal)
-        if operation!='read' and state['state'] not in ('running','paused'):raise ControlError('note_run_closed')
+        if operation not in ('read','source_read') and state['state'] not in ('running','paused'):raise ControlError('note_run_closed')
         request_scope='research-note:'+scope
-        if operation!='read':
+        if operation not in ('read','source_read'):
             replay=service._replay(db,project,request_scope,idempotency_key,payload)
             if replay:return replay
         row=db.execute('SELECT revision FROM asr_note_heads WHERE project=? AND run=? AND owner=?',(project,run,owner)).fetchone()
@@ -57,12 +57,21 @@ def _operation(service, token, project, run, *, operation, idempotency_key, text
             else:
                 selected=revision if revision is not None else head
                 if selected is None:
-                    if operation=='adopt':raise ControlError('note_revision_required')
+                    if operation in ('adopt','source_read'):raise ControlError('note_revision_required')
                     return dict(status='empty',accepted_revision=head)
                 note=store.read(selected)
                 sequences=[int(ref['id'].split(':',1)[1]) for ref in note['sources'] if ref['id'].startswith('organization:')]
                 from .note_artifacts import resolve
                 refs=[json.loads(ref['id'][len('artifact:'):]) for ref in note['sources'] if ref['id'].startswith('artifact:')]
+                if operation=='source_read':
+                    if artifact_reference not in refs:raise ControlError('note_source_not_referenced')
+                    from .note_artifacts import read_page
+                    page=read_page(db,service,project,run,artifact_reference,offset=offset,limit=limit)
+                    binding=next(ref for ref in note['sources'] if ref['id']=='artifact:'+encoded(artifact_reference))
+                    if binding['sha256']!=page['source_material_sha256']:raise ControlError('note_sources_changed')
+                    service._event(db,project,run,'research_note_source_read',owner=owner,note_revision=selected,
+                                   reference=artifact_reference,sha256=page['sha256'],offset=offset,end_offset=page['end_offset'])
+                    return page
                 sources=_materials(db,service,project,run,sequences)+resolve(db,service,project,run,refs)
                 restored=restore(store,accepted_revision=selected,materials=sources,role=owner)
                 if operation=='adopt':
@@ -84,7 +93,7 @@ def _operation(service, token, project, run, *, operation, idempotency_key, text
 def operation(service, token, project, run, **arguments):
     try:return _operation(service,token,project,run,**arguments)
     except ControlError as error:
-        if error.code in ('note_sources_changed','note_source_not_current','note_source_unavailable','note_artifact_unavailable','revision_conflict'):
+        if error.code in ('note_sources_changed','note_source_not_current','note_source_unavailable','note_artifact_unavailable','invalid_note_source_page','note_source_not_referenced','revision_conflict'):
             principal=service._auth(token,project,{'researcher'})
             with service._connect() as db:
                 principal_role(db,project,run,principal)

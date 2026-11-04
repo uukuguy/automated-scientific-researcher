@@ -68,3 +68,22 @@ class NoteArtifactTests(unittest.TestCase):
         file.unlink();file.symlink_to(self.work/'method.py')
         with self.assertRaisesRegex(ControlError,'note_artifact_unavailable'):
             self.call('save',text='x',artifact_references=[self.ref])
+
+    def test_source_pages_reconstruct_unicode_without_silent_truncation(self):
+        (self.work/'method.py').write_text('反证记录\n'*20)
+        bridge=ResearchBridge(self.service,project='p',run='r',researcher_token='lead',supervisor_token='supervisor-secret',workspace=self.work,snapshots=self.snapshots,capability_profile='research-organization/1')
+        ref=dict(self.ref,snapshot_sha256=bridge.snapshot(['method.py'])['snapshot_sha256'])
+        draft=self.call('save',text='保留原文',artifact_references=[ref])
+        chunks=[];offset=0
+        while True:
+            result=self.call('source_read',revision=draft['revision'],artifact_reference=ref,offset=offset,limit=7)
+            chunks.append(result['text']);self.assertEqual(result['offset'],offset)
+            if not result['has_more']:break
+            offset=result['next_offset']
+        self.assertEqual(''.join(chunks),'反证记录\n'*20)
+        state=self.service.get_run('human-secret','p','r')
+        self.service.command('human-secret','p','r','pause',expected_revision=state['control_revision'],idempotency_key='pause-for-history')
+        self.assertEqual(self.call('read',revision=draft['revision'])['restoration']['status'],'deferred')
+        self.assertEqual(self.call('source_read',revision=draft['revision'],artifact_reference=ref,limit=7)['text'],'反证记录\n反证')
+        with self.assertRaises(ControlError):self.call('source_read',revision=draft['revision'],artifact_reference=self.ref)
+        with self.assertRaises(ControlError):self.call('source_read',revision=draft['revision'],artifact_reference=ref,limit=16001)

@@ -1,0 +1,137 @@
+{
+  "schema": "asr-note-source-pages-check/1",
+  "scope": "对历史材料只读分页并重组核对，不是模型压缩或科学复核。",
+  "model_calls": 0,
+  "new_experiments": 0,
+  "records": [
+    {
+      "reference": {
+        "kind": "snapshot",
+        "snapshot_sha256": "8c0d814645d44518abb218607e6d51b4b827df42294536ee9d30a93076dc6a3c",
+        "path": "worker1_compare_frozen_models.py"
+      },
+      "pages": [
+        {
+          "offset": 0,
+          "end_offset": 8000,
+          "partial": true,
+          "has_more": true,
+          "sha256": "66ea21311292f6333fca712ba42136e04e62f79cf06df67d0a601e841c55ddf7"
+        },
+        {
+          "offset": 8000,
+          "end_offset": 9479,
+          "partial": true,
+          "has_more": false,
+          "sha256": "66ea21311292f6333fca712ba42136e04e62f79cf06df67d0a601e841c55ddf7"
+        }
+      ],
+      "reconstructed_sha256": "66ea21311292f6333fca712ba42136e04e62f79cf06df67d0a601e841c55ddf7",
+      "source_bytes": 9479,
+      "exact_reconstruction": true
+    },
+    {
+      "reference": {
+        "kind": "trial",
+        "trial_id": "trial_35f3681cc0a94302a44f04a3877d5f42",
+        "path": "study-result.json"
+      },
+      "pages": [
+        {
+          "offset": 0,
+          "end_offset": 8000,
+          "partial": true,
+          "has_more": true,
+          "sha256": "c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3"
+        },
+        {
+          "offset": 8000,
+          "end_offset": 16000,
+          "partial": true,
+          "has_more": true,
+          "sha256": "c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3"
+        },
+        {
+          "offset": 16000,
+          "end_offset": 24000,
+          "partial": true,
+          "has_more": true,
+          "sha256": "c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3"
+        },
+        {
+          "offset": 24000,
+          "end_offset": 32000,
+          "partial": true,
+          "has_more": true,
+          "sha256": "c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3"
+        },
+        {
+          "offset": 32000,
+          "end_offset": 40000,
+          "partial": true,
+          "has_more": true,
+          "sha256": "c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3"
+        },
+        {
+          "offset": 40000,
+          "end_offset": 48000,
+          "partial": true,
+          "has_more": true,
+          "sha256": "c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3"
+        },
+        {
+          "offset": 48000,
+          "end_offset": 56000,
+          "partial": true,
+          "has_more": true,
+          "sha256": "c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3"
+        },
+        {
+          "offset": 56000,
+          "end_offset": 64000,
+          "partial": true,
+          "has_more": true,
+          "sha256": "c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3"
+        },
+        {
+          "offset": 64000,
+          "end_offset": 72000,
+          "partial": true,
+          "has_more": true,
+          "sha256": "c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3"
+        },
+        {
+          "offset": 72000,
+          "end_offset": 80000,
+          "partial": true,
+          "has_more": true,
+          "sha256": "c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3"
+        },
+        {
+          "offset": 80000,
+          "end_offset": 88000,
+          "partial": true,
+          "has_more": true,
+          "sha256": "c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3"
+        },
+        {
+          "offset": 88000,
+          "end_offset": 96000,
+          "partial": true,
+          "has_more": true,
+          "sha256": "c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3"
+        },
+        {
+          "offset": 96000,
+          "end_offset": 102200,
+          "partial": true,
+          "has_more": false,
+          "sha256": "c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3"
+        }
+      ],
+      "reconstructed_sha256": "c78fba87c963346c3ebf0936c2a84e87846911fca90db600e01e5eb186bcafd3",
+      "source_bytes": 102200,
+      "exact_reconstruction": true
+    }
+  ]
+}
