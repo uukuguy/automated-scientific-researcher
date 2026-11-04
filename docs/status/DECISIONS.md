@@ -281,28 +281,27 @@ historical messages/timestamps. New human requirement is recorded as Control
 guidance in project001; no scientific direction, experiment or budget is altered.
 
 
-## D032 — Delegate follow-up verification work to the continuing research organization (2026-11-04)
+## D032 — 把后续验证工作交回研究组织，检验持续研究能力（2026-11-04）
 
-User directs the training-input evidence, reproduction and hidden-evaluation
-requirements back to the existing research organization, then returns external
-results for further reasoning. This supersedes a developer-led scientific
-closeout of those steps. Preserve the same project, organization, research
-history and consumed budget; a concrete new human commission permits continued
-work after the prior direction closed. The team owns decomposition, roles,
-methods and evidence requests; no preset scientific sequence or fixed deliverable
-roster is injected. Developers supply generic trusted capabilities and externally
-assess continuation, not author the team's scientific response.
+用户要求将训练材料核对、重复训练和新样本独立评价作为后续项目要求，交回
+原研究组织；获得外部结果后，再交给组织解释并继续研究。这取代了开发侧
+直接包办后续科学判断的安排。同一项目、组织、历史和已用预算继续保留；
+上一轮任务完成后，可以因明确的新委托继续工作，不能为了消耗剩余额度重开。
 
-Independent evaluation remains outside researcher write/read authority over
-formal evaluator code and hidden data. Researchers can organize/commission it
-and interpret returned evidence without becoming their own formal evaluator.
-A team request is not proof of service availability, approval or execution.
-Acceptance must observe history recovery, substantive follow-up, explicit
-capability requests and response to actual returned external results. Merely
-resuming a session or repeating the previous report is insufficient.
+团队自己拆解问题、分工、选择检查方法和提出证据请求。开发侧提供通用能力，
+从外部核查实际行为，不代写团队的科学回应。研究员可以组织和请求独立评价，
+但不能因此获得修改正式评价程序或读取隐藏数据的权限。提出请求不代表服务
+已存在、已获准或已执行。接续验收要看是否恢复真实历史、产生新的实质工作、
+说明能力缺口，并根据实际返回结果继续判断；只恢复聊天或重复旧报告不够。
 
-The user also proposes human-provided black-box evaluators. The interface design
-will distinguish repeatable development feedback from frozen final acceptance
-with separate unseen data. Versioned inputs/outputs/errors and calls must be
-retained; hidden implementation does not eliminate adaptive overfitting. No
-human-provided black-box service has been connected or claimed available yet.
+用户还提出人类提供黑箱评价器。接口设计区分可反复获得的研究反馈与使用
+另一些未见数据的最终验收。每次请求、结果、错误和版本均须保留；看不到
+评价器内部并不能防止反复试分造成偏差。目前未接入人类提供的黑箱服务。
+
+
+## D033 — 给人看的文档用中文、说人话（2026-11-04）
+
+用户要求所有交付给人阅读的文档使用中文，避免内部黑话。研究报告、说明、
+评价请求、摘要和进展均适用；必要术语应解释，代码/标识符/原始证据可保留。
+原英文冻结记录不可事后改写；提供有来源的中文阅读版本。要求已通过Control
+指导及组织消息送达，当前研究继续，科学条件和资源不变。

@@ -283,3 +283,9 @@
 - 2026-11-04: D032 delegates verification follow-up and external-result interpretation to the continuing research organization; black-box interface boundaries recorded.
 
 - 2026-11-04: Delivered D032 follow-up as organizationseq32; resumed same project/org/history/remaining budget; no hidden-evaluator capability claimed.
+
+- 2026-11-04: 890afd3 records organization-owned continuation and opaque-evaluator boundaries; actual same-project follow-up is running.
+
+- 2026-11-04：D033要求给人看的文档用中文、说人话；已通过正式指导和组织消息送达，保留原始英文证据。
+
+- 2026-11-04：组织者连接断开，19个进程均已退出、预留为零；保留任务和中文指导，沿用登录与预算恢复。

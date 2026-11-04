@@ -186,3 +186,11 @@ Raw provider stderr is currently not retained, and external developer-chat histo
 is not automatically exported: disclose those limits instead of claiming complete
 historical coverage. Do not mutate frozen project materials to add new guidance;
 record new human requirements via the existing Control guidance path.
+
+
+## 面向人阅读的文档
+
+所有交给人类阅读的报告、说明、评价请求和进展总结使用中文、说人话。先说明
+做了什么、结果、限制和下一步；少用缩写及内部术语，必要术语解释含义。代码、
+稳定标识符和机器证据保留原样。冻结英文原稿不可改写，提供标明来源的中文
+阅读版本；不得为翻译或整理报告重复实验。此要求同时适用于研究组织的交付。
