@@ -473,3 +473,15 @@ original contract. Current implementation defaults4h total/30min role are broad
 failsafes for complete delivery, not automatic anomaly classification. Task
 completion, final report publication and acknowledged deliveries must still be
 checked independently of timeouts or direction closure.
+
+
+### Frozen generator protocol admission
+
+The project-local generator_admission converter reads authenticated completed
+analysis via training_adapter.read_trial and checks external manifest/source/
+candidate pins. Independent literal proposal rules guard block/arm order,
+counts, seeds, stream IDs and coordinate correspondence. It returns a native
+paired_sampling proposal plus source evidence binding; it does not apply a
+contract, grant a budget or launch experiments. Existing Control paired admission,
+preparation persistence and later label/fit checks remain authoritative. The
+actual wrong-order review artifact is rejected despite its self-reported success.

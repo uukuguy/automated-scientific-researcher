@@ -53,18 +53,34 @@ Verification:390tests,365pass,25environment skips;
 /tmp/asr-resource-final-tests.log. Five focused resource-revision tests pass;
 actual final run/evidence hashes independently audited. No processes running.
 
+## Independent generator admission completed
+New project-local generator_admission.py verifies actual analysis manifest/source/
+candidate pins, independent literal seed/block/count/order correspondence, public
+input hashes/collisions and native protocol structure. Actual reviewer wrong-order
+candidate was reconstructed by permutation and matched its realhash897d3f9c...
+before rejection; original source/outputs retained. This is controller-authored
+integration, not a team patch or RNG regeneration.
+Native policyhashf2a1709a72ce0149b8161fd6a9b8243031f4b89d1f4c1150c5ee732fb5045516.
+All32arms/2048slots prepared through existing training adapter with realcase/source
+pins. TemporaryControl test proves budget denial and actual64-slot preparation,
+then cancels unexecuted dispatch; no labels/jobs/model calls. Originalrun unchanged.
+Artifacts p5-generator-admission-001; reportdocs/validation/P5-GENERATOR-ADMISSION.
+Nine focused tests pass; fullregression399tests/374pass/25skip,
+log/tmp/asr-generator-admission-full.log; archive and converter hashes verified.
+
 ## Next substantive P5 work
-Translate the team's exact fixed coordinates to native paired admission with
-independent literal seed/name/count/order checks and wrong-order regression.
-Preserve delivered source; version any repair. Then prepare separately explicit
-scientific comparison budget and fresh evaluator panels. Do not reuse P4 outcomes
-as held-out evidence or treat this zero-label run as execution of3584-slot study.
+Prepare actual new research contract and independent development/final panel
+execution/selection for the frozen team comparison.2048augmentation slots are
+only part of original3584-slot proposal;1536panel slots,33fits,replay and scoring
+are not executed. Existing source/generatorpins and nativeprotocol now available.
+Preserve delivered source; version any repair. Do not reuse knownP4 outcomes as
+held-out evidence, mix arms, or reopen completed analysis run for labels.
 Parallel roles, same-budget team scientific benefit and Capstone remain open.
-P4 and originalP5designruns remain closed. Need progress-aware anomaly detection
-and graceful durable emergency handoff, not simply progressively larger defaults.
+Need progress-aware anomaly detection and graceful durable emergency handoff,
+not simply progressively larger defaults.
 
 ## History anchors
 c9a1dbc implementation launcher; bb8b386study adapter tool recovery;
 3a86789full-arm training; ddab838paired admission;6a04b18task gates;
-2564854design pilot/canonical OAuth synchronization. Current work includes new
-explicit policy revision, completed team-delivery artifacts and aligned docs.
+2564854design pilot/canonical OAuth synchronization. 784c241 commits the explicit policy revision, completed team-delivery artifacts
+and aligned docs. Only post-commit journal/checkpoint bookkeeping remains.

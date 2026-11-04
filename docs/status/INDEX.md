@@ -86,3 +86,5 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 
 - `docs/validation/P5-IMPLEMENTATION-PILOT.md` and `P5-IMPLEMENTATION-RECEIPT.json` — real team generator/review, retained oracle defect and lifecycle evidence.
 - D029 in `DECISIONS.md` — completion-first subscription allowances and explicit cost-preserving revision.
+
+- `docs/validation/P5-GENERATOR-ADMISSION.{md,json}` — actual team coordinate conversion, wrong-order rejection and32-arm input preparation; no new numerical jobs.

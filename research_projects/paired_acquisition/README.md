@@ -40,3 +40,12 @@ pins at the appropriate boundaries. Control now supports this persistence throug
 contract setting and existing study tool; its DB owns the artifact pins.
 Actual Bridge interruption/recovery is tested, while model-driven team science
 remains outstanding. See `docs/validation/P5-STUDY-ADAPTER-FLOW.md`.
+
+
+`generator_admission.py` binds the actual team analysis to a native paired protocol.
+It checks literal seed/block/order/count expectations independently of generator
+constants, verifies external source/evidence/candidate pins, and preserves all
+coordinates. It rejects the real reviewer's wrong-order artifact even when its
+self-checks pass. It does not repair delivered source, regenerate random streams,
+grant execution budget or establish scientific utility. See
+`docs/validation/P5-GENERATOR-ADMISSION.md` for actual input-preparation evidence.

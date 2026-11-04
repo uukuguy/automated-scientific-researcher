@@ -241,3 +241,9 @@
 - 2026-11-04: Verified15 snapshots,66-file final archive, unchanged public materials; original incomplete archive preserved; model-cost revision retains1195198ms.
 
 - 2026-11-04: Final regression390 tests:365passed,25skipped; revision replay retains historical receipt after later consumption.
+
+- 2026-11-04: 784c241 completes team generator delivery and revises subscription limits to prevent normal-work truncation while preserving costs.
+
+- 2026-11-04: Independently converted team coordinates; actual wrong-order hash rejected;32arms/2048inputs prepared without model calls or numerical jobs.
+
+- 2026-11-04: Generator admission verified:9focused tests;399regression/374pass/25skip; exact archive/source hashes and original run costs unchanged.

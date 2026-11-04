@@ -1,0 +1,31 @@
+{
+  "schema": "asr-generator-admission-check/1",
+  "source_run": "research_2ab7884ffbcb46b7bbff0a8e7108e077",
+  "source_evidence": {
+    "trial_id": "trial_ec62b369aab54cb5932462a0e2b037fa",
+    "execution_attempt_id": "attempt_2daa6fd5135f4fc995235a0cc9fb8a06",
+    "manifest_hash": "304a2cd22107ccf69b971332ba5f0fce2f1a26240a734e06eb21ef39ad22b7d3"
+  },
+  "candidate_sha256": "f28262870d046f46d3c22c61e06df639b789966ee459c9d4723348bd3bad0176",
+  "native_protocol_sha256": "f2a1709a72ce0149b8161fd6a9b8243031f4b89d1f4c1150c5ee732fb5045516",
+  "groups": 8,
+  "arms_per_group": 4,
+  "unique_coordinates": 768,
+  "proposed_label_slots": 2048,
+  "prepared_arms": 32,
+  "prepared_slots": 2048,
+  "negative_control": {
+    "observed_self_accepted": true,
+    "candidate_sha256": "897d3f9c02dae30ab88acce56b6d0f551a10b903eebec3269af5da21750fd1d4",
+    "reconstruction_hash_matches_actual_review": true,
+    "independent_rejection": "literal arm order mismatch"
+  },
+  "source_run_unchanged": true,
+  "new_model_calls": 0,
+  "new_numerical_jobs": 0,
+  "new_labels": 0,
+  "adapter_source_sha256": "f75b6d4b80729506c6447a37b03a08fb167be74a74d7a160f939f4a96924831a",
+  "boundary": "Structural conversion and input preparation only; not permission to execute, no RNG regeneration, no labels/training/generalization result.",
+  "archive": "artifacts/p5-generator-admission-001",
+  "inventory_sha256": "1102d174756d1802973fd3c768548b25de85f0fa3b20607ff481cd30b492e007"
+}
