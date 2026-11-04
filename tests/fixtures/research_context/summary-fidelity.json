@@ -1,0 +1,99 @@
+{
+  "schema": "asr-summary-fidelity-case/1",
+  "annotation": "开发侧离线验收标注，依据团队冻结原文；不是摘要器输出、科学评价或固定研究流程。",
+  "sources": [
+    {
+      "id": "team-replay-report",
+      "path": "research_projects/paired_acquisition/delivered_continuation/REPLAY-RESULT-UPDATE-ZH.md",
+      "sha256": "2a889a28b3021dc8973b35647243259e563f89179c1cdc64759004bb4a37277d"
+    }
+  ],
+  "obligations": [
+    {
+      "id": "input_custody",
+      "value": "preserved",
+      "sources": [
+        "team-replay-report"
+      ]
+    },
+    {
+      "id": "function_argument_receipt",
+      "value": "not_recorded",
+      "sources": [
+        "team-replay-report"
+      ]
+    },
+    {
+      "id": "reproduction_scope",
+      "value": "shared_service",
+      "sources": [
+        "team-replay-report"
+      ]
+    },
+    {
+      "id": "independent_evaluation",
+      "value": "not_completed",
+      "sources": [
+        "team-replay-report"
+      ]
+    },
+    {
+      "id": "new_label_count",
+      "value": 0,
+      "sources": [
+        "team-replay-report"
+      ]
+    },
+    {
+      "id": "max_weight_difference",
+      "value": 0,
+      "sources": [
+        "team-replay-report"
+      ]
+    },
+    {
+      "id": "id_error_ratio",
+      "value": "11.45",
+      "sources": [
+        "team-replay-report"
+      ]
+    }
+  ],
+  "supporting_quotes": [
+    {
+      "id": "input_custody",
+      "source": "team-replay-report",
+      "quote": "完整任务输入同期保留"
+    },
+    {
+      "id": "function_argument_receipt",
+      "source": "team-replay-report",
+      "quote": "没有额外单独保存训练函数在调用瞬间实际接收的有序x/y独立凭证"
+    },
+    {
+      "id": "reproduction_scope",
+      "source": "team-replay-report",
+      "quote": "不同成员与不同比较代码仍共用同一宿主训练服务"
+    },
+    {
+      "id": "independent_evaluation",
+      "source": "team-replay-report",
+      "quote": "独立外部数值复现和新隐藏评价仍未完成"
+    },
+    {
+      "id": "new_label_count",
+      "source": "team-replay-report",
+      "quote": "0新样本"
+    },
+    {
+      "id": "max_weight_difference",
+      "source": "team-replay-report",
+      "quote": "最大绝对差0"
+    },
+    {
+      "id": "id_error_ratio",
+      "source": "team-replay-report",
+      "quote": "11.45倍原分布误差代价"
+    }
+  ]
+}
