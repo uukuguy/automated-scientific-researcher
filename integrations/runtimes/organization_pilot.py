@@ -88,13 +88,17 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root',required=True,type=Path)
     parser.add_argument('--checkout',required=True,type=Path)
-    parser.add_argument('--limits',type=Path,default=HERE/'organization-limits.json')
+    parser.add_argument('--limits',type=Path)
+    parser.add_argument('--implementation',action='store_true',help='New analysis-only implementation run with role-specific study tools')
     parser.add_argument('--proxy')
     parser.add_argument('--resume',action='store_true',help='Explicit recovery of the same paused reconciled run; no budget reset')
     parser.add_argument('--recovery-reason')
     parser.add_argument('--oauth-source',type=Path)
     parser.add_argument('--execute-authorized-subscription',action='store_true')
-    args=parser.parse_args();limits=resources(args.limits)
+    args=parser.parse_args()
+    from . import organization_implementation as implementation
+    args.limits=args.limits or HERE/('organization-implementation-limits.json' if args.implementation else 'organization-limits.json')
+    limits=implementation.resources(args.limits) if args.implementation else resources(args.limits)
     settings=json.loads((Path.home()/'.pi/agent/settings.json').read_text())
     reject_api_key_settings(settings,runtime='pi',provider='openai-codex')
     if settings.get('defaultProvider')!='openai-codex':raise ValueError('subscription_default_required')
@@ -106,10 +110,15 @@ def main():
         'P4-SAMPLER.py':ROOT/'artifacts/p4-intake-001/workspace/study/audit_and_sampler.py',
         'TARGET-METHOD.py':ROOT/'research_projects/ood_augmentation/project.py',
         'CLIENT-TASK.json':ROOT/'artifacts/p4-simulated-client-001/public/task.json'}
+    study_config=None
+    if args.implementation:
+        study_config,additional=implementation.preflight(limits)
+        material_paths.update(additional)
+        PiRuntime(model=model,capabilities_path=HERE/'organization-study-capabilities.json').preflight_capabilities()
     material_hashes={name:digest(path) for name,path in material_paths.items()}
     if not args.execute_authorized_subscription:
         print(json.dumps(dict(status='preflight_ready',model=model,budget=limits['budget'],public_materials=material_hashes,
-            boundary='Organization/design pilot only; execution not requested.'),indent=2));return
+            boundary='Analysis-only team implementation; no label/fit jobs.' if args.implementation else 'Organization/design pilot only; execution not requested.'),indent=2));return
     if args.proxy:
         from urllib.parse import urlsplit
         url=urlsplit(args.proxy)
@@ -133,6 +142,9 @@ def main():
         problem=dict(profile='matpower-case118/1',case_sha256=reference['case_sha256']),
         reference=dict(profile='matpower-reference/1',image_id=reference['image_id']),
         evaluation=dict(profile='powerflow-independent/1',validator_sha256=reference['source_hashes']['validation.py'],tolerance_pu=1e-7)).items()}
+    if args.implementation:
+        from asr_service.study import expected_references
+        refs={kind:service.references.register(project,kind,value) for kind,value in expected_references(study_config).items()}
     contract=dict(schema_version='asr-contract/1',objective=dict(question='Organize autonomous investigation of useful OOD training-data generation from known P4 evidence.',
         success_criteria='Model-originated direction formation, evidence-grounded review/delegation, concrete snapshotted artifacts, and organizer synthesis with limitations.',
         scope='Organization/design pilot. P4 final outcomes are historical development knowledge, not a reusable hidden test. No new numerical performance claims.'),
@@ -141,6 +153,12 @@ def main():
         runtime_policy=dict(provider='openai-codex',model=model,auth_mode='subscription_oauth',billing_mode='subscription',quota_state='unknown'),
         intervention_policy=dict(guidance_boundary='next_submission',pause='drain'),
         provenance=dict(source='user-authorized P5 continuation',capability_profile='research-organization/1',capability_pack_sha256=pack['sha256'],materials=material_hashes,resource_policy_sha256=digest(args.limits)))
+    if args.implementation:
+        contract['objective']=dict(question='Implement and adversarially check the team-proposed coordinate generator.',
+            success_criteria='Team-authored executable source, actual isolated analysis trials, cross-review and snapshotted coordinate/check outputs.',
+            scope='Analysis-only implementation acceptance; zero new labels or fit jobs, no scientific utility claim.')
+        contract['execution_policy']['timeout_seconds']=limits['analysis_timeout_seconds']
+        contract['provenance'].update(capability_profile='ood-study-development/1',study=study_config,study_operations=['analysis'])
     if args.resume:
         previous=service.get_run(tokens['human'],project,run)
         if (previous['state']!='paused' or previous['health']!='ok' or
@@ -198,6 +216,7 @@ Do not fabricate nonexistent trial IDs; empty evidence_trial_ids is appropriate
 for prospective work with file sources cited in text. Shared budgets are finite;
 write durable output early and finish each session promptly after your handoff.
 '''
+    if args.implementation:brief=implementation.BRIEF
     for actor in ACTORS:
         work=root/'workspaces'/actor
         if not args.resume:
@@ -208,6 +227,13 @@ write durable output early and finish each session promptly after your handoff.
             raise ValueError('recovery_client_material_changed')
     binary=shutil.which('pi')
     if not binary:raise ValueError('pi_unavailable')
+    dispatch=None
+    if args.implementation:
+        from asr_supervisor.study import StudyBackend
+        from asr_supervisor.store import ExecutionStore
+        from asr_supervisor.supervisor import Supervisor
+        supervisor=Supervisor(ExecutionStore(service.path),root/'study-evidence',backend=StudyBackend(study_config['image_id']))
+        dispatch=lambda trial:supervisor.execute(trial['execution_attempt_id'],'organization-implementation')
     steps=[];failure=None
     for old in sorted((root/'steps').glob('*/result.json')):
         prior=json.loads(old.read_text());steps.append(dict(actor=old.parent.name.split('-',1)[1],path=str(old.parent),status=prior['status']))
@@ -234,6 +260,7 @@ write durable output early and finish each session promptly after your handoff.
             work=root/'workspaces'/actor;sync_snapshots(root,work)
             denied=[ROOT/'artifacts/p4-intake-001',ROOT/'artifacts/p4-simulated-client-001',root/'control.db',root/'control.db-wal',root/'control.db-shm',root/'steps',root/'snapshots',Path.home()/'.pi/agent']
             denied += [root/'workspaces'/name for name in ACTORS if name!=actor]
+            if args.implementation:denied += [root/'study-evidence',root/'asr-artifacts']
             for name,role in ACTORS.items():
                 if name!=actor:
                     context=hashlib.sha256(json.dumps([project,run,name,role],separators=(',',':')).encode()).hexdigest()
@@ -243,8 +270,10 @@ write durable output early and finish each session promptly after your handoff.
             if probe.returncode==0 or b'Operation not permitted' not in probe.stderr:raise ValueError('private_boundary_probe_failed')
             launcher=root/f'pi-{actor}'
             launcher.write_text('#!/bin/sh\nexec /usr/bin/sandbox-exec -f '+shlex.quote(str(profile))+' '+shlex.quote(binary)+' "$@"\n');launcher.chmod(0o700)
-            runtime=PiRuntime(executable=str(launcher),model=model,thinking='high',capabilities_path=pack_path)
-            bridge=ResearchBridge(service,project=project,run=run,researcher_token=tokens[actor],supervisor_token=tokens['supervisor'],workspace=work,snapshots=root/'snapshots',organization=aar,capability_profile='research-organization/1')
+            role_profile=implementation.role_profile(ACTORS[actor]) if args.implementation else 'research-organization/1'
+            role_pack=HERE/'organization-study-capabilities.json' if role_profile=='research-organization-study/1' else pack_path
+            runtime=PiRuntime(executable=str(launcher),model=model,thinking='high',capabilities_path=role_pack)
+            bridge=ResearchBridge(service,project=project,run=run,researcher_token=tokens[actor],supervisor_token=tokens['supervisor'],workspace=work,snapshots=root/'snapshots',organization=aar,capability_profile=role_profile,dispatch=dispatch)
             write(step/'request.json',dict(actor=actor,role=ACTORS[actor],deliveries=deliveries,budget=budget,limits=effective.__dict__,access_probe='controller_read_denied'))
             with (step/'events.jsonl').open('x') as stream:
                 def event(value):stream.write(json.dumps(value,allow_nan=False)+'\n');stream.flush()
@@ -268,7 +297,7 @@ write durable output early and finish each session promptly after your handoff.
         projection=aar.sync_experiment_state(tokens['supervisor'],project,run,idempotency_key=(recovery_id or 'pilot')+'-projection',expected_control_revision=state['control_revision'])
         report_path=root/((recovery_id+'-result.json') if recovery_id else 'result.json')
         write(report_path,dict(project_id=project,research_run_id=run,steps=steps,failure=failure,state=state['state'],budget=state['budget'],projection=projection,
-            boundary='Actual role-session execution, not new numerical evidence or P5 completion. Review model-authored artifacts and task outcomes.'))
+            boundary='Actual analysis-only team implementation; review source and governed numerical trials. No OOD utility or P5 completion claim.' if args.implementation else 'Actual role-session execution, not new numerical evidence or P5 completion. Review model-authored artifacts and task outcomes.'))
     print(json.dumps(dict(report=str(report_path),steps=len(steps),failure=failure,state=state['state'])))
     if failure:raise SystemExit(2)
 

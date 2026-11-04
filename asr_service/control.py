@@ -208,6 +208,12 @@ class ControlService(PolicyStore):
                 raise ControlError('paired_profile_unavailable')
             from .paired_sampling import validate
             validate(doc['provenance']['paired_sampling'],doc['budget'])
+        if 'study_operations' in doc['provenance']:
+            operations=doc['provenance']['study_operations']
+            if (doc['provenance'].get('capability_profile') not in ('ood-study-development/1','ood-study-confirmation/1')
+                or type(operations) is not list or not operations or any(type(x) is not str or x not in ('analysis','label','fit') for x in operations)
+                or len(set(operations))!=len(operations)):
+                raise ControlError('invalid_study_operations')
         if 'paired_adapter' in doc['provenance']:
             from .study_adapters import validate as validate_adapter
             validate_adapter(doc['provenance'])

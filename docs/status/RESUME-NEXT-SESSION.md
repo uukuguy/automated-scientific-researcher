@@ -152,6 +152,16 @@ No new novelty/real-industrial/generalization claim follows from P5 design work.
 
 ## Workspace
 
-Pilot/auth changes committed as2564854. Task-bound execution slice committed as6a04b18; paired sampling/adapter slice committed asddab838. Full-arm training/receipt slice committed as3a86789; study tool recovery slice currently uncommitted. No active native model owner.
+Pilot/auth changes committed as2564854. Task-bound execution slice committed as6a04b18; paired sampling/adapter slice committed asddab838. Full-arm training/receipt slice committed as3a86789; study tool recovery slice committed asbb8b386; only post-commit bookkeeping remains. No active native model owner.
 Recovery logs /tmp/asr-p5-organization-001-resumed.log and
 /tmp/asr-p5-organization-001-network-recovery.log. Preserve ignored evidence.
+
+## Active implementation run checkpoint
+
+New accepted continuation uses organization_pilot --implementation with
+organization-implementation-limits.json:20 aggregate subscription model minutes,
+12x60s analysis jobs,0 labels,analysis-only Control gate. Preflight and385tests
+(360pass,25skip)passed. Intended root artifacts/p5-implementation-001; checkout
+artifacts/p2-aar-private-20261102-final-preflight; existing proxy127.0.0.1:7897.
+User asked to continue into actual team work; no API billing or old-run reuse.
+Run not yet launched at this checkpoint; inspect actual root/process before acting.

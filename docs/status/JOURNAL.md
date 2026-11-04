@@ -225,3 +225,5 @@
 - 2026-11-04: Study tool now preserves/reconciles paired artifacts; real interruption/corruption recovery passed; original requests never rerun completed experiments.
 - 2026-11-04: Preserved old inventories; corrected transient SQLite entries after verifying every durable hash and empty WAL.
 - 2026-11-04: Adapter flow verification passed357/382 tests with25 environment skips; real tool recovery and syntax checks passed.
+- 2026-11-04: bb8b386 persists paired adapter evidence through research tools, enabling recovery without duplicate execution or hidden verification failures.
+- 2026-11-04: Prepared analysis-only team implementation launcher;385 tests,360pass,25skip; frozen source/image preflight passed; no model launched yet.

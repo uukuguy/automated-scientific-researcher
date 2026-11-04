@@ -137,6 +137,8 @@ def submit(service, token, project, run, *, request_key, request, timeout_second
         if type(request) is not dict:
             raise StudyRequestError('study request must be an object')
         operation = request.get('operation')
+        if 'study_operations' in doc['provenance'] and operation not in doc['provenance']['study_operations']:
+            raise ControlError('study_operation_not_authorized')
         if operation == 'label':
             pairing=paired_sampling.label_binding(db,project,run,paired_policy,request)
             if set(request)-({'paired_batch'} if pairing else set()) != {'operation', 'purpose', 'coordinates'} or request['purpose'] not in ('augmentation', 'probe'):
