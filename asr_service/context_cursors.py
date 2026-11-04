@@ -58,7 +58,7 @@ def observe(service,token,project,run,session_id,epoch,owner,*,observation):
             replay=service._replay(db,project,scope,key,payload)
             if replay:return replay  # An old observation is not installation permission.
             _live(session);native=session.get('native_context') or {}
-            if payload.get('type')!='asr_context_cursor' or payload.get('schema')!='asr-pi-cursor/1' or payload.get('boundary')!='before_provider_request':raise ControlError('invalid_context_cursor')
+            if payload.get('type')!='asr_context_cursor' or payload.get('schema')!='asr-pi-cursor/1' or payload.get('boundary') not in ('before_provider_request','session_before_compact'):raise ControlError('invalid_context_cursor')
             if payload.get('status')!='observed':raise ControlError('native_cursor_deferred')
             if type(payload.get('journal_file')) is not str or type(payload.get('branch_ids_sha256')) is not str:raise ControlError('invalid_context_cursor')
             path=Path(payload['journal_file'])

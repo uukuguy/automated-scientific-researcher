@@ -71,3 +71,5 @@ Context7 的 `/earendil-works/pi` 文档确认，`transport` 可为 `sse` 或 We
 2026-11-04核查本机1.5.0公开导出的buildSessionProjection(entries, leafId, byId?)，并通过Context7核对：它处理当前分支、已有compaction及context_edit，返回消息与来源条目。ASR只读适配器使用此接口，实际安装SDK的压缩/编辑投影测试通过。getLeafId必须来自活动sessionManager才能成为活动游标见证；离线文件最后节点不等价。核心覆盖算法不导入该SDK。
 
 pi 1.5.0本机types.d.ts与session-manager.d.ts再次核对：ExtensionContext.sessionManager公开getSessionId/getSessionFile/getLeafId/getBranch。游标采集使用这些只读方法，在before_provider_request许可之后读取当前叶节点、指定分支ID并复查游标。Node宿主回调检查通过；尚无真实模型会话使用新事件的验收，不等于提供方最终载荷或Control身份绑定已验证。
+
+同步边界再次核查pi 1.5.0已安装types.d.ts及agent-session.js：session_before_compact支持cancel/compaction，手动及自动压缩均await该钩子；没有明确结果时进入默认生成器。现有扩展明确取消所有尚未联合授权的压缩，不用异常逃离（SDK可能吞掉钩子异常）。SDK代码检查证明调用语义；新增Node/HTTP测试使用模拟会话管理器，不代表真实模型安装验收。

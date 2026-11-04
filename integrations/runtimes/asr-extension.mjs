@@ -1,6 +1,7 @@
 /** Curated pi extension. No discovered skills, extensions, provider switching or Bash. */
 import { workspacePath } from './workspace-path.mjs';
 import { captureCursor } from './pi_context_cursor.mjs';
+import { beforeCompact } from './pi_context_boundary.mjs';
 export default function(pi) {
   let turns = 0, tools = 0;
   const maxTurns = Number(process.env.ASR_MAX_TURNS);
@@ -61,6 +62,16 @@ export default function(pi) {
     if (!response.ok && operation==='permit') throw new Error('asr_permit_rejected');
     return data;
   }
+  pi.on('session_before_compact', (event,ctx) => beforeCompact(event,ctx,{
+    timeoutMs:Number(process.env.ASR_CONTEXT_BOUNDARY_TIMEOUT_MS||30000),
+    emit:record=>process.stdout.write(JSON.stringify(record)+'\n'),
+    request:async(cursor,signal)=>{
+      const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${token}`},
+        body:JSON.stringify({operation:'context_boundary',arguments:{observation:cursor},key:cursor.observation_id}),signal});
+      if(!response.ok)return {action:'cancel',reason:'boundary_request_rejected'};
+      return await response.json();
+    }
+  }));
   pi.on('before_provider_request', async (_event,ctx) => {
     try {
       context=ctx||context;

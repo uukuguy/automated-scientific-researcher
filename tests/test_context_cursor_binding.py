@@ -121,3 +121,50 @@ class ContextCursorBindingTests(unittest.TestCase):
     def test_prelaunch_observation_does_not_create_a_false_native_binding(self):
         self.assertEqual(self.record()['status'],'deferred')
         self.assertEqual(self.bind()['native_session_id'],'native')
+
+    def test_compaction_handshake_uses_owned_http_bridge_and_never_installs_unreviewed_content(self):
+        from integrations.aar.bridge import ResearchBridge
+        from urllib.request import Request,urlopen
+        self.bind();self.launch()
+        bridge=ResearchBridge(self.s,project='p',run='r',researcher_token='lead',supervisor_token='human-secret',workspace=self.root.parent/'workspace',snapshots=self.root.parent/'snapshots',capability_profile='research-organization/1')
+        bridge.runtime_identity=self.ids
+        with bridge:
+            body=dict(operation='context_boundary',arguments=dict(observation=self.event('boundary',boundary='session_before_compact')),key='boundary')
+            request=Request(bridge.url,data=json.dumps(body).encode(),headers={'Authorization':'Bearer '+bridge.token,'Content-Type':'application/json'})
+            with urlopen(request,timeout=5) as response:result=json.load(response)
+        self.assertEqual(result['action'],'cancel');self.assertEqual(result['reason'],'context_installation_not_ready')
+        self.assertEqual(result['cursor_receipt']['status'],'bound');self.assertFalse(result['installation_authorized'])
+        with self.s._connect() as db:
+            events=[json.loads(row[0]) for row in db.execute('SELECT record FROM asr_events')]
+        self.assertTrue(any(e['type']=='context_boundary_deferred' and e['observation_id']=='boundary' for e in events))
+
+    def test_native_hook_waits_on_real_http_control_handshake_without_model(self):
+        import os,time
+        from integrations.aar.bridge import ResearchBridge
+        from integrations.runtimes.environment import COMMON_ENVIRONMENT,build_environment
+        self.bind();self.s.begin_runtime_launch('human-secret','p','r',**self.ids)
+        bridge=ResearchBridge(self.s,project='p',run='r',researcher_token='lead',supervisor_token='human-secret',workspace=self.root.parent/'workspace',snapshots=self.root.parent/'snapshots',capability_profile='research-organization/1')
+        bridge.runtime_identity=self.ids
+        module=Path('integrations/runtimes/asr-extension.mjs').resolve().as_uri()
+        code=f'''import extension from {json.dumps(module)};const handlers={{}};
+extension({{on:(k,v)=>handlers[k]=v,registerTool:()=>{{}}}});
+await new Promise(resolve=>process.stdin.once('data',resolve));
+const result=await handlers.session_before_compact({{reason:'manual',signal:new AbortController().signal}},{{sessionManager:{{getSessionId:()=> 'native',getSessionFile:()=> {json.dumps(str(self.path))},getLeafId:()=> 'a',getBranch:()=>[{{id:'u'}},{{id:'a'}}]}}}});
+console.log(JSON.stringify({{type:'fixture_result',result}}));'''
+        with bridge:
+            env=build_environment(COMMON_ENVIRONMENT,runtime='pi',provider='openai-codex')
+            env.update(ASR_BRIDGE_URL=bridge.url,ASR_BRIDGE_TOKEN=bridge.token,ASR_CONTEXT_BOUNDARY_TIMEOUT_MS='2000',ASR_MAX_TURNS='10',ASR_MAX_TOOLS='10',ASR_DEADLINE_MS=str(int((time.time()+20)*1000)))
+            process=subprocess.Popen(['node','--input-type=module','-e',code],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True,env=env)
+            try:
+                self.s.attach_runtime_process('human-secret','p','r',**self.ids,identity=identify(process.pid))
+                stdout,stderr=process.communicate(b'start\n',timeout=5)
+            finally:
+                if process.poll() is None:process.kill();process.wait()
+        self.assertEqual(process.returncode,0,stderr.decode())
+        records=[json.loads(line) for line in stdout.splitlines()]
+        self.assertEqual(records[-1]['result'],dict(cancel=True))
+        self.assertEqual(records[-2]['reason'],'context_installation_not_ready')
+        self.s.release_runtime('human-secret','p','r',**self.ids,execution_exited=True,actual_walltime_ms=100)
+        with self.s._connect() as db:
+            events=[json.loads(row[0]) for row in db.execute('SELECT record FROM asr_events')]
+        self.assertTrue(any(e['type']=='context_cursor_bound' and e['session_id']==self.claim['session_id'] for e in events))

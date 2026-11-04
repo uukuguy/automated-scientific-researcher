@@ -33,6 +33,7 @@ class ResearchBridge:
         from integrations.runtimes.capability_inventory import PROFILE_TOOLS
         if capability_profile not in PROFILE_TOOLS:raise ValueError('unsupported_capability_profile')
         self.allowed_operations={tool.removeprefix('asr.') for tool in PROFILE_TOOLS[capability_profile]}|{'permit'}
+        if capability_profile in ('research-organization/1','research-organization-study/1'):self.allowed_operations.add('context_boundary')
         self.capability_profile=capability_profile
         self.service=service; self.project=project; self.run=run
         self.researcher_token=researcher_token; self.supervisor_token=supervisor_token
@@ -59,6 +60,15 @@ class ResearchBridge:
         if operation=='search_literature':
             from integrations.research_tools.literature import search
             return search(**arguments)
+        if operation=='context_boundary':
+            if set(arguments)!={'observation'} or type(arguments['observation']) is not dict or arguments['observation'].get('observation_id')!=key or arguments['observation'].get('boundary')!='session_before_compact':
+                raise ValueError('invalid_bridge_request')
+            receipt=s.observe_context_cursor(self.supervisor_token,p,r,**self.runtime_identity,observation=arguments['observation'])
+            reason='context_installation_not_ready' if receipt['status']=='bound' else receipt['reason']
+            result=dict(action='cancel',reason=reason,context_installed=False,installation_authorized=False,cursor_receipt=receipt)
+            with s._connect() as db:
+                s._event(db,p,r,'context_boundary_deferred',session_id=self.runtime_identity.get('session_id'),observation_id=key,reason=reason,context_installed=False)
+            return result
         if operation=='permit':
             result=s.admit_activity(self.supervisor_token,p,r,kind=arguments['kind'],idempotency_key=key,**self.runtime_identity)
             self.permits.append(result); return result

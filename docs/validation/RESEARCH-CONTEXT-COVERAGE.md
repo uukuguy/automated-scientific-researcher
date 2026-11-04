@@ -47,3 +47,11 @@ provider_payload_verified=false：这是SDK逻辑上下文，未证明提供方�
 游标事件发出后原生会话可继续前进，不能据此证明安装时的当前状态；active_cursor_verified与installation_authorized保持false。尚需同步安装边界及安装前后证据。原历史三份日志与既有模型试验未改写，也未重复科研实验。
 
 完整验证共511项，486通过、25环境跳过；日志`/tmp/asr-cursor-binding-final-tests.log`。
+
+## 同步边界检查
+
+已测试session_before_compact等待宿主回复，并在结束前复查游标。5项Node检查覆盖超时、请求异常、提前/中途取消、游标变化、未经复核的安装标志及事件记录失败；所有路径返回cancel:true，不进入默认摘要。两项新增桥接检查使用真实本机HTTP，其中一项运行独立Node扩展进程并实际核对进程出生身份。原生会话管理器为模拟，未调用模型。
+
+Control保存边界观测和处理原因，扩展输出进入/释放阶段、边界ID、等待上限/耗时和恢复说明。当前没有可接纳的安装器输出，宿主明确返回context_installation_not_ready；保留原上下文不是成功安装。下一步是经过完整联合核验的实际摘要写入与生效检查。
+
+组合检查共518项，493通过、25环境跳过；日志`/tmp/asr-context-boundary-final-tests.log`。两个Node模块语法检查与git diff --check通过。
