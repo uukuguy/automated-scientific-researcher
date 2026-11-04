@@ -67,3 +67,5 @@ and Grok login/coding on 2026-11-03. Codex App Server precedes Grok ACP: bounded
 protocol foundation → ASR tool/budget binding → actual interruption/recovery and
 research acceptance. Detailed files and gates are in RESEARCHER-RUNTIMES.md.
 Protocol-only tests do not close the scientific trajectory or activate P5.
+
+研究上下文专项（D034）已纳入P5后续：研究语义的压缩、可溯源记忆、容量预警与跨会话恢复验收，见[P5计划](P5-RESEARCH-ORGANIZATION.md)。当前显式换代是应急能力，专项未实现。
