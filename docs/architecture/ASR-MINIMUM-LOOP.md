@@ -1,6 +1,6 @@
 # ASR 最小研究闭环详细设计
 
-版本：0.4，2026-11-03。状态：P1–P3本机控制、实际pinned AAR loop/ORM、独立验证与恢复已验收；P4合成OOD客户项目完成受限科学交付，见 `../validation/P4-SCIENTIFIC-RESULTS.md`。跨项目协议待Capstone对齐，多研究员组织尚未部署。
+版本：0.4，2026-11-03。状态：P1–P3本机控制、实际pinned AAR loop/ORM、独立验证与恢复已验收；P4合成OOD客户项目完成受限科学交付，见 `../validation/P4-SCIENTIFIC-RESULTS.md`。跨项目协议待Capstone对齐；P5已验证串行Organizer/双Lead项目研究与完整交流归档，多方向并行和新独立科学验收尚待完成，见 `../validation/P5-PROJECT-PILOT.md`。
 
 实现入口：`asr_service/README.md`、`asr_supervisor/README.md`、`integrations/runtimes/README.md`。本文目标协议与当前本机路由并不完全相同；不能以设计路径宣称端点存在。真实订阅验收见 `docs/validation/P2-SUBSCRIPTION.md`。
 

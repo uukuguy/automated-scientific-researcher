@@ -1,0 +1,165 @@
+{
+  "source_project": "organization-97ad1aee4ff4",
+  "source_run": "research_2fdee65a1c2f4bd5b107bfc388469d8d",
+  "boundary": "Exact researcher-authored artifacts; report export/lifecycle gaps describe author-time state. Later controller archive is separate.",
+  "files": [
+    {
+      "path": "ORGANIZATION-REPORT.md",
+      "author": "organizer",
+      "sha256": "aac455a853d0bfe5ff43e6e4cd27b4b073620d7937a3a19908668296f63f158c",
+      "bytes": 19476,
+      "snapshots": [
+        "bf86cf958320795c3e626f58c76886df7d00305964866f9a433aba0167c4c5d5"
+      ]
+    },
+    {
+      "path": "EVALUATION-REQUEST.md",
+      "author": "organizer",
+      "sha256": "684e24c956473876ae9a2cf174b4a3e62798b5521d14f54b7f18d1368f58f625",
+      "bytes": 4785,
+      "snapshots": [
+        "bf86cf958320795c3e626f58c76886df7d00305964866f9a433aba0167c4c5d5",
+        "c5f7731aa7087711cf433e8f30ebc65cd3a9f39ec3ddf82e66834e01c649ecda"
+      ]
+    },
+    {
+      "path": "LEAD-RESEARCH-PLAN.md",
+      "author": "lead_1",
+      "sha256": "053b5896a1ec7a2be8c2afea896427028f91007927ff6557bca796822ed69a34",
+      "bytes": 10689,
+      "snapshots": [
+        "b307cda79abcd7e592050829d27557b5ee4862fe143b4f11c43c541887b6996e",
+        "bf39df6f2e7f0e29dd8aead01583c6dc17297455ff93818388999ff3c6a35594"
+      ]
+    },
+    {
+      "path": "acquisition_manifest.py",
+      "author": "lead_1",
+      "sha256": "b9e6bf10e0e011d76afaf299e93edb6c364eea62ebc9020472d43634c0983497",
+      "bytes": 7534,
+      "snapshots": [
+        "b307cda79abcd7e592050829d27557b5ee4862fe143b4f11c43c541887b6996e",
+        "bf39df6f2e7f0e29dd8aead01583c6dc17297455ff93818388999ff3c6a35594"
+      ]
+    },
+    {
+      "path": "acquisition_preflight_v2.py",
+      "author": "lead_1",
+      "sha256": "f9f452bb13c2b9e3b4fde78979f708d6e499c03a031de6a7bbe35e526c892c20",
+      "bytes": 10186,
+      "snapshots": [
+        "37c864d097f60a3f7374601be0b820470cbd6a9b8af2f3bb80ec4e6aad6cbdc4",
+        "b307cda79abcd7e592050829d27557b5ee4862fe143b4f11c43c541887b6996e",
+        "e81d9f3c732a937700d95571e6d1f45324648136ea5e94dc6ea098b3e24c2b6f"
+      ]
+    },
+    {
+      "path": "label_integrity_audit.py",
+      "author": "lead_1",
+      "sha256": "cb81fb5379a8beb05a65666834ac1dceddbf48871bcce1c4f8d93715a407fdde",
+      "bytes": 8777,
+      "snapshots": [
+        "46846f0187ff4fde0df7ee65eb303d6acf5e82c4ad67ae1da3235b9e57171772",
+        "4729d0e69363060f42ced539da3f3edd7f83893f0baa795caf211eb10e73d73b",
+        "ce25f14a912d00b9eab231b1d7f986b3498a2cf598bb9938b6b75e8b7576b3fd"
+      ]
+    },
+    {
+      "path": "utility_synthesis.py",
+      "author": "lead_1",
+      "sha256": "bc4813926d8160cde43c79da5a02c37c287265714a424a81edcc6733d3597144",
+      "bytes": 7725,
+      "snapshots": [
+        "46846f0187ff4fde0df7ee65eb303d6acf5e82c4ad67ae1da3235b9e57171772",
+        "b11c0f1d47163d5967a641be8f4b89080418177f6de8e321c90a9478238fb3fb"
+      ]
+    },
+    {
+      "path": "LEAD-UTILITY-REPORT.md",
+      "author": "lead_1",
+      "sha256": "afdd3b467a49dae640169a6501d0f8e6f64791bf58a29a3e1e420f36dd2448fb",
+      "bytes": 14682,
+      "snapshots": [
+        "46846f0187ff4fde0df7ee65eb303d6acf5e82c4ad67ae1da3235b9e57171772"
+      ]
+    },
+    {
+      "path": "INDEPENDENT-EVALUATION-HANDOFF.md",
+      "author": "lead_1",
+      "sha256": "1e6b7ecceff191393cae28b483c8c13efb85e07a8c18d1c90056e4f063dbebb6",
+      "bytes": 6238,
+      "snapshots": [
+        "46846f0187ff4fde0df7ee65eb303d6acf5e82c4ad67ae1da3235b9e57171772"
+      ]
+    },
+    {
+      "path": "FROZEN-MODEL-SELECTION.md",
+      "author": "lead_1",
+      "sha256": "35ae4be0c24de0e0d670924a86a93b29b063ecb8edb0db36f6f19210c92c7b48",
+      "bytes": 2636,
+      "snapshots": [
+        "46846f0187ff4fde0df7ee65eb303d6acf5e82c4ad67ae1da3235b9e57171772",
+        "b11c0f1d47163d5967a641be8f4b89080418177f6de8e321c90a9478238fb3fb"
+      ]
+    },
+    {
+      "path": "AUDIT-CORRECTION.md",
+      "author": "lead_1",
+      "sha256": "196ad16168cfb79e30bf58c30f75697ef45ce907a18a54c8790f37c5de439b0f",
+      "bytes": 3961,
+      "snapshots": [
+        "46846f0187ff4fde0df7ee65eb303d6acf5e82c4ad67ae1da3235b9e57171772",
+        "4729d0e69363060f42ced539da3f3edd7f83893f0baa795caf211eb10e73d73b",
+        "ce25f14a912d00b9eab231b1d7f986b3498a2cf598bb9938b6b75e8b7576b3fd"
+      ]
+    },
+    {
+      "path": "FIT-EVIDENCE-INDEX.md",
+      "author": "lead_1",
+      "sha256": "f4a0b45ccc32916480e8e4bf69357c07d2d2b208c7ef2a906c6f4291b5b44d3d",
+      "bytes": 2488,
+      "snapshots": [
+        "46846f0187ff4fde0df7ee65eb303d6acf5e82c4ad67ae1da3235b9e57171772"
+      ]
+    },
+    {
+      "path": "STAGE2-LEDGER.md",
+      "author": "lead_1",
+      "sha256": "3985fcaa7374fdd632d40caed7f261b3e144dbddf8be70874002eaf6f1d24384",
+      "bytes": 4880,
+      "snapshots": [
+        "125431bb23dcb1d08a141f5f9c109599f9e4edfbba5b5fb1da345c70d196c600",
+        "46846f0187ff4fde0df7ee65eb303d6acf5e82c4ad67ae1da3235b9e57171772",
+        "4729d0e69363060f42ced539da3f3edd7f83893f0baa795caf211eb10e73d73b"
+      ]
+    },
+    {
+      "path": "PREFIT-GATE.md",
+      "author": "lead_1",
+      "sha256": "9a4c0445f9eddc5c8f9487f15da6a6badd3768453f0415e91332706de6591963",
+      "bytes": 3533,
+      "snapshots": [
+        "46846f0187ff4fde0df7ee65eb303d6acf5e82c4ad67ae1da3235b9e57171772",
+        "4729d0e69363060f42ced539da3f3edd7f83893f0baa795caf211eb10e73d73b"
+      ]
+    },
+    {
+      "path": "LEAD2-SOURCE-AUDIT.md",
+      "author": "lead_2",
+      "sha256": "9dedbf93d24713ac522fc741b6586b90e4e9922fd7a324ebd7486a7729af05d8",
+      "bytes": 10381,
+      "snapshots": [
+        "3d9821ce793c955b1859d833448ae2595d8773b1c0ff5fae4a182e8b68b8ce1c"
+      ]
+    },
+    {
+      "path": "LEAD2-UTILITY-REVIEW.md",
+      "author": "lead_2",
+      "sha256": "1af8c0e1ce97dd3a8c31cd857bd9cb0903c1d6a58610e47f235136a09889a89e",
+      "bytes": 11145,
+      "snapshots": [
+        "5a6e240f12886f83b89358229be7bc8c01c6550d1bc75316b4aa702ec9f8f215"
+      ]
+    }
+  ]
+}

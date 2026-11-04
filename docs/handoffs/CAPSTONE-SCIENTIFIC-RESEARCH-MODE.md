@@ -261,3 +261,12 @@ with actor/session/task/trial references, source hashes and explicit missing/act
 redacted markers, not just polished summaries. Preserve original order/timestamps
 where recorded. Credentials/private reasoning are not UI communication content.
 No claim that this prepared handoff is already delivered or implemented in Capstone.
+
+
+Concrete projection material now available: docs/validation/P5-PROJECT-RECEIPT.json
+and P5-PROJECT-PILOT.md link all9 public model outcomes,24 trials,20 snapshots,
+15 role sessions and complete recorded communication. Preserve explicit public
+versus independent-evaluation status, ID degradation and failed author audits.
+Sequence31 is controller-generated closing guidance despite legacy human auth
+identity; do not label it a literal human message. This prepares integration
+data; no Capstone code, dashboard deployment or cross-project acceptance is claimed.

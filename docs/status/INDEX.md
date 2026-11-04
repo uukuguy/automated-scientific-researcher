@@ -94,3 +94,5 @@ Collaboration preferences belong in MEMORY.md. Complete evidence stays in indexe
 - `integrations/runtimes/communication_archive.py` — immutable visible-communication exports with source hashes, role journal links, redaction and coverage gaps (D031).
 
 - `docs/validation/RESEARCH-COMMUNICATION.md` — recorded communication coverage, archival command and honest historical gaps.
+
+- `docs/validation/P5-PROJECT-PILOT.md` and `P5-PROJECT-RECEIPT.json` — actual team-owned public comparison, complete communication and lifecycle/export verification; independent acceptance remains open.

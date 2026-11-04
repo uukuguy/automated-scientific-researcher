@@ -49,3 +49,12 @@ coordinates. It rejects the real reviewer's wrong-order artifact even when its
 self-checks pass. It does not repair delivered source, regenerate random streams,
 grant execution budget or establish scientific utility. See
 `docs/validation/P5-GENERATOR-ADMISSION.md` for actual input-preparation evidence.
+
+## Project-directed research delivery
+
+The later PROJECT-REQUIREMENTS.json run independently chose an unpaired
+target-versus-mixed design instead of using the historical paired adapter.
+Its actual512 labels/9 models/24 jobs and all visible communication are archived;
+see docs/validation/P5-PROJECT-PILOT.md. delivered_project contains exact
+model-authored source/reports with snapshot hashes, not a new ASR core workflow.
+Independent hidden evaluation/replay and parallel organization proof remain open.

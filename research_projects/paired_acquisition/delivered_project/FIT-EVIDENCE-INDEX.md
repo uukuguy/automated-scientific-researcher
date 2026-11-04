@@ -1,0 +1,18 @@
+# Actual fit/synthesis identities (all terminal succeeded/exited)
+
+All governed submissions: task augmentation-utility-study r2; hypothesis organization-97ad1aee4ff4/target-versus-mixed/r1. Native model dictionaries preserved in synthesis trial result, not refitted. No independent numerical validation claimed.
+
+| Fit | Trial | Attempt | Evidence manifest | ms |
+|---|---|---|---|---:|
+|baseline|trial_a2989bb71afe49508465861b51f65902|attempt_427fc8efbf694fed8a6070142be308b0|927acff12a85621fb5056c05ac3f37a2dd1763ac81bf6e7bcec7d1ac4bc593a7|775|
+|target4101|trial_b655c56b27d74ef994dad2a73e892e1f|attempt_5d44aaa3ee5c4b29aeb98f1de25403d7|d3278ff25969325392ba9c26f1b5ff9e01584c8ecfad28549ab697eb9f3c7990|1085|
+|target4102|trial_8a652f6fa7464b739c9260301d77ec05|attempt_81ed2cf897e74279abea24462c645bbc|807eafd8635f08a788099b263cc335a5f2755c41de2ac3b82d46c4a8de643d20|1168|
+|target4103|trial_cf645292f5c141acb207a8fa79cd945c|attempt_b541fa1bd84c4bf5bb269f1869115813|6af60653b4ae495bcb0db8c22954c37fe8c7ddb4cb1bddfbfde31a4e6fe9fb65|1119|
+|target4104|trial_c1597a2d68b445c4b770d7daecf764b2|attempt_cf8f115b92f04df49ca2decd0c0ad5cc|3f4e35002aefc2886aadbd9ab5cacbc52b519441c783e5d36c8fab08f675d968|1111|
+|mixed5101|trial_4cdbe53a0cd9481aae17b86e3711e65d|attempt_a37292e092ab4b6db6c0a5df01af7697|97206ad76fd1f24d74b514f11897c539f245596cf18db83da685a3cc6972f741|1118|
+|mixed5102|trial_efafb4b736904cd2b875aecb7bf55b9d|attempt_1a291355042a4d9f9445519d51dca15d|16c1a4324843eace2f446c83acf56fbeace89a4c3764d4fe14e994420fe4a09f|1105|
+|mixed5103|trial_863580bc6ddd44dc9be17c31ce13f017|attempt_fc59f62d6d124a0fbbfcc6574662d10b|ee0371794ad4b7a6966d442d222608765b22f0cc961f38826ac4fbc820ba159c|1146|
+|mixed5104|trial_4e5431dcd3144fe982ba09de2fee1633|attempt_69b74b42889948dfaf9699fcad647f0d|3849acd85c7b6d886ba25550c1b488fbe5c8081ae86de7500eff26703a46775b|1169|
+|all9 synthesis|trial_13fa49dde9024b41921d1ba0cbbbca29|attempt_e032596239db408da27d71aa6ba634f3|ce6061a0d992c44f92b5529064b424b54dc2f14b0030bddb5b4f830e6f9b8d4f|1130|
+
+Each augmented fit depends only on matching own augmentation trial listed in STAGE2-LEDGER.md, baseline empty dependency. Synthesis authenticated dependency receipt includes these9 native fits plus selected augmentation trial_bd40876f4c5540f7a40fe7f73a762706. Complete raw2.28MB output path/hash in LEAD-UTILITY-REPORT.md; full package snapshot attempted and rejected snapshot_too_large, retained native immutable artifact instead. No successful full raw snapshot claimed.

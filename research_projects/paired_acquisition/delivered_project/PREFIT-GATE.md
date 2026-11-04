@@ -1,0 +1,17 @@
+# Prefit integrity gate passed for development (author disposition)
+
+All512 frozen proposals labelled once. Three corrected audit subsets cover unique batch indices0–7 exactly: {0,1,2}, {3,4,5}, {6,7}; all subset_pass=true, issues=[],64 labelled/converged/equation_valid/input_preserved per batch, no invalid/failure rows. Ordered coordinates and hashes match exact frozen candidate; intended reconstructed input equals attempted input/hash; full finite236 targets match solution voltage-then-angle order/hash; fixed fields/dispatch/generator voltage controls/reference angle preserved; author nodal residual and native host equation evidence both<=1e-7. No remaining observed integrity contradiction. This is author audit and native host checks, NOT independent validation. Original erroneous bus-initial-Vm control audit and all recovery/rejections retained (AUDIT-CORRECTION.md). No rows excluded.
+
+Maximum author residual9.285355397797318e-09 pu; host9.285352148933798e-09 pu (mixed5103). ALL512 have operational violations,186 thermal limits unassessed per row. Equation validity does not imply operating feasibility. No baseline/augmented fit yet at this gate freeze.
+
+| Subset | Trial | Attempt | Manifest | ms | full result bytes | full result SHA256 |
+|---|---|---|---|---:|---:|---|
+|target4101–4103|trial_a36ecb60b2d74d76a173b5aceb62d5e3|attempt_fbfde947b8c447448f05b98c813d0350|625ce917b4b7fcaac89543c378dfac752cf76b4067d49ae358344acc1eb813da|3323|62544932|9d04dd120bef3c6e20c5ff6292cd2b48dd983c9b136fdfcd4035847ac6e54e92|
+|target4104+mixed5101/5102|trial_e8f5d87b4d5345d8a1011592872af906|attempt_be4ec9c81c2a49c7b48ec5110677c30a|a613be646b0468c625c00c83ec6607955f97a4dfeaee4febf52757e5f5fa14c2|3074|62573561|a15f16a2ce6986f3ea1225edd20656fab7756ce6cbe5e733a1360cb3aefd6668|
+|mixed5103/5104|trial_636accfed9ea46eda25a0c733331d1e8|attempt_d814bb75fd834d7bbf51079ee3373812|4fc2ebd50f2c155b5ef991be7069d9f577b55ea33ac8bafc5bc9ead0f5942483|2341|41715113|083de4f1d6f518365ae353f4a88012eaf48d56312ea9eb85a2af42293b681eeb|
+
+Files are study-result-<trial_id>.json in lead_1 workspace, immutable full native dependency also available via governed analysis. Source snapshotce25f14a912d00b9eab231b1d7f986b3498a2cf598bb9938b6b75e8b7576b3fd / label_integrity_audit.py SHA cb81fb5379a8beb05a65666834ac1dceddbf48871bcce1c4f8d93715a407fdde. Large result snapshots unavailable (actual snapshot_too_large retained); these pins and native immutable artifacts preserve full rows. I read complete audit summaries and subset_pass locations plus inspected source and earlier row ledger; not manually every raw line.
+
+At latest terminal projection total14 attempts/85907 execution ms/512 proposals, all execution/proposal reservations0. Task13 attempts/84342ms; preflight1/1565. Exactly10 direction attempts remain for9fits+1synthesis; no other numerical jobs, labels or replay. Rejected four-label input17047576 bytes exceeded actual16777216 cap and did not execute; recovery3/3/2 groups admitted. Remaining external provenance limitations were explicitly dispositioned for development in Organizerseq21, not independently passed.
+
+Proceed under taskaugmentation-utility-study r2: original-only baseline once; each augmented model only its own64 plus original128, unchanged trainer. Full9 model assessment and frozen selection still pending. No utility success/hypothesis support claim at this gate. Independent hidden final scoring and replay remain unavailable/unmet. Source and synthesis will be frozen before the final author analysis.

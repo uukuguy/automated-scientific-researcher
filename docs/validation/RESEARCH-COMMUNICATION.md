@@ -37,3 +37,10 @@ uv run python -m integrations.runtimes.communication_archive \
 验证：5项归档测试覆盖原文保留、明确脱敏、不覆盖已有档案、缺失原生日志、
 不完整事件、路径边界及带时间序号的完整事件写入。组合测试417项，392通过、25项
 环境相关跳过，日志 `/tmp/asr-communication-final-tests.log`。测试不证明历史无缺口。
+
+最终实测档案为 `artifacts/p5-project-communications-003`：15次会话、72个文件来源、
+80个导出文件校验通过，缺口列表为空。3份原生日志含558条消息（system3/user15/
+assistant193/toolResult347），960处私有思考隔离有位置记录。此结论仍受前述未记录
+stderr/外部聊天边界限制。阶段档案001/002保留。组织seq31是启动器自动收尾提示，
+虽然使用human控制身份，不能当作用户逐字指令；新入口已添加明确来源说明。
+最终科学交付与证据索引见[P5项目交付](P5-PROJECT-PILOT.md)。

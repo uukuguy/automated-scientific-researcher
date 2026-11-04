@@ -1,0 +1,24 @@
+# Stage2 running ledger
+
+Task augmentation-utility-study r2 in_progress, directionr2, hypothesis target-versus-mixed r1 unchanged. Read current contractr1 and guidance command_75ea95e5f5bd48a8a5a70239b173398d (adopted ack_1102ee4d4a87402cbff7d5dc481e314f): preserve full communication/tool/failure/recovery trail. Platform archive is infrastructure; we retain source/artifacts and governed discussion. Organizer seq21 explicitly accepted missing external provenance attestations for bounded development only; seq22 task allows label/analysis/fit with prefit gate. No formal acceptance waiver.
+
+Eight augmentation requests each64 accepted exactly once under stable keys lead1-label-target-4101..4104 and lead1-label-mixed-5101..5104. Each actual terminal result says labelled64/proposed64, succeeded/exited. No replacement/retries or observed solve failure. Full label integrity NOT established by those summary counts; audit follows before fits.
+
+| Batch | Trial | Attempt | Evidence manifest | execution ms |
+|---|---|---|---|---:|
+| target4101 |trial_ef15581518534f0fb20a75ac9b292a81|attempt_391bfe1ae07d4410ba2511f5e94ef4dd|e0716b8829cf37fc38d0977785a14a39a307e206f2b2eedb485a25b56730b05f|9622|
+| target4102 |trial_5e71994bcefb4f89919e3e6029b34211|attempt_4d778cab4efa4a23a01ec0952933ebb2|e6c7d980c204c243147ad1d6ba195fed8a5f29971676188165c4825f66575538|9333|
+| target4103 |trial_8d0eee1271614ac5b94e1a44a7709128|attempt_e385a137417a4f399922ab86416a4559|35b3fdaf83c08ccfb0aac46d1f1287a00fb92c3c087c9b1f894e621da33dafea|9021|
+| target4104 |trial_bd40876f4c5540f7a40fe7f73a762706|attempt_214295226c164aca812da7b5e7863468|0a3212b955f39990844bc37b59bd499ef088afd866af44ffa01cf9a89499d902|8725|
+| mixed5101 |trial_b296487880384ebe8e2f0a3bbb62ef1d|attempt_4c2e8e2dc265434e8fc787e87caab57c|0b5c895fe560c8394626c81139a942f9ef6286aa4c99449b90306b94d9b72a8b|9104|
+| mixed5102 |trial_387145453cb144c5a6f7f2c690d24622|attempt_93468b12daf343f7a43bf9109374152b|8406becb77ad8cd3420c1fd029b39096ce06393610803d7466504a27e6cef016|8829|
+| mixed5103 |trial_91453057bb8d41b38b5aac6591935e03|attempt_852bd92532b045abb2eea0ebdca50817|53d0b1f66722db108c4450adbbf726cad0acf545d7149b3ff66c1b72a11a791c|8715|
+| mixed5104 |trial_4dc9844732a1414b85c88269fc7168dc|attempt_876ddf657aa44762a683e924b270d724|1eb3bfa5553d09b998a84ddbc1f5201d0083b6a56298628a14a7090d7c208e4b|9059|
+
+One additional necessary transfer/schema author analysis trial_76d90104e275467fa5c70d3c6366ac83, attempt_34485b82a90545e0bf54c2a5f7ae8420, manifestb32afba1e840048ada3a7f394c550d3ef4db299b7f5324176bf801330f0a6d82;907ms,0 proposals. Frozen source stage2_transfer_inspect.py snapshot6338bf83bb9ac85ed6767d6390ec23003529028cf907bec23fa5c8d61fdccc5b. This extracted existing frozen arrays losslessly as compact JSON for exact request transfer (no resampling) and inspected first native row schema. First batch event x hash matches frozen be41709e9b981bf867b3424d1459d206140ad03683b769da56dfc6c2293db13f. Full native input+solution available; host validation includes input_preserved/equation_valid/errors/max_mismatch/policy/operational/thermal; these will be audited on ALL512 rows, not inferred from first row. Trial transfer output is current service evidence accessible by dependency, not independent validation.
+
+At all-labels terminal state: total direction10 attempts/74880 execution ms/512 proposals, reservations0. Task spent9 attempts/73315ms,512 proposals; preflight1/1565ms. Actual state budget counters establish totals, not manual estimates.
+
+Prospective bounded audit execution: freeze label_integrity_audit.py, then apply same self-contained source to four disjoint2-batch groups plus original preflight dependency (three inputs/job). This avoids a large pooled full-row analysis payload. It does NOT repeat label solving. Exports full native events and per-row audit hashes/checks for reproducibility. Assumes payload admission within actual limits, not guaranteed. Groups target4101/4102, target4103/4104, mixed5101/5102, mixed5103/5104. Source compares intended exact scenario/input hashes and all fixed fields, targets236/order/hash/solution, host checks, independent AUTHOR nodal residual<=1e-7. Controlled voltage/reference angle tolerance1e-12 and nonreference dispatch tolerance1e-10 MW absorb only representational roundoff; no client equation/acceptance changes. No operating-violation filtering.
+
+Four audit jobs instead of original one plus transfer adds4 jobs: projected direction24 attempts exactly (1preflight+1transfer+8label+4audit+9fit+1synthesis), still unchanged cap24, zero extra proposal requests. Stop on any failure/missing essential evidence and preserve it; do not exceed cap to salvage primary. Before fit all8 distinct batch audits must pass, no absent group/duplicate/per-row issue. If all gates pass,9 fits plus one synthesis remain; no more acquisition. No baseline or augmented fit yet.

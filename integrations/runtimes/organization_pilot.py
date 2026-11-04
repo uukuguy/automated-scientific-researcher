@@ -1,7 +1,7 @@
 """Run actual AAR role sessions from model-authored organization records.
 
-Serial organization/design acceptance only. The owning Control ledger supplies
-wakeups and runtime fencing; no numerical execution tool is exposed.
+Serial role execution driven by the owning Control ledger. Project mode exposes
+explicitly admitted scientific tools; historical design mode exposes no compute.
 """
 import argparse
 import hashlib
@@ -268,7 +268,7 @@ write durable output early and finish each session promptly after your handoff.
             if not deliveries:
                 if review_requested:break
                 service.change_organization(tokens['human'],project,run,kind='message',entity_id='closing-review',expected_revision=0,
-                    idempotency_key='closing-review',document=dict(recipients=['organizer'],text='No pending role deliveries remain. Review actual organization/task state and artifacts. Preserve a final ORGANIZATION-REPORT.md and snapshot; identify incomplete work honestly. Continue only if a concrete necessary task remains.',evidence_trial_ids=[]))
+                    idempotency_key='closing-review',document=dict(recipients=['organizer'],text='Controller-generated lifecycle check, not a new human scientific instruction. No pending role deliveries remain. Review actual organization/task state and artifacts. Preserve a final ORGANIZATION-REPORT.md and snapshot; identify incomplete work honestly. Continue only if a concrete necessary task remains.',evidence_trial_ids=[]))
                 review_requested=True;continue
             actor=deliveries[0]['recipient'];deliveries=[x for x in deliveries if x['recipient']==actor]
             state=service.get_run(tokens['human'],project,run)

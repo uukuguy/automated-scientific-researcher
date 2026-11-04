@@ -16,7 +16,7 @@
 - Deployment: local OrbStack Docker Engine and Compose; no additional VM.
 - Research reference: `docs/IEEE118_OOD_Sample_Expansion_Task_v2_2.md`; accepted user decisions in `docs/status/DECISIONS.md` govern scope.
 - Implemented numerical slice: fixed case118 reference, independent residual/operating checks, immutable local trial evidence; explicit octave-candidate/1 source execution and replication are verified; generalized scenarios and broader profiles remain planned.
-- Research layer: actual pinned AAR AutonomousAgentLoop with replaceable subscription runtime; original Experiment/Finding ORM shares the ASR SQLite database. The measured profile supports model-authored frozen candidates, hypothesis revisions, isolated evaluation, method replication, curated skills, findings, snapshots and interruption recovery. This researcher is the future Research Lead prototype; the multi-Lead organization is not deployed.
+- Research layer: actual pinned AAR AutonomousAgentLoop with replaceable subscription runtime; original Experiment/Finding ORM shares the ASR SQLite database. The measured profile supports model-authored frozen candidates, hypothesis revisions, isolated evaluation, method replication, curated skills, findings, snapshots and interruption recovery. Serial Organizer/two-Lead research now has real project execution and communication evidence; concurrent multi-direction deployment remains unverified.
 - Human interaction: asynchronous guidance and versioned controls; Capstone scientific-research mode is the accepted workbench architecture; preparation is defined in `docs/handoffs/CAPSTONE-SCIENTIFIC-RESEARCH-MODE.md`.
 - Local upstream: `3th-party/automated-w2s-research/`, ignored by the parent repository; tracked deterministic preparation/patches live in integrations/aar/.
 
@@ -104,3 +104,12 @@
 
 - `research_projects/ood_augmentation/` — concrete client fixture, fixed surrogate and lossless public-data delivery.
 - `integrations/runtimes/ood_intake.py` — actual AAR intake, zero-compute contract and targeted private-material access denial.
+
+## Organization evidence and communication storage
+
+Project-directed role sessions use the existing Control/AAR records and generic
+analysis/label/fit tools. Researchers own scientific design and source. External
+scientific/communication archives preserve raw evidence, role journals, revision
+history, hashes and explicit gaps/redactions. Public team-comparison evidence
+is distinct from independent hidden validation and parallel organization proof.
+See docs/validation/P5-PROJECT-PILOT.md and RESEARCH-COMMUNICATION.md.

@@ -273,3 +273,7 @@
 - 2026-11-04: Team labelled512points; author audit retained incorrect initial-voltage assertion, froze repair and withheld fits pending recheck.
 
 - 2026-11-04: Fixed observed snapshot cap/diagnostic gap; real2.28MB export exact;419tests/394pass/25skip; active team history unchanged.
+
+- 2026-11-04: 2cb73d7 enlarges snapshot capacity and records recoverable diagnostics after actual model-delivery rejection.
+
+- 2026-11-04: Project001 closed15sessions/24jobs/512labels/9models; full communication and raw delivery verified; independent science acceptance remains open.

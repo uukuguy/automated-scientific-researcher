@@ -1,170 +1,105 @@
 # Live Session Checkpoint
 
-Updated2026-11-04. P5 active; NEW project run active, inspect below before any launch.
+Updated2026-11-04. P5 active; **no research process remains active**.
+This is a recovery checkpoint, not a request for handoff approval.
 
-## User direction and current policy
-D029: complete subscription work instead of enforcing short acceptance windows.
-Old20min aggregate/4min role caps actually truncated normal closeout. Current
-implementation policy4h aggregate/30min role,1600/3200total turns/tools,200/400
-session; stop after useful delivery. Actual no-progress/repetition detection is
-still unimplemented; time alone is not abnormality. No API keys/fallback, no
-automatic allowance increase; explicit authorized revisions retain all costs.
+## User decisions that govern continuation
 
-## Completed real implementation delivery
-Root artifacts/p5-implementation-001; project organization-dd58b2d04033;
-run research_2ab7884ffbcb46b7bbff0a8e7108e077; pi/openai-codex/gpt-6.1-sol.
-17sessions:14settled,2timeout,1WebSocket failure. Total1357776ms,123turns,212tools.
-Actual2analysis jobs/3407ms,zero labels/fits. Both tasks completed, Organizer closed
-direction seq27; final report snapshotted, all pending deliveries acknowledged.
-All17processes exited, no reservations, healthok; final Control/AAR paused under
-normal pilot completion. Do not resume merely to spend remaining allowance.
-Latest successful result recovery-1793760275827589000-result.json; log
-/tmp/asr-p5-implementation-001-completion-recovery-v2.log. No browser login needed.
+- D030: give project requirements; the research organization owns directions,
+  scientific code, intermediate artifacts and experiments. Developers externally
+  monitor/evaluate and fix generic infrastructure, not secretly design the study.
+- D031: preserve complete recorded communication, not just reports. Keep original
+  journals and Control history; immutable indexed exports with explicit gaps and
+  private-reasoning/credential redactions. Never invent historical chat or times.
+- D029: subscription completion first;4h aggregate/30min role,1600/3200 total
+  turns/tools,200/400 per role. No *_API_KEY for subscription children, no paid
+  fallback, no automatic budget reset/increase or login on transport failure.
+- Capstone owns the eventual workbench. Render actual authoritative research and
+  communication records; no second scheduler/ledger or hidden-data leakage.
 
-Worker1 generated768 unique coordinates/2048 proposed slots. Candidate SHA
-f28262870d046f46d3c22c61e06df639b789966ee459c9d4723348bd3bad0176.
-Worker2 actual adversarial job found shared ARMS checker accepts wrong TT order.
-Exact baseline independently literal-order checked; generic validator withheld,
-no patch/retest. Lead candidate finding pinned-generator-qualified-acceptance r1.
-Not independent electrical/utility validation or new scientific novelty.
-Descriptive paired_sampling is not admitted Control schema.
+## Latest completed actual project
 
-Evidence: trial_ec62b369aab54cb5932462a0e2b037fa and
-trial_7e01fb758353401cb051b8b59690d68d. Final archive
-artifacts/p5-implementation-delivery-002:15snapshots,66files plus inventory; all
-hashes verified, public materials unchanged. Original001 incomplete-closeout
-archive preserved. Exact model-authored sources/reports tracked at
-research_projects/paired_acquisition/delivered_implementation. Host did not patch
-scientific source or invent experiment results. Reports and full final receipt:
-docs/validation/P5-IMPLEMENTATION-{PILOT.md,RECEIPT.json}.
+Root artifacts/p5-project-001, projectorganization-97ad1aee4ff4,
+runresearch_2fdee65a1c2f4bd5b107bfc388469d8d, pi/openai-codex/gpt-6.1-sol.
+Entry: organization_pilot --project-spec
+research_projects/paired_acquisition/PROJECT-REQUIREMENTS.json.
+15 sessions:14settled/1WebSocket failure; same-run explicit recovery, no login,
+budget increase or repeated numerical work. All15 process birth identities
+externally verified exited; Controlpaused/healthok, all reservationszero,
+no pending deliveries. Latest receipt recovery-1793768962963823000-result.json.
+Exec82321 completed0; /tmp/asr-p5-project-001-recovery.log. Do NOT resume merely
+to use remaining quota or reopen old completed runs.
 
-## Explicit resource correction
-User authorized extension after final report timeout. organization_resources.py
-archives old/new policy, checks paused/exited/unreserved, publishes/applies existing
-Control contract. Contract2 preserves prior1195198ms; only162578ms additional
-model time completed all closeout. Tests cover non-model changes rejected, cost
-retention, original source formatting hash, interrupted receipt recovery and
-historical receipt unchanged by later costs. Original exact policy from commit
-c9a1dbc resolved reformatted local-copy hash mismatch without bypassing validation.
-Current policy for any forensic replay is root/resource-policy.json, canonical
-bytes pinned in contract2; identity.json intentionally retains initial budget.
+Team independently chose target-versus-mixed,2arms x4seeds x64labels, rather than
+historical paired4x8 design. Organizer+twoLeads, serial; noWorkers used thisrun.
+24computations:7analysis/8label/9fit;512labels;96833executionms. Model3392304ms,
+193turns347tools. Both taskscompletedr3; directionclosedr3seq29. Full reports
+published; seq31 legacyhuman-authored closing-review was controller-generated,
+not a literal user message. Newlauncher text explicitly identifies that source.
 
-Verification:390tests,365pass,25environment skips;
-/tmp/asr-resource-final-tests.log. Five focused resource-revision tests pass;
-actual final run/evidence hashes independently audited. No processes running.
+Public development result: target4/4 jointpasses, mixed1/4. Selectedtarget4104
+trial_c1597a2d68b445c4b770d7daecf764b2; modelhash
+cf81c81f7208ff452f7be06595ff0afdcf7f4e4c8072aad1eed234ae46b4f589.
+90.2345%diagnostic reduction with11.4468xIDworsening withinabsoluteallowance.
+All512equation/inputchecks pass, but alloperationallyviolated and186thermal
+limits unassessed each. No independent hidden evaluation/replay or novelty claim.
 
-## Independent generator admission completed
-Committed78485e6 project-local generator_admission.py verifies actual analysis manifest/source/
-candidate pins, independent literal seed/block/count/order correspondence, public
-input hashes/collisions and native protocol structure. Actual reviewer wrong-order
-candidate was reconstructed by permutation and matched its realhash897d3f9c...
-before rejection; original source/outputs retained. This is controller-authored
-integration, not a team patch or RNG regeneration.
-Native policyhashf2a1709a72ce0149b8161fd6a9b8243031f4b89d1f4c1150c5ee732fb5045516.
-All32arms/2048slots prepared through existing training adapter with realcase/source
-pins. TemporaryControl test proves budget denial and actual64-slot preparation,
-then cancels unexecuted dispatch; no labels/jobs/model calls. Originalrun unchanged.
-Artifacts p5-generator-admission-001; reportdocs/validation/P5-GENERATOR-ADMISSION.
-Nine focused tests pass; fullregression399tests/374pass/25skip,
-log/tmp/asr-generator-admission-full.log; archive and converter hashes verified.
+Retained failures: generator self-hash oracle repaired; author voltage audit
+mistook initialVm for onlinegenVg,128assertionsfailed before controlled repair
+and all512rechecked;16MiBrequest rejected before execution then3/3/2groups;
+old1MiBsnapshot rejected2.28MBsynthesis/largeaudits. No labels/fit repeated.
+Lead2 actually read large native results; Organizer relied on explicit source,
+report and authenticated links, disclosed unavailable direct raw-file access.
 
-## Next substantive P5 work — D030 correction
-User explicitly rejects developer-hardcoded scientific process/intermediate
-artifacts. Actual organization is Organizer+oneLead+twoWorkers, serial; multiple
-concurrent directions not yet demonstrated. Let the team determine continuation,
-project code and experiments. Developers externally monitor/evaluate and fix
-generic infrastructure, not secretly drive a fixed33-model study.
-Audit generic tools and role context, then hand existing facts/defects/constraints
-to the organization without prescribing research departments or execution sequence.
-Frozen admitted evaluation rules and hidden-data protections remain enforced.
-Earlier generator/training adapters remain developer-authored opt-in project
-integration, not autonomous team contributions. No old run/budget reopened.
-Uncommitted fixed selection math was moved from asr_evaluation to
-tests/paired_selection_reference.py; synthetic tests only, no runtime imports.
-New panels/fit/scoring not implemented or executed. P5 scientific/parallel and
-Capstone acceptance remain open. Keep D029 generous completion-first model limits.
+## Archives and verification
 
-## History anchors
-c9a1dbc implementation launcher; bb8b386study adapter tool recovery;
-3a86789full-arm training; ddab838paired admission;6a04b18task gates;
-2564854design pilot/canonical OAuth synchronization. 784c241 commits the explicit policy revision, completed team-delivery artifacts
-and aligned docs. Only post-commit journal/checkpoint bookkeeping remains.
+- artifacts/p5-project-communications-003:15sessions,72sources,80indexedfiles,
+  gaps[],3nativejournals,558messages(system3/user15/assistant193/toolResult347),
+  960private-reasoning redactions. Original source hashes all matched. Inventory
+  9a191ccd3a103e7653638684713f3a2cf8c136c3c2c699cf21998548737ace9a.
+  Prior001/002partial checkpoints retained. Rawproviderstderr/externaldeveloperchat
+  were not fully recorded; no claim they were reconstructed.
+- artifacts/p5-project-delivery-002:336files,20scientificsnapshots,all24raw
+  evidence directories, selected native model and author192-row reconstruction.
+  Payload is not native ingestion attestation. Inventory
+  7d122e513d5fb13939413bf036aff4fda8254de129d2377613c4d97d256528bc.
+  Export001 retained with ARCHIVE-FAILURE.json (receipt duplicatekeyword); only
+  export retried, no research rerun. external-audit.py preserved in002.
+- Exact16 model-authored source/report files tracked in
+  research_projects/paired_acquisition/delivered_project/INVENTORY.json.
+- docs/validation/P5-PROJECT-PILOT.md is readable Chinese report;
+  P5-PROJECT-RECEIPT.json is final external receipt. RESEARCH-COMMUNICATION.md
+  explains retention, sources, historical limitations and archival command.
+-419tests/394pass/25environment skips: /tmp/asr-snapshot-final-tests.log.
+  Focused organizationpilot4pass after source-label clarification; syntaxchecked.
+  All evidence/snapshot/material/archive hashes and process/delivery closure
+  verified. Engineering verification is not independent scientific validation.
 
-## Visualization timing
-User confirmed eventual visual dashboard. Trigger Capstone integration when actual comparison data/evidence/evaluation interfaces stabilize; show progress, distributions, comparisons and failures. Keep unreleased final data out of researcher context. Plan only; no Capstone delivery yet.
+## Current implementation commits
 
+- a9ab45e project-level requirements entry; team owns scientific workflow.
+- f2be6a1 complete visible communication archive/EventRecorder withUTC/order/fsync;
+  prompt/brief frozen and archive-on-close for future launches. This realrun
+  loadedoldercode, so finalmanual archive003 was required and completed.
+-2cb73d7 snapshot16MiB instead of1MiB withdurable detailedControldeferred events,
+  no research pause/charge/deletion. Actual byte-identical2.28MB export verified
+  atartifacts/p5-snapshot-capacity-001; not injected into live team.
+- Final project source/report/receipt and alignment commit prepared thiscycle.
 
-## Project-spec launch prepared
-New organization_project module and organization_pilot --project-spec accept
-project requirements plus hashed historical materials, not a fixed scientific
-sequence. New policy4h models/30minrole,4096labels/256jobs/2hcompute/60sjob.
-Preflight /tmp/asr-project-preflight.json ready;412tests/387pass/25skip,
-/tmp/asr-project-entry-full.log. Next new root artifacts/p5-project-001; checkout
-artifacts/p2-aar-private-20261102-final-preflight, proxy127.0.0.1:7897, spec
-research_projects/paired_acquisition/PROJECT-REQUIREMENTS.json. Do not duplicate
-if identity/control/process already exists. Need monitor actual launch through
-report and receipts; no fixed labelling/fit schedule supplied by developer.
+## Next substantive P5 work
 
+1. Read team EVALUATION-REQUEST.md and INDEPENDENT-EVALUATION-HANDOFF.md plus
+   canonical WORKLIST/P5plan. Implement/admit generic external custody/native
+   ingestion verification, frozen training replay and independent fresh hidden
+   evaluation. Team proposed512-ID+512-target; request is not approved execution.
+   Prepare reviewable evaluation contract/resource policy, preserve original
+   client criteria, hidden separation and failed cases. Do not reuse knownP4
+   final data as fresh hidden evidence or substitute author's reconstruction.
+2. Deliver actual trial/communication projection to Capstone after reviewing
+   sibling rules; no dashboard or cross-project implementation currently exists.
+3. Multi-direction concurrency remains unverified. Do not markP5complete based
+   on this serial public-development comparison.
 
-## ACTIVE PROJECT RUN — inspect first
-Launched at a9ab45e: artifacts/p5-project-001, projectorganization-97ad1aee4ff4,
-runresearch_2fdee65a1c2f4bd5b107bfc388469d8d. Exec21671;
-log/tmp/asr-p5-project-001.log. Organizer active at checkpoint. Do not start duplicate
-or end turn while owner active. Canonical subscription reused; no login/API key.
-Use read-only closed SQLite connection for metadata; do not print auth/nativeevents.
-Observe researcher-authored directions/tasks/evidence without scientific steering.
-Final audit must check report/snapshots/tasks/directions/deliveries/budgets/processes;
-report capability gaps honestly. Project uses generic analysis/label/fit; hidden
-independent evaluation not researcher-accessible. No fixed paired protocol injected.
-
-Project001 progress throughseq16: Organizer independently invited lead_1 for
-science and lead_2 audit; no Workers used yet. lead_1 proposes target-versus-mixed
-(two unpaired allocations,4replicates each,512labels/9fits) instead of historical
-4x8paired scheme. New acquisition_manifest.py team-authored, not hostadapter.
-lead_2 statically found coordinate-tamper oracle gap; Organizer activated direction
-and gave acquisition-preflight analysis-only task, nowclaimedlead_1r2. No numerical
-trial yet at this checkpoint. Team owns these choices; don't interfere scientifically.
-Snapshotplan/sourcebf39df6f...; audit3d9821ce... in root snapshots. Full plan in
-workspaces/lead_1/LEAD-RESEARCH-PLAN.md. Overall coordinationceil24attempts/512labels/
-600000executionms (not a separate enforced ledger); Controlnewrun caps remain
-256/4096/7200000. Pending labels/fit only after team-reviewed preflight.
-
-
-D031 latest user requires complete research communication. Added human guidance
-complete-communication-retention via Control, no science/budget change. Exact user
-text recorded human-instructions.jsonl (recorded_at, no fabricated sent_at).
-New communication_archive.py/tests (4pass) uncommitted. Snapshot archive
-artifacts/p5-project-communications-001:7steps/32sources,006-lead_1notfinalizedgap,
-310credential/private-reasoning redactions. Native originals remain restricted;
-visible records unabridged, no rawproviderstderr/developerchat reconstruction.
-Need final archive afterrun closes, verify gaps/session coverage/receipt links;
-include communication archive in final delivery instead of only reports. Current
-run stillactive exec21671, no scientific host intervention. Sequence19lead2accepts
-preflight repair with provenance limitations;20lead1requests next task. One actual
-analysis succeeded1565ms;512coords prepared, zero labels/fits at that checkpoint.
-
-Project001 step007organizer provider_error(WebSocket,noauth-expiry). All8processes
-exited/pausedhealthy/noreservations,1050164modelms spent. Explicit same-run recovery
-started log/tmp/asr-p5-project-001-recovery.log; inspect recovery-result/process
-before action. No budget increase/login/scientific steering/numerical rerun.
-Lifecycle intervention appended human-instructions.jsonl and recovery intent.
-
-Communication implementation verified417tests/392pass/25skip in
-/tmp/asr-communication-final-tests.log;5focusedtests. New EventRecorder keeps
-fullpayload/order/UTC/fsync. Launcher freezes prompt+brief and archives onclose;
-currentrecovery82321 loadedOLDcode, so final manualarchive remains necessary.
-Second actualcheckpoint artifacts/p5-project-communications-002:10sessions/49sources,
-only009-lead_1notfinalizedgap; includesControlcommands/contracts/hypotheses/findings,
-recoveryreasons/currentbriefs. Nativeoriginals preserved; seeRESEARCH-COMMUNICATION.md.
-Recovery now progressed toseq24: Organizer assignedaugmentation-utility-study, Lead1
-claimed;7successfuldispatches atlastcheck (preflight pluslabels). No hostsciencechange.
-
-Atseq25, all8labeljobs succeeded64/64,512labels. External inventory checks passed
-10completedjobs/74880execms; all512hostequation/inputchecks true, all512operationally
-violated andthermalunassessed. Teamauthoraudit11thjob trial_9242c815b4cb41ec8e0cdcaac67fd60b
-failed128controlled-voltageassertions: usedinitialbusVm ratherthan onlinegenVg.
-Teamdocumented+froze repair70f685fc.../source26c83f4a...; nofit yet. Failed41.7MB
-output retained despite snapshot_too_large; smallsource/report snapshot preserved.
-No hostscientificfix. Exec82321 stillactive009-lead_1; nextaudit4targetthen2+2mixed
-isteamchoice. Controlspent11jobs512slots, modelsettled1154187ms+1800000reserved.
-Communicationcommit f2be6a1; do notendturnwhileactualrunactive.
+Earlier fixed paired adapters and selection test reference remain opt-in/historical,
+not the architecture or a mandatory next scientific workflow. Older implementation
+and designruns are closed; do not reopen or overwrite their evidence.
