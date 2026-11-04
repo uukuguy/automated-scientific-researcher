@@ -113,3 +113,5 @@ scientific/communication archives preserve raw evidence, role journals, revision
 history, hashes and explicit gaps/redactions. Public team-comparison evidence
 is distinct from independent hidden validation and parallel organization proof.
 See docs/validation/P5-PROJECT-PILOT.md and RESEARCH-COMMUNICATION.md.
+
+研究组织支持显式角色会话换代：各代原生日志保留，身份/工作区/累计预算保持不变；交流归档涵盖各代来源。研究上下文压缩尚未实现，已作为D034专项登记，参考Asterion Prime/P7，见`docs/architecture/RESEARCH-CONTEXT.md`。

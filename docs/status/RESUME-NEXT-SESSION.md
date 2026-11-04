@@ -1,146 +1,42 @@
 # Live Session Checkpoint
 
-2026-11-04 当前实际运行：exec80319，同项目SSE恢复。23个旧进程已验证退出；419项测试通过（25项环境跳过）。仅ASR私有pi配置transport=sse，不换订阅、不重新登录、不重置预算。
-seq45材料核查真实完成，累计25次计算；seq46团队自行分派Worker重复训练和比较。seq48控制端已回传真实历史材料核查，artifacts/p5-custody-feedback-001，核查结果SHA b2f365962440196d45491a86e04e2651705369e08fb48bb99f35959ecac6b07c。原训练完整输入和10项文件校验通过；没有当时另存的fit参数收据，不能补造历史证明。尚无黑箱评价服务。
-SSE首会话完成6轮16工具后terminated，保留失败记录且23进程退出后显式恢复。seq49团队请求英文文件名；seq50已发布中文内容的字节一致ASCII文件名副本，原材料与清单不改。
-seq51/52两个Lead已修订保管证据判断；seq54/55 Worker任务完成，一次fit trial_23963ca78758468c8d0dcc9c51467131及一次analysis trial_35f3681cc0a94302a44f04a3877d5f42。33项检查全通过、2360权重完全一致，累计27次/100275ms/512样本。seq58 Lead2已最终只读审查通过；028-lead_1上下文容量超限，29个旧进程退出、预留归零，显式仅lead_1轮换context_generation=1，旧原生日志路径保留。seq59 Lead1换代后成功完成收尾；seq60组织者关闭方向，030连接terminated后31进程退出、零预留，exec80319恢复。seq61最终中文快照6e6bbf1db5f6a0e22c5defd00a7a8047ff25de93276670372a4b725e1a4279a7已发布，当前032-worker_1处理尾部投递。
-D034研究上下文专项已记录；用户指定Asterion Prime/P7为参考，已只读核查44141eb并写docs/architecture/RESEARCH-CONTEXT.md。未改动上游或声称已实现压缩。
-下一步：等待尾部投递完成；结束后核查预算/进程/交流归档，另建后续研究报告，不覆盖首轮档案。
+2026-11-04。当前没有研究进程在运行。P5仍active；当前委托的组织接续研究已完成交付，下一项为研究上下文管理专项。此为实际状态检查点，不是请求交接批准。
 
-## 最新补充：中文交付与正在运行的接续研究
+## 用户最新要求
 
-用户要求所有给人看的文档用中文、说人话（D033），随后要求继续。
-已发正式指导command_2418ec09d5454eef8f9e3a808fef1cc8，组织消息seq39，
-接收者organizer/lead_1/lead_2；新Worker需从当前指导/任务中继承。
-英文冻结原稿保留，中文阅读版本需有来源，不为语言调整重跑实验。
-seq36 Lead1自行提出新方向frozen-training-custody-reproduction，Lead2在seq38
-审查支持；seq40 Organizer已推进方向。预计组织自行安排1次材料准备分析、
-1次Worker重新训练、1次独立编写的比较分析；团队额度最多4次/180秒/0新样本。
-这是团队自行制定的安排，非开发侧强加。只能证明团队内部重复训练，外部独立
-复现/隐藏评价/历史实际输入记录仍需真实证据。原exec80279因018-organizer WebSocket错误结束2；全部19进程退出/健康/无预留，随后021-lead_2又因300秒WebSocket空闲超时退出。22个进程已核查退出、预留为零；现exec80319用同订阅SSE恢复，日志/tmp/asr-p5-followup-final-recovery.log。勿重复启动。
-组织者已自行写出HUMAN-EVALUATOR-REQUEST.md，尚无黑箱服务已接入或已调用。
+- 长程科研上下文与压缩必须专项设计，不能等同普通聊天摘要（D034）。
+- 参考 `~/sandbox/agentic-2026/asterion` 的Asterion Prime/P7持续解题记录与代码为主的压缩。已只读核查44141eb，工作树干净；没有修改或运行其模型。分析见`docs/architecture/RESEARCH-CONTEXT.md`，主设计/决策/P5工作计划已同步，827ece2。
+- 给人阅读的文档一律中文通俗表达；原始英文/代码/证据不改写。
+- 同一组织接续研究，研发仅提供项目规范/真实外部证据和通用基础设施，不能代写科学路径。完整交流留存。
+- 订阅优先，子进程禁止*_API_KEY，不重新登录解决连接错误，不自动付费回退。预算完整执行优先，但不静默重置/扩大。
 
-## ACTIVE D032 follow-up — inspect before action
+## 刚结束的真实接续研究
 
-User asks to return custody/reproduction/hidden-evaluation requirements to the
-same research organization, then return external results for sustained research.
-User also proposes human black-box evaluator feedback; none is connected yet.
-D032/main design/worklist updated. Human message32 was actually delivered to
-Organizer, entity human-continuation-verification. Exact user request/question
-appended human-instructions.jsonl; current capability facts supplied as
-EXTERNAL-DELIVERY-FEEDBACK.json to role workspaces, SHA
-7c422ac65b60f01b4ffa95aab76f698c9fb0429c3679c63e395d97c4488a7fec.
+root `artifacts/p5-project-001`，project `organization-97ad1aee4ff4`，run `research_2fdee65a1c2f4bd5b107bfc388469d8d`。pi/openai-codex/gpt-6.1-sol。最终exec80319退出0；`recovery-1793778635022332000-result.json` failure=null。Controlpaused/healthok表示本轮工作已排空，没有用户暂停请求。不要只为剩余额度重新启动。
 
-Same root artifacts/p5-project-001/projectorganization-97ad1aee4ff4/run unchanged.
-Explicit --resume for NEW HUMAN COMMISSION, not retrying old delivery or resetting
-budget. Initial exec80279 exited2(provider transport error). Current SSE recovery exec80319; log/tmp/asr-p5-followup-001-recovery.log. Initial spent3392304modelms,
-24jobs/96833execms/512slots; remaining11007696modelms/232jobs/3584slots.
-Current code includes EventRecorder/autoarchive/snapshot16MiB and labeled
-controller closeout. Preflight /tmp/asr-p5-followup-preflight.json ready.
-Do not launch duplicate or end turn while actual owner active. Let team choose
-follow-up decomposition and requests; no formal evaluator/hidden access granted.
-Need monitor actual outcomes and external-capability requests, verify closure,
-new communication archive (old003 remains historical pre-follow-up snapshot),
-record receipt and distinguish continuation proof from independent science.
-Next service work should answer actual requests generically, not prescribe study.
+原组织者/双Lead/新增Worker串行完成自主接续：新方向frozen-training-custody-reproduction已closed r3(seq60)，两项任务completed r3。seq61发布最终中文报告。新增材料准备1次、训练1次、比较1次，3442ms/0新样本；累计27次(9analysis/10fit/8label)、100275ms、512样本。材料14项/比较33项通过，完整模型与SHA相同，2360权重maxdiff0。限定组织内部共用环境复现，不是外部独立复现/隐藏评价。
 
-## User decisions that govern continuation
+实际外部保管核查seq48与ASCII文件名副本seq50返回团队；Lead/Organizer据此纠正“完整输入丢失”的表述。原完整5035208字节输入存在，额外历史fit实参收据未记录，不能事后伪造或升为客户未约定失败门槛。外部最终审计直接核对新旧输入逐字节相同、唯一augmentation依赖未变，单独记入回执，不改写审查员当时只读到转录的经历。
 
-- D030: give project requirements; the research organization owns directions,
-  scientific code, intermediate artifacts and experiments. Developers externally
-  monitor/evaluate and fix generic infrastructure, not secretly design the study.
-- D031: preserve complete recorded communication, not just reports. Keep original
-  journals and Control history; immutable indexed exports with explicit gaps and
-  private-reasoning/credential redactions. Never invent historical chat or times.
-- D029: subscription completion first;4h aggregate/30min role,1600/3200 total
-  turns/tools,200/400 per role. No *_API_KEY for subscription children, no paid
-  fallback, no automatic budget reset/increase or login on transport failure.
-- Capstone owns the eventual workbench. Render actual authoritative research and
-  communication records; no second scheduler/ledger or hidden-data leakage.
+所有35次角色进程出生身份已核查退出；29正常/6提供方失败，预留和待投递均零。模型累计7549745ms、363轮/688工具，4h总预算剩6850255ms。网络/上下文错误全部保留，实验未因恢复重复。
 
-## Latest completed actual project
+## 文档与证据
 
-Root artifacts/p5-project-001, projectorganization-97ad1aee4ff4,
-runresearch_2fdee65a1c2f4bd5b107bfc388469d8d, pi/openai-codex/gpt-6.1-sol.
-Entry: organization_pilot --project-spec
-research_projects/paired_acquisition/PROJECT-REQUIREMENTS.json.
-15 sessions:14settled/1WebSocket failure; same-run explicit recovery, no login,
-budget increase or repeated numerical work. All15 process birth identities
-externally verified exited; Controlpaused/healthok, all reservationszero,
-no pending deliveries. Latest receipt recovery-1793768962963823000-result.json.
-Exec82321 completed0; /tmp/asr-p5-project-001-recovery.log. Do NOT resume merely
-to use remaining quota or reopen old completed runs.
+- 中文说明 `docs/validation/P5-CONTINUATION.md`；完整机器回执 `P5-CONTINUATION-RECEIPT.json`。
+- 14份团队冻结原稿/比较源：`research_projects/paired_acquisition/delivered_continuation/`，INVENTORY逐文件来源哈希。最终组织快照6e6bbf1db5f6a0e22c5defd00a7a8047ff25de93276670372a4b725e1a4279a7。旧delivered_project不可覆盖。
+- `artifacts/p5-project-followup-delivery-001`：478文件/35快照/27计算，全部校验通过。inventory SHA1a5343dac04bbd0646434ad415b0992e20906f623ca48485edf31b3014ef813a。外部审计源码和保管证据包含其中。
+- 交流归档`artifacts/p5-project-001/communications/recovery-1793778635022332000`：168文件/35会话/5原生日志，gaps[]，inventory SHA1eaa76bac225ac6eb4ef7307f3646e46e87e71e5d6cab81a27689ddcdaeea045。私有思考隔离及旧provider stderr/外部开发聊天缺失范围仍披露。首轮档案003/交付002保持原样。
+- 新fit trial_23963ca78758468c8d0dcc9c51467131，比较trial_35f3681cc0a94302a44f04a3877d5f42，材料trial_eae7b796dde4408382d930d27dbc410c；原模型trial_c1597a2d68b445c4b770d7daecf764b2。
 
-Team independently chose target-versus-mixed,2arms x4seeds x64labels, rather than
-historical paired4x8 design. Organizer+twoLeads, serial; noWorkers used thisrun.
-24computations:7analysis/8label/9fit;512labels;96833executionms. Model3392304ms,
-193turns347tools. Both taskscompletedr3; directionclosedr3seq29. Full reports
-published; seq31 legacyhuman-authored closing-review was controller-generated,
-not a literal user message. Newlauncher text explicitly identifies that source.
+## 通用修复
 
-Public development result: target4/4 jointpasses, mixed1/4. Selectedtarget4104
-trial_c1597a2d68b445c4b770d7daecf764b2; modelhash
-cf81c81f7208ff452f7be06595ff0afdcf7f4e4c8072aad1eed234ae46b4f589.
-90.2345%diagnostic reduction with11.4468xIDworsening withinabsoluteallowance.
-All512equation/inputchecks pass, but alloperationallyviolated and186thermal
-limits unassessed each. No independent hidden evaluation/replay or novelty claim.
+- b5f5ab0：私有pi设置transport=sse；Context7和本机1.5.0源核对，避免已遇WebSocket空闲错误，但SSE也有terminated，不能声称网络永稳。
+- f3b917b：`--resume --fresh-context-for lead_1`显式换代。恢复收据记录角色，未来派生代数；旧sessions原路径保留，新sessions-generation-N承接，同身份/预算/权限不变。028上下文超限后029恢复并完成真实判断。自动压缩/预警仍未实现。
+- 421项组合测试：396通过/25环境跳过，日志`/tmp/asr-context-final-tests.log`；14份原稿副本指纹再次核对通过。
 
-Retained failures: generator self-hash oracle repaired; author voltage audit
-mistook initialVm for onlinegenVg,128assertionsfailed before controlled repair
-and all512rechecked;16MiBrequest rejected before execution then3/3/2groups;
-old1MiBsnapshot rejected2.28MBsynthesis/largeaudits. No labels/fit repeated.
-Lead2 actually read large native results; Organizer relied on explicit source,
-report and authenticated links, disclosed unavailable direct raw-file access.
+## 下一步
 
-## Archives and verification
-
-- artifacts/p5-project-communications-003:15sessions,72sources,80indexedfiles,
-  gaps[],3nativejournals,558messages(system3/user15/assistant193/toolResult347),
-  960private-reasoning redactions. Original source hashes all matched. Inventory
-  9a191ccd3a103e7653638684713f3a2cf8c136c3c2c699cf21998548737ace9a.
-  Prior001/002partial checkpoints retained. Rawproviderstderr/externaldeveloperchat
-  were not fully recorded; no claim they were reconstructed.
-- artifacts/p5-project-delivery-002:336files,20scientificsnapshots,all24raw
-  evidence directories, selected native model and author192-row reconstruction.
-  Payload is not native ingestion attestation. Inventory
-  7d122e513d5fb13939413bf036aff4fda8254de129d2377613c4d97d256528bc.
-  Export001 retained with ARCHIVE-FAILURE.json (receipt duplicatekeyword); only
-  export retried, no research rerun. external-audit.py preserved in002.
-- Exact16 model-authored source/report files tracked in
-  research_projects/paired_acquisition/delivered_project/INVENTORY.json.
-- docs/validation/P5-PROJECT-PILOT.md is readable Chinese report;
-  P5-PROJECT-RECEIPT.json is final external receipt. RESEARCH-COMMUNICATION.md
-  explains retention, sources, historical limitations and archival command.
--419tests/394pass/25environment skips: /tmp/asr-snapshot-final-tests.log.
-  Focused organizationpilot4pass after source-label clarification; syntaxchecked.
-  All evidence/snapshot/material/archive hashes and process/delivery closure
-  verified. Engineering verification is not independent scientific validation.
-
-## Current implementation commits
-
-- a9ab45e project-level requirements entry; team owns scientific workflow.
-- f2be6a1 complete visible communication archive/EventRecorder withUTC/order/fsync;
-  prompt/brief frozen and archive-on-close for future launches. This realrun
-  loadedoldercode, so finalmanual archive003 was required and completed.
--2cb73d7 snapshot16MiB instead of1MiB withdurable detailedControldeferred events,
-  no research pause/charge/deletion. Actual byte-identical2.28MB export verified
-  atartifacts/p5-snapshot-capacity-001; not injected into live team.
-- e15f835 commits final project source/report/receipt and alignment. Only post-commit journal/checkpoint bookkeeping remains uncommitted.
-
-## Next substantive P5 work
-
-1. Read team EVALUATION-REQUEST.md and INDEPENDENT-EVALUATION-HANDOFF.md plus
-   canonical WORKLIST/P5plan. Implement/admit generic external custody/native
-   ingestion verification, frozen training replay and independent fresh hidden
-   evaluation. Team proposed512-ID+512-target; request is not approved execution.
-   Prepare reviewable evaluation contract/resource policy, preserve original
-   client criteria, hidden separation and failed cases. Do not reuse knownP4
-   final data as fresh hidden evidence or substitute author's reconstruction.
-2. Deliver actual trial/communication projection to Capstone after reviewing
-   sibling rules; no dashboard or cross-project implementation currently exists.
-3. Multi-direction concurrency remains unverified. Do not markP5complete based
-   on this serial public-development comparison.
-
-Earlier fixed paired adapters and selection test reference remain opt-in/historical,
-not the architecture or a mandatory next scientific workflow. Older implementation
-and designruns are closed; do not reopen or overwrite their evidence.
+1. 按D034推进专项，先用本轮真实研究轨迹做离线保真验证：假说/反证/材料来源纠正/内部复现与独立评价区分/已完成执行状态。对比多轮压缩与换会话后的证据找回和行动，不以摘要长度作为成功标准。
+2. 根据Prime/P7的不可变笔记、已接纳版本、完整交互保护、原文查询和代码对象摘要机制设计ASR接入；不直接照搬其阈值/模板/游戏规则，不另建Control账本。
+3. 人类黑箱服务尚未接入，独立训练/新隐藏评价待真实能力/权限。旧P4已知隐藏数据不能当新验收；既有final_lock会锁整个run，不适合直接套反复反馈。
+4. P5多方向并行/Capstone面板仍未验收。不得将同环境复现或工程测试当全部科研验收完成。

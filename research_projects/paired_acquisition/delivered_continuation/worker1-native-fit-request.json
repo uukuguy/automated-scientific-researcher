@@ -1,0 +1,10 @@
+{
+  "operation": "submit_study",
+  "key": "worker1-frozen-native-replay-v1",
+  "arguments": {
+    "request": {"operation": "fit", "augmentation_trials": ["trial_bd40876f4c5540f7a40fe7f73a762706"]},
+    "timeout_seconds": 60,
+    "hypothesis_ref": {"project_id": "organization-97ad1aee4ff4", "hypothesis_id": "frozen-native-training-reproduction", "revision": 1},
+    "organization_task": {"task_id": "purpose-declared-frozen-native-replay", "revision": 2}
+  }
+}

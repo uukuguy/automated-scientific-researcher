@@ -1,0 +1,41 @@
+{
+  "schema": "worker-authored-receipt-excerpts/1",
+  "scope": "Selected fields transcribed from actual governed submit_study receipts and returned terminal state; not replacement raw receipts or an independently signed attestation. Full tool calls/receipts remain in governed history.",
+  "task": {"task_id": "purpose-declared-frozen-native-replay", "revision": 2, "subject": "worker_1"},
+  "hypothesis_ref": {"project_id": "organization-97ad1aee4ff4", "hypothesis_id": "frozen-native-training-reproduction", "revision": 1, "sha256": "86b14034096819311d38bafa0d41fd95e6553ab7c14adf05e41da351f64b7024"},
+  "image_id": "sha256:cd5dc68c73d6c397c838dff732111ee72d90bb5161243690ca3d12ea06a90012",
+  "contract_sha256": "cf7cf27279bf8e08f7a84400a026103ade13486cc92306944b9570f14730030f",
+  "fit": {
+    "request_key": "worker1-frozen-native-replay-v1",
+    "request": {"operation": "fit", "augmentation_trials": ["trial_bd40876f4c5540f7a40fe7f73a762706"]},
+    "accepted_at": "2026-11-04T07:20:41.020580+00:00",
+    "trial_id": "trial_23963ca78758468c8d0dcc9c51467131",
+    "execution_attempt_id": "attempt_6e6cafcc26464e539ea1bce6899df371",
+    "manifest_hash": "b873244acd5695e979527fae4d04cf70fca33decb18fe4bb1eefd4636cf00a53",
+    "payload_sha256": "c20f8d958c2b66d1fc9bb7208186041c1a4239e50fba3ecd7ab0f29ed09e577d",
+    "dependencies": [{"trial_id": "trial_bd40876f4c5540f7a40fe7f73a762706", "execution_attempt_id": "attempt_214295226c164aca812da7b5e7863468", "manifest_hash": "0a3212b955f39990844bc37b59bd499ef088afd866af44ffa01cf9a89499d902"}],
+    "dispatch_state": "succeeded", "execution_exited": true,
+    "usage": {"attempts": 1, "execution_ms": 1298, "sample_proposals": 0}
+  },
+  "analysis": {
+    "request_key": "worker1-exact-frozen-model-comparison-v1",
+    "source_snapshot": "e05eb60091d62a3e517769407dc2c3c270ace447213666adf7484622ff13acb7",
+    "source_path": "worker1_compare_frozen_models.py",
+    "source_sha256": "66ea21311292f6333fca712ba42136e04e62f79cf06df67d0a601e841c55ddf7",
+    "accepted_at": "2026-11-04T07:21:50.144023+00:00",
+    "trial_id": "trial_35f3681cc0a94302a44f04a3877d5f42",
+    "execution_attempt_id": "attempt_76bfa08fbc114902a22a02ce0b084b31",
+    "manifest_hash": "e3dfb11a21c1800ffdb133cce1cd9514a5a4d2487cdd86e23846ee1057e5ce19",
+    "payload_sha256": "725982189d94edd4acc91f767c615f67182da0a933c79e24b5087d744836ff94",
+    "dependencies": [
+      {"trial_id": "trial_eae7b796dde4408382d930d27dbc410c", "execution_attempt_id": "attempt_f72e365f3de64c9fa9c2463c78ef6c48", "manifest_hash": "22b186f6ee5280ed4f8f2e3514d8c55373899ccafb02270f318e7b7f6e835f96"},
+      {"trial_id": "trial_c1597a2d68b445c4b770d7daecf764b2", "execution_attempt_id": "attempt_cf8f115b92f04df49ca2decd0c0ad5cc", "manifest_hash": "3f4e35002aefc2886aadbd9ab5cacbc52b519441c783e5d36c8fab08f675d968"},
+      {"trial_id": "trial_23963ca78758468c8d0dcc9c51467131", "execution_attempt_id": "attempt_6e6cafcc26464e539ea1bce6899df371", "manifest_hash": "b873244acd5695e979527fae4d04cf70fca33decb18fe4bb1eefd4636cf00a53"}
+    ],
+    "dispatch_state": "succeeded", "execution_exited": true,
+    "usage": {"attempts": 1, "execution_ms": 725, "sample_proposals": 0},
+    "result_file": {"path": "study-result-trial_35f3681cc0a94302a44f04a3877d5f42.json", "sha256": "04f76cb40192648c19f4d487d56a6e43b828918f1134d850b67bd067f0b7e87d", "bytes": 204150}
+  },
+  "latest_returned_budget": {"attempts_spent": 27, "execution_ms_spent": 100275, "sample_proposals_spent": 512, "attempts_reserved": 0, "execution_ms_reserved": 0, "sample_proposals_reserved": 0},
+  "unperformed": ["replacement replay", "baseline fit", "new labels", "fit in analysis", "independent external numerical replay", "hidden evaluation", "opaque development evaluator call", "fourth diagnostic"]
+}

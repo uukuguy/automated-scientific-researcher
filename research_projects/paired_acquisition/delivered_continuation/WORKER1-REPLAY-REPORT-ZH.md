@@ -1,0 +1,62 @@
+# 冻结训练已复现：另一位成员得到了完全相同的模型
+
+## 做了什么，结果如何
+
+我按已授权任务只执行了一次新用途训练和一次精确比较，两个执行都已成功结束。**新旧完整模型相等，规范化JSON的SHA256也相同；2360个权重中没有不同值，最大绝对差为0。** 比较里的33项材料与模型检查全部通过，失败和差异列表均为空。结果支持事前声明的精确复现预测，但范围只限于不同成员共用同一受管服务的组织内复现。
+
+没有新求解或标签，没有重训基线，没有在分析中拟合、重新评分、换候选或重试。原来公开面板上的效用结论及原分布误差代价不改写。这不是外部独立复现、全新隐藏评价、运行安全证明或正式验收。
+
+## 准备与执行证据
+
+本任务purpose-declared-frozen-native-replay在第2版in_progress时执行（seq53），方向frozen-training-custody-reproduction第2版。绑定原事前假设organization-97ad1aee4ff4/frozen-native-training-reproduction/r1，SHA86b14034096819311d38bafa0d41fd95e6553ab7c14adf05e41da351f64b7024。
+
+已自行阅读目标训练代码、材料准备代码、数据包检查表/来源/方法/指纹、中文计划和报告、有效合同与指导、组织记录全部页，以及实际外部保管报告/JSON和原request/manifest；未人工逐个阅读全部45312个目标值。全量比较由这一次已执行的作者代码完成，不冒充人工逐行检查或外部独立验证。
+
+我独立编写的worker1_compare_frozen_models.py在**新训练前**已冻结于快照e05eb60091d62a3e517769407dc2c3c270ace447213666adf7484622ff13acb7，源SHA66ea21311292f6333fca712ba42136e04e62f79cf06df67d0a601e841c55ddf7，9479字节。此后未修改比较代码。代码不包含拟合、求解或评分；检查字段、数值、形状与哈希，同时保留完整新旧模型和差异。此次仅实际验证了相等结果路径；不声称做过不一致分支的注入测试。
+
+| 项目 | 新训练 | 精确比较 |
+|---|---|---|
+|稳定键|worker1-frozen-native-replay-v1|worker1-exact-frozen-model-comparison-v1|
+|trial|trial_23963ca78758468c8d0dcc9c51467131|trial_35f3681cc0a94302a44f04a3877d5f42|
+|attempt|attempt_6e6cafcc26464e539ea1bce6899df371|attempt_76bfa08fbc114902a22a02ce0b084b31|
+|manifest|b873244acd5695e979527fae4d04cf70fca33decb18fe4bb1eefd4636cf00a53|e3dfb11a21c1800ffdb133cce1cd9514a5a4d2487cdd86e23846ee1057e5ce19|
+|实际状态|succeeded，execution_exited=true|succeeded，execution_exited=true|
+|实际成本|1次/1298毫秒/0新样本|1次/725毫秒/0新样本|
+|请求完整载荷SHA|c20f8d958c2b66d1fc9bb7208186041c1a4239e50fba3ecd7ab0f29ed09e577d|725982189d94edd4acc91f767c615f67182da0a933c79e24b5087d744836ff94|
+
+新trial/attempt确实不同于原trial_c1597a2d68b445c4b770d7daecf764b2/attempt_cf8f115b92f04df49ca2decd0c0ad5cc。原manifest为3f4e35002aefc2886aadbd9ab5cacbc52b519441c783e5d36c8fab08f675d968；不是把原完成状态当作新执行。
+
+新训练request精确只有operation=fit及augmentation_trials=[trial_bd40876f4c5540f7a40fe7f73a762706]。实际回执唯一依赖该批次/attempt_214295226c164aca812da7b5e7863468/manifest0a3212b955f39990844bc37b59bd499ef088afd866af44ffa01cf9a89499d902。请求镜像仍为sha256:cd5dc68c73d6c397c838dff732111ee72d90bb5161243690ca3d12ea06a90012，60秒上限，合同第1版。
+
+**新增的直接关联证据：新训练回执的完整任务载荷SHA与外部保管的原5035208字节任务输入及原请求SHA完全一致。** 这是同一完整任务输入的请求绑定，不只是报告里声称用了同一64条；仍不把它说成训练函数实参的额外独立签名。受管平台回执与退出报告共同证明新用途调用确实完成，非仅queued。
+
+比较回执依赖恰为已完成数据包trial_eae7b796dde4408382d930d27dbc410c、原模型trial_c1597a2d68b445c4b770d7daecf764b2、新训练trial_23963ca78758468c8d0dcc9c51467131，三项attempt/manifest均对应实际已完成记录，无其他模型可供挑选。
+
+## 实际比较结果
+
+完整输出study-result-trial_35f3681cc0a94302a44f04a3877d5f42.json，204150字节，服务报告SHA04f76cb40192648c19f4d487d56a6e43b828918f1134d850b67bd067f0b7e87d。包含完整新旧原生模型、原生fit事件、公开附带误差、所有检查与环境；不需要再次训练或分析来找回权重。
+
+- comparison_complete=true、exact_reproduction=true。
+- model_object_exact_equal=true、canonical_model_hash_equal=true。
+- 两模型SHA均为cf81c81f7208ff452f7be06595ff0afdcf7f4e4c8072aad1eed234ae46b4f589。
+- differing_weight_count=0、max_absolute_weight_difference=0.0、structured_differences=[]、integrity_failures=[]。
+- 新旧模型均为regional-load-quadratic/1，ridge=1e-10，training_count=192，权重10×236且全部有限，字段完全一致。
+- 固定电网SHA1fa94780bf0e3bfb3bdd571c7b1e7031db5942923c39adf599f1624fd6fdd41e，实际原128行完整对象SHAd536db8339fdfe8ad52c32ae993c66f76da9d8823b3dc02469946df035519e3f均匹配。
+- 原128行有序x/y与材料包前128行逐项相等；材料包192行x/y仍为b94ad271ee83e10a05443ece530a1b3ceb88fdfcc7a04a85a7f6612d57c64101，维度192×3与192×236且全部有限。
+- 数据包对象SHA1c7c27ed77ea933825a2d3d2bbebcce020b9455e7c6ea4a38a8d849a66f20611，原14项检查/通过状态/空失败列表、唯一补充批次坐标及训练规则均再次核对正确。
+
+本次分析实际观察Python3.12.12、NumPy2.4.6、SciPy1.18.1，Linux aarch64/glibc2.36。它们是这次分析进程的版本，不冒充新旧原生训练每个加载字节的独立核验。原始结果明确independently_validated=false。完整检查和差异摘要已读回，未人工逐个看完两模型全部权重；全量比较由已冻结代码执行。
+
+## 现在能说什么，还不能说什么
+
+已支持：原训练材料可追溯、当前192行整理副本与冻结对象一致；另一位成员的一次真实新训练在共用服务上得到了同一个完整模型。此次为精确相等，不是容差接近，也没从多次尝试中挑成功。
+
+外部保管报告及JSON已实际读完；原5035208字节完整任务输入、原请求、代码登记/镜像/容器关联已有证据，不能继续称材料丢失或所有环境证据只有请求字符串。外部确认原128+64内容与公开开发材料的用途区分；其核查归属开发侧保管方，不是本成员重新解析全部5MB文件或独立数值实验。未另录的训练函数实参凭证不能事后补造，也不能擅自升级为客户未约定的硬性失败条件。原输入包含公开开发标签本身不证明被用于训练。
+
+仍未完成：外部独立执行者的训练复现、全新隐藏样本最终评价、人工黑箱开发反馈服务接入。另写比较代码减少单作者自我判断，但服务、训练器、运行环境及输入都共享，不具备外部控制独立性。本次新fit自动返回旧公开误差，不能算新隐藏证据或用于换模型；本次也没有重新验证物理可行性，上轮样本的运行越限和缺失热约束不消失。
+
+## 成本、失败及交付建议
+
+本任务实际2次/2023毫秒/0新样本，全部已结束，没有失败、重试、替换或恢复重算。加Lead数据包，本方向实际3次/3442毫秒/0新样本；旧研究成本不变。当前回执state累计27次/100275毫秒/512样本，执行与样本预留均0。任务2次授权已用完；第四次诊断未授权，也无证据需要它。
+
+请Lead_2审查冻结源、完整机器输出及实际回执，Lead_1/Organizer据此更新项目综合报告及外部请求：组织内精确复现现已完成，外部独立复现和隐藏评价仍需真实独立服务与回执。无需再训练、重复材料分析或消耗剩余额度。旧英文/中文冻结材料保留，旧缺口说法以本次已发生的证据更新而非改写历史。任务交付不等于整个研究运行或正式验收完成。
