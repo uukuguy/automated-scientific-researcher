@@ -192,7 +192,7 @@ class ControlService(PolicyStore):
         if type(doc['budget']) is not dict or not {'attempts','execution_ms','research_walltime_ms','turns','tool_executions'} <= set(doc['budget']): raise ControlError('invalid_budget')
         if set(doc['budget'])-{'attempts','execution_ms','research_walltime_ms','turns','tool_executions','evaluation_attempts','evaluation_ms','sample_proposals'}: raise ControlError('unsupported_budget_dimension')
         for amount in doc['budget'].values(): BudgetStore._amount(amount)
-        intake_only=(isinstance(doc['provenance'],dict) and doc['provenance'].get('capability_profile') in ('ood-project-intake/1','research-organization/1')
+        intake_only=(isinstance(doc['provenance'],dict) and doc['provenance'].get('capability_profile') in ('ood-project-intake/1','research-organization/1','powerflow-readonly-finalization/1')
                      and doc['budget']['attempts']==0 and doc['budget']['execution_ms']==0)
         if not intake_only and (doc['budget']['attempts']<1 or doc['budget']['execution_ms']<1): raise ControlError('invalid_budget')
         runtime=doc['runtime_policy']

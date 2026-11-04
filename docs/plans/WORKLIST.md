@@ -71,3 +71,5 @@ Protocol-only tests do not close the scientific trajectory or activate P5.
 研究上下文专项（D034）已纳入P5后续：研究语义的压缩、可溯源记忆、容量预警与跨会话恢复验收，见[P5计划](P5-RESEARCH-ORGANIZATION.md)。当前显式换代是应急能力，专项未实现。
 
 P5接续实证：同组织新增3次计算，材料14项/比较33项通过，模型2360权重完全一致；35次历史会话已全部退出、无预留/待投递。已吸收外部证据并以中文交付。仍为串行同环境复现，独立隐藏评价、并行和面板未完成，见[接续报告](../validation/P5-CONTINUATION.md)。
+
+D034已完成首个真实订阅摘要试验：两轮正常摘要获得分开会话复核接受，正文夸大反例被拒绝，失败/消耗/交流全部保留。仍未关闭专项，长期跨窗口、复杂代码引用、自动容量预警及安装待验证，见[模型验证](../validation/RESEARCH-CONTEXT-MODEL.md)。

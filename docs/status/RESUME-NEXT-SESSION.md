@@ -1,6 +1,9 @@
 # Live Session Checkpoint
 
-2026-11-04。当前没有研究进程在运行。D034独立核心第一步已实现asr_context引用投影及7项离线测试；无模型/Runtime依赖，尚无语义摘要与自动预警。第二步已实现本地版本化笔记与来源核对，asr-research-context/2区分references和citations。14项相关检查、435项组合检查通过（25环境跳过），日志/tmp/asr-research-notes-tests.log。第三步已接Control私有采用指针与research_note组织工具（save/adopt/read），7项服务/桥接与6项归档检查通过。当前来源仅组织记录及控制版本；无新模型会话。第四步已接代码快照/发布实验原件typed引用与原件核对；5项专项检查、447项组合检查（25跳过）通过，日志/tmp/asr-note-artifact-tests.log。真实P5三项产物只读检查回执artifacts/p5-note-artifact-check-001/receipt.json，未重跑科研。第五步source_read原文分页已接通，历史查询与笔记采用分开；真实代码2页/比较结果13页重组核对通过，回执docs/validation/RESEARCH-NOTE-SOURCE-PAGES.json。已实现summary.prepare/check与真实报告七项离线标注，6项专项测试通过；字段匹配仍pending_semantic_review，禁止自动应用。下一步受管摘要生成、独立正文复核及保护项完整性，再做采用/预警/Runtime安装。P5仍active；当前委托的组织接续研究已完成交付，下一项为研究上下文管理专项。此为实际状态检查点，不是请求交接批准。
+2026-11-04。当前无活动模型或科研进程。D034已完成引用投影、版本化笔记、Control采用、原件绑定与分页，以及摘要结构/分开会话复核协议。真实订阅试验root artifacts/research-context-model-001已结束：4548字符冻结报告两轮摘要524/460字符获复核接受，正文夸大反例被拒绝。6个会话全部退出、预留零，累计108652ms、6轮/0工具/0科研实验。
+首次额外claims被结构拒绝，明确说明后同预算显式恢复；第一轮收尾幂等键冲突由外部补回执，没有重复模型。第二轮exec81202退出0。最终交流档案root/communications-round2，最终两轮回执root/two-round-receipt.json；中文报告docs/validation/RESEARCH-CONTEXT-MODEL.md，机器回执RESEARCH-CONTEXT-MODEL-RECEIPT.json。旧result.json仍是首次失败，勿当作最终状态；首轮final-receipt.json和交流档案也保留历史。
+同模型分开会话复核只是模型意见，eligible_for_application=false。尚未接自动采用、容量预警、Runtime安装，也未做长期跨窗口/复杂代码引用验证。下一步扩大轨迹与反例覆盖，再接现行状态核对和安装。P5仍active，科学隐藏验收/并行/面板未完成。不要为了剩余试验额度重启已完成运行。
+
 
 ## 用户最新要求
 

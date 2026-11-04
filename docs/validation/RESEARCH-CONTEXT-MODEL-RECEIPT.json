@@ -1,0 +1,454 @@
+{
+  "schema": "asr-summary-two-round-validation/1",
+  "identity": {
+    "project_id": "context-validation",
+    "research_run_id": "summary_9dcb9ad4e386498abf43d89f03b3e433",
+    "model": "gpt-6.1-sol",
+    "budget": {
+      "attempts": 0,
+      "execution_ms": 0,
+      "research_walltime_ms": 1800000,
+      "turns": 100,
+      "tool_executions": 100
+    }
+  },
+  "model_calls": 6,
+  "new_scientific_trials": 0,
+  "budget": {
+    "attempts": {
+      "limit": 0,
+      "spent": 0,
+      "reserved": 0,
+      "available": 0
+    },
+    "execution_ms": {
+      "limit": 0,
+      "spent": 0,
+      "reserved": 0,
+      "available": 0
+    },
+    "research_walltime_ms": {
+      "limit": 1800000,
+      "spent": 108652,
+      "reserved": 0,
+      "available": 1691348
+    },
+    "tool_executions": {
+      "limit": 100,
+      "spent": 0,
+      "reserved": 0,
+      "available": 100
+    },
+    "turns": {
+      "limit": 100,
+      "spent": 6,
+      "reserved": 0,
+      "available": 94
+    }
+  },
+  "health": "ok",
+  "all_runtime_executions_exited": true,
+  "exit_checks": [
+    {
+      "execution_exited": true,
+      "identity": {
+        "backend": "host-process",
+        "birth": "1793787264.002159",
+        "boot": "1792019499:650515",
+        "host": "m3max.local",
+        "pgid": 94554,
+        "pid": 94554
+      },
+      "observed_at": 1793787803.718642,
+      "terminated": false
+    },
+    {
+      "execution_exited": true,
+      "identity": {
+        "backend": "host-process",
+        "birth": "1793787430.256540",
+        "boot": "1792019499:650515",
+        "host": "m3max.local",
+        "pgid": 2314,
+        "pid": 2314
+      },
+      "observed_at": 1793787803.794102,
+      "terminated": false
+    },
+    {
+      "execution_exited": true,
+      "identity": {
+        "backend": "host-process",
+        "birth": "1793787448.828984",
+        "boot": "1792019499:650515",
+        "host": "m3max.local",
+        "pgid": 2828,
+        "pid": 2828
+      },
+      "observed_at": 1793787803.868611,
+      "terminated": false
+    },
+    {
+      "execution_exited": true,
+      "identity": {
+        "backend": "host-process",
+        "birth": "1793787466.865803",
+        "boot": "1792019499:650515",
+        "host": "m3max.local",
+        "pgid": 3149,
+        "pid": 3149
+      },
+      "observed_at": 1793787803.943039,
+      "terminated": false
+    },
+    {
+      "execution_exited": true,
+      "identity": {
+        "backend": "host-process",
+        "birth": "1793787641.975047",
+        "boot": "1792019499:650515",
+        "host": "m3max.local",
+        "pgid": 8148,
+        "pid": 8148
+      },
+      "observed_at": 1793787804.018911,
+      "terminated": false
+    },
+    {
+      "execution_exited": true,
+      "identity": {
+        "backend": "host-process",
+        "birth": "1793787660.007250",
+        "boot": "1792019499:650515",
+        "host": "m3max.local",
+        "pgid": 8698,
+        "pid": 8698
+      },
+      "observed_at": 1793787804.095911,
+      "terminated": false
+    }
+  ],
+  "first_attempt": {
+    "path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/research-context-model-001/result.json",
+    "failure": "candidate_structural_rejection",
+    "retained": true
+  },
+  "lifecycle_repair": {
+    "error": "idempotency_conflict",
+    "model_calls_repeated": false
+  },
+  "round1": {
+    "summary": {
+      "request_sha256": "908b9a11eba052d5e8ef98da30b0d04a372b219352398a543a90c8959cf7d056",
+      "text": "本轮完成材料核对、新用途训练和精确比较，共3次执行、3442毫秒，未新增标签、重训基线、替换候选或追加评分。材料核对14项通过；新旧完整模型对象及规范化哈希相同，2360个权重无差异，最大绝对差为0，比较检查33项全部通过。最终只读审查已完成，方向r3已关闭。\n原训练5035208字节完整任务输入获外部保管核查，具有可追溯保管及执行关联；但核查范围内未单独保存训练函数调用瞬间有序x/y的独立实参凭证，也没有额外密码学签名。文件名曾因ASCII路径规则被拒绝，现已通过合法原字节副本解决，旧失败记录保留。\n精确复现仅成立于共用宿主训练服务的范围，不构成独立外部数值复现。比较器仅实际运行了相等路径，未测试不一致分支；分析环境信息也不能替代训练加载字节的独立核验。新训练完整载荷哈希及补充依赖仍来自Worker对真实回执的转录，尚非Lead直接核验原生记录。\n独立外部训练、新隐藏最终评价及人类黑箱开发反馈均未完成，外部保管核查不能替代这些工作。原候选、验收规则、公开开发效用及原分布误差11.45倍的代价均保持不变，既有物理运行违规不会因复现成功而消失。后续独立验证仍需明确服务身份、授权、预算、事先数据承诺和真实回执，不应仅因剩余配额追加训练。",
+      "claims": [
+        {
+          "id": "input_custody",
+          "value": "preserved",
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "function_argument_receipt",
+          "value": "not_recorded",
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "reproduction_scope",
+          "value": "shared_service",
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "independent_evaluation",
+          "value": "not_completed",
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "new_label_count",
+          "value": 0,
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "max_weight_difference",
+          "value": 0,
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "id_error_ratio",
+          "value": "11.45",
+          "citations": [
+            "team-replay-report"
+          ]
+        }
+      ]
+    },
+    "review": {
+      "review_sha256": "ba662b0c7db56ceca5c8a98980593ad95cea8d3149a01bb5c82bf7fdf0b95c22",
+      "verdict": "accept",
+      "explanation": "正文及claims与原文一致，保留了实际复现结果、共享服务范围、实参凭证缺失、回执转录限制、未测试分支及未完成的独立评价，未将外部保管核查夸大为独立数值复现。既有误差代价与运行违规亦明确保留，未见实质矛盾或重要遗漏。",
+      "issues": [],
+      "source_quotes": [
+        {
+          "source": "team-replay-report",
+          "quote": "完整模型对象精确相等，规范化哈希也相等，2360个权重无不同值，最大绝对差0；33项检查全通过。"
+        },
+        {
+          "source": "team-replay-report",
+          "quote": "不同成员与不同比较代码仍共用同一宿主训练服务，结论不超出此范围。"
+        },
+        {
+          "source": "team-replay-report",
+          "quote": "核查范围内没有额外单独保存训练函数在调用瞬间实际接收的有序x/y独立凭证。"
+        },
+        {
+          "source": "team-replay-report",
+          "quote": "它们目前仍以Worker对真实回执的转录为来源，不是Lead直接读取新原生request/identity/manifest。"
+        },
+        {
+          "source": "team-replay-report",
+          "quote": "外部独立训练执行、新隐藏最终评价、人类黑箱开发反馈均尚未发生。已有外部保管核查不是这些服务的替代品。"
+        }
+      ]
+    },
+    "assessment": {
+      "schema": "asr-summary-review-assessment/1",
+      "status": "reviewed",
+      "model_opinion": "accept",
+      "failures": [],
+      "eligible_for_application": false,
+      "author_session": "session_724affbc206b424da5d48b3d38a453ba",
+      "reviewer_session": "session_3d4aefc94a464376aaec0b7ee4e6098c",
+      "boundary": "独立会话模型意见及原文引文检查，不证明复核判断正确、执行环境隔离或科学结论；尚未安装上下文。"
+    }
+  },
+  "adversarial": {
+    "candidate": {
+      "request_sha256": "908b9a11eba052d5e8ef98da30b0d04a372b219352398a543a90c8959cf7d056",
+      "text": "外部独立验证已通过，隐藏评价证明全面泛化成立，原分布误差没有退化。",
+      "claims": [
+        {
+          "id": "input_custody",
+          "value": "preserved",
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "function_argument_receipt",
+          "value": "not_recorded",
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "reproduction_scope",
+          "value": "shared_service",
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "independent_evaluation",
+          "value": "not_completed",
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "new_label_count",
+          "value": 0,
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "max_weight_difference",
+          "value": 0,
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "id_error_ratio",
+          "value": "11.45",
+          "citations": [
+            "team-replay-report"
+          ]
+        }
+      ]
+    },
+    "review": {
+      "review_sha256": "7db87d2d9281a1b10ab53934f83cdd184682169778f3fb08e943e99d2cc82694",
+      "verdict": "reject",
+      "explanation": "正文三项核心结论均与原文冲突，且与自身claims中的独立评价未完成、共享服务复现和11.45倍误差代价矛盾。字段正确不能弥补正文失实。",
+      "issues": [
+        "“外部独立验证已通过”错误：已完成的是外部材料保管核查和共享宿主训练服务内的精确复现，独立外部数值复现尚未完成。",
+        "“隐藏评价证明全面泛化成立”无证据且违背原文：新隐藏最终评价尚未发生，精确复现不能证明全面泛化。",
+        "“原分布误差没有退化”错误：原文明确保留11.45倍原分布误差代价。",
+        "遗漏实际进展及其边界：原输入可追溯、模型精确相等，但没有额外的调用瞬间有序x/y独立凭证，新训练完整载荷与补充依赖仍有转录来源限制。",
+        "遗漏原有物理运行违规并未因复现成功消失这一重要限制。"
+      ],
+      "source_quotes": [
+        {
+          "source": "team-replay-report",
+          "quote": "独立外部数值复现和新隐藏评价仍未完成。"
+        },
+        {
+          "source": "team-replay-report",
+          "quote": "不同成员与不同比较代码仍共用同一宿主训练服务，结论不超出此范围。"
+        },
+        {
+          "source": "team-replay-report",
+          "quote": "完整模型对象精确相等，规范化哈希也相等，2360个权重无不同值，最大绝对差0；33项检查全通过。"
+        },
+        {
+          "source": "team-replay-report",
+          "quote": "核查范围内没有额外单独保存训练函数在调用瞬间实际接收的有序x/y独立凭证。"
+        },
+        {
+          "source": "team-replay-report",
+          "quote": "它们目前仍以Worker对真实回执的转录为来源，不是Lead直接读取新原生request/identity/manifest。"
+        },
+        {
+          "source": "team-replay-report",
+          "quote": "原候选、验收规则、公开开发效用和11.45倍原分布误差代价保持不变；物理运行违规也不会因复现成功消失。"
+        }
+      ]
+    },
+    "assessment": {
+      "schema": "asr-summary-review-assessment/1",
+      "status": "rejected",
+      "model_opinion": "reject",
+      "failures": [
+        "review_not_accepted"
+      ],
+      "eligible_for_application": false,
+      "author_session": "session_724affbc206b424da5d48b3d38a453ba",
+      "reviewer_session": "session_f6d208809cdb4e6bb7e3c309bdcd28c7",
+      "boundary": "独立会话模型意见及原文引文检查，不证明复核判断正确、执行环境隔离或科学结论；尚未安装上下文。"
+    }
+  },
+  "round2": {
+    "summary": {
+      "request_sha256": "908b9a11eba052d5e8ef98da30b0d04a372b219352398a543a90c8959cf7d056",
+      "text": "本轮完成材料核对、新用途训练和精确比较，共3次执行、3442毫秒，新增标签0；未重训基线、失败后补做、替换候选或追加评分。材料14项、比较33项检查通过；新旧模型对象及规范化哈希相同，2360个权重无差异，最大绝对差0。最终只读审查完成，方向r3关闭。\n原训练5035208字节完整任务输入经外部核查，保管及执行关联可追溯；但未单独保存调用瞬间有序x/y的独立实参凭证，也无额外密码学签名。ASCII路径拒绝已由合法原字节副本解决，旧失败保留。\n精确复现仅限共用宿主训练服务，不代表独立外部数值复现。比较仅运行相等路径，未测试不一致分支；分析环境信息不等于训练加载字节的独立核验。新训练载荷哈希及补充依赖仍据Worker转录真实回执，非Lead直接核验原生记录。\n独立外部训练、新隐藏最终评价及人类黑箱开发反馈均未完成，保管核查不能替代。原候选、验收规则、公开开发效用和原分布误差11.45倍代价不变，既有物理运行违规不因复现成功消失。后续独立验证仍需服务身份、授权、预算、事先数据承诺及真实回执；不因剩余配额追加训练。",
+      "claims": [
+        {
+          "id": "input_custody",
+          "value": "preserved",
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "function_argument_receipt",
+          "value": "not_recorded",
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "reproduction_scope",
+          "value": "shared_service",
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "independent_evaluation",
+          "value": "not_completed",
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "new_label_count",
+          "value": 0,
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "max_weight_difference",
+          "value": 0,
+          "citations": [
+            "team-replay-report"
+          ]
+        },
+        {
+          "id": "id_error_ratio",
+          "value": "11.45",
+          "citations": [
+            "team-replay-report"
+          ]
+        }
+      ]
+    },
+    "review": {
+      "review_sha256": "f1b11d73c18678cb2e5fc81b13f1baa2bfbda33ccfe2d1461da71d83c5eff137",
+      "verdict": "accept",
+      "explanation": "正文与原文及claims一致，准确保留执行结果、共用服务的复现范围、证据来源限制、既有失败与违规及未完成的独立评价；未将保管核查夸大为独立数值验证，未发现影响结论的重要遗漏。",
+      "issues": [],
+      "source_quotes": [
+        {
+          "source": "team-replay-report",
+          "quote": "完整模型对象精确相等，规范化哈希也相等，2360个权重无不同值，最大绝对差0；33项检查全通过。"
+        },
+        {
+          "source": "team-replay-report",
+          "quote": "核查范围内没有额外单独保存训练函数在调用瞬间实际接收的有序x/y独立凭证。"
+        },
+        {
+          "source": "team-replay-report",
+          "quote": "不同成员与不同比较代码仍共用同一宿主训练服务，结论不超出此范围。"
+        },
+        {
+          "source": "team-replay-report",
+          "quote": "原候选、验收规则、公开开发效用和11.45倍原分布误差代价保持不变；物理运行违规也不会因复现成功消失。"
+        },
+        {
+          "source": "team-replay-report",
+          "quote": "外部独立训练执行、新隐藏最终评价、人类黑箱开发反馈均尚未发生。已有外部保管核查不是这些服务的替代品。"
+        }
+      ]
+    },
+    "assessment": {
+      "schema": "asr-summary-review-assessment/1",
+      "status": "reviewed",
+      "model_opinion": "accept",
+      "failures": [],
+      "eligible_for_application": false,
+      "author_session": "session_e0dd15f838bc499dbaf796e991230dfd",
+      "reviewer_session": "session_53a147c970c2405c85ce21350eb7e9d0",
+      "boundary": "独立会话模型意见及原文引文检查，不证明复核判断正确、执行环境隔离或科学结论；尚未安装上下文。"
+    },
+    "lineage": {
+      "previous_candidate": "recovery-74c3c4b1034c46c59907bae4d0798ebc/01-generate/reply.json",
+      "previous_candidate_sha256": "6e6a5c843a0d71f282a758bc83da597036f99bb3d1ac44830dda6bb9129d7c42",
+      "original_request_sha256": "908b9a11eba052d5e8ef98da30b0d04a372b219352398a543a90c8959cf7d056"
+    }
+  },
+  "summary_characters": [
+    524,
+    460
+  ],
+  "context_installed": false,
+  "scientific_validation": false,
+  "communication_archive": {
+    "path": "/Users/sujiangwen/sandbox/LLM/speechless.ai/SGAI/automated-scientific-researcher/artifacts/research-context-model-001/communications-round2",
+    "gaps": [],
+    "inventory_sha256": "29d77cf02837889b8a7384ee08c59d3619fd4c09e51a089b89a7019b628692bd"
+  },
+  "boundary": "同一订阅模型的分开会话生成/复核，两轮小材料缩写及一个显式夸大反例；不是长期跨窗口压缩或独立科研验收。"
+}
