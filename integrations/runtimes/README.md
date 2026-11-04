@@ -104,3 +104,7 @@ session directory, recorded context-recovery.json and opened a fresh conversatio
 with the same research identity and remaining allowance, restoring from durable
 files. This was an explicit operator recovery, not implemented automatic
 compaction/rotation. A runtime's final timeout is not erased by scientific success.
+
+### pi 订阅连接方式
+
+ASR 的私有 `settings.json` 明确使用 `transport: sse`。本机 pi 1.5.0 的设置定义和 SDK 传递路径已核查，并用 Context7 核对上游文档。此设置用于避开真实研究中出现的 WebSocket 连接错误和 300 秒空闲超时；仍使用同一 openai-codex OAuth 订阅，不写入 API key、不切换计费、不自动重试或增加额度。网络中断仍须保留记录并核查进程后恢复，SSE 不代表永不断线。

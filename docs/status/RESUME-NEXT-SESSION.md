@@ -1,7 +1,8 @@
 # Live Session Checkpoint
 
-Updated2026-11-04. P5 active; **same-project follow-up is RUNNING: recovery exec56486**.
-This is a recovery checkpoint, not a request for handoff approval.
+2026-11-04 当前实际运行：exec82725，同项目SSE恢复。22个旧进程已验证退出；419项测试通过（25项环境跳过）。仅ASR私有pi配置transport=sse，不换订阅、不重新登录、不重置预算。
+seq45材料核查真实完成，累计25次计算；seq46团队自行分派Worker重复训练和比较。seq48控制端已回传真实历史材料核查，artifacts/p5-custody-feedback-001，核查结果SHA b2f365962440196d45491a86e04e2651705369e08fb48bb99f35959ecac6b07c。原训练完整输入和10项文件校验通过；没有当时另存的fit参数收据，不能补造历史证明。尚无黑箱评价服务。
+下一步：观察团队处理反馈、Worker实际执行和中文报告；结束后核查预算/进程/交流归档，另建后续研究报告，不覆盖首轮档案。
 
 ## 最新补充：中文交付与正在运行的接续研究
 
@@ -13,7 +14,7 @@ seq36 Lead1自行提出新方向frozen-training-custody-reproduction，Lead2在s
 审查支持；seq40 Organizer已推进方向。预计组织自行安排1次材料准备分析、
 1次Worker重新训练、1次独立编写的比较分析；团队额度最多4次/180秒/0新样本。
 这是团队自行制定的安排，非开发侧强加。只能证明团队内部重复训练，外部独立
-复现/隐藏评价/历史实际输入记录仍需真实证据。原exec80279因018-organizer WebSocket错误结束2；全部19进程退出/健康/无预留，现exec56486恢复中，日志/tmp/asr-p5-followup-001-recovery.log。勿重复启动。
+复现/隐藏评价/历史实际输入记录仍需真实证据。原exec80279因018-organizer WebSocket错误结束2；全部19进程退出/健康/无预留，随后021-lead_2又因300秒WebSocket空闲超时退出。22个进程已核查退出、预留为零；现exec82725用同订阅SSE恢复，日志/tmp/asr-p5-followup-001-sse-recovery.log。勿重复启动。
 组织者已自行写出HUMAN-EVALUATOR-REQUEST.md，尚无黑箱服务已接入或已调用。
 
 ## ACTIVE D032 follow-up — inspect before action
@@ -29,7 +30,7 @@ EXTERNAL-DELIVERY-FEEDBACK.json to role workspaces, SHA
 
 Same root artifacts/p5-project-001/projectorganization-97ad1aee4ff4/run unchanged.
 Explicit --resume for NEW HUMAN COMMISSION, not retrying old delivery or resetting
-budget. Initial exec80279 exited2(provider transport error). Current recovery exec56486; log/tmp/asr-p5-followup-001-recovery.log. Initial spent3392304modelms,
+budget. Initial exec80279 exited2(provider transport error). Current SSE recovery exec82725; log/tmp/asr-p5-followup-001-recovery.log. Initial spent3392304modelms,
 24jobs/96833execms/512slots; remaining11007696modelms/232jobs/3584slots.
 Current code includes EventRecorder/autoarchive/snapshot16MiB and labeled
 controller closeout. Preflight /tmp/asr-p5-followup-preflight.json ready.

@@ -88,7 +88,9 @@ def prepare_oauth(source: Path, config_dir: Path):
     with _oauth_lock(source):
         auth=_oauth(json.loads(source.read_text()))
         if target.absolute()!=source:_write_oauth_file(target,{'openai-codex':auth})
-    (config_dir/'settings.json').write_text(json.dumps({'retry':{'enabled':False,'provider':{'maxRetries':0}},'cacheWarming':'off','compaction':{'enabled':False}}))
+    # Explicit subscription SSE avoids the cached WebSocket idle timeout.
+    # This changes transport only; provider, OAuth and retry policy stay explicit.
+    (config_dir/'settings.json').write_text(json.dumps({'transport':'sse','retry':{'enabled':False,'provider':{'maxRetries':0}},'cacheWarming':'off','compaction':{'enabled':False}}))
     return _oauth_digest(auth)
 
 

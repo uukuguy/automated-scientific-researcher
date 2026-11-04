@@ -56,6 +56,7 @@ class RuntimeTests(unittest.TestCase):
             settings=json.loads((dst/'settings.json').read_text())
             self.assertEqual(settings['retry'],{'enabled':False,'provider':{'maxRetries':0}})
             self.assertEqual(settings['cacheWarming'],'off')
+            self.assertEqual(settings['transport'],'sse')
 
     def fake(self, d, records, wait=False):
         p=Path(d)/'fake-pi'; p.write_text('#!/usr/bin/env python3\nimport sys,json,time\nif "--version" in sys.argv: print("1.5.0");sys.exit()\nfor line in sys.stdin:\n c=json.loads(line)\n if c["type"]=="get_state": print(json.dumps({"type":"response","id":c["id"],"success":True,"data":{"sessionId":"native","sessionFile":"native.jsonl","model":{"provider":"openai-codex","id":"test"}}}),flush=True)\n if c["type"]=="prompt":\n  '+ ('time.sleep(10)' if wait else '\n  '.join('print('+repr(json.dumps(r))+',flush=True)' for r in records))+'\n')
