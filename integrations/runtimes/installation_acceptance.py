@@ -204,4 +204,3 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('root');parser.add_argument('--resume-reason');parser.add_argument('--read-source',action='store_true');parser.add_argument('--cycle',type=int,choices=(1,2,3,4,5),default=1);args=parser.parse_args()
     if args.read_source:retrieve_after_installation(args.root)
     else:raise SystemExit(1 if execute(args.root,resume_reason=args.resume_reason,cycle=args.cycle) else 0)
-
