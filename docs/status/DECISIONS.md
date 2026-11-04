@@ -265,3 +265,17 @@ math moved out of asr_evaluation into tests/paired_selection_reference.py as an
 external test reference only; no runtime path may import or invoke it. Next step
 is to expose adequate generic capabilities and let the team determine its own
 continuation, while retaining independent evaluation and hidden-data boundaries.
+
+
+## D031 — Preserve complete recorded research communication (2026-11-04)
+
+User requires the whole research communication process to be recorded. Keep raw
+native role journals/events plus authoritative Control messages, task revisions,
+human guidance and receipts; produce indexed immutable communication exports.
+Visible conversation/tool content is retained rather than summarized. Source hashes,
+role/session links, active/missing-record gaps and redactions are explicit.
+Credentials/private reasoning are excluded from the communication export; native
+originals remain restricted. Existing runtime stderr omission and unavailable full
+external developer-chat export remain disclosed limitations. Do not manufacture
+historical messages/timestamps. New human requirement is recorded as Control
+guidance in project001; no scientific direction, experiment or budget is altered.

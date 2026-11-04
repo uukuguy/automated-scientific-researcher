@@ -255,3 +255,15 @@
 - 2026-11-04: User clarified external development oversight; moved fixed selection code out of runtime, preserving research-team ownership of process.
 
 - 2026-11-04: Added project-spec entry with explicit resources and optional history;412tests/387pass/25skip; fixed selection remains external test reference.
+
+- 2026-11-04: a9ab45e adds project-requirement execution so research teams own scientific process instead of following developer-prescribed workflows.
+
+- 2026-11-04: Launched project-level team run research_2fdee65a1c2f4bd5b107bfc388469d8d with fresh explicit resources; Organizer receives requirements only.
+
+- 2026-11-04: Organizer chose two Leads; team replaced historical paired design with own512-sample comparison and staged analysis after source audit.
+
+- 2026-11-04: Recorded D031 human guidance; archived current role/tool/Control communication with explicit active-session gap, preserving original journals.
+
+- 2026-11-04: Project001 Organizer WebSocket failure reconciled;8processes exited/no reservations; resumed unchanged login/budget with lifecycle intervention recorded.
+
+- 2026-11-04: Communication archive/event recording verified:417tests/392pass/25skip; second actual snapshot10sessions/49sources retains active-session gap.

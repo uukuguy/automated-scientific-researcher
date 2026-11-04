@@ -254,3 +254,10 @@ fixed developer-prescribed scientific workflow. Mark human/developer lifecycle
 interventions and developer-authored project adapters distinctly. The workbench
 observes and communicates with the Organizer; it must not silently direct research
 steps or convert one four-arm/eight-seed proposal into a universal process.
+
+
+D031: the future communication view must expose recorded conversation/tool history
+with actor/session/task/trial references, source hashes and explicit missing/active/
+redacted markers, not just polished summaries. Preserve original order/timestamps
+where recorded. Credentials/private reasoning are not UI communication content.
+No claim that this prepared handoff is already delivered or implemented in Capstone.

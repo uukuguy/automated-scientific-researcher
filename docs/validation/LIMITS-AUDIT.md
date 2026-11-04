@@ -286,3 +286,20 @@ retains all failed consumption; profile payload/batch restrictions still apply.
 The project brief reads current state instead of repeating stale20min/4min values.
 No paid fallback, automatic retry or hidden-evaluation grant. User continuation
 under D030 authorizes the configured new project run, not old-budget reopening.
+
+
+## Communication retention (D031)
+
+The organization event writer adds sequence and UTC collection time, writes the
+complete event payload and flushes/fsyncs every event. It adds no truncation or
+retention-size cap. Existing native transport ceilings still apply and preserve
+explicit limit/recovery records. An I/O failure propagates; it cannot silently
+turn into a successful archived session. The archive retains explicit incomplete
+JSONL/session/source gaps. Export failure is reported in the run receipt and
+requires archival recovery only, never a repeat of scientific computation.
+
+Archives are distinct non-overwriting checkpoints, with source hashes and an
+inventory. The current exporter reads each source into memory; it has no tested
+unbounded-size guarantee or automatic retention/deletion policy. Original native
+journals remain in the restricted run directory; raw provider stderr was already
+omitted for credential protection and cannot be reconstructed retrospectively.

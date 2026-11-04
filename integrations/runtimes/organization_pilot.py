@@ -293,11 +293,13 @@ write durable output early and finish each session promptly after your handoff.
             role_pack=HERE/'organization-study-capabilities.json' if role_profile=='research-organization-study/1' else pack_path
             runtime=PiRuntime(executable=str(launcher),model=model,thinking='high',capabilities_path=role_pack)
             bridge=ResearchBridge(service,project=project,run=run,researcher_token=tokens[actor],supervisor_token=tokens['supervisor'],workspace=work,snapshots=root/'snapshots',organization=aar,capability_profile=role_profile,dispatch=dispatch)
-            write(step/'request.json',dict(actor=actor,role=ACTORS[actor],deliveries=deliveries,budget=budget,limits=effective.__dict__,access_probe='controller_read_denied'))
+            prompt=f'You are authenticated member {actor}, role {ACTORS[actor]}. Read CLIENT-BRIEF.md, state and organization_records pages. Your pending deliveries: '+json.dumps(deliveries)+'. Inspect actual sources, act within your role, preserve useful artifacts and hand off using organization records. No fixed scientific direction has been assigned by the host.'
+            write(step/'request.json',dict(actor=actor,role=ACTORS[actor],prompt=prompt,client_brief=brief,client_brief_sha256=digest(work/'CLIENT-BRIEF.md'),deliveries=deliveries,budget=budget,limits=effective.__dict__,access_probe='controller_read_denied'))
+            from .communication_archive import EventRecorder
             with (step/'events.jsonl').open('x') as stream:
-                def event(value):stream.write(json.dumps(value,allow_nan=False)+'\n');stream.flush()
+                event=EventRecorder(stream)
                 result=run_research_session(runtime,bridge,config_dir=root/'pi-private',native_session_id=run,
-                    prompt=f'You are authenticated member {actor}, role {ACTORS[actor]}. Read CLIENT-BRIEF.md, state and organization_records pages. Your pending deliveries: '+json.dumps(deliveries)+'. Inspect actual sources, act within your role, preserve useful artifacts and hand off using organization records. No fixed scientific direction has been assigned by the host.',
+                    prompt=prompt,
                     limits=effective,oauth_source=args.oauth_source,on_event=event,checkout=args.checkout)
             write(step/'result.json',result);steps.append(dict(actor=actor,path=str(step),status=result['status']))
             if result['status']!='settled':raise ValueError('role_session_'+result['status'])
@@ -315,8 +317,19 @@ write durable output early and finish each session promptly after your handoff.
         state=service.get_run(tokens['human'],project,run)
         projection=aar.sync_experiment_state(tokens['supervisor'],project,run,idempotency_key=(recovery_id or 'pilot')+'-projection',expected_control_revision=state['control_revision'])
         report_path=root/((recovery_id+'-result.json') if recovery_id else 'result.json')
+        communication=dict(status='pending')
+        try:
+            from .communication_archive import archive
+            destination=root/'communications'/(recovery_id or 'initial')
+            archived=archive(root,destination)
+            communication=dict(status='archived',path=str(destination),gaps=archived['gaps'],
+                inventory_sha256=digest(destination/'inventory.json'))
+        except Exception as error:
+            communication=dict(status='failed',error_type=type(error).__name__,message=str(error),
+                recovery='Preserve native originals and explicitly retry archive to a new destination; do not repeat research.')
+            if failure is None:failure=dict(type='CommunicationArchiveError',message='communication_archive_failed')
         write(report_path,dict(project_id=project,research_run_id=run,steps=steps,failure=failure,state=state['state'],budget=state['budget'],projection=projection,
-            boundary=boundary))
+            boundary=boundary,communication_archive=communication))
     print(json.dumps(dict(report=str(report_path),steps=len(steps),failure=failure,state=state['state'])))
     if failure:raise SystemExit(2)
 

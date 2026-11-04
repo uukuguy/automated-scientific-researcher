@@ -168,3 +168,20 @@ any developer-authored project adapter/reference separately from team outcomes.
 Project-specific validators remain opt-in to that contract, never universal ASR
 rules. No hard-coded four-arm/eight-seed/33-model sequence in the core. Scientific
 changes require explicit prospective protocol revision, not hidden evaluator edits.
+
+
+## Complete research communication records
+
+Retain the full recorded research conversation, not only final reports or curated
+summaries: project/human instructions, role inputs and visible outputs, directed
+messages, tool requests/results/errors, revisions, delivery receipts and lifecycle
+interventions. Associate records with actors, sessions, tasks and trials, retaining
+native timestamps where available and explicit source hashes. Never silently
+truncate or replace missing originals with a retrospective summary. Export immutable
+indexed archives; active prefixes, absent records and redactions must be explicit.
+Keep raw native originals in the restricted run store. Credentials and private
+model reasoning are not public communication artifacts; mark export redactions.
+Raw provider stderr is currently not retained, and external developer-chat history
+is not automatically exported: disclose those limits instead of claiming complete
+historical coverage. Do not mutate frozen project materials to add new guidance;
+record new human requirements via the existing Control guidance path.

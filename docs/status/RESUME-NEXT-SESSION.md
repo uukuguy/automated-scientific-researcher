@@ -1,6 +1,6 @@
 # Live Session Checkpoint
 
-Updated2026-11-04. P5 active; no live model or numerical process remains.
+Updated2026-11-04. P5 active; NEW project run active, inspect below before any launch.
 
 ## User direction and current policy
 D029: complete subscription work instead of enforcing short acceptance windows.
@@ -104,3 +104,57 @@ artifacts/p2-aar-private-20261102-final-preflight, proxy127.0.0.1:7897, spec
 research_projects/paired_acquisition/PROJECT-REQUIREMENTS.json. Do not duplicate
 if identity/control/process already exists. Need monitor actual launch through
 report and receipts; no fixed labelling/fit schedule supplied by developer.
+
+
+## ACTIVE PROJECT RUN — inspect first
+Launched at a9ab45e: artifacts/p5-project-001, projectorganization-97ad1aee4ff4,
+runresearch_2fdee65a1c2f4bd5b107bfc388469d8d. Exec21671;
+log/tmp/asr-p5-project-001.log. Organizer active at checkpoint. Do not start duplicate
+or end turn while owner active. Canonical subscription reused; no login/API key.
+Use read-only closed SQLite connection for metadata; do not print auth/nativeevents.
+Observe researcher-authored directions/tasks/evidence without scientific steering.
+Final audit must check report/snapshots/tasks/directions/deliveries/budgets/processes;
+report capability gaps honestly. Project uses generic analysis/label/fit; hidden
+independent evaluation not researcher-accessible. No fixed paired protocol injected.
+
+Project001 progress throughseq16: Organizer independently invited lead_1 for
+science and lead_2 audit; no Workers used yet. lead_1 proposes target-versus-mixed
+(two unpaired allocations,4replicates each,512labels/9fits) instead of historical
+4x8paired scheme. New acquisition_manifest.py team-authored, not hostadapter.
+lead_2 statically found coordinate-tamper oracle gap; Organizer activated direction
+and gave acquisition-preflight analysis-only task, nowclaimedlead_1r2. No numerical
+trial yet at this checkpoint. Team owns these choices; don't interfere scientifically.
+Snapshotplan/sourcebf39df6f...; audit3d9821ce... in root snapshots. Full plan in
+workspaces/lead_1/LEAD-RESEARCH-PLAN.md. Overall coordinationceil24attempts/512labels/
+600000executionms (not a separate enforced ledger); Controlnewrun caps remain
+256/4096/7200000. Pending labels/fit only after team-reviewed preflight.
+
+
+D031 latest user requires complete research communication. Added human guidance
+complete-communication-retention via Control, no science/budget change. Exact user
+text recorded human-instructions.jsonl (recorded_at, no fabricated sent_at).
+New communication_archive.py/tests (4pass) uncommitted. Snapshot archive
+artifacts/p5-project-communications-001:7steps/32sources,006-lead_1notfinalizedgap,
+310credential/private-reasoning redactions. Native originals remain restricted;
+visible records unabridged, no rawproviderstderr/developerchat reconstruction.
+Need final archive afterrun closes, verify gaps/session coverage/receipt links;
+include communication archive in final delivery instead of only reports. Current
+run stillactive exec21671, no scientific host intervention. Sequence19lead2accepts
+preflight repair with provenance limitations;20lead1requests next task. One actual
+analysis succeeded1565ms;512coords prepared, zero labels/fits at that checkpoint.
+
+Project001 step007organizer provider_error(WebSocket,noauth-expiry). All8processes
+exited/pausedhealthy/noreservations,1050164modelms spent. Explicit same-run recovery
+started log/tmp/asr-p5-project-001-recovery.log; inspect recovery-result/process
+before action. No budget increase/login/scientific steering/numerical rerun.
+Lifecycle intervention appended human-instructions.jsonl and recovery intent.
+
+Communication implementation verified417tests/392pass/25skip in
+/tmp/asr-communication-final-tests.log;5focusedtests. New EventRecorder keeps
+fullpayload/order/UTC/fsync. Launcher freezes prompt+brief and archives onclose;
+currentrecovery82321 loadedOLDcode, so final manualarchive remains necessary.
+Second actualcheckpoint artifacts/p5-project-communications-002:10sessions/49sources,
+only009-lead_1notfinalizedgap; includesControlcommands/contracts/hypotheses/findings,
+recoveryreasons/currentbriefs. Nativeoriginals preserved; seeRESEARCH-COMMUNICATION.md.
+Recovery now progressed toseq24: Organizer assignedaugmentation-utility-study, Lead1
+claimed;7successfuldispatches atlastcheck (preflight pluslabels). No hostsciencechange.
