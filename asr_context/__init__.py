@@ -3,7 +3,7 @@
 Original materials remain the authority. This selector performs no model calls,
 semantic summarization, execution, persistence or runtime installation.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 import hashlib
 import json
 
@@ -22,11 +22,12 @@ class Material:
     protected: bool = False
     group: str = ''
     complete: bool = True
+    citations: tuple[str, ...] = ()
 
     def __post_init__(self):
         if any(type(v) is not str or not v for v in (self.id,self.revision,self.text)):
             raise ValueError('invalid_material')
-        if any(type(v) is not tuple or any(type(s) is not str or not s for s in v) for v in (self.references,self.roles)):
+        if any(type(v) is not tuple or any(type(s) is not str or not s for s in v) for v in (self.references,self.roles,self.citations)):
             raise ValueError('invalid_material_scope')
         if type(self.protected) is not bool or type(self.complete) is not bool or type(self.group) is not str:
             raise ValueError('invalid_material_state')
@@ -38,6 +39,7 @@ def compact(materials, *, role, max_bytes):
     Protect explicit roots and unfinished interactions plus their dependency/group
     closure. Include newer optional closures if the complete serialized result
     fits. Every authorized source stays in the fingerprinted lookup catalog.
+    Citations require an accessible catalog source but do not force its full text.
     Group IDs must be scoped by the caller to one interaction, not a whole role.
     Access decisions and protected scientific facts are caller-supplied; this
     function cannot infer which fact is important or authorize hidden evidence.
@@ -49,7 +51,7 @@ def compact(materials, *, role, max_bytes):
         raise ValueError('invalid_or_duplicate_material')
     visible={r.id:r for r in rows if not r.roles or role in r.roles}
     for row in visible.values():
-        if any(ref not in visible for ref in row.references):raise ValueError('reference_unavailable')
+        if any(ref not in visible for ref in row.references+row.citations):raise ValueError('reference_unavailable')
     groups={}
     for row in visible.values():
         if row.group:groups.setdefault(row.group,set()).add(row.id)
@@ -65,18 +67,16 @@ def compact(materials, *, role, max_bytes):
         return found
 
     required=closure(r.id for r in visible.values() if r.protected or not r.complete)
-    catalog=[dict(id=r.id,revision=r.revision,sha256=hashlib.sha256(_encode(dict(
-        id=r.id,revision=r.revision,text=r.text,references=r.references,roles=r.roles,
-        protected=r.protected,group=r.group,complete=r.complete))).hexdigest()) for r in visible.values()]
+    catalog=[dict(id=r.id,revision=r.revision,sha256=material_digest(r)) for r in visible.values()]
 
     def projection(selected):
-        return dict(schema='asr-research-context/1',status='ready',role=role,
+        return dict(schema='asr-research-context/2',status='ready',role=role,
                     measurement='serialized_utf8_bytes',capacity=max_bytes,catalog=catalog,
                     protected=[k for k in visible if k in required],
                     retained=[k for k in visible if k in selected],
                     omitted=[k for k in visible if k not in selected],
                     materials=[dict(id=r.id,revision=r.revision,text=r.text,references=list(r.references),
-                                    group=r.group,complete=r.complete) for r in visible.values() if r.id in selected])
+                                    group=r.group,complete=r.complete,citations=list(r.citations)) for r in visible.values() if r.id in selected])
 
     selected=set(required);base=projection(selected);size=len(_encode(base))
     if size>max_bytes:
@@ -87,3 +87,9 @@ def compact(materials, *, role, max_bytes):
         candidate=selected|closure([key])
         if len(_encode(projection(candidate)))<=max_bytes:selected=candidate
     return projection(selected)
+
+
+def material_digest(material):
+    """Fingerprint complete source identity, access metadata and exact content."""
+    if type(material) is not Material:raise ValueError('invalid_material')
+    return hashlib.sha256(_encode(asdict(material))).hexdigest()
