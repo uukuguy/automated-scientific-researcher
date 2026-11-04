@@ -173,3 +173,11 @@ Context7与本机pi 1.5.0文档均确认session_before_compact能返回自定义
 10项专项检查通过，包含真实安装SDK的压缩/编辑投影、错误分支/部分文件/解析超时、私有内容隔离及拆组/遗漏拒绝。真实三份历史日志映射345/57/328条可见记录，分组146/18/126；结构覆盖演练通过，原件未修改、模型调用为零。详见[验证报告](../validation/RESEARCH-CONTEXT-COVERAGE.md)。
 
 离线游标由审查者明确选取，active_cursor_verified和provider_payload_verified仍为false。结构覆盖不能证明语义压缩或代码跨消息依赖保真。下一步将活动Runtime捕获的稳定游标与来源注册接入Control，再进行首个实际安装及生效回执测试。当前不授权安装。
+
+### 原会话来源登记与活动游标采集
+
+Control.register_context_source仅接受human/supervisor权限，由服务自己调用固定pi SDK读取指定的绝对路径、原生会话ID和明确分支。可见投影及读取参数作为context-source请求写入原账本，按项目/运行/成员隔离。prepare_context可指定source_registration，将原会话材料连同笔记、代码与实验引用一起冻结；准入时重读原文件和SDK投影，任一变化都要求重新准备与复核。旧登记请求的幂等重放只是历史回执，不能作为当前有效证明。读取容量超限保存deferred及限制、恢复说明，不截断原件、不取消科研实验。
+
+pi已在before_provider_request回调采集原生sessionManager的会话ID、文件路径、当前叶节点及分支条目ID指纹，读取前后复查游标。ASR宿主开启ASR_CONTEXT_OBSERVATION，回执通过已有运行事件链记录；缺失管理器或读取中发生变化会发出deferred，不将故障伪装成成功。回执不含消息正文、工具实参或私有思考，也不额外调用模型。
+
+当前限制：采集端已接通，但Control尚未验证这些事件与运行claim/进程出生身份的绑定，也未与文件投影做一次完整安装时核验。因此来源登记仍是离线材料证明，active_cursor_verified和installation_authorized保持false；采集事件不构成授权令牌。还需安装时再次核对、完整交互覆盖和安装后回执。以上测试证明工程行为，尚无真实长程模型会话使用这一新回调的验收。

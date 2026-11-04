@@ -133,3 +133,5 @@ research_note/source_read提供成员私有笔记引用的原件分页查询，�
 Control支持宿主限定的上下文材料准备/准入，沿用原请求/事件账本；校验当前笔记来源和指定成员会话登记。当前installation_authorized/runtime_coverage_verified均为false。原生会话覆盖及安装回执尚未接通。
 
 独立conversation核心负责完整交互分组和结构覆盖；pi_context适配器只读解释固定SDK投影，保留来源与原生映射。活动游标/提供方载荷/实际安装仍未验证。
+
+- 上下文原会话来源：Control宿主权限登记复用请求账本，摘要准备/准入重读原文件和固定pi投影；按成员隔离并纳入交流归档。pi请求前提供当前游标/分支指纹事件；Control运行身份绑定、安装时核验与实际生效仍未接通。

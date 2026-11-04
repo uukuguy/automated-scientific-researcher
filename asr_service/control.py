@@ -113,6 +113,10 @@ class ControlService(PolicyStore):
         from .organization import records
         return records(self, token, project, run, **arguments)
 
+    def register_context_source(self, token, project, run, **arguments):
+        from .context_sources import register
+        return register(self, token, project, run, **arguments)
+
     def prepare_context(self, token, project, run, **arguments):
         from .context_admission import prepare
         return prepare(self, token, project, run, **arguments)

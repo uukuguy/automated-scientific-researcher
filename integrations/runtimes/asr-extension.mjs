@@ -1,5 +1,6 @@
 /** Curated pi extension. No discovered skills, extensions, provider switching or Bash. */
 import { workspacePath } from './workspace-path.mjs';
+import { captureCursor } from './pi_context_cursor.mjs';
 export default function(pi) {
   let turns = 0, tools = 0;
   const maxTurns = Number(process.env.ASR_MAX_TURNS);
@@ -68,6 +69,10 @@ export default function(pi) {
         return await new Promise(()=>{});
       }
       await bridge('permit', {kind:'turn'}, crypto.randomUUID());
+      if(process.env.ASR_CONTEXT_OBSERVATION==='1') {
+        const observation=captureCursor(ctx);
+        process.stdout.write(JSON.stringify({...observation,boundary:'before_provider_request'})+'\n');
+      }
     } catch { fatal(); } // pi swallows hook exceptions: process exit is intentional.
   });
   pi.on('tool_call', async (event,ctx) => {

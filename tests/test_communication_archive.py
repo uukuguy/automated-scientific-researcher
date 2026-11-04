@@ -82,9 +82,9 @@ class CommunicationArchiveTests(unittest.TestCase):
         (self.root/'identity.json').write_text(json.dumps(dict(project_id='p',research_run_id='r')))
         with sqlite3.connect(self.root/'control.db') as db:
             db.execute('CREATE TABLE asr_requests(project TEXT,scope TEXT,request_key TEXT,payload TEXT,record TEXT)')
-            for project,scope,text in [('p','context-prepare:'+json.dumps(['r','lead']),'original context preparation'),('p','context-admission:'+json.dumps(['r','lead']),'admission record'),('other','context-prepare:'+json.dumps(['r','lead']),'unrelated private content')]:
+            for project,scope,text in [('p','context-prepare:'+json.dumps(['r','lead']),'original context preparation'),('p','context-admission:'+json.dumps(['r','lead']),'admission record'),('p','context-source:'+json.dumps(['r','lead']),'frozen conversation source'),('other','context-prepare:'+json.dumps(['r','lead']),'unrelated private content')]:
                 db.execute('INSERT INTO asr_requests VALUES (?,?,?,?,?)',(project,scope,'key','[]',json.dumps(dict(text=text))))
         archive(self.root,self.out)
         text=(self.out/'control/context_requests.json').read_text()
-        self.assertIn('original context preparation',text);self.assertIn('admission record',text)
+        self.assertIn('original context preparation',text);self.assertIn('admission record',text);self.assertIn('frozen conversation source',text)
         self.assertNotIn('unrelated private content',text)

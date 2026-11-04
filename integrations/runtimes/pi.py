@@ -236,6 +236,7 @@ class PiRuntime:
         env=build_environment(COMMON_ENVIRONMENT,runtime='pi',provider=self.provider,inherited=self.environment)
         env['GIT_CEILING_DIRECTORIES']=str(workspace.parent)
         env['ASR_WORKSPACE']=str(workspace)
+        env['ASR_CONTEXT_OBSERVATION']='1'
         env['ASR_OWNED_PROCESS_GROUP']='1'
         env['ASR_SKILL_PATHS']=json.dumps([skill['frozen_path'] for skill in frozen_skills])
         env['ASR_SKILL_PATH']=frozen_skills[0]['frozen_path']

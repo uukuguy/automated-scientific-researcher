@@ -31,3 +31,11 @@ provider_payload_verified=false：这是SDK逻辑上下文，未证明提供方�
 原始会话解析预算由调用方显式给定，本次为128MiB，目的是控制离线解析内存，不限制研究历史保存；超出返回deferred，原件不截断。SDK辅助进程默认30秒用于检测只读投影卡住，超时返回限制和恢复说明，不取消研究实验。
 
 机器回执见[RESEARCH-CONTEXT-COVERAGE.json](RESEARCH-CONTEXT-COVERAGE.json)。完整可见投影、候选材料和覆盖检查保存在artifacts/p5-context-coverage-001，原日志仍在原目录。
+
+## 来源登记与游标采集的后续实现
+
+宿主权限的Control来源登记已接入摘要准备和准入：服务读取原会话，保存投影；摘要准入前重新读取并比较。5项服务检查覆盖真实安装SDK投影、原文件修改、跨成员权限、解析容量超限与明确恢复说明。这里使用构造会话和临时Control，不能称新增真实科研运行。来源记录进入原有交流归档，不增加另一份权威账本。
+
+另有3项Node检查覆盖原生游标读取、读取中游标变化、缺失会话管理器和模型请求前的事件发出。回调使用pi公开sessionManager接口，原生会话和分支ID指纹进入已有事件记录链；不包含消息正文或私有思考。尚未发起真实订阅会话验证该回调，Control尚未验证回执与运行身份绑定，未完成安装时联合核查。因此历史三日志回执与离线性质保持原样，活动核验和安装许可仍为false。
+
+组合验证：`uv run python -m unittest discover -s tests -v`共502项，477通过、25环境跳过；日志`/tmp/asr-context-source-cursor-final-tests.log`。两个修改的Node模块语法检查和git diff --check通过。

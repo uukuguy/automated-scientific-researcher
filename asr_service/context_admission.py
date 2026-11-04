@@ -21,7 +21,7 @@ def _scope(phase,run,subject):
     return 'context-'+phase+':'+encoded([run,subject])
 
 
-def snapshot(service,db,project,run,subject):
+def snapshot(service,db,project,run,subject,source_registration=None):
     role=member(db,project,run,subject);state=service._run(db,project,run)
     if state['health']!='ok' or state['state'] not in ('running','paused'):raise ControlError('context_run_unavailable')
     row=db.execute('SELECT revision FROM asr_note_heads WHERE project=? AND run=? AND owner=?',(project,run,subject)).fetchone()
@@ -33,6 +33,9 @@ def snapshot(service,db,project,run,subject):
     materials=_materials(db,service,project,run,sequences)+resolve(db,service,project,run,refs)
     restored=restore(store,accepted_revision=row[0],materials=materials,role=subject)
     if restored['status']!='ready':raise ControlError('context_note_sources_changed')
+    if source_registration is not None:
+        from .context_sources import read
+        materials.extend(read(service,db,project,run,subject,source_registration))
     materials.append(restored['material'])
     owned={d['entity_id'] for d in current(db,project,run,'direction') if d['document']['owner']==subject}
     tasks={t['entity_id']:t['revision'] for t in current(db,project,run,'task') if role=='organizer' or t['document']['assignee']==subject or t['document']['direction_id'] in owned}
@@ -46,18 +49,20 @@ def source_rows(materials):
     return [dict(id=m.id,revision=m.revision,sha256=material_digest(m),text=m.text) for m in materials]
 
 
-def prepare(service,token,project,run,*,subject,reviewer_subject,idempotency_key):
+def prepare(service,token,project,run,*,subject,reviewer_subject,idempotency_key,source_registration=None):
     service._auth(token,project,{'human','supervisor'});service._identity(run,subject,reviewer_subject,idempotency_key)
+    if source_registration is not None:service._identity(source_registration)
     with service._connect() as db:
         db.execute('BEGIN IMMEDIATE')
         member(db,project,run,subject);member(db,project,run,reviewer_subject)
         if subject==reviewer_subject:raise ControlError('context_separate_reviewer_required')
         scope=_scope('prepare',run,subject);payload=[subject,reviewer_subject]
+        if source_registration is not None:payload.append(source_registration)
         replay=service._replay(db,project,scope,idempotency_key,payload)
         if replay:return replay
-        materials,stamp=snapshot(service,db,project,run,subject)
+        materials,stamp=snapshot(service,db,project,run,subject,source_registration)
         record=dict(preparation_id=idempotency_key,subject=subject,reviewer_subject=reviewer_subject,
-                    materials=[asdict(m) for m in materials],state_stamp=stamp,note_revision=materials[-1].revision)
+                    materials=[asdict(m) for m in materials],state_stamp=stamp,note_revision=materials[-1].revision,source_registration=source_registration)
         record=json.loads(encoded(record))
         service._remember(db,project,scope,idempotency_key,payload,record)
         service._event(db,project,run,'context_prepared',subject=subject,reviewer_subject=reviewer_subject,preparation_id=idempotency_key)
@@ -90,7 +95,7 @@ def _admit(service,token,project,run,*,subject,preparation_id,idempotency_key,re
         _session(db,project,run,author_session,subject);_session(db,project,run,reviewer_session,prepared['reviewer_subject'])
         if db.execute("SELECT 1 FROM asr_runtime_sessions WHERE project=? AND run=? AND state!='exited'",(project,run)).fetchone():raise ControlError('context_runtime_active')
         try:
-            materials,stamp=snapshot(service,db,project,run,subject)
+            materials,stamp=snapshot(service,db,project,run,subject,prepared.get('source_registration'))
             frozen=[Material(**{k:tuple(v) if k in ('references','citations','roles') else v for k,v in row.items()}) for row in prepared['materials']]
             if request.get('payload',{}).get('role')!=subject or request['payload'].get('sources')!=source_rows(frozen):raise ControlError('context_request_sources_mismatch')
             checked=plan(request,candidate,review_request,review,author_session=author_session,reviewer_session=reviewer_session,

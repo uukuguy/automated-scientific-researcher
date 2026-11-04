@@ -357,3 +357,5 @@ use separate per-project/run/subject/role directories; this is conversation/conf
 separation, not an OS-isolation claim. Runtime launches remain the trusted host's
 responsibility. Tests use deliberate prelaunch failures and fake OAuth only;
 actual autonomous organization and concurrent role execution remain unverified.
+
+上下文来源登记：register_context_source为human/supervisor专用本机接口，服务自行读取固定pi SDK投影并存入原请求账本。prepare_context可指定source_registration；admit_context重读原件，变化时返回deferred与指纹/恢复说明。离线登记不能证明活动游标，也不授权上下文安装；没有新增研究员工具或HTTP路由。
