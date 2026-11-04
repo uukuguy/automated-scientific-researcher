@@ -3,13 +3,26 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from integrations.runtimes.organization_pilot import resources,sync_snapshots,check_recovery_contract,remaining_session_limits
+from integrations.runtimes.organization_pilot import resources,sync_snapshots,check_recovery_contract,remaining_session_limits,context_generations
 from integrations.runtimes.pi import RuntimeFailure
 from integrations.aar.bridge import ResearchBridge
 import test_control_service as fixtures
 
 
 class OrganizationPilotTests(unittest.TestCase):
+    def test_context_rotation_survives_restarts_and_is_role_scoped(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            (root/'recovery-old.json').write_text('{}')
+            (root/'recovery-a.json').write_text(json.dumps({'fresh_context_for':['lead_1']}))
+            (root/'recovery-a-result.json').write_text(json.dumps({'fresh_context_for':['lead_2']}))
+            self.assertEqual(context_generations(root)['lead_1'],1)
+            self.assertEqual(context_generations(root)['lead_2'],0)
+            (root/'recovery-b.json').write_text(json.dumps({'fresh_context_for':['lead_1']}))
+            self.assertEqual(context_generations(root)['lead_1'],2)
+            (root/'recovery-invalid.json').write_text(json.dumps({'fresh_context_for':['other']}))
+            with self.assertRaises(ValueError):context_generations(root)
+
     def test_exhausted_budget_names_dimension_without_starting_session(self):
         policy=resources(Path('integrations/runtimes/organization-limits.json'))
         budget={key:dict(limit=value,spent=0,reserved=0,available=value) for key,value in policy['budget'].items()}

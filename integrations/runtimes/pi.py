@@ -112,9 +112,11 @@ class PiRuntime:
     provider='openai-codex'
 
     def __init__(self, *, executable='pi', model, thinking='high', expected_version='1.5.0', capabilities_path=None, environment=None,
-                 max_message_bytes=4194304,max_buffer_bytes=16777216,max_pending_records=256,max_records=100000,abort_grace_seconds=1.5):
+                 max_message_bytes=4194304,max_buffer_bytes=16777216,max_pending_records=256,max_records=100000,abort_grace_seconds=1.5,context_generation=0):
         if not isinstance(model,str) or not model or ':' in model or '/' in model:
             raise ValueError('explicit_codex_model_id_required')
+        if type(context_generation) is not int or context_generation<0:raise ValueError('invalid_context_generation')
+        self.context_generation=context_generation
         self.executable=executable
         self.model=model
         self.thinking=thinking
@@ -211,7 +213,7 @@ class PiRuntime:
             raise failure from None
         if version!=self.expected_version: raise RuntimeFailure('runtime_version_mismatch')
         workspace=Path(workspace).resolve(); config_dir=Path(config_dir).resolve()
-        sessions=config_dir/'sessions'; sessions.mkdir(exist_ok=True)
+        sessions=config_dir/('sessions' if self.context_generation==0 else f'sessions-generation-{self.context_generation}'); sessions.mkdir(exist_ok=True)
         extension=Path(__file__).with_name('asr-extension.mjs').resolve()
         # Source registry entries grant no tools. Freeze only the declared,
         # verified methodology bytes before issuing the sole process launch.
@@ -396,5 +398,5 @@ class PiRuntime:
                     duration_seconds=time.monotonic()-started,assistant_messages=assistant,exit_code=process.returncode,
                     limit_observations=limit_observations,cleanup=cleanup,protocol_flow=flow,
                     protocol_caps=dict(message_bytes=self.max_message_bytes,buffer_bytes=self.max_buffer_bytes,pending_records=self.max_pending_records,records=self.max_records,abort_grace_ms=math.ceil(self.abort_grace_seconds*1000)),
-                    recovery=dict(native_session_id=session_id,native_session_file=(state or {}).get('sessionFile'),
+                    recovery=dict(context_generation=self.context_generation,native_session_id=session_id,native_session_file=(state or {}).get('sessionFile'),
                         pending_tools=list(pending_tools.values()),instruction='Read authoritative state before retrying; reuse accepted request keys and reconcile uncertain execution.'))

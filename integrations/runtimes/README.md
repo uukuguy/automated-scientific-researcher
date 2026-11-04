@@ -108,3 +108,9 @@ compaction/rotation. A runtime's final timeout is not erased by scientific succe
 ### pi 订阅连接方式
 
 ASR 的私有 `settings.json` 明确使用 `transport: sse`。本机 pi 1.5.0 的设置定义和 SDK 传递路径已核查，并用 Context7 核对上游文档。此设置用于避开真实研究中出现的 WebSocket 连接错误和 300 秒空闲超时；仍使用同一 openai-codex OAuth 订阅，不写入 API key、不切换计费、不自动重试或增加额度。网络中断仍须保留记录并核查进程后恢复，SSE 不代表永不断线。
+
+### 组织角色的上下文恢复
+
+明确遇到模型上下文容量不足时，可在核查进程退出、预算预留归零后，用 `organization_pilot --resume --fresh-context-for lead_1 --recovery-reason ...` 为指定角色开启下一代原生会话。恢复记录保存角色名单，后续启动从记录推导会话代数；旧 `sessions` 目录原样保留，新会话使用 `sessions-generation-N`。研究身份、角色权限、工作区、组织消息和累计预算均保持不变，完整交流归档同时读取各代原生日志。
+
+这不是自动压缩或自动重试；新会话必须从持久研究材料恢复，不能靠清空会话重跑已完成实验。参数仅允许在显式恢复时使用。

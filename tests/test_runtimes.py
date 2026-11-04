@@ -69,6 +69,20 @@ class RuntimeTests(unittest.TestCase):
             result=runtime.run(workspace=Path(d),config_dir=Path(d),session_id='run1',prompt='test',limits=Limits(2,2,3),bridge_url='http://localhost:1',bridge_token='test')
             self.assertEqual(result['status'],'settled'); self.assertEqual(result['session']['sessionId'],'native')
 
+    def test_fresh_context_preserves_old_journal_and_research_identity(self):
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d);(root/'sessions').mkdir()
+            old=root/'sessions/old.jsonl';old.write_text('preserved history')
+            runtime=PiRuntime(executable=self.fake(d,[{'type':'agent_settled'}]),model='test',context_generation=1)
+            result=runtime.run(workspace=root,config_dir=root,session_id='same-research',prompt='recover from evidence',limits=Limits(2,2,3),bridge_url='http://localhost:1',bridge_token='test')
+            self.assertEqual(result['status'],'settled')
+            self.assertEqual(result['native_session_id'],'same-research')
+            self.assertEqual(result['recovery']['context_generation'],1)
+            self.assertTrue((root/'sessions-generation-1').is_dir())
+            self.assertEqual(old.read_text(),'preserved history')
+        for invalid in [-1,True,'../escape']:
+            with self.assertRaises(ValueError):PiRuntime(model='test',context_generation=invalid)
+
     def test_deadline_terminates_child(self):
         with tempfile.TemporaryDirectory() as d:
             runtime=PiRuntime(executable=self.fake(d,[],True),model='test')

@@ -322,3 +322,11 @@ oversize recording/preservation. An actual byte-identical2,281,626-byte export i
 at artifacts/p5-snapshot-capacity-001, snapshot6eaa428654e3b2de9a03635b8ef3a27f79c8ae970085fea052b6816e4629c001.
 This external capacity check was not injected into the live team; its process
 loaded the old ceiling, whose actual failures remain in the research record.
+
+## 2026-11-04：订阅连接的上游超时
+
+本次真实研究遇到 pi 上游 WebSocket 的 300 秒空闲超时。这是连接层限制，不是 ASR 的研究总时长或单角色额度；不能靠提高研究预算解决。ASR 私有 pi 设置改为支持的 SSE 连接，原订阅和累计额度保持不变。SSE 仍可能断线，已保留一次 `terminated` 失败，因此没有把改连接方式当成可靠性验收完成。每次恢复先核查全部旧进程退出、预算预留为零及已完成任务；不重新训练已完成的任务、不抹除消耗、不自动登录或计费回退。
+
+### 模型上下文容量
+
+P5 的第028次角色会话被提供方明确拒绝：输入超过模型上下文容量。此限制独立于研究时长，不能增加预算解决。新增显式的指定角色会话换代恢复：旧日志原路径保留，新目录承接对话；同一研究、权限、材料和累计预算继续。恢复名单与原因写入不可覆盖的恢复记录，归档保留各代日志。仍未实现自动容量预警或自动压缩，不能宣称无人工介入的上下文恢复已完成。

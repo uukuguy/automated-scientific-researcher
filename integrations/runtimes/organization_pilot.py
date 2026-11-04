@@ -31,6 +31,17 @@ ROOT=HERE.parents[1]
 ACTORS={'organizer':'organizer','lead_1':'lead','lead_2':'lead','worker_1':'worker','worker_2':'worker'}
 
 
+def context_generations(root):
+    """Derive explicit context rotations from immutable recovery receipts."""
+    generations={actor:0 for actor in ACTORS}
+    for path in root.glob('recovery-*.json'):
+        if path.name.endswith('-result.json'):continue
+        for actor in json.loads(path.read_text()).get('fresh_context_for',[]):
+            if actor not in generations:raise ValueError('unknown_context_actor')
+            generations[actor]+=1
+    return generations
+
+
 def check_recovery_contract(service, project, previous, proposed):
     # Admission resolves variable defaults. Compare the same canonical form,
     # while still validating every frozen reference and resource constraint.
@@ -95,9 +106,11 @@ def main():
     parser.add_argument('--proxy')
     parser.add_argument('--resume',action='store_true',help='Explicit recovery of the same paused reconciled run; no budget reset')
     parser.add_argument('--recovery-reason')
+    parser.add_argument('--fresh-context-for',action='append',choices=list(ACTORS),default=[],help='Explicit context recovery; preserve prior journals and research budget')
     parser.add_argument('--oauth-source',type=Path)
     parser.add_argument('--execute-authorized-subscription',action='store_true')
     args=parser.parse_args()
+    if args.fresh_context_for and not args.resume:raise ValueError('context_rotation_requires_resume')
     from . import organization_implementation as implementation
     from . import organization_project as project_mode
     scientific=bool(args.implementation or args.project_spec)
@@ -187,7 +200,7 @@ def main():
             if not (step/'result.json').exists():raise ValueError('unrecorded_step_requires_reconciliation')
             old=json.loads((step/'result.json').read_text())
             if old['status']=='settled' and not (step/'delivery-receipt.json').exists():raise ValueError('delivery_ack_reconciliation_required')
-        write(root/(recovery_id+'.json'),dict(reason=args.recovery_reason,prior_budget=previous['budget'],contract_revision=previous['contract_revision'],budget_changes=False))
+        write(root/(recovery_id+'.json'),dict(reason=args.recovery_reason,prior_budget=previous['budget'],contract_revision=previous['contract_revision'],budget_changes=False,fresh_context_for=sorted(set(args.fresh_context_for))))
     else:
         service.publish_contract(tokens['human'],project,'organization-pilot',contract,expected_revision=0,idempotency_key='contract')
         aar.create_run(tokens['human'],project,run,'organization-pilot',1,idempotency_key='start')
@@ -196,6 +209,7 @@ def main():
             service.change_organization(tokens['human'],project,run,kind='member',entity_id=actor,expected_revision=0,idempotency_key='member-'+actor,document=dict(role=role,enabled=True))
         write(root/'identity.json',dict(project_id=project,research_run_id=run,model=model,actors=ACTORS,budget=limits['budget']))
         write(root/'resource-policy.json',limits)
+    generations=context_generations(root)
     brief='''# Human client request and candidate architecture
 
 Investigate how to generate useful additional training samples for a target method
@@ -291,10 +305,11 @@ write durable output early and finish each session promptly after your handoff.
             launcher.write_text('#!/bin/sh\nexec /usr/bin/sandbox-exec -f '+shlex.quote(str(profile))+' '+shlex.quote(binary)+' "$@"\n');launcher.chmod(0o700)
             role_profile=implementation.role_profile(ACTORS[actor]) if scientific else 'research-organization/1'
             role_pack=HERE/'organization-study-capabilities.json' if role_profile=='research-organization-study/1' else pack_path
-            runtime=PiRuntime(executable=str(launcher),model=model,thinking='high',capabilities_path=role_pack)
+            runtime=PiRuntime(executable=str(launcher),model=model,thinking='high',capabilities_path=role_pack,context_generation=generations[actor])
             bridge=ResearchBridge(service,project=project,run=run,researcher_token=tokens[actor],supervisor_token=tokens['supervisor'],workspace=work,snapshots=root/'snapshots',organization=aar,capability_profile=role_profile,dispatch=dispatch)
             prompt=f'You are authenticated member {actor}, role {ACTORS[actor]}. Read CLIENT-BRIEF.md, state and organization_records pages. Your pending deliveries: '+json.dumps(deliveries)+'. Inspect actual sources, act within your role, preserve useful artifacts and hand off using organization records. No fixed scientific direction has been assigned by the host.'
-            write(step/'request.json',dict(actor=actor,role=ACTORS[actor],prompt=prompt,client_brief=brief,client_brief_sha256=digest(work/'CLIENT-BRIEF.md'),deliveries=deliveries,budget=budget,limits=effective.__dict__,access_probe='controller_read_denied'))
+            if generations[actor]:prompt+=' Native conversation context was explicitly rotated after capacity exhaustion; recover from your existing files, snapshots and authoritative records. Prior journals and research identity/budget are preserved. Do not repeat completed experiments.'
+            write(step/'request.json',dict(context_generation=generations[actor],actor=actor,role=ACTORS[actor],prompt=prompt,client_brief=brief,client_brief_sha256=digest(work/'CLIENT-BRIEF.md'),deliveries=deliveries,budget=budget,limits=effective.__dict__,access_probe='controller_read_denied'))
             from .communication_archive import EventRecorder
             with (step/'events.jsonl').open('x') as stream:
                 event=EventRecorder(stream)

@@ -59,3 +59,9 @@ problem representation. Installed signature/source checks and numerical results
 are recorded in the pandapower calibration report.
 
 Source: [PPC converter](https://github.com/e2niee/pandapower/blob/develop/doc/converter/pypower.rst).
+
+## 2026-11-04：pi 订阅连接方式复核
+
+Context7 的 `/earendil-works/pi` 文档确认，`transport` 可为 `sse` 或 WebSocket 系列；文档跨版本，实际以本机 1.5.0 为准。本机 `docs/settings.md` 列出默认 `auto`，`dist/core/settings-manager.js:getTransport` 读取该项，`dist/core/sdk.js` 将其传给智能体。ASR 私有配置明确改为 `sse`，保留同一 openai-codex OAuth 订阅、模型和禁重试设置。
+
+真实运行已出现 WebSocket 错误和 300 秒空闲超时。SSE 随后成功完成 6 轮对话、16 次工具调用，但也发生一次 `terminated`，因此不能宣称已解决所有网络中断。失败和累计消耗保留，进程退出与预留核清后才显式恢复。没有重新登录、写入 API key 或切换付费服务。419 项回归检查通过，其中 25 项环境相关跳过。
