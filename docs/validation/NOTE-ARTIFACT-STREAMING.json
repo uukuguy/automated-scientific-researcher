@@ -1,0 +1,38 @@
+{
+  "schema": "asr-note-artifact-streaming-validation/1",
+  "scope": "正文流式核验/Unicode分页及统一缓冲参数，不含模型或科学执行",
+  "tests": 663,
+  "skipped": 25,
+  "status": "passed",
+  "command": "uv run --extra aar python -m unittest discover -s tests -v",
+  "final_focused_checks": {
+    "streaming": 10,
+    "policy": 8
+  },
+  "new_checks": 12,
+  "model_calls": 0,
+  "scientific_executions": 0,
+  "sources": {
+    "asr_service/control.py": "dfee97c50008592566199236be2dbef906ecefd8f53bd7597dbbd4dd5ce96a00",
+    "asr_service/note_artifacts.py": "1fce25bd5fff4365e51b517c9b06d034ff1f10d57c410f0b6358dd0696218da4",
+    "asr_service/research_notes.py": "bcf2798ac8a2d812747abd8e9486f02249050f98444e8bba8431bfb2e72c1563",
+    "configs/capacity-policy.json": "aa3651fccceb2db307e0f3ac5a2c74bf2cbc3c35362caf860ae305a8299ba7df",
+    "integrations/runtimes/capacity_policy.py": "95c5edda57c55971fd5344977b892dd779a2163e1328ad83eca0ce61a1bd37dd",
+    "scripts/note_artifact_memory_probe.py": "d59ed3963c5ca26a128dcef8d052035e47ed9e464903aa35ef1f022114e8db29",
+    "tests/test_note_artifact_streaming.py": "9fb6a4cc52c01e6738901d3d13480070c144f30e689a4d056ddf2c9790ddc8c6",
+    "tests/test_note_io.py": "95c0d49b2f8578b6f6ce0f84c6167c0ca7f6235accc11db1506e4d4ca617a368",
+    "tests/test_capacity_policy.py": "f038c216590e8b4a867b9a755fefff1d39d3b666640346188c6f91c4349f1d36"
+  },
+  "artifacts": {
+    "artifacts/note-artifact-streaming-001/tests.log": "6b6fa94d84a0fd59bf24d2916472e7e47e403d1670d959b42acdefe7c6d99c8a",
+    "artifacts/note-artifact-streaming-001/focused-streaming.log": "b1345ab1b12f9aec8244a2efff0701d025059c71717d554719ddb94acf00d5c6",
+    "artifacts/note-artifact-streaming-001/focused-policy.log": "87d952ca1798c1d416e4653810c5e95c0e3bf930af92aab246bb1d91163789d9",
+    "artifacts/note-artifact-streaming-001/memory.json": "5eed72847ad584e7a5faf63e7e331406b6bfe6e7c941ffe7a82479c800e93da4"
+  },
+  "limitations": [
+    "清单JSON仍全量解析；引用/文件数量与核对清单规模仍开放",
+    "每页检查全文，IO不是常数",
+    "内存测量为Python单请求分配，不含RSS/页缓存/并发叠加",
+    "旧分页字符规则保持不变，未完成所有容量入口迁移"
+  ]
+}

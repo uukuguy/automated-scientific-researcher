@@ -70,3 +70,25 @@ class CapacityPolicyTests(unittest.TestCase):
             self.assertEqual(runtime.max_records, 200000)
             self.assertEqual(runtime.max_message_bytes, 123)
             self.assertEqual(runtime.capacity_policy['revision'], 2)
+
+    def test_streaming_buffer_policy_preserves_legacy_runtime_profiles(self):
+        from integrations.runtimes.capacity_policy import load_policy
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/'legacy.json';policy=load_policy();del policy['sha256']
+            policy['revision']=6;del policy['limits']['artifact_read_chunk_bytes']
+            path.write_text(json.dumps(policy))
+            self.assertEqual(load_policy(path)['revision'],6)
+            from asr_service.control import ControlService
+            with self.assertRaisesRegex(ValueError,'artifact_io_policy_required'):
+                ControlService(Path(root)/'control.db',credentials={},capacity_policy_path=path)
+            policy['revision']=7;path.write_text(json.dumps(policy))
+            with self.assertRaisesRegex(ValueError,'incomplete_capacity_policy'):load_policy(path)
+
+    def test_streaming_buffer_rejects_zero_boolean_and_wrong_unit(self):
+        from integrations.runtimes.capacity_policy import load_policy
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/'bad.json'
+            for field,value in [('value',0),('value',True),('unit','characters')]:
+                policy=load_policy();del policy['sha256'];policy['limits']['artifact_read_chunk_bytes'][field]=value
+                path.write_text(json.dumps(policy))
+                with self.assertRaises(ValueError):load_policy(path)

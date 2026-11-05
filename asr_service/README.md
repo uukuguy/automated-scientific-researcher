@@ -374,3 +374,10 @@ read_context_source为已认证成员只读本人冻结可见历史，模型经r
 本机控制端调用`audit_research_notes(token, project, run, subject=..., idempotency_key=...)`，权限为human/supervisor，成员须当前有效。返回版本清单及完整性、原保存/采纳回执、当时当前采纳指针；`unregistered`不意味着科学有效或可自动恢复。核对只报告，不创建笔记目录、不修复回执、不删除或采纳。变化中的快照返回deferred。所有结果为历史观察，复用键只重放旧报告；新核对用新键。
 
 完整未登记版本可由本人用`research_note(..., operation='history_read', revision=...)`查看，后续明确修订/采纳仍受当前来源、父版本与权限校验。没有新增模型工具、HTTP端点、自动扫描或自动重试。细节见`docs/validation/NOTE-RECONCILIATION.md`。
+
+
+### 附件流式读取配置
+
+`ControlService(...,capacity_policy_path=...)`可指定统一容量策略；缺省读取`configs/capacity-policy.json`。第7版的`artifact_read_chunk_bytes`缺省1MiB，仅控制每次读取缓冲，不限制文件总大小。正文完整哈希/字节数校验和UTF-8分页都采用流式读取；每页仍检查全文，明确返回字符位置与是否有后续页。分页回执及事件包含实际块大小和策略指纹。显式旧策略缺少该参数时构造Control报错，请显式修订策略；不会改写旧策略或预算。
+
+清单JSON仍整体解析，不能将正文流式化视为所有内存问题已解决。见`docs/validation/NOTE-ARTIFACT-STREAMING.md`。

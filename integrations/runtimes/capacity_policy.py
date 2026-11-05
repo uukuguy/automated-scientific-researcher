@@ -8,14 +8,16 @@ NAMES = frozenset(('context_boundary_ms', 'projection_seconds', 'journal_bytes',
                    'summary_bytes', 'review_bytes', 'pi_message_bytes',
                    'pi_buffer_bytes', 'pi_pending_records', 'pi_records', 'async_log_warning_bytes', 'observation_drain_seconds', 'async_log_drain_seconds', 'observation_recovery_record_bytes', 'observation_recovery_records', 'observation_recovery_snapshot_bytes', 'context_completion_reserve_bps', 'context_tool_reserve_bps', 'context_checkpoint_reserve_bps'))
 
+OPTIONAL_NAMES = frozenset(('artifact_read_chunk_bytes',))
 
 def load_policy(path=None):
     value = json.loads(Path(path or DEFAULT_PATH).read_text())
     if (type(value) is not dict or set(value) != {'schema', 'revision', 'limits'} or
             value['schema'] != 'asr-capacity-policy/1' or
             type(value['revision']) is not int or value['revision'] < 1 or
-            type(value['limits']) is not dict or set(value['limits']) != NAMES):
+            type(value['limits']) is not dict or not NAMES <= set(value['limits']) <= NAMES | OPTIONAL_NAMES):
         raise ValueError('invalid_capacity_policy')
+    if value['revision']>=7 and not OPTIONAL_NAMES <= set(value['limits']):raise ValueError('incomplete_capacity_policy')
     for name, limit in value['limits'].items():
         if (type(limit) is not dict or
                 set(limit) != {'value','unit','scope','purpose','adequacy','recovery'} or

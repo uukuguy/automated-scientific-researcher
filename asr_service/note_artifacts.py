@@ -3,6 +3,8 @@
 Returns provenance metadata, not raw data or a scientific validity judgement.
 No caller-supplied host paths or evaluation-job assets are accepted.
 """
+import codecs
+from dataclasses import dataclass
 import hashlib
 import json
 from pathlib import Path
@@ -16,13 +18,52 @@ from .control import ControlError
 def _hash(body):return hashlib.sha256(body).hexdigest()
 
 
-def _safe_file(root, relative):
+def _safe_path(root, relative):
     if type(relative) is not str or not relative or Path(relative).is_absolute() or '..' in Path(relative).parts:
         raise ValueError('unsafe_artifact_path')
     path=root/relative
     if root.is_symlink() or any(p.is_symlink() for p in [path,*path.parents] if p==root or p.is_relative_to(root)) or not path.resolve().is_relative_to(root.resolve()):
         raise ValueError('unsafe_artifact_path')
-    return path.read_bytes()
+    return path
+
+
+def _safe_file(root,relative):
+    return _safe_path(root,relative).read_bytes()
+
+
+@dataclass(frozen=True)
+class ArtifactFile:
+    root: Path
+    relative: str
+    chunk_bytes: int
+    witness: object
+    policy_sha256: str
+
+
+def _stream_file(root,relative,chunk_bytes,*,page=None):
+    path=_safe_path(root,relative)
+    if not path.is_file():raise ValueError('artifact_regular_file_required')
+    digest=hashlib.sha256();size=0;characters=0;parts=[]
+    decoder=codecs.getincrementaldecoder('utf-8')() if page is not None else None
+    def collect(text):
+        nonlocal characters
+        start=characters;characters+=len(text)
+        lo=max(0,page[0]-start);hi=min(len(text),page[0]+page[1]-start)
+        if hi>lo:parts.append(text[lo:hi])
+    with path.open('rb') as stream:
+        while block:=stream.read(chunk_bytes):
+            digest.update(block);size+=len(block)
+            if decoder is not None:collect(decoder.decode(block))
+    if decoder is not None:collect(decoder.decode(b'',final=True))
+    return dict(sha256=digest.hexdigest(),bytes=size,text=''.join(parts),characters=characters)
+
+
+def _attachment(root,relative,chunk_bytes,witnesses,policy_sha256):
+    from .context_io import verify
+    path=_safe_path(root,relative)
+    witness=verify(str(path),lambda:_stream_file(root,relative,chunk_bytes))
+    if witnesses is not None:witnesses.append(witness)
+    return ArtifactFile(root,relative,chunk_bytes,witness,policy_sha256)
 
 
 def _read_file(root,relative,witnesses):
@@ -72,6 +113,7 @@ def prepare(db,service,project,run,references):
 def _resolve(db, service, project, run, references,*,witnesses=None):
     if type(references) is not list:raise ControlError('invalid_note_artifacts')
     result=[];seen=set()
+    chunk_bytes=service.artifact_io_policy['limits']['artifact_read_chunk_bytes']['value']
     for ref in references:
         try:
             if type(ref) is not dict:raise ValueError('invalid_reference')
@@ -85,8 +127,8 @@ def _resolve(db, service, project, run, references,*,witnesses=None):
                 body=_read_file(directory,'manifest.json',witnesses);manifest=json.loads(body)
                 if _hash(body)!=digest or manifest['schema']!='asr-workspace-snapshot/1' or (manifest['project_id'],manifest['research_run_id'])!=(project,run):raise ValueError('snapshot_mismatch')
                 entry=next(x for x in manifest['files'] if x['path']==ref['path'])
-                body=_read_file(directory/'files',ref['path'],witnesses)
-                if _hash(body)!=entry['sha256'] or len(body)!=entry['size']:raise ValueError('snapshot_file_mismatch')
+                attachment=_attachment(directory/'files',ref['path'],chunk_bytes,witnesses,service.artifact_io_policy['sha256']);summary=attachment.witness.value
+                if summary['sha256']!=entry['sha256'] or summary['bytes']!=entry['size']:raise ValueError('snapshot_file_mismatch')
                 provenance=dict(snapshot_sha256=digest)
             elif ref.get('kind')=='trial' and set(ref)=={'kind','trial_id','path'}:
                 # Excludes raw input payloads and independent evaluation assets.
@@ -101,12 +143,12 @@ def _resolve(db, service, project, run, references,*,witnesses=None):
                 directory=Path(report['evidence_path'])
                 manifest_body=_read_file(directory,'manifest.json',witnesses);manifest=json.loads(manifest_body)
                 if _hash(manifest_body)!=report['manifest_hash'] or (manifest['trial_id'],manifest['execution_attempt_id'],manifest['status'])!=(ref['trial_id'],row[0],row[1]):raise ValueError('manifest_mismatch')
-                body=_read_file(directory,ref['path'],witnesses);entry=manifest['artifacts'][ref['path']]
-                if _hash(body)!=entry['sha256'] or len(body)!=entry['bytes']:raise ValueError('trial_file_mismatch')
+                attachment=_attachment(directory,ref['path'],chunk_bytes,witnesses,service.artifact_io_policy['sha256']);summary=attachment.witness.value;entry=manifest['artifacts'][ref['path']]
+                if summary['sha256']!=entry['sha256'] or summary['bytes']!=entry['bytes']:raise ValueError('trial_file_mismatch')
                 provenance=dict(trial_id=ref['trial_id'],execution_attempt_id=row[0],manifest_sha256=report['manifest_hash'])
             else:raise ValueError('unsupported_artifact_kind')
-            metadata=dict(reference=ref,sha256=_hash(body),bytes=len(body),provenance=provenance)
-            result.append((Material(identity,metadata['sha256'],encoded(metadata)),body))
+            metadata=dict(reference=ref,sha256=summary['sha256'],bytes=summary['bytes'],provenance=provenance)
+            result.append((Material(identity,metadata['sha256'],encoded(metadata)),attachment))
         except (ValueError,KeyError,TypeError,OSError,StopIteration) as cause:
             error=ControlError('note_artifact_unavailable')
             error.details=dict(category=type(cause).__name__,check=str(cause) if isinstance(cause,ValueError) else 'artifact_lookup_or_read_failed')
@@ -127,12 +169,18 @@ def read_page(db, service, project, run, reference, *, offset=0, limit=8000,prep
                            purpose='Bound one tool response and prevent refilling context with a large artifact.',
                            recovery='Use limit 1..16000 and follow next_offset; no source was truncated.')
         raise error
-    material,body=(prepared.check(db,[reference]) if prepared is not None else _resolve(db,service,project,run,[reference]))[0]
-    try:text=body.decode('utf-8')
+    material,attachment=(prepared.check(db,[reference]) if prepared is not None else _resolve(db,service,project,run,[reference]))[0]
+    try:
+        original=attachment.witness.check()
+        page=_stream_file(attachment.root,attachment.relative,attachment.chunk_bytes,page=(offset,limit))
+        attachment.witness.check()
+        if page['sha256']!=original['sha256'] or page['bytes']!=original['bytes']:raise ControlError('note_artifact_unavailable')
     except UnicodeError:raise ControlError('note_source_not_utf8') from None
-    if offset>len(text):raise ControlError('note_source_offset_out_of_range')
-    end=min(len(text),offset+limit)
-    return dict(status='source_page',reference=reference,sha256=material.revision,source_material_sha256=material_digest(material),source_bytes=len(body),
-                offset=offset,end_offset=end,total_characters=len(text),offset_unit='unicode_characters',
-                text=text[offset:end],has_more=end<len(text),next_offset=end if end<len(text) else None,
-                partial=offset>0 or end<len(text))
+    except (ValueError,OSError):raise ControlError('note_artifact_unavailable') from None
+    if offset>page['characters']:raise ControlError('note_source_offset_out_of_range')
+    end=min(page['characters'],offset+limit)
+    return dict(status='source_page',reference=reference,sha256=material.revision,source_material_sha256=material_digest(material),source_bytes=page['bytes'],
+                read_chunk_bytes=attachment.chunk_bytes,capacity_policy_sha256=attachment.policy_sha256,
+                offset=offset,end_offset=end,total_characters=page['characters'],offset_unit='unicode_characters',
+                text=page['text'],has_more=end<page['characters'],next_offset=end if end<page['characters'] else None,
+                partial=offset>0 or end<page['characters'])

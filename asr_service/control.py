@@ -64,7 +64,10 @@ def records_contract_budget_block(method):
 
 
 class ControlService(PolicyStore):
-    def __init__(self, path, *, credentials):
+    def __init__(self, path, *, credentials, capacity_policy_path=None):
+        from integrations.runtimes.capacity_policy import load_policy
+        self.artifact_io_policy=load_policy(capacity_policy_path)
+        if 'artifact_read_chunk_bytes' not in self.artifact_io_policy['limits']:raise ValueError('artifact_io_policy_required')
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         if not isinstance(credentials, dict) or not credentials:

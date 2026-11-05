@@ -125,7 +125,8 @@ def _commit_operation(service,token,project,run,item,*,operation,idempotency_key
             service._event(db,project,run,'research_note_history_read',owner=owner,revision=item['selected'])
         elif operation=='source_read':
             service._event(db,project,run,'research_note_source_read',owner=owner,note_revision=item['selected'],
-                reference=arguments.get('artifact_reference'),sha256=result['sha256'],offset=result['offset'],end_offset=result['end_offset'])
+                reference=arguments.get('artifact_reference'),sha256=result['sha256'],offset=result['offset'],end_offset=result['end_offset'],
+                read_chunk_bytes=result['read_chunk_bytes'],capacity_policy_sha256=result['capacity_policy_sha256'])
         return result
 
 
