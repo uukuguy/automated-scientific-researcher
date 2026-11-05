@@ -125,3 +125,16 @@ class CommunicationArchiveTests(unittest.TestCase):
         self.assertTrue((exported/'recovery.json').is_file())
         self.assertTrue((exported/'receipts.jsonl').is_file())
         self.assertFalse((exported/'source.jsonl').exists())
+
+    def test_maintenance_sessions_and_unfinished_cycles_are_exported(self):
+        import shutil
+        from integrations.runtimes.communication_archive import archive
+        cycle=self.root/'context-maintenance/cycle';cycle.mkdir(parents=True)
+        (cycle/'intent.json').write_text(json.dumps(dict(subject='lead',scientific_truth_inferred=False)))
+        shutil.copytree(self.step,cycle/'summary')
+        result=archive(self.root,self.out)
+        self.assertTrue((self.out/'context-maintenance/cycle/summary/events.jsonl').is_file())
+        self.assertTrue((self.out/'context-maintenance/cycle/intent.json').is_file())
+        self.assertTrue(any(g['code']=='context_maintenance_unfinished' for g in result['gaps']))
+        text='\n'.join(p.read_text() for p in self.out.rglob('*') if p.is_file())
+        self.assertNotIn('private thought',text);self.assertNotIn('Bearer secret',text)

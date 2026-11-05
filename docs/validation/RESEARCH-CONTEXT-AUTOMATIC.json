@@ -1,0 +1,217 @@
+{
+  "schema": "asr-context-automatic-acceptance/1",
+  "project_id": "context-validation",
+  "research_run_id": "summary_9dcb9ad4e386498abf43d89f03b3e433",
+  "model": "gpt-6.1-sol",
+  "scope": "真实订阅工程验收：正常pi钩子路径与已压缩叶子恢复安装路径；独立会话复核；零科研。",
+  "successes": [
+    5,
+    6
+  ],
+  "failed_rounds_preserved": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "developer_interventions_disclosed": true,
+  "production_capacity_policy_changed": false,
+  "budget_increased": false,
+  "provider_payload_verified": false,
+  "before_budget": {
+    "attempts": {
+      "limit": 0,
+      "spent": 0,
+      "reserved": 0,
+      "available": 0
+    },
+    "execution_ms": {
+      "limit": 0,
+      "spent": 0,
+      "reserved": 0,
+      "available": 0
+    },
+    "research_walltime_ms": {
+      "limit": 1800000,
+      "spent": 395231,
+      "reserved": 0,
+      "available": 1404769
+    },
+    "tool_executions": {
+      "limit": 100,
+      "spent": 1,
+      "reserved": 0,
+      "available": 99
+    },
+    "turns": {
+      "limit": 100,
+      "spent": 21,
+      "reserved": 0,
+      "available": 79
+    }
+  },
+  "final_budget": {
+    "attempts": {
+      "limit": 0,
+      "spent": 0,
+      "reserved": 0,
+      "available": 0
+    },
+    "execution_ms": {
+      "limit": 0,
+      "spent": 0,
+      "reserved": 0,
+      "available": 0
+    },
+    "research_walltime_ms": {
+      "limit": 1800000,
+      "spent": 792625,
+      "reserved": 0,
+      "available": 1007375
+    },
+    "tool_executions": {
+      "limit": 100,
+      "spent": 4,
+      "reserved": 0,
+      "available": 96
+    },
+    "turns": {
+      "limit": 100,
+      "spent": 35,
+      "reserved": 0,
+      "available": 65
+    }
+  },
+  "incremental_consumption": {
+    "attempts": 0,
+    "execution_ms": 0,
+    "research_walltime_ms": 397394,
+    "tool_executions": 3,
+    "turns": 14
+  },
+  "final_state": "paused",
+  "sessions": 35,
+  "unexited_sessions": [],
+  "pending_installations": [],
+  "archive_sources": 226,
+  "archive_redactions": 229,
+  "archive_gaps": [
+    {
+      "code": "step_not_finalized",
+      "step": "automatic-001-generator"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "artifacts/research-context-model-001/automatic-001/configured.json",
+      "sha256": "ae549ced73c6f0a038cbc59cc6a41b66a5fbcbc50640213d3657caea360a7a45"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-001/closeout.json",
+      "sha256": "feb2e04dcf1bed6e3505f2816e529398a917db4dd76afc713d4c9f4f426b27ff"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-001/failure.json",
+      "sha256": "01b3cdefe8e784d5a2d829ebd41addf15f9ebc0224adc25ab836ab3c35117990"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-002/configured.json",
+      "sha256": "981d95fd9df406c5270e3e5ec13da22d7c8836be2730e2d5f94441631557ecd4"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-002/closeout.json",
+      "sha256": "332f190f24c8d5740a69766e43e5a6ceec6f48cfbcc80589622227f92f2eb445"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-002/failure.json",
+      "sha256": "ff36474f750d099b8303aba5a0c48f0533e7c53a8b65ebfb5dbf886b30958639"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-003/configured.json",
+      "sha256": "30a7571f41485ab44bacdc3fea863a42a4173660749951c59593b50ccb2a6a4b"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-003/closeout.json",
+      "sha256": "a109d63e72a4e890a0e989b5d0ba591071fc0b76bd450a690256a68a3e0c739d"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-003/failure.json",
+      "sha256": "ad0d8617cf9d22f432ce0c33da472f9d9a1b072a02c2a26bf4dc6b2ff764e7c7"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-003/reconciliation-system-delta.json",
+      "sha256": "701155eec418bdb6a7fcb7cb74326a69be57a6dafb9189b6a3a11f1f1a3b6ab8"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-004/configured.json",
+      "sha256": "3b76ed7d6432e5ee114db57580dae743984150f066c1eec7e76cda0488e5e397"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-004/closeout.json",
+      "sha256": "6137209352a04d6de97feb505698b01cdf518dd9c844bb3790e6d523217b488a"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-004/failure.json",
+      "sha256": "ad0d8617cf9d22f432ce0c33da472f9d9a1b072a02c2a26bf4dc6b2ff764e7c7"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-005/configured.json",
+      "sha256": "0170af7a3e3baa82efa9d6c82baaad1f6088b4d73dab6afd7f800f0931b3b943"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-005/closeout.json",
+      "sha256": "90bf6987be983ab4fb99c2604a99d5c97635cee6bf125ffe6a486543d84c79f4"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-005/success.json",
+      "sha256": "c1f01e4afdfaf65f30c52dae02a682eea8564fefbade40b72c9f1def435527fd"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-006/configured.json",
+      "sha256": "8978bc3d7df454f1aa474aadd34aaadac672c3125d983cc071bc41034caf850b"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-006/closeout.json",
+      "sha256": "a804124c5cc0f6cf30aab2954530ca12c975f36894719d83e085d87a84a5ddc3"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-006/success.json",
+      "sha256": "c1f01e4afdfaf65f30c52dae02a682eea8564fefbade40b72c9f1def435527fd"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-006/communications/manifest.json",
+      "sha256": "5101de85ed56c3abcce8046c95c87ea27b41b0e07c94b898f11bea6541256c56"
+    },
+    {
+      "path": "artifacts/research-context-model-001/automatic-006/communications/inventory.json",
+      "sha256": "9463c6754e402de279ff7da8e730f4b3889f54bd82bf0f9064dfb089e097af26"
+    },
+    {
+      "path": "artifacts/research-context-model-001/context-maintenance/maintenance_session_2a5aafaea34f477cb7492c25dad8cdc6/native-install/verification.json",
+      "sha256": "294a8a76ec03c286ba323236b0ab41631e3a5287243c2f0fc509fa32fa536a4a"
+    },
+    {
+      "path": "artifacts/research-context-model-001/steps/automatic-005-generator/result.json",
+      "sha256": "859d2f7814a4dee070992226f4a0bac8ab95d9f69aa6d5df1649d34c56da1678",
+      "status": "settled",
+      "native_hook_verified": false,
+      "recovery_installations": 1
+    },
+    {
+      "path": "artifacts/research-context-model-001/steps/automatic-006-generator/result.json",
+      "sha256": "fc9250f4d4acb27114e9bc7a1457631ab39839fd5bce0a8617397460047f7065",
+      "status": "settled",
+      "native_hook_verified": true,
+      "recovery_installations": 0
+    }
+  ],
+  "note": "第五轮后补充安装子进程清理余量和超记录容量留痕；第六轮走正常pi路径，相关最终边界另有真实子进程测试，不重复模型验收。",
+  "engineering_verification": {
+    "command": "uv run --extra aar python -m unittest discover -s tests -v",
+    "tests": 601,
+    "skipped": 25,
+    "status": "passed",
+    "log": "artifacts/research-context-model-001/automatic-final-tests.log",
+    "log_sha256": "720b59ee7763658a13736fd0a34b62b80ca4df1a8f1045b4ce1d9704d06e4c19"
+  }
+}

@@ -98,6 +98,34 @@ def authorize(service,token,project,run,session_id,epoch,owner,*,stage_id,observ
         return result
 
 
+def _verify_write(service,db,project,run,subject,ticket,entry_id,progress):
+    path=Path(ticket['reader']['path']);raw=path.read_bytes()
+    if len(raw)<ticket['before_journal_bytes'] or hashlib.sha256(raw[:ticket['before_journal_bytes']]).hexdigest()!=ticket['before_journal_sha256']:raise ControlError('context_original_journal_changed')
+    records=[json.loads(line) for line in raw.splitlines() if line.strip()];entry=next((r for r in records if r.get('id')==entry_id),{})
+    expected=ticket['compaction']
+    if entry.get('type')!='compaction' or entry.get('parentId')!=ticket['source_cursor']['leaf_id'] or entry.get('fromHook') is not True or any(entry.get(k)!=expected[k] for k in ('summary','firstKeptEntryId','tokensBefore','details')):raise ControlError('context_native_entry_mismatch')
+    progress['native_write_observed']=True
+    reader=dict(ticket['reader'],leaf_id=entry_id);observed=_observe(reader)
+    if observed['status']!='observed':raise ControlError('context_projection_unavailable')
+    old=_record(db,project,_scope('installation',run,subject),ticket['stage_id'])[0]['preparation']
+    frozen={m['id']:m for m in old['materials']};actual={r['id']:r for r in observed['conversation']['body']['messages']}
+    retained=ticket['plan']['coverage']['retained_ids']
+    # Original message revisions include calls and flags, not just prose.
+    current={m.id:m for m in materials(observed['conversation'])}
+    for key in retained:
+        if key not in current or current[key].revision!=frozen[key]['revision']:raise ControlError('context_retained_message_changed')
+    if ticket['plan'].get('native_replayed_messages'):
+        # pi consolidates initial system configuration and later tool/
+        # section deltas at compaction. Compare their full effective
+        # state, not the last delta against a consolidated snapshot.
+        from integrations.runtimes.pi_system_context import effective_system_context
+        source,_=_record(db,project,_scope('source',run,subject),old['source_registration'])
+        if effective_system_context(source['observation']['conversation']['body']['messages'])!=effective_system_context(list(actual.values())):
+            raise ControlError('context_native_system_replay_changed')
+    if not any(json.loads(r['text']).get('content')==ticket['compaction']['summary'] for r in actual.values()):raise ControlError('context_summary_not_projected')
+    return observed,retained
+
+
 def complete(service,token,project,run,session_id,epoch,owner,*,boundary_id,ticket_id,entry_id,idempotency_key):
     service._auth(token,project,{'human','supervisor'});service._identity(boundary_id,ticket_id,entry_id,idempotency_key)
     with service._connect() as db:
@@ -107,28 +135,11 @@ def complete(service,token,project,run,session_id,epoch,owner,*,boundary_id,tick
         replay=service._replay(db,project,scope,idempotency_key,payload)
         if replay:return replay
         authorized,_=_record(db,project,_scope('ticket',run,subject),boundary_id);ticket=authorized['ticket']
-        native_write_observed=False
+        progress=dict(native_write_observed=False)
         try:
             if ticket['ticket_id']!=ticket_id or ticket['session_id']!=session_id or ticket['epoch']!=epoch or ticket['owner']!=owner:raise ControlError('context_ticket_binding_mismatch')
             if session['native_context'].get('pending_installation')!=dict(boundary_id=boundary_id,ticket_id=ticket_id):raise ControlError('context_installation_not_pending')
-            path=Path(ticket['reader']['path']);raw=path.read_bytes()
-            if len(raw)<ticket['before_journal_bytes'] or hashlib.sha256(raw[:ticket['before_journal_bytes']]).hexdigest()!=ticket['before_journal_sha256']:raise ControlError('context_original_journal_changed')
-            records=[json.loads(line) for line in raw.splitlines() if line.strip()];entry=next((r for r in records if r.get('id')==entry_id),{})
-            expected=ticket['compaction']
-            if entry.get('type')!='compaction' or entry.get('parentId')!=ticket['source_cursor']['leaf_id'] or entry.get('fromHook') is not True or any(entry.get(k)!=expected[k] for k in ('summary','firstKeptEntryId','tokensBefore','details')):raise ControlError('context_native_entry_mismatch')
-            native_write_observed=True
-            reader=dict(ticket['reader'],leaf_id=entry_id);observed=_observe(reader)
-            if observed['status']!='observed':raise ControlError('context_projection_unavailable')
-            old=_record(db,project,_scope('installation',run,subject),ticket['stage_id'])[0]['preparation']
-            frozen={m['id']:m for m in old['materials']};actual={r['id']:r for r in observed['conversation']['body']['messages']}
-            retained=ticket['plan']['coverage']['retained_ids']
-            # Original message revisions include calls and flags, not just prose.
-            current={m.id:m for m in materials(observed['conversation'])}
-            for key in retained:
-                if key not in current or current[key].revision!=frozen[key]['revision']:raise ControlError('context_retained_message_changed')
-            for original in ticket['plan'].get('native_replayed_messages',[]):
-                if not any(r['role']=='system' and r['text']==original['text'] for r in actual.values()):raise ControlError('context_native_system_replay_changed')
-            if not any(json.loads(r['text']).get('content')==ticket['compaction']['summary'] for r in actual.values()):raise ControlError('context_summary_not_projected')
+            observed,retained=_verify_write(service,db,project,run,subject,ticket,entry_id,progress)
             fresh_materials,fresh_stamp=snapshot(service,db,project,run,subject)
             fresh_stamp['source_fingerprints']=dict(ticket['state_stamp']['source_fingerprints'])
             fresh_stamp['source_fingerprints'].update({m.id:material_digest(m) for m in fresh_materials})
@@ -138,6 +149,39 @@ def complete(service,token,project,run,session_id,epoch,owner,*,boundary_id,tick
             session['native_context'].pop('pending_installation');session['native_context']['installed_context']=result
             db.execute('UPDATE asr_runtime_sessions SET record=? WHERE session_id=?',(encoded(session),session_id))
         except (ControlError,ValueError,OSError) as error:
-            result=dict(status='deferred',context_installed=False,native_write_observed=native_write_observed,installation_authorized=False,ticket_id=ticket_id,reason=getattr(error,'code','context_verification_failed'),recovery='Preserve journal and ticket; verify before another provider request. Do not repeat experiments.')
+            result=dict(status='deferred',context_installed=False,native_write_observed=progress['native_write_observed'],installation_authorized=False,ticket_id=ticket_id,reason=getattr(error,'code','context_verification_failed'),recovery='Preserve journal and ticket; verify before another provider request. Do not repeat experiments.')
         service._remember(db,project,scope,idempotency_key,payload,result);service._event(db,project,run,'context_installation_'+result['status'],session_id=session_id,ticket_id=ticket_id,entry_id=entry_id,reason=result.get('reason'))
         return result
+
+
+def reconcile(service,token,project,run,session_id,epoch,owner,*,boundary_id,ticket_id,entry_id,idempotency_key):
+    """Verify an exited session's uncertain write without granting current use."""
+    service._auth(token,project,{'human','supervisor'});service._identity(boundary_id,ticket_id,entry_id,idempotency_key)
+    with service._connect() as db:
+        db.execute('BEGIN IMMEDIATE');session=service._session(db,project,run,session_id,epoch,owner)
+        if session['state']!='exited' or session.get('execution_exited') is not True:raise ControlError('context_reconciliation_requires_exit')
+        if db.execute("SELECT 1 FROM asr_runtime_sessions WHERE project=? AND run=? AND state!='exited'",(project,run)).fetchone():raise ControlError('context_runtime_active')
+        from integrations.runtimes.process import verify_process_exit
+        verify_process_exit(session['process_identity'],terminate=False)
+        subject=session['organization_binding']['subject'];scope=_scope('reconciled',run,subject)
+        payload=[session_id,epoch,owner,boundary_id,ticket_id,entry_id]
+        replay=service._replay(db,project,scope,idempotency_key,payload)
+        if replay:return replay
+        authorized,_=_record(db,project,_scope('ticket',run,subject),boundary_id);ticket=authorized['ticket']
+        if ticket['ticket_id']!=ticket_id or ticket['session_id']!=session_id or ticket['epoch']!=epoch or ticket['owner']!=owner:raise ControlError('context_ticket_binding_mismatch')
+        if session['native_context'].get('pending_installation')!=dict(boundary_id=boundary_id,ticket_id=ticket_id):raise ControlError('context_installation_not_pending')
+        progress=dict(native_write_observed=False)
+        try:
+            observed,retained=_verify_write(service,db,project,run,subject,ticket,entry_id,progress)
+            receipt=dict(status='verified',historical_only=True,current_state_verified=False,requires_fresh_preparation=True,
+                context_installed=True,native_write_observed=True,original_journal_preserved=True,installation_authorized=False,
+                ticket_id=ticket_id,entry_id=entry_id,projection_sha256=observed['witness']['projection_sha256'],
+                after_journal_sha256=observed['witness']['journal_sha256'],provider_payload_verified=False)
+            session['native_context'].pop('pending_installation');session['native_context']['installed_context']=receipt
+            db.execute('UPDATE asr_runtime_sessions SET record=? WHERE session_id=?',(encoded(session),session_id))
+        except (ControlError,ValueError,OSError) as error:
+            receipt=dict(status='deferred',historical_only=True,current_state_verified=False,installation_authorized=False,
+                native_write_observed=progress['native_write_observed'],reason=getattr(error,'code','context_reconciliation_failed'))
+        service._remember(db,project,scope,idempotency_key,payload,receipt)
+        service._event(db,project,run,'context_installation_reconciled',session_id=session_id,receipt=receipt)
+        return receipt

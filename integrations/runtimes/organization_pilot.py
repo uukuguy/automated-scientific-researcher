@@ -108,8 +108,12 @@ def main():
     parser.add_argument('--recovery-reason')
     parser.add_argument('--fresh-context-for',action='append',choices=list(ACTORS),default=[],help='Explicit context recovery; preserve prior journals and research budget')
     parser.add_argument('--oauth-source',type=Path)
+    parser.add_argument('--context-reviewers',type=Path,help='Explicit member-to-reviewer JSON mapping enabling automatic context maintenance; uses the existing Control budget')
     parser.add_argument('--execute-authorized-subscription',action='store_true')
     args=parser.parse_args()
+    context_reviewers=json.loads(args.context_reviewers.read_text()) if args.context_reviewers else {}
+    if (type(context_reviewers) is not dict or any(a not in ACTORS or b not in ACTORS or a==b for a,b in context_reviewers.items())):
+        raise ValueError('invalid_context_reviewers')
     if args.fresh_context_for and not args.resume:raise ValueError('context_rotation_requires_resume')
     from . import organization_implementation as implementation
     from . import organization_project as project_mode
@@ -274,6 +278,26 @@ write durable output early and finish each session promptly after your handoff.
         prior=json.loads(old.read_text());steps.append(dict(actor=old.parent.name.split('-',1)[1],path=str(old.parent),status=prior['status']))
     with service._connect() as db:
         review_requested=db.execute("SELECT 1 FROM asr_organization WHERE project=? AND run=? AND kind='message' AND entity='closing-review'",(project,run)).fetchone() is not None
+    def role_runtime(actor,step):
+        work=root/'workspaces'/actor;sync_snapshots(root,work)
+        denied=[ROOT/'artifacts/p4-intake-001',ROOT/'artifacts/p4-simulated-client-001',root/'control.db',root/'control.db-wal',root/'control.db-shm',root/'research-notes',root/'steps',root/'context-maintenance',root/'snapshots',Path.home()/'.pi/agent']
+        denied += [root/'workspaces'/name for name in ACTORS if name!=actor]
+        if scientific:denied += [root/'study-evidence',root/'asr-artifacts']
+        for name,role in ACTORS.items():
+            if name!=actor:
+                context=hashlib.sha256(json.dumps([project,run,name,role],separators=(',',':')).encode()).hexdigest()
+                denied.append(root/'pi-private/organization'/context)
+        profile=step/(actor+'-private-materials.sb');profile.write_text('(version 1)\n(allow default)\n'+''.join('(deny file-read* file-write* (subpath '+json.dumps(str(p))+'))\n' for p in denied))
+        probe=subprocess.run(['/usr/bin/sandbox-exec','-f',str(profile),'/bin/cat',str(root/'control.db')],capture_output=True,timeout=5)
+        if probe.returncode==0 or b'Operation not permitted' not in probe.stderr:raise ValueError('private_boundary_probe_failed')
+        launcher=root/f'pi-{actor}'
+        launcher.write_text('#!/bin/sh\nexec /usr/bin/sandbox-exec -f '+shlex.quote(str(profile))+' '+shlex.quote(binary)+' "$@"\n');launcher.chmod(0o700)
+        role_profile=implementation.role_profile(ACTORS[actor]) if scientific else 'research-organization/1'
+        role_pack=HERE/'organization-study-capabilities.json' if role_profile=='research-organization-study/1' else pack_path
+        runtime=PiRuntime(executable=str(launcher),model=model,thinking='high',capabilities_path=role_pack,context_generation=generations[actor])
+        bridge=ResearchBridge(service,project=project,run=run,researcher_token=tokens[actor],supervisor_token=tokens['supervisor'],workspace=work,snapshots=root/'snapshots',organization=aar,capability_profile=role_profile,dispatch=dispatch)
+        return runtime,bridge
+
     try:
         # Material and executable checks above must finish while still paused.
         # Once resumed, every exit path passes through reconciliation below.
@@ -292,31 +316,27 @@ write durable output early and finish each session promptly after your handoff.
             caps=limits['session_limits'];budget=state['budget']
             effective=remaining_session_limits(caps,budget)
             step=root/'steps'/f'{len(steps):03d}-{actor}';step.mkdir(parents=True)
-            work=root/'workspaces'/actor;sync_snapshots(root,work)
-            denied=[ROOT/'artifacts/p4-intake-001',ROOT/'artifacts/p4-simulated-client-001',root/'control.db',root/'control.db-wal',root/'control.db-shm',root/'research-notes',root/'steps',root/'snapshots',Path.home()/'.pi/agent']
-            denied += [root/'workspaces'/name for name in ACTORS if name!=actor]
-            if scientific:denied += [root/'study-evidence',root/'asr-artifacts']
-            for name,role in ACTORS.items():
-                if name!=actor:
-                    context=hashlib.sha256(json.dumps([project,run,name,role],separators=(',',':')).encode()).hexdigest()
-                    denied.append(root/'pi-private/organization'/context)
-            profile=step/'private-materials.sb';profile.write_text('(version 1)\n(allow default)\n'+''.join('(deny file-read* file-write* (subpath '+json.dumps(str(p))+'))\n' for p in denied))
-            probe=subprocess.run(['/usr/bin/sandbox-exec','-f',str(profile),'/bin/cat',str(root/'control.db')],capture_output=True,timeout=5)
-            if probe.returncode==0 or b'Operation not permitted' not in probe.stderr:raise ValueError('private_boundary_probe_failed')
-            launcher=root/f'pi-{actor}'
-            launcher.write_text('#!/bin/sh\nexec /usr/bin/sandbox-exec -f '+shlex.quote(str(profile))+' '+shlex.quote(binary)+' "$@"\n');launcher.chmod(0o700)
-            role_profile=implementation.role_profile(ACTORS[actor]) if scientific else 'research-organization/1'
-            role_pack=HERE/'organization-study-capabilities.json' if role_profile=='research-organization-study/1' else pack_path
-            runtime=PiRuntime(executable=str(launcher),model=model,thinking='high',capabilities_path=role_pack,context_generation=generations[actor])
-            bridge=ResearchBridge(service,project=project,run=run,researcher_token=tokens[actor],supervisor_token=tokens['supervisor'],workspace=work,snapshots=root/'snapshots',organization=aar,capability_profile=role_profile,dispatch=dispatch)
+            runtime,bridge=role_runtime(actor,step)
+            work=bridge.workspace
             prompt=f'You are authenticated member {actor}, role {ACTORS[actor]}. Read CLIENT-BRIEF.md, state and organization_records pages. Your pending deliveries: '+json.dumps(deliveries)+'. Inspect actual sources, act within your role, preserve useful artifacts and hand off using organization records. No fixed scientific direction has been assigned by the host.'
             if generations[actor]:prompt+=' Native conversation context was explicitly rotated after capacity exhaustion; recover from your existing files, snapshots and authoritative records. Prior journals and research identity/budget are preserved. Do not repeat completed experiments.'
-            write(step/'request.json',dict(context_generation=generations[actor],actor=actor,role=ACTORS[actor],prompt=prompt,client_brief=brief,client_brief_sha256=digest(work/'CLIENT-BRIEF.md'),deliveries=deliveries,budget=budget,limits=effective.__dict__,access_probe='controller_read_denied'))
+            write(step/'request.json',dict(context_reviewers=context_reviewers,context_generation=generations[actor],actor=actor,role=ACTORS[actor],prompt=prompt,client_brief=brief,client_brief_sha256=digest(work/'CLIENT-BRIEF.md'),deliveries=deliveries,budget=budget,limits=effective.__dict__,access_probe='controller_read_denied'))
             from .async_events import AsyncEventRecorder
+            maintenance=None
+            if actor in context_reviewers:
+                from .context_maintenance import ContextMaintenance
+                # Existing members/isolated launchers; no new role or budget.
+                prior=next((x for x in reversed(steps) if x['actor']==actor),None)
+                previous_context=json.loads((Path(prior['path'])/'result.json').read_text()) if prior else None
+                maintenance=ContextMaintenance(subject=actor,reviewer_subject=context_reviewers[actor],
+                    runtime_factory=lambda member:role_runtime(member,step)[0],
+                    bridge_factory=lambda member:role_runtime(member,step)[1],
+                    config_dir=root/'pi-private',evidence_dir=root/'context-maintenance',
+                    limits=effective,oauth_source=args.oauth_source,previous_result=previous_context)
             with AsyncEventRecorder(step/'events.jsonl') as event:
                 result=run_research_session(runtime,bridge,config_dir=root/'pi-private',native_session_id=run,
                     prompt=prompt,
-                    limits=effective,oauth_source=args.oauth_source,on_event=event,checkout=args.checkout)
+                    limits=effective,oauth_source=args.oauth_source,on_event=event,checkout=args.checkout,context_maintenance=maintenance)
             result['communication_recording']=event.receipt
             write(step/'result.json',result);steps.append(dict(actor=actor,path=str(step),status=result['status']))
             if result['status']!='settled':raise ValueError('role_session_'+result['status'])

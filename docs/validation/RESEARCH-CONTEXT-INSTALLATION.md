@@ -48,3 +48,5 @@ Control只接受宿主准备的安装请求，在同步回调里重新核对当�
 `provider_payload_verified=false`：本次重读核验的是固定SDK实际投影和真实模型接续，没有独立截取提供方最终序列化请求。P5的多方向并行、全新隐藏科学评价和工作台面板仍按原工作清单验收。
 
 最终组合检查：`uv run python -m unittest discover -s tests -v`共535项，510通过、25环境跳过；日志`/tmp/asr-context-loop-final-verification.log`。Node模块语法及git diff --check通过。固定解码器对三次成功安装的冻结来源重新读取，消息全部一致；被拒绝的004来源确有差异，未被安装。
+
+后续：已在本报告原有预算和证据基础上完成显式配置的自动维护与接续，正常pi钩子及恢复SDK安装两条实际路径、失败与干预另见[自动验收](RESEARCH-CONTEXT-AUTOMATIC.md)。本报告保留原显式触发证据，不回写历史结果。

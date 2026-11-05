@@ -15,7 +15,7 @@ def session_engine_deadline(limits,reserved_walltime_ms,started):
     return started+cap-min(5,cap/4)
 
 
-def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limits, oauth_source=None, on_event=None):
+def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limits, oauth_source=None, on_event=None, context_maintenance=False):
     service=bridge.service
     from .capacity_policy import load_policy
     from .context_capacity import assess
@@ -31,6 +31,7 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
         identity=[bridge.project,bridge.run,binding['subject'],binding['role']]
         context=hashlib.sha256(json.dumps(identity,separators=(',',':')).encode()).hexdigest()
         config_dir=Path(config_dir)/'organization'/context
+    if bridge.context_installation_id and not runtime.compact_before_prompt:raise RuntimeFailure('context_installation_before_prompt_required')
     owner='pi_'+uuid.uuid4().hex
     claim=service.claim_runtime(bridge.supervisor_token,bridge.project,bridge.run,owner,
         idempotency_key=owner,runtime_identity=dict(provider=runtime.provider,model=runtime.model,auth_mode='subscription_oauth',billing_mode='subscription'),requested_walltime_ms=int(limits.walltime_seconds*1000),**organization_arguments)
@@ -76,6 +77,11 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
         cursor_writer=OrderedObservations(record_cursor,policy=capacity_policy)
         bridge.context_observation_barrier=cursor_writer.barrier
         bridge.recording_pressure=recording_pressure
+        if context_maintenance:
+            # Observe asynchronously; only the latest completed assessment can
+            # suggest elective maintenance at a subsequent request boundary.
+            bridge.context_maintenance_request=lambda: (dict(capacity_observations[-1])
+                if capacity_observations and capacity_observations[-1].get('warning') else None)
         source=Path(oauth_source or Path.home()/'.pi/agent/auth.json')
         oauth_baseline=prepare_oauth(source,Path(config_dir))
         effective=Limits(min(limits.walltime_seconds,claim['reserved_walltime_ms']/1000),limits.turns,limits.tool_executions)
@@ -83,7 +89,7 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
             generation=getattr(runtime,'context_generation',0)
             directory=Path(config_dir).resolve()/('sessions' if generation==0 else f'sessions-generation-{generation}')
             service.bind_runtime_context(bridge.supervisor_token,bridge.project,bridge.run,**bridge.runtime_identity,
-                native_session_id=native_session_id,journal_directory=str(directory))
+                native_session_id=native_session_id,journal_directory=str(directory),recovery_stage_id=bridge.context_installation_id)
         with bridge:
             result=runtime.run(workspace=bridge.workspace,config_dir=config_dir,session_id=native_session_id,
                 prompt=prompt,limits=effective,bridge_url=bridge.url,bridge_token=bridge.token,on_event=record_event,
@@ -128,6 +134,7 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
         if cursor_writer is not None and not cursor_writer.closed:cursor_writer.close(timeout=0)
         bridge.context_observation_barrier=None
         bridge.recording_pressure=None
+        bridge.context_maintenance_request=None
         # If setup failed before spawn, there is no child to reconcile. A runtime
         # exception after launch is conservatively unresolved unless run returned.
         if not exited:

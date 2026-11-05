@@ -250,6 +250,7 @@ class PiRuntime:
             settings=json.loads(settings_path.read_text());settings.setdefault('compaction',{}).update(enabled=False,keepRecentTokens=1)
             settings_path.write_text(json.dumps(settings))
         env['ASR_CONTEXT_OBSERVATION']='1'
+        env['ASR_MAINTENANCE_ONLY']='1' if getattr(self,'maintenance_only',False) else '0'
         env['ASR_CONTEXT_BOUNDARY_TIMEOUT_MS']=str(self.capacity_policy['limits']['context_boundary_ms']['value'])
         env['ASR_OWNED_PROCESS_GROUP']='1'
         env['ASR_SKILL_PATHS']=json.dumps([skill['frozen_path'] for skill in frozen_skills])
@@ -262,7 +263,7 @@ class PiRuntime:
                    ASR_MAX_TURNS=str(limits.turns),ASR_MAX_TOOLS=str(limits.tool_executions),ASR_ABORT_GRACE_MS=str(math.ceil(self.abort_grace_seconds*1000)),ASR_MAX_WALLTIME_MS=str(engine_budget_ms),ASR_DEADLINE_MS=str(int((time.time()+runtime_deadline-time.monotonic())*1000)))
         argv=[self.executable,'--mode','rpc','--provider',self.provider,'--model',self.model,'--thinking',self.thinking,
               '--session-id',session_id,'--session-dir',str(sessions),'--no-extensions','--extension',str(extension),
-              '--no-skills','--no-prompt-templates','--no-context-files','--tools',','.join(['asr']+[tool.removeprefix('pi.') for tool in capabilities['pack']['coding_tools']])]
+              '--no-skills','--no-prompt-templates','--no-context-files','--tools',','.join(['asr'] if getattr(self,'maintenance_only',False) else ['asr']+[tool.removeprefix('pi.') for tool in capabilities['pack']['coding_tools']])]
         for skill in frozen_skills:argv.extend(['--skill',skill['frozen_path']])
         if on_launch: on_launch()
         process=subprocess.Popen(argv,cwd=workspace,env=env,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,start_new_session=True)
@@ -318,7 +319,7 @@ class PiRuntime:
         def send(command):
             process.stdin.write(json.dumps(command).encode()+b'\n'); process.stdin.flush()
         status='interrupted'; state=None; assistant=[]; turns=tools=0; started=time.monotonic(); settled=False
-        context_installation_verified=False;recording_pressure_receipt=None
+        context_installation_verified=False;recording_pressure_receipt=None;context_maintenance_receipt=None
         limit_observations=[];pending_tools={};cleanup=dict(native_abort_requested=False,sigterm=False,sigkill=False)
         def limit(kind,configured,observed,reason):
             value=dict(type='asr_limit',kind=kind,limit=max(1,int(configured)),observed=max(int(configured),int(observed)),reason=reason,recoverable=True)
@@ -353,11 +354,13 @@ class PiRuntime:
                 if kind=='extension_ui_request' and record.get('method')=='notify' and type(record.get('message')) is str and record['message'].startswith('ASR_CONTEXT_EVENT '):
                     try:
                         decoded=json.loads(record['message'][len('ASR_CONTEXT_EVENT '):])
-                        if type(decoded) is not dict or decoded.get('type') not in ('asr_context_cursor','asr_context_boundary','asr_context_installation','asr_recording_backpressure','asr_context_capacity'):raise ValueError('unsupported_context_event')
+                        if type(decoded) is not dict or decoded.get('type') not in ('asr_context_cursor','asr_context_boundary','asr_context_installation','asr_recording_backpressure','asr_context_capacity','asr_context_maintenance'):raise ValueError('unsupported_context_event')
                     except ValueError:
                         status='context_recovery_required';break
                     record=decoded;kind=record['type']
                     if on_event:on_event(record)
+                if kind=='asr_context_maintenance':
+                    context_maintenance_receipt=record;status='context_maintenance_required';break
                 if kind=='asr_recording_backpressure':
                     recording_pressure_receipt=record;status='recording_backpressure';break
                 if kind=='asr_context_installation':
@@ -405,7 +408,7 @@ class PiRuntime:
             # Reap the process group even after a settled RPC response. Closing
             # stdin alone can leave descendant tools running after a timeout.
             if process.poll() is None:
-                if status in ('timed_out','limit_reached','budget_exhausted','cancelled','context_recovery_required','recording_backpressure'):
+                if status in ('timed_out','limit_reached','budget_exhausted','cancelled','context_recovery_required','recording_backpressure','context_maintenance_required'):
                     try:send({'id':'abort','type':'abort'});cleanup['native_abort_requested']=True
                     except (OSError,ValueError):pass
                 try: process.stdin.close()
@@ -427,7 +430,7 @@ class PiRuntime:
             if process.stdin and not process.stdin.closed: process.stdin.close()
         if process.returncode==75 and status=='interrupted': status='gate_closed'
         return dict(runtime='pi-rpc/1',runtime_version=version,capability_pack_sha256=capabilities['sha256'],capability_pack_id=capabilities['pack']['id'],capability_skills=frozen_skills,provider=self.provider,model=self.model,status=status,session=state,
-                    recording_pressure_receipt=recording_pressure_receipt,native_session_id=session_id,context_installation_verified=context_installation_verified,settled=settled,turns=turns,tool_executions=tools,
+                    context_maintenance_receipt=context_maintenance_receipt,maintenance_only=getattr(self,'maintenance_only',False),recording_pressure_receipt=recording_pressure_receipt,native_session_id=session_id,context_installation_verified=context_installation_verified,settled=settled,turns=turns,tool_executions=tools,
                     duration_seconds=time.monotonic()-started,assistant_messages=assistant,exit_code=process.returncode,
                     limit_observations=limit_observations,cleanup=cleanup,protocol_flow=flow,
                     capacity_policy=self.capacity_policy,

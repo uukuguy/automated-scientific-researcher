@@ -130,6 +130,10 @@ class ControlService(PolicyStore):
         from .context_installation import complete
         return complete(self, token, project, run, *arguments, **options)
 
+    def reconcile_context_installation(self, token, project, run, *arguments, **options):
+        from .context_installation import reconcile
+        return reconcile(self,token,project,run,*arguments,**options)
+
     def bind_runtime_context(self, token, project, run, *arguments, **options):
         from .context_cursors import bind
         return bind(self, token, project, run, *arguments, **options)
@@ -680,7 +684,7 @@ class ControlService(PolicyStore):
             return session
 
     @records_budget_block
-    def admit_activity(self, token, project, run, *, kind, idempotency_key, session_id, epoch, owner, recording_pressure=None):
+    def admit_activity(self, token, project, run, *, kind, idempotency_key, session_id, epoch, owner, recording_pressure=None, context_maintenance=None):
         """Issue one finite permit within the exclusively reserved runtime session."""
         principal=self._auth(token,project,{'human','supervisor'})
         self._identity(run,idempotency_key)
@@ -710,6 +714,22 @@ class ControlService(PolicyStore):
             policy=self._contract(db,project,running['contract_id'],running['contract_revision'])['document']['runtime_policy']
             if session['runtime_identity']!={k:policy[k] for k in ('provider','model','auth_mode','billing_mode')}: raise ControlError('runtime_binding_conflict')
             if not self.owning_gate(db,{'project_id':project,'research_run_id':run}): raise ControlError('admission_closed')
+            native=session.get('native_context',{})
+            if kind=='turn' and native.get('requires_verified_installation') and native.get('installed_context',{}).get('status')!='verified':
+                raise ControlError('context_verification_required')
+            if kind=='turn' and context_maintenance is not None:
+                suggestion=context_maintenance
+                if (type(suggestion) is not dict or suggestion.get('recommendation')!='prepare_context_review' or
+                    suggestion.get('measurement')!='estimate' or suggestion.get('warning') is not True or
+                    suggestion.get('runtime_session_id')!=session_id or
+                    not re.fullmatch('[0-9a-f]{64}',str(suggestion.get('capacity_policy_sha256','')))):
+                    raise ControlError('invalid_context_maintenance_suggestion')
+                deferred=dict(status='deferred',reason='context_maintenance_required',recoverable=True,
+                    scope='next_model_request',request_capacity_verified=False,installation_authorized=False,
+                    scientific_executions_cancelled=False,capacity_observation=suggestion)
+                self._remember(db,project,'activity:'+run,idempotency_key,payload,deferred)
+                self._event(db,project,run,'context_maintenance_requested',session_id=session_id,request_key=idempotency_key,receipt=deferred)
+                return deferred
             elapsed=max(0,int((datetime.now(timezone.utc)-datetime.fromisoformat(session['started_at'])).total_seconds()*1000))
             remaining=session['reserved_walltime_ms']-elapsed
             if remaining<=0: raise BudgetError('budget_exhausted',details=dict(dimension='research_walltime_ms',limit=session['reserved_walltime_ms'],spent=elapsed,reserved=0,available=remaining,requested=1,scope='runtime_session',session_id=session_id))
@@ -943,6 +963,28 @@ class ControlService(PolicyStore):
             self._event(db,project,run,'budget_admission_blocked',**block)
             db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(running),project,run))
             return block
+
+    def defer_context_maintenance(self,token,project,run,*,session_id,reason,idempotency_key):
+        """Supervisor may defer failed maintenance, never resume or change policy."""
+        principal=self._auth(token,project,{'human','supervisor'})
+        self._identity(run,session_id,idempotency_key)
+        if type(reason) is not str or not reason:raise ControlError('maintenance_reason_required')
+        payload=[principal['subject'],session_id,reason]
+        with self._connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            replay=self._replay(db,project,'maintenance-deferred:'+run,idempotency_key,payload)
+            if replay:return replay
+            row=db.execute('SELECT record FROM asr_runtime_sessions WHERE project=? AND run=? AND session_id=?',(project,run,session_id)).fetchone()
+            if not row or json.loads(row[0])['state']!='exited':raise ControlError('maintenance_source_session_unresolved')
+            if db.execute("SELECT 1 FROM asr_runtime_sessions WHERE project=? AND run=? AND state!='exited'",(project,run)).fetchone():raise ControlError('maintenance_runtime_unresolved')
+            running=self._run(db,project,run)
+            if running['state']=='running':running.update(state='paused',admission_open=False,control_revision=running['control_revision']+1)
+            receipt=dict(status='deferred',reason=reason,session_id=session_id,control_revision=running['control_revision'],
+                state=running['state'],recoverable=True,scientific_executions_cancelled=False,author=principal['subject'])
+            db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(running),project,run))
+            self._event(db,project,run,'context_maintenance_paused',**receipt)
+            self._remember(db,project,'maintenance-deferred:'+run,idempotency_key,payload,receipt)
+            return receipt
 
     def observe_runtime_limit(self,token,project,run,*,session_id,epoch,owner,kind,limit,observed,reason,idempotency_key):
         principal=self._auth(token,project,{'human','supervisor'})

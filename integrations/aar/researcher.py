@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 import sys
 import time
-from integrations.runtimes.session import run_session
+from integrations.runtimes.context_maintenance import run_with_maintenance
 
 
 def load_loop(checkout):
@@ -44,7 +44,7 @@ class RuntimeMessage:
 
 
 def create_researcher(checkout, *, runtime, bridge_factory, service, project, run, supervisor_token,
-                      config_dir, workspace, logs_dir, prompt, limits, oauth_source=None, organization=None,event_callback=None):
+                      config_dir, workspace, logs_dir, prompt, limits, oauth_source=None, organization=None,event_callback=None,context_maintenance=None):
     if organization is None:raise ValueError('actual_upstream_organization_required')
     upstream=load_loop(checkout)
     experiment=organization.experiment(supervisor_token,project,run)
@@ -65,7 +65,7 @@ def create_researcher(checkout, *, runtime, bridge_factory, service, project, ru
                     text='\n'.join(x['text'] for x in message.get('content',[]) if x.get('type')=='text')
                     if text and self.callback:self.callback(RuntimeMessage([RuntimeText(text)]))
             event.capacity_state=getattr(event_callback,'capacity_state',lambda:None)
-            result=await asyncio.to_thread(run_session,runtime,bridge_factory(),config_dir=config_dir,
+            result=await asyncio.to_thread(run_with_maintenance,runtime,bridge_factory(),maintenance=context_maintenance,config_dir=config_dir,
                 native_session_id=run,prompt=task,limits=limits,oauth_source=oauth_source,on_event=event)
             self.owner.runtime_results.append(result)
             organization.sync_findings(supervisor_token,project,run)
@@ -97,13 +97,13 @@ def create_researcher(checkout, *, runtime, bridge_factory, service, project, ru
     return Researcher()
 
 
-def run_research_session(runtime,bridge,*,config_dir,native_session_id,prompt,limits,oauth_source=None,on_event=None,checkout):
+def run_research_session(runtime,bridge,*,config_dir,native_session_id,prompt,limits,oauth_source=None,on_event=None,checkout,context_maintenance=None):
     """Invoke the existing AAR owner once; the upstream run() owns session flow."""
     if native_session_id!=bridge.run:raise ValueError('native_research_identity_mismatch')
     researcher=create_researcher(checkout,runtime=runtime,bridge_factory=lambda:bridge,service=bridge.service,
         project=bridge.project,run=bridge.run,supervisor_token=bridge.supervisor_token,
         config_dir=config_dir,workspace=bridge.workspace,logs_dir=Path(config_dir).parent/'aar-logs'/str(time.time_ns()),
-        prompt=prompt,limits=limits,oauth_source=oauth_source,organization=bridge.organization,event_callback=on_event)
+        prompt=prompt,limits=limits,oauth_source=oauth_source,organization=bridge.organization,event_callback=on_event,context_maintenance=context_maintenance)
     summary=asyncio.run(researcher.run())
     if not researcher.runtime_results:raise RuntimeError('aar_no_session_dispatched:'+summary['stop_reason'])
     result=researcher.runtime_results[-1]

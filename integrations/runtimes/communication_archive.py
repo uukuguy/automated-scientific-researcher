@@ -97,25 +97,27 @@ def archive(root, destination):
             write(relative, clean(json.loads(body), relative))
 
     native = set()
-    for step in sorted((root/'steps').glob('*')):
+    maintenance_steps=sorted({p.parent for p in (root/'context-maintenance').glob('*/*/request.json')})
+    for step in sorted((root/'steps').glob('*'))+maintenance_steps:
         if not step.is_dir():
             continue
+        relative_step=str(step.relative_to(root))
         request = step/'request.json'; result = step/'result.json'
-        capture(request, 'steps/'+step.name+'/request.json')
-        capture(step/'events.jsonl', 'steps/'+step.name+'/events.jsonl', True)
+        capture(request, relative_step+'/request.json')
+        capture(step/'events.jsonl', relative_step+'/events.jsonl', True)
         marker=step/'events.recording.json'
         if marker.is_file():
-            capture(marker,'steps/'+step.name+'/events.recording.json')
+            capture(marker,relative_step+'/events.recording.json')
             recording=json.loads(marker.read_text())
             if recording.get('status')!='complete' or recording.get('durability_verified') is not True:
                 gaps.append(dict(code='event_recording_incomplete',step=step.name,status=recording.get('status'),
                                  recovery='Retain restricted native originals; reconcile the explicit recording gaps before claiming full coverage.'))
-        if (step/'reply.json').is_file():capture(step/'reply.json','steps/'+step.name+'/reply.json')
-        session = dict(step=step.name, finalized=result.is_file())
+        if (step/'reply.json').is_file():capture(step/'reply.json',relative_step+'/reply.json')
+        session = dict(step=relative_step, finalized=result.is_file())
         if not result.is_file():
             gaps.append(dict(code='step_not_finalized', step=step.name))
         else:
-            capture(result, 'steps/'+step.name+'/result.json')
+            capture(result, relative_step+'/result.json')
             record = json.loads(result.read_text()); session['status'] = record.get('status')
             observation_drain=record.get('context_observation_drain')
             if observation_drain is not None and observation_drain.get('drained') is not True:
@@ -134,8 +136,15 @@ def archive(root, destination):
                     if path not in native:
                         capture(path, relative, True); native.add(path)
             if (step/'delivery-receipt.json').is_file():
-                capture(step/'delivery-receipt.json', 'steps/'+step.name+'/delivery-receipt.json')
+                capture(step/'delivery-receipt.json', relative_step+'/delivery-receipt.json')
         sessions.append(session)
+    for cycle in sorted((root/'context-maintenance').glob('*')):
+        if cycle.is_dir() and not (cycle/'staged.json').is_file() and not (cycle/'deferred.json').is_file():
+            gaps.append(dict(code='context_maintenance_unfinished',source=str(cycle.relative_to(root))))
+    for record in sorted((root/'context-maintenance').glob('*/native-install/*.json')):
+        capture(record,str(record.relative_to(root)))
+    for record in sorted((root/'context-maintenance').glob('*/*.json')):
+        capture(record,str(record.relative_to(root)))
     # Recovery reports are projections, never replacements for frozen steps.
     # Raw frozen snapshots remain in the restricted store; export their hashes.
     for record in sorted((root/'observation-recovery').rglob('*')):

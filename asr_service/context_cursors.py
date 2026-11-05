@@ -7,12 +7,14 @@ from .control import ControlError
 from .organization_runtime import validate
 
 
-def bind(service,token,project,run,session_id,epoch,owner,*,native_session_id,journal_directory):
+def bind(service,token,project,run,session_id,epoch,owner,*,native_session_id,journal_directory,recovery_stage_id=None):
     service._auth(token,project,{'human','supervisor'});service._identity(native_session_id)
     if type(journal_directory) is not str or not Path(journal_directory).is_absolute():raise ControlError('context_directory_required')
     path=Path(journal_directory)
     if path.resolve()!=path:raise ControlError('context_directory_unsafe')
     binding=dict(native_session_id=native_session_id,journal_directory=str(path))
+    if recovery_stage_id is not None:
+        service._identity(recovery_stage_id);binding['recovery_stage_id']=recovery_stage_id;binding['requires_verified_installation']=True
     with service._connect() as db:
         db.execute('BEGIN IMMEDIATE');session=service._session(db,project,run,session_id,epoch,owner)
         if type(session.get('organization_binding')) is not dict:raise ControlError('context_organization_required')
@@ -22,6 +24,22 @@ def bind(service,token,project,run,session_id,epoch,owner,*,native_session_id,jo
             if any(existing.get(k)!=v for k,v in binding.items()):raise ControlError('context_binding_immutable')
             return {k:existing[k] for k in binding}
         if session['state']!='active' or session.get('launch_state')!='prepared':raise ControlError('context_binding_before_launch_required')
+        subject=session['organization_binding']['subject']
+        needs_fresh=False
+        for row in db.execute('SELECT record FROM asr_runtime_sessions WHERE project=? AND run=? AND session_id!=? ORDER BY rowid DESC',(project,run,session_id)):
+            prior=json.loads(row[0]);native=prior.get('native_context',{})
+            if prior.get('organization_binding',{}).get('subject')!=subject or native.get('native_session_id')!=native_session_id or native.get('journal_directory')!=str(path):continue
+            if native.get('pending_installation'):raise ControlError('context_installation_reconciliation_required')
+            installed=native.get('installed_context')
+            if installed:
+                needs_fresh=installed.get('requires_fresh_preparation',False);break
+        if needs_fresh and recovery_stage_id is None:raise ControlError('context_fresh_preparation_required')
+        if recovery_stage_id is not None:
+            from .context_installation import _record
+            from .context_admission import _scope
+            stage,_=_record(db,project,_scope('installation',run,subject),recovery_stage_id)
+            if stage.get('status')!='staged' or stage['reader']['native_session_id']!=native_session_id or Path(stage['reader']['path']).parent!=path:
+                raise ControlError('context_recovery_stage_mismatch')
         session['native_context']=binding
         db.execute('UPDATE asr_runtime_sessions SET record=? WHERE session_id=?',(encoded(session),session_id))
         service._event(db,project,run,'context_runtime_bound',session_id=session_id,epoch=epoch,subject=session['organization_binding']['subject'],**binding)

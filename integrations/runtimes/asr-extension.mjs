@@ -102,9 +102,10 @@ export default function(pi) {
         return await new Promise(()=>{});
       }
       const permit=await bridge('permit', {kind:'turn'}, crypto.randomUUID());
-      if(permit.status==='deferred'&&permit.reason==='recording_backpressure') {
-        const receipt={...permit,type:'asr_recording_backpressure',schema:'asr-recording-backpressure/1',native_entry_appended:false,native_entry_persistence_verified:false};
-        try {pi.appendEntry('asr-recording-backpressure',receipt);receipt.native_entry_appended=true;}catch {receipt.checkpoint_failure='native_entry_append_failed';}
+      if(permit.status==='deferred'&&['recording_backpressure','context_maintenance_required'].includes(permit.reason)) {
+        const maintenance=permit.reason==='context_maintenance_required';
+        const receipt={...permit,type:maintenance?'asr_context_maintenance':'asr_recording_backpressure',schema:maintenance?'asr-context-maintenance/1':'asr-recording-backpressure/1',native_entry_appended:false,native_entry_persistence_verified:false};
+        try {pi.appendEntry(maintenance?'asr-context-maintenance':'asr-recording-backpressure',receipt);receipt.native_entry_appended=true;}catch {receipt.checkpoint_failure='native_entry_append_failed';}
         try {ctx?.abort();}catch {receipt.abort_failure='native_abort_failed';}
         emitContext(receipt,ctx);
         return await new Promise(()=>{});
@@ -119,6 +120,7 @@ export default function(pi) {
   pi.on('tool_call', async (event,ctx) => {
     try {
       context=ctx||context;
+      if(process.env.ASR_MAINTENANCE_ONLY==='1')return {block:true,reason:'上下文维护会话不能执行工具或修改研究状态。'};
       if (++tools > maxTools) {
         reportLimit('tool_executions',maxTools,tools,'Tool cap reached before execution.',ctx);
         return {block:true,terminate:true,reason:'ASR tool cap reached; state is checkpointed and recoverable.'};
