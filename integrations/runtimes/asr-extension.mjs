@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 const capacityDefaults=JSON.parse(readFileSync(new URL('../../configs/capacity-policy.json',import.meta.url),'utf8'));
 import { workspacePath } from './workspace-path.mjs';
 import { captureCursor } from './pi_context_cursor.mjs';
+import { captureCapacity } from './pi_context_capacity.mjs';
 import { beforeCompact } from './pi_context_boundary.mjs';
 export default function(pi) {
   let turns = 0, tools = 0;
@@ -111,6 +112,7 @@ export default function(pi) {
       if(process.env.ASR_CONTEXT_OBSERVATION==='1') {
         const observation=captureCursor(ctx);
         emitContext({...observation,boundary:'before_provider_request'},ctx);
+        emitContext(captureCapacity(ctx,observation),ctx);
       }
     } catch { fatal(); } // pi swallows hook exceptions: process exit is intentional.
   });

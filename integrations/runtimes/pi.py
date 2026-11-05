@@ -353,7 +353,7 @@ class PiRuntime:
                 if kind=='extension_ui_request' and record.get('method')=='notify' and type(record.get('message')) is str and record['message'].startswith('ASR_CONTEXT_EVENT '):
                     try:
                         decoded=json.loads(record['message'][len('ASR_CONTEXT_EVENT '):])
-                        if type(decoded) is not dict or decoded.get('type') not in ('asr_context_cursor','asr_context_boundary','asr_context_installation','asr_recording_backpressure'):raise ValueError('unsupported_context_event')
+                        if type(decoded) is not dict or decoded.get('type') not in ('asr_context_cursor','asr_context_boundary','asr_context_installation','asr_recording_backpressure','asr_context_capacity'):raise ValueError('unsupported_context_event')
                     except ValueError:
                         status='context_recovery_required';break
                     record=decoded;kind=record['type']

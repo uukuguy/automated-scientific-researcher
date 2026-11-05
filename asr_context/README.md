@@ -119,3 +119,6 @@ pi适配器位于integrations/runtimes/pi_context.py，通过固定SDK解释分�
 `installation.compile_plan`复算结构/语义绑定、完整交互覆盖和原样重放内容，核心不依赖pi。保护项可逐字重放；原生系统说明由适配器声明并在写入后逐字核对，避免重复。`summary_review.assess`对已安装记忆JSON的summary字段支持有明确路径的解码引文视图，不接受转述或任意字段匹配。
 
 Control在同步边界重算现行状态与来源，发一次性票据；pi返回自定义compaction，写入后读回验证，只有核验成功才继续模型请求。本人原文可经conversation_read分页找回，历史材料不升级权限。三次真实订阅安装与接续、七项事实和一次实际原文工具调用已验证，详见[验收](../docs/validation/RESEARCH-CONTEXT-INSTALLATION.md)。容量自动触发和任意长程保真未由此证明。
+
+
+Runtime首接：`integrations.runtimes.context_capacity.assess`消费pi公开SDK估算，调用独立capacity核心作观测建议。统一配置使用按窗口缩放的回复/工具/检查点预留，未知值保留；异步评估不等于请求准入或安装许可，不改变本核心对可靠完整计量的要求。

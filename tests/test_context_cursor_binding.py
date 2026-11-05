@@ -106,6 +106,9 @@ class ContextCursorBindingTests(unittest.TestCase):
                 try:
                     arguments['on_process'](identify(process.pid))
                     arguments['on_event'](make_event('adapter',journal_file=str(directory/'native.jsonl')))
+                    arguments['on_event'](dict(type='asr_context_capacity',schema='asr-pi-context-capacity/1',observation_id='capacity-adapter',
+                        status='observed',measurement='estimate',used_tokens=651,window_tokens=1000,
+                        full_next_request_verified=False,provider_payload_verified=False))
                     assert bridge.context_observation_barrier()['drained']
                 finally:process.terminate();process.wait()
                 return dict(status='settled')
@@ -114,10 +117,15 @@ class ContextCursorBindingTests(unittest.TestCase):
         result=run_session(Runtime(),bridge,config_dir=root/'private',native_session_id='native',prompt='No model',limits=Limits(3,1,1),oauth_source=auth,on_event=events.append)
         self.assertEqual(result['context_cursor_receipts'][0]['status'],'bound')
         self.assertTrue(any(e['type']=='asr_context_cursor_binding' for e in events))
+        self.assertTrue(result['context_capacity_observations'][0]['warning'])
+        self.assertFalse(result['context_capacity_observations'][0]['hold_new_model_requests'])
+        self.assertTrue(any(e['type']=='asr_context_capacity_assessment' for e in events))
         state=self.s.get_run('human-secret','p','r')
         session=next(s for s in state['runtime_sessions'] if s['session_id']==result['runtime_claim']['session_id'])
         self.assertTrue(session['native_context']['journal_directory'].endswith('sessions-generation-1'))
         self.assertEqual(session['state'],'exited');self.assertEqual(state['budget']['research_walltime_ms']['reserved'],0)
+        self.assertEqual(state['state'],'running')
+        self.assertEqual(state['budget']['turns']['spent'],0)
 
     def test_prelaunch_observation_does_not_create_a_false_native_binding(self):
         self.assertEqual(self.record()['status'],'deferred')

@@ -8,8 +8,8 @@ from .capacity_policy import load_policy
 
 
 class OrderedObservations:
-    def __init__(self, consume, *, capacity_policy_path=None):
-        self.policy=load_policy(capacity_policy_path)
+    def __init__(self, consume, *, capacity_policy_path=None, policy=None):
+        self.policy=json.loads(json.dumps(policy)) if policy is not None else load_policy(capacity_policy_path)
         self.timeout=self.policy['limits']['observation_drain_seconds']['value']
         self.watermark=self.policy['limits']['async_log_warning_bytes']['value']
         self.consume=consume;self.queue=queue.SimpleQueue();self.condition=threading.Condition()

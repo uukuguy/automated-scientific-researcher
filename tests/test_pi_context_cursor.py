@@ -27,12 +27,18 @@ class PiContextCursorTests(unittest.TestCase):
     def test_enabled_provider_hook_emits_cursor_without_new_tools_or_model_call(self):
         module=Path('integrations/runtimes/asr-extension.mjs').resolve().as_uri()
         code=f'''import extension from {json.dumps(module)};const handlers={{}};
-globalThis.fetch=async()=>({{ok:true,json:async()=>({{}})}});
-extension({{on:(event,handler)=>handlers[event]=handler,registerTool:()=>{{}}}});
-await handlers.before_provider_request({{}},{{sessionManager:{{getSessionId:()=> 'native',getSessionFile:()=> '/private/session.jsonl',getLeafId:()=> 'leaf',getBranch:()=>[{{id:'leaf'}}]}}}});'''
+let requests=0;const tools=[];
+globalThis.fetch=async()=>{{requests++;return {{ok:true,json:async()=>({{}})}}}};
+extension({{on:(event,handler)=>handlers[event]=handler,registerTool:tool=>tools.push(tool.name)}});
+await handlers.before_provider_request({{}},{{sessionManager:{{getSessionId:()=> 'native',getSessionFile:()=> '/private/session.jsonl',getLeafId:()=> 'leaf',getBranch:()=>[{{id:'leaf'}}]}}}});
+if(requests!==1||tools.length!==1||tools[0]!=='asr')throw new Error('unexpected additional request or tool');'''
         env=dict(os.environ,ASR_CONTEXT_OBSERVATION='1',ASR_MAX_TURNS='10',ASR_MAX_TOOLS='10',ASR_DEADLINE_MS=str(int((time.time()+20)*1000)))
         result=subprocess.run(['node','--input-type=module','-e',code],capture_output=True,text=True,timeout=5,env=env)
         self.assertEqual(result.returncode,0,result.stderr)
         records=[json.loads(line) for line in result.stdout.splitlines()]
-        self.assertEqual(len(records),1);self.assertEqual(records[0]['type'],'asr_context_cursor')
+        self.assertEqual(len(records),2);self.assertEqual(records[0]['type'],'asr_context_cursor')
+        self.assertEqual(records[1]['type'],'asr_context_capacity')
+        self.assertEqual(records[1]['reason'],'native_usage_unavailable')
+        self.assertIsNone(records[1]['used_tokens'])
+        self.assertFalse(records[1]['full_next_request_verified'])
         self.assertEqual(records[0]['boundary'],'before_provider_request');self.assertEqual(records[0]['leaf_id'],'leaf')

@@ -276,3 +276,16 @@ pi钩子收到明确recording_backpressure回执后请求原生检查点及abort
 统一策略第5版水位改为128MiB。只读检查已有材料：P5最大events.jsonl为30499654字节，默认水位约为其4.40倍；上下文验收最大文件664588字节。来源、指纹、扫描范围及局限见docs/validation/ASYNC-RECORDING-SIZING.json。文件总大小不是队列峰值，扫描含归档副本，不据此声称新负载已校准。
 
 这是在自然边界抑制继续增长，不是内存硬隔离。当前模型交互和工具结果仍有收尾输出，失控输出/永久存储故障不能同时保证固定内存、无阻塞和零丢失；持久溢写、未写出尾部与断电恢复仍open。没有丢弃事件、自动提高额度或付费回退，也没有本轮实际订阅研究验收。
+
+
+### 请求边界的估算观测与异步预警（2026-11-05）
+
+`pi_context_capacity.mjs`在既有before_provider_request边界调用公开ctx.getContextUsage，窗口标记pinned_sdk_getContextUsage；采集后重新核对原会话/叶节点/路径，变化则deferred，不沿用旧计数。getter缺失、异常、非法计数、压缩后unknown分别明确记录，不输出异常原文或请求载荷。固定SDK1.5.0实际AgentSession方法的检查确认压缩后、首次新回复前tokens=null；这不是新模型调用。
+
+SDK getter会重建内存投影并估算，不读取完整日志文件，也不扫描Control数据库；成本随上下文增长，measurement_elapsed_ms留痕，不声称常数时间或已完成长程性能验收。一次准入仍只有既有permit调用，没有新增模型工具或高频后台轮询。原provider-hook测试由“一条游标”明确改为“一条游标+一条容量元数据”，同时加强一次准入/无新增工具的断言。
+
+`context_capacity.assess`调用独立capacity核心，宿主沿用普通观测队列异步评估；本轮将策略在预留模型预算前读取，队列启动放入有清理的会话作用域，避免配置失败后留下预留。主链路不等待评估，未完成仍归入已有排空快照与交流缺口。原始元数据保留，已完成评估进入context_capacity_observations及交流事件。
+
+统一策略第6版使用basis_points（万分比，1000即10%）：completion=1000、tool_results=1500、checkpoint=1000；按SDK窗口向上取整为token预留，总和不足100%，允许显式把某项设为0以适配无工具等配置。默认合计35%，估算使用超过65%建议prepare_context_review。无固定模型窗口或用字节换算精确token。
+
+状态始终measurement=estimate、request_capacity_verified=false、model_window_verified=false、installation_authorized=false、hold_new_model_requests=false。即使计数偏小，也只记observation_only，不能当安全准入；偏大时建议复核，不强行终止研究。伪造reported/完整覆盖标志会被拒绝。实际安装后的provider_payload_verified仍未取得；自动生成/复核/安装及真实长程接续仍待接入。

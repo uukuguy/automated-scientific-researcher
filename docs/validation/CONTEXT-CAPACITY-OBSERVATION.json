@@ -1,0 +1,66 @@
+{
+  "schema": "asr-context-capacity-observation-evidence/1",
+  "measured_at": "2026-11-05T08:12:19.429667+00:00",
+  "model_calls": 0,
+  "scientific_experiments": 0,
+  "result_files": 35,
+  "unique_native_journals": 5,
+  "usage_records": 363,
+  "sdk_catalog_windows": [
+    500000
+  ],
+  "max_reported_output_tokens": 5930,
+  "reserve_basis_points": {
+    "completion": 1000,
+    "tool_results": 1500,
+    "checkpoint": 1000
+  },
+  "sources": [
+    {
+      "path": "artifacts/p5-project-001/pi-private/organization/48a5bcc2c19d606194d6b11348ec466fdd95c6370252160cceb84edb163e5144/sessions/2026-11-04T04-51-12-470Z_research_2fdee65a1c2f4bd5b107bfc388469d8d.jsonl",
+      "sha256": "a69e97e7dc7a47245ef3b39fe42d3850df3f4a6e1c8948a27b7cd05a964d0642",
+      "bytes": 5517917
+    },
+    {
+      "path": "artifacts/p5-project-001/pi-private/organization/48a5bcc2c19d606194d6b11348ec466fdd95c6370252160cceb84edb163e5144/sessions-generation-1/2026-11-04T07-43-25-997Z_research_2fdee65a1c2f4bd5b107bfc388469d8d.jsonl",
+      "sha256": "8ab0fad6d2beb8753f191e8fb7e121d4abbfaa64fd7d7197ee114a493c3c0900",
+      "bytes": 954800
+    },
+    {
+      "path": "artifacts/p5-project-001/pi-private/organization/4e0cbfc0a3b5bfb415bfcc61c12647a22410a6753a9a2205d6428ab1664a9f79/sessions/2026-11-04T04-53-55-632Z_research_2fdee65a1c2f4bd5b107bfc388469d8d.jsonl",
+      "sha256": "7f16866b4dbcc0b7de8a4299797fef20eba8b528a7106110a96907ff4f24859b",
+      "bytes": 2700535
+    },
+    {
+      "path": "artifacts/p5-project-001/pi-private/organization/b2f8184b92681f714a4b3c4b0190d1e4e073eec87fcfc57e75811995775e3aa9/sessions/2026-11-04T04-49-35-748Z_research_2fdee65a1c2f4bd5b107bfc388469d8d.jsonl",
+      "sha256": "70f62c155a05e36a228562e423a43ace16100978850a79da1c65adc0efa03bfe",
+      "bytes": 3190056
+    },
+    {
+      "path": "artifacts/p5-project-001/pi-private/organization/c23f3494aae263a25e4e9ef88aeae6f5b43d8fb4aa86baf93742347d697d842a/sessions/2026-11-04T07-16-59-826Z_research_2fdee65a1c2f4bd5b107bfc388469d8d.jsonl",
+      "sha256": "c16b9dfd86b1313c5e0197f07d34ff13c93c361395704eada723cf4d8dde3a75",
+      "bytes": 1438291
+    }
+  ],
+  "limits": [
+    "窗口来源是历史SDK目录，不等于独立核验提供方最终请求或当前模型窗口。",
+    "输出用量是已有角色记录的最大值，不代表工具结果/摘要输入/任意长程的最大值。",
+    "预留只产生建议，不能据此证明请求准入安全；不改变实际输出上限。"
+  ],
+  "window_sources": [
+    {
+      "path": "artifacts/p5-project-001/steps/000-organizer/result.json",
+      "sha256": "de8cd081bf350f488ca620fdea87c5289d293a09dabc045c0edbcaad10d505ee",
+      "context_window": 500000,
+      "model_id": "gpt-6.1-sol",
+      "provider": "openai-codex"
+    }
+  ],
+  "sdk_getter_source": {
+    "package": "@earendil-works/pi-coding-agent",
+    "version": "1.5.0",
+    "path": "dist/core/agent-session.js",
+    "sha256": "1941d9608c98a3638825a8d10b5443ff7c06f96b3ae370bb37269f3a574ede65",
+    "method": "AgentSession.getContextUsage"
+  }
+}

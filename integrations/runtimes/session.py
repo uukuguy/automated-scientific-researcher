@@ -17,6 +17,9 @@ def session_engine_deadline(limits,reserved_walltime_ms,started):
 
 def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limits, oauth_source=None, on_event=None):
     service=bridge.service
+    from .capacity_policy import load_policy
+    from .context_capacity import assess
+    capacity_policy=getattr(runtime,'capacity_policy',None) or load_policy()
     organization_arguments={}
     if bridge.capability_profile in ('research-organization/1','research-organization-study/1'):
         pack=runtime.preflight_capabilities()
@@ -35,10 +38,15 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
     bridge.runtime_identity=dict(session_id=claim['session_id'],epoch=claim['epoch'],owner=owner)
     started=time.monotonic()
     exited=False
-    cursor_receipts=[]
+    cursor_receipts=[];capacity_observations=[]
     from .async_observations import OrderedObservations
     runtime_identity=dict(bridge.runtime_identity)
     def record_cursor(record):
+        if record.get('type')=='asr_context_capacity':
+            assessment=assess(record,policy=capacity_policy)
+            assessment.update(runtime_session_id=runtime_identity['session_id'],observation_id=record.get('observation_id'))
+            capacity_observations.append(assessment)
+            return
         try:
             receipt=service.observe_context_cursor(bridge.supervisor_token,bridge.project,bridge.run,
                 **runtime_identity,observation=record)
@@ -47,14 +55,12 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
                          installation_authorized=False,active_cursor_verified=False,
                          recovery='Keep native originals; delayed observations do not prove a live cursor.')
         cursor_receipts.append(receipt)
-    cursor_writer=OrderedObservations(record_cursor)
-    bridge.context_observation_barrier=cursor_writer.barrier
+    cursor_writer=None
     def recording_pressure():
-        observer=cursor_writer.capacity_state()
+        observer=cursor_writer.capacity_state() if cursor_writer is not None else None
         if observer:return observer
         probe=getattr(on_event,'capacity_state',None)
         return probe() if probe is not None else None
-    bridge.recording_pressure=recording_pressure
     def record_event(record,forward=True):
         if record.get('type')=='asr_limit':
             observation={key:record[key] for key in ('kind','limit','observed','reason')}
@@ -63,10 +69,13 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
             identity=hashlib.sha256(json.dumps(observation,sort_keys=True).encode()).hexdigest()
             service.observe_runtime_limit(bridge.supervisor_token,bridge.project,bridge.run,
                 **bridge.runtime_identity,**observation,idempotency_key='runtime_limit_'+owner+'_'+identity)
-        if record.get('type')=='asr_context_cursor' and organization_arguments:
+        if record.get('type')=='asr_context_capacity' or record.get('type')=='asr_context_cursor' and organization_arguments:
             cursor_writer.submit(record)
         if forward and on_event:on_event(record)
     try:
+        cursor_writer=OrderedObservations(record_cursor,policy=capacity_policy)
+        bridge.context_observation_barrier=cursor_writer.barrier
+        bridge.recording_pressure=recording_pressure
         source=Path(oauth_source or Path.home()/'.pi/agent/auth.json')
         oauth_baseline=prepare_oauth(source,Path(config_dir))
         effective=Limits(min(limits.walltime_seconds,claim['reserved_walltime_ms']/1000),limits.turns,limits.tool_executions)
@@ -86,9 +95,12 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
         result['runtime_claim']=claim
         result['context_observation_drain']=cursor_writer.close(timeout=0)
         result['context_cursor_receipts']=list(cursor_receipts)
+        result['context_capacity_observations']=list(capacity_observations)
         if on_event:
             for receipt in result['context_cursor_receipts']:
                 on_event(dict(type='asr_context_cursor_binding',**receipt))
+            for assessment in result['context_capacity_observations']:
+                on_event(dict(type='asr_context_capacity_assessment',**assessment))
             on_event(dict(type='asr_context_observation_drain',**result['context_observation_drain']))
         try:
             result['oauth_sync']=synchronize_oauth(source,Path(config_dir),oauth_baseline)
@@ -113,7 +125,7 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
             record_event(dict(type='asr_limit',recoverable=True,**error.details))
         raise
     finally:
-        if not cursor_writer.closed:cursor_writer.close(timeout=0)
+        if cursor_writer is not None and not cursor_writer.closed:cursor_writer.close(timeout=0)
         bridge.context_observation_barrier=None
         bridge.recording_pressure=None
         # If setup failed before spawn, there is no child to reconcile. A runtime
