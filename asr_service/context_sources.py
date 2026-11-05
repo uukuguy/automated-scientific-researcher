@@ -53,13 +53,17 @@ def register(service,token,project,run,*,subject,idempotency_key,path,native_ses
         return result
 
 
-def read(service,db,project,run,subject,registration):
+def read(service,db,project,run,subject,registration,*,verified=None):
     from .context_admission import _scope
     row=db.execute('SELECT record FROM asr_requests WHERE project=? AND scope=? AND request_key=?',
                    (project,_scope('source',run,subject),registration)).fetchone()
     source=json.loads(row[0]) if row else {}
     if source.get('status')!='registered':raise ControlError('context_source_unavailable')
-    observed=_observe(source['reader'])
+    if verified is None:
+        observed=_observe(source['reader'])
+    else:
+        frozen,observed=verified.check()
+        if frozen!=source:raise ControlError('context_source_changed')
     if observed!=source['observation']:
         error=ControlError('context_source_changed')
         error.details=dict(observation_status=observed['status'],reason=observed.get('reason'),
@@ -72,6 +76,17 @@ def read(service,db,project,run,subject,registration):
         checked=check(service,db,project,run,subject,source['reader']['cursor_reference'],observed,require_live=False)
         if checked['status']!='verified':raise ControlError(checked['reason'])
     return materials(observed['conversation'])
+
+
+def verify_registered(service,project,run,subject,registration):
+    from .context_admission import _scope
+    from .context_io import verify
+    with service._connect() as db:
+        row=db.execute('SELECT record FROM asr_requests WHERE project=? AND scope=? AND request_key=?',
+            (project,_scope('source',run,subject),registration)).fetchone()
+    source=json.loads(row[0]) if row else {}
+    if source.get('status')!='registered':raise ControlError('context_source_unavailable')
+    return verify(source['reader']['path'],lambda:(source,_observe(source['reader'])))
 
 
 def source_read(service,token,project,run,*,source_registration,message_id,offset=0,limit=8000):

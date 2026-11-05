@@ -1,0 +1,24 @@
+{
+  "schema": "asr-context-io-validation/1",
+  "scope": "原生日志事务外核验及提交竞争检查，不含模型或科研执行",
+  "command": "uv run --extra aar python -m unittest discover -s tests -v",
+  "tests": 610,
+  "skipped": 25,
+  "status": "passed",
+  "new_concurrency_and_race_checks": 9,
+  "model_calls": 0,
+  "scientific_executions": 0,
+  "log": "artifacts/context-io-validation-001/tests.log",
+  "log_sha256": "a2c8904acc64ce5ad68ebf18a365cd7f3a2e540487189ef97de0a7a3b464000d",
+  "sources": {
+    "asr_service/context_io.py": "55a803e85e3dd6a419adccc5514069d07d5c87c84724919c3c923d9a9541883e",
+    "asr_service/context_sources.py": "35a248f5e94ed5f64c4a34daac023017bf8bf73ecc9da64ab80f1b2cee661ff7",
+    "asr_service/context_admission.py": "6fda1fd91f81a22d0f85bd32042b6f57d52aa93e6e64d2e60b3233b1896321f6",
+    "asr_service/context_installation.py": "88f93720817b5c28ad77ccad9750caf5f068f5763fd48702b7014cbe74a063c7",
+    "tests/test_context_io.py": "4cd590d9b66b9469f8fbbcab7d4e3dd6f2ef59ee7e1e73fbd6e720e2736b216b"
+  },
+  "limitations": [
+    "文件版本围栏不提供文件系统/SQLite原子提交或特权宿主隔离",
+    "笔记及typed附件等其它重型读取仍可能占写事务"
+  ]
+}
