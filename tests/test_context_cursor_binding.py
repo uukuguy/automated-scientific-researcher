@@ -106,6 +106,7 @@ class ContextCursorBindingTests(unittest.TestCase):
                 try:
                     arguments['on_process'](identify(process.pid))
                     arguments['on_event'](make_event('adapter',journal_file=str(directory/'native.jsonl')))
+                    assert bridge.context_observation_barrier()['drained']
                 finally:process.terminate();process.wait()
                 return dict(status='settled')
         bridge=ResearchBridge(self.s,project='p',run='r',researcher_token='lead',supervisor_token='human-secret',workspace=root/'workspace',snapshots=root/'snapshots',capability_profile='research-organization/1')
@@ -168,3 +169,26 @@ console.log(JSON.stringify({{type:'fixture_result',result}}));'''
         with self.s._connect() as db:
             events=[json.loads(row[0]) for row in db.execute('SELECT record FROM asr_events')]
         self.assertTrue(any(e['type']=='context_cursor_bound' and e['session_id']==self.claim['session_id'] for e in events))
+
+    def test_pending_async_observations_cancel_installation_before_cursor_mutation(self):
+        from integrations.aar.bridge import ResearchBridge
+        from unittest.mock import patch
+        bridge=ResearchBridge(self.s,project='p',run='r',researcher_token='lead',supervisor_token='human-secret',workspace=self.root.parent/'workspace',snapshots=self.root.parent/'snapshots',capability_profile='research-organization/1')
+        bridge.runtime_identity=self.ids
+        bridge.context_observation_barrier=lambda:dict(drained=False,pending=1)
+        with patch.object(self.s,'observe_context_cursor',side_effect=AssertionError('must not mutate cursor')):
+            result=bridge.call('context_boundary',dict(observation=self.event('pending',boundary='session_before_compact')),'pending')
+        self.assertEqual(result['reason'],'context_observations_pending')
+        self.assertFalse(result['installation_authorized'])
+        self.assertEqual(result['observation_drain']['pending'],1)
+
+    def test_late_ordinary_observation_cannot_overwrite_newer_installation_boundary(self):
+        self.bind();self.launch()
+        boundary=self.record(self.event('new-boundary',boundary='session_before_compact',observation_sequence=20))
+        self.assertEqual(boundary['status'],'bound')
+        late=self.record(self.event('late-old-event',observation_sequence=19))
+        self.assertEqual(late['status'],'deferred')
+        self.assertEqual(late['reason'],'context_cursor_superseded')
+        with self.s._connect() as db:
+            session=self.s._session(db,'p','r',**self.ids)
+        self.assertEqual(session['native_context']['latest_observation_id'],'new-boundary')

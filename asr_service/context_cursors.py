@@ -46,10 +46,10 @@ def observe(service,token,project,run,session_id,epoch,owner,*,observation):
     if type(observation) is not dict:raise ControlError('invalid_context_cursor')
     observation_id=observation.get('observation_id');service._identity(observation_id)
     # Do not persist arbitrary Runtime content or exception messages.
-    fields=('type','schema','observation_id','observed_at','status','boundary','native_session_id','journal_file','leaf_id','branch_entries','branch_ids_sha256')
+    fields=('type','schema','observation_id','observed_at','status','boundary','native_session_id','journal_file','leaf_id','branch_entries','branch_ids_sha256','observation_sequence')
     payload={k:observation[k] for k in fields if k in observation}
     with service._connect() as db:
-        db.execute('BEGIN IMMEDIATE');subject=None
+        db.execute('BEGIN IMMEDIATE');subject=None;superseded=False
         try:
             session=service._session(db,project,run,session_id,epoch,owner)
             if type(session.get('organization_binding')) is not dict:raise ControlError('context_organization_required')
@@ -57,7 +57,14 @@ def observe(service,token,project,run,session_id,epoch,owner,*,observation):
             scope=_scope('cursor',run,subject);key=_key(session_id,observation_id)
             replay=service._replay(db,project,scope,key,payload)
             if replay:return replay  # An old observation is not installation permission.
-            _live(session);native=session.get('native_context') or {}
+            native=session.get('native_context') or {}
+            sequence=payload.get('observation_sequence')
+            prior_sequence=native.get('latest_observation_sequence')
+            if (sequence is not None and (type(sequence) is not int or sequence<1)):
+                superseded=True;raise ControlError('invalid_context_cursor_sequence')
+            if prior_sequence is not None and (sequence is None or sequence<=prior_sequence):
+                superseded=True;raise ControlError('context_cursor_superseded')
+            _live(session)
             if payload.get('type')!='asr_context_cursor' or payload.get('schema')!='asr-pi-cursor/1' or payload.get('boundary') not in ('before_provider_request','session_before_compact'):raise ControlError('invalid_context_cursor')
             if payload.get('status')!='observed':raise ControlError('native_cursor_deferred')
             if type(payload.get('journal_file')) is not str or type(payload.get('branch_ids_sha256')) is not str:raise ControlError('invalid_context_cursor')
@@ -74,8 +81,9 @@ def observe(service,token,project,run,session_id,epoch,owner,*,observation):
                         recovery='Capture again at a stable owned Runtime boundary; preserve the original journal and experiments.')
         if subject is not None:
             service._remember(db,project,scope,key,payload,result)
-            if session.get('native_context',{}).get('native_session_id'):
+            if session.get('native_context',{}).get('native_session_id') and not superseded:
                 session['native_context']['latest_observation_id']=observation_id
+                if payload.get('observation_sequence') is not None:session['native_context']['latest_observation_sequence']=payload['observation_sequence']
                 db.execute('UPDATE asr_runtime_sessions SET record=? WHERE session_id=?',(encoded(session),session_id))
         service._event(db,project,run,'context_cursor_'+result['status'],session_id=session_id,epoch=epoch,subject=subject,observation_id=observation_id,reason=result.get('reason'))
         return result

@@ -2,9 +2,10 @@
 import {createHash,randomUUID} from 'node:crypto';
 import {isAbsolute} from 'node:path';
 
+let observationSequence=0;
 export function captureCursor(ctx) {
   const base={type:'asr_context_cursor',schema:'asr-pi-cursor/1',observation_id:randomUUID(),
-    observed_at:new Date().toISOString(),installation_authorized:false,provider_payload_verified:false};
+    observed_at:new Date().toISOString(),observation_sequence:++observationSequence,installation_authorized:false,provider_payload_verified:false};
   try {
     const manager=ctx?.sessionManager;
     if(!manager)throw new Error('native_session_manager_unavailable');

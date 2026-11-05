@@ -36,6 +36,19 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
     started=time.monotonic()
     exited=False
     cursor_receipts=[]
+    from .async_observations import OrderedObservations
+    runtime_identity=dict(bridge.runtime_identity)
+    def record_cursor(record):
+        try:
+            receipt=service.observe_context_cursor(bridge.supervisor_token,bridge.project,bridge.run,
+                **runtime_identity,observation=record)
+        except (ControlError,OSError,sqlite3.Error,ValueError) as error:
+            receipt=dict(status='deferred',reason=getattr(error,'code','context_cursor_record_failed'),
+                         installation_authorized=False,active_cursor_verified=False,
+                         recovery='Keep native originals; delayed observations do not prove a live cursor.')
+        cursor_receipts.append(receipt)
+    cursor_writer=OrderedObservations(record_cursor)
+    bridge.context_observation_barrier=cursor_writer.barrier
     def record_event(record,forward=True):
         if record.get('type')=='asr_limit':
             observation={key:record[key] for key in ('kind','limit','observed','reason')}
@@ -45,15 +58,7 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
             service.observe_runtime_limit(bridge.supervisor_token,bridge.project,bridge.run,
                 **bridge.runtime_identity,**observation,idempotency_key='runtime_limit_'+owner+'_'+identity)
         if record.get('type')=='asr_context_cursor' and organization_arguments:
-            try:
-                receipt=service.observe_context_cursor(bridge.supervisor_token,bridge.project,bridge.run,
-                    **bridge.runtime_identity,observation=record)
-            except (ControlError,OSError,sqlite3.Error,ValueError) as error:
-                receipt=dict(status='deferred',reason=getattr(error,'code','context_cursor_record_failed'),
-                             installation_authorized=False,active_cursor_verified=False,
-                             recovery='Keep the native journal; retry at a stable owned boundary. Research execution is unchanged.')
-            cursor_receipts.append(receipt)
-            if forward and on_event:on_event(dict(type='asr_context_cursor_binding',**receipt))
+            cursor_writer.submit(record)
         if forward and on_event:on_event(record)
     try:
         source=Path(oauth_source or Path.home()/'.pi/agent/auth.json')
@@ -73,7 +78,12 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
                 should_stop=lambda: service.runtime_stop_requested(bridge.supervisor_token,bridge.project,bridge.run))
         exited=True
         result['runtime_claim']=claim
-        result['context_cursor_receipts']=cursor_receipts
+        result['context_observation_drain']=cursor_writer.close(timeout=0)
+        result['context_cursor_receipts']=list(cursor_receipts)
+        if on_event:
+            for receipt in result['context_cursor_receipts']:
+                on_event(dict(type='asr_context_cursor_binding',**receipt))
+            on_event(dict(type='asr_context_observation_drain',**result['context_observation_drain']))
         try:
             result['oauth_sync']=synchronize_oauth(source,Path(config_dir),oauth_baseline)
         except (RuntimeFailure,OSError,ValueError) as error:
@@ -97,6 +107,8 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
             record_event(dict(type='asr_limit',recoverable=True,**error.details))
         raise
     finally:
+        if not cursor_writer.closed:cursor_writer.close(timeout=0)
+        bridge.context_observation_barrier=None
         # If setup failed before spawn, there is no child to reconcile. A runtime
         # exception after launch is conservatively unresolved unless run returned.
         if not exited:

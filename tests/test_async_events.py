@@ -65,3 +65,20 @@ class AsyncEventTests(unittest.TestCase):
             self.assertEqual(recorder.receipt['failures'][0]['sequence'],1)
             self.assertEqual(recorder.receipt['written'],0)
             self.assertEqual(recorder.receipt['status'],'incomplete')
+
+    def test_stalled_writer_returns_pending_receipt_and_can_be_reconciled(self):
+        from integrations.runtimes.async_events import AsyncEventRecorder
+        release=threading.Event();entered=threading.Event()
+        with tempfile.TemporaryDirectory() as root:
+            def slow_write(line):entered.set();release.wait(3)
+            recorder=AsyncEventRecorder(Path(root)/'events.jsonl',write=slow_write)
+            recorder({'type':'end'});self.assertTrue(entered.wait(1))
+            try:
+                result=recorder.close(timeout=.01)
+                self.assertEqual(result['status'],'draining')
+                self.assertFalse(result['durability_verified'])
+                self.assertTrue(recorder.thread.is_alive())
+                self.assertFalse(result['research_terminated'])
+            finally:release.set()
+            result=recorder.close(timeout=1)
+            self.assertEqual(result['status'],'complete')

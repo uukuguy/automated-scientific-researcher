@@ -46,6 +46,7 @@ class ResearchBridge:
         self.permits=[]
         self.runtime_identity={}
         self.context_installation_id=None
+        self.context_observation_barrier=None
         self.documentation=None
 
     def call(self, operation, arguments, key):
@@ -62,6 +63,10 @@ class ResearchBridge:
             from integrations.research_tools.literature import search
             return search(**arguments)
         if operation=='context_boundary':
+            if self.context_observation_barrier is not None:
+                drained=self.context_observation_barrier()
+                if not drained['drained']:
+                    return dict(action='cancel',reason='context_observations_pending',installation_authorized=False,context_installed=False,observation_drain=drained)
             if not {'observation'}<=set(arguments)<= {'observation','tokens_before'} or type(arguments['observation']) is not dict or arguments['observation'].get('observation_id')!=key or arguments['observation'].get('boundary')!='session_before_compact':
                 raise ValueError('invalid_bridge_request')
             receipt=s.observe_context_cursor(self.supervisor_token,p,r,**self.runtime_identity,observation=arguments['observation'])

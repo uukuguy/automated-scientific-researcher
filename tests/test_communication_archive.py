@@ -105,3 +105,11 @@ class CommunicationArchiveTests(unittest.TestCase):
         result=archive(self.root,self.out)
         self.assertTrue(any(g['code']=='event_recording_incomplete' for g in result['gaps']))
         self.assertTrue((self.out/'steps/000-lead/events.recording.json').is_file())
+
+    def test_pending_control_observations_are_not_exported_as_complete(self):
+        from integrations.runtimes.communication_archive import archive
+        path=self.step/'result.json';value=json.loads(path.read_text())
+        value['context_observation_drain']=dict(drained=False,pending=2)
+        path.write_text(json.dumps(value))
+        result=archive(self.root,self.out)
+        self.assertTrue(any(g['code']=='context_observations_pending' and g['pending']==2 for g in result['gaps']))

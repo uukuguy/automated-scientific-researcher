@@ -117,6 +117,10 @@ def archive(root, destination):
         else:
             capture(result, 'steps/'+step.name+'/result.json')
             record = json.loads(result.read_text()); session['status'] = record.get('status')
+            observation_drain=record.get('context_observation_drain')
+            if observation_drain is not None and observation_drain.get('drained') is not True:
+                gaps.append(dict(code='context_observations_pending',step=step.name,pending=observation_drain.get('pending'),
+                                 recovery='Raw observations remain recorded; reconcile deferred Control receipts without rerunning research.'))
             name = record.get('recovery',{}).get('native_session_file')
             if not name or not Path(name).is_file():
                 gaps.append(dict(code='missing_native_journal', step=step.name))
