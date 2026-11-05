@@ -87,7 +87,7 @@ def make_server(service, *, host='127.0.0.1', port=8765):
                 elif len(route)==3 and route[0]=='runs' and route[2]=='organization':
                     if self.command=='GET':
                         query=parse_qs(url.query)
-                        result=service.organization_records(token,project,route[1],after=int(query.get('after',['0'])[0]),limit=int(query.get('limit',['100'])[0]))
+                        result=service.organization_records(token,project,route[1],after=int(query.get('after',['0'])[0]),limit=int(query['limit'][0]) if 'limit' in query else None)
                     else:
                         result=service.change_organization(token,project,route[1],**body)
                 elif self.command=='POST' and len(route)==3 and route[0]=='runs' and route[2]=='trials':

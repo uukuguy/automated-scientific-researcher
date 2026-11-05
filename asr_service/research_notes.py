@@ -30,7 +30,7 @@ def _materials(db, service, project, run, sequences, *, saving=False):
 
 def _prepare_operation(service,token,project,run,*,operation,idempotency_key,text=None,
                        source_sequences=None,revision=None,expected_note=None,artifact_references=None,
-                       artifact_reference=None,offset=0,limit=8000):
+                       artifact_reference=None,offset=0,limit=None):
     principal=service._auth(token,project,{'researcher'});service._identity(run,idempotency_key)
     if operation not in ('save','adopt','read','source_read','history_read'):raise ControlError('invalid_note_operation')
     owner=principal['subject'];scope=encoded([project,run,owner])

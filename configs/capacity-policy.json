@@ -1,6 +1,6 @@
 {
   "schema": "asr-capacity-policy/1",
-  "revision": 7,
+  "revision": 8,
   "limits": {
     "context_boundary_ms": {
       "value": 300000,
@@ -153,6 +153,78 @@
       "purpose": "避免完整附件正文驻留内存；不是文件总大小或科研容量上限",
       "adequacy": "1MiB块兼顾顺序读取与有限内存，全文无总量截断；UTF-8增量解码跨块保留字符",
       "recovery": "块读完继续读取至EOF；不因附件大于块而拒绝、截断或终止研究。IO/哈希/编码失败保留原件并沿原拒绝路径处理；可显式修改本参数。"
+    },
+    "source_page_default_characters": {
+      "value": 8000,
+      "unit": "characters",
+      "scope": "单次历史原文取页缺省值",
+      "purpose": "避免一次查询重新填满上下文",
+      "adequacy": "保留已验证的8000字符分页，可按模型窗口显式调整",
+      "recovery": "拒绝本次取页/发布/启动准备并记录参数、实际值和策略指纹；保留原件、研究状态与费用，不自动重试或提高额度。按分页继续，或显式修订配置后重新准备。"
+    },
+    "source_page_max_characters": {
+      "value": 16000,
+      "unit": "characters",
+      "scope": "单次历史原文取页最大值",
+      "purpose": "限制单次工具响应而不截断原件",
+      "adequacy": "保留既有16000字符上限，支持next_offset遍历完整原件",
+      "recovery": "拒绝本次取页/发布/启动准备并记录参数、实际值和策略指纹；保留原件、研究状态与费用，不自动重试或提高额度。按分页继续，或显式修订配置后重新准备。"
+    },
+    "workspace_snapshot_bytes": {
+      "value": 16777216,
+      "unit": "bytes",
+      "scope": "单次工作区快照总正文",
+      "purpose": "限制快照内存及角色副本开销",
+      "adequacy": "16MiB覆盖已测2,281,626字节报告约7倍；大型原始实验文件采用不可变引用",
+      "recovery": "拒绝本次取页/发布/启动准备并记录参数、实际值和策略指纹；保留原件、研究状态与费用，不自动重试或提高额度。按分页继续，或显式修订配置后重新准备。"
+    },
+    "capability_skill_count": {
+      "value": 32,
+      "unit": "records",
+      "scope": "单个pi能力包技能数量",
+      "purpose": "控制装载文件数量及提示输入",
+      "adequacy": "保留已验收32项，远高于当前固定能力包；新增负载须校准",
+      "recovery": "拒绝本次取页/发布/启动准备并记录参数、实际值和策略指纹；保留原件、研究状态与费用，不自动重试或提高额度。按分页继续，或显式修订配置后重新准备。"
+    },
+    "capability_skill_bytes": {
+      "value": 1048576,
+      "unit": "bytes",
+      "scope": "单个pi技能文件",
+      "purpose": "控制启动装载与提示输入",
+      "adequacy": "保留已验收1MiB，当前固定技能文档远小于此值",
+      "recovery": "拒绝本次取页/发布/启动准备并记录参数、实际值和策略指纹；保留原件、研究状态与费用，不自动重试或提高额度。按分页继续，或显式修订配置后重新准备。"
+    },
+    "capability_pack_bytes": {
+      "value": 8388608,
+      "unit": "bytes",
+      "scope": "pi能力包所有技能正文总量",
+      "purpose": "控制装载内存与提示规模",
+      "adequacy": "保留已验收8MiB，与单项1MiB共同控制包规模",
+      "recovery": "拒绝本次取页/发布/启动准备并记录参数、实际值和策略指纹；保留原件、研究状态与费用，不自动重试或提高额度。按分页继续，或显式修订配置后重新准备。"
+    },
+    "organization_document_bytes": {
+      "value": 65536,
+      "unit": "bytes",
+      "scope": "当前Control组织记录/历史查询",
+      "purpose": "控制单条组织记录内联规模",
+      "adequacy": "保留64KiB，代码/数据使用已实现附件引用；当前组织消息已按此规则验收",
+      "recovery": "记录实际请求、配置值、范围及策略指纹，只延期本次操作；保留原件/任务/费用，分页继续或显式调整配置，不截断全部历史。"
+    },
+    "organization_page_default_records": {
+      "value": 100,
+      "unit": "records",
+      "scope": "当前Control组织记录/历史查询",
+      "purpose": "控制缺省历史查询返回规模",
+      "adequacy": "保留100条缺省页长，可使用next_after读完历史",
+      "recovery": "记录实际请求、配置值、范围及策略指纹，只延期本次操作；保留原件/任务/费用，分页继续或显式调整配置，不截断全部历史。"
+    },
+    "organization_page_max_records": {
+      "value": 500,
+      "unit": "records",
+      "scope": "当前Control组织记录/历史查询",
+      "purpose": "防止单次查询大量历史占用响应与上下文",
+      "adequacy": "保留500条上限，可显式配置；不限制历史总记录数",
+      "recovery": "记录实际请求、配置值、范围及策略指纹，只延期本次操作；保留原件/任务/费用，分页继续或显式调整配置，不截断全部历史。"
     }
   }
 }

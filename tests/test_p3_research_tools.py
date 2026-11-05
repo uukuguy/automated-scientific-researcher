@@ -75,6 +75,8 @@ class CandidateBridgeTests(unittest.TestCase):
         self.work = self.root/'work'
         self.work.mkdir()
         self.service = Mock()
+        from integrations.runtimes.capacity_policy import load_policy
+        self.service.artifact_io_policy = load_policy()
         self.service.register_candidate.return_value = {'digest': 'candidate-reference', 'path': '/private/service/candidate.m'}
         self.bridge = ResearchBridge(self.service, project='p', run='r', researcher_token='author',
                                      supervisor_token='supervisor', workspace=self.work,

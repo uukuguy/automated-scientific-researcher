@@ -14,15 +14,12 @@ import os
 import threading
 
 
-SNAPSHOT_BYTES = 16 * 1024 * 1024
-
-
 class SnapshotLimit(ValueError):
     code = 'snapshot_too_large'
 
-    def __init__(self, observed, path):
+    def __init__(self, observed, path, limit, policy_sha256):
         super().__init__(self.code)
-        self.details = dict(dimension='snapshot_bytes',limit=SNAPSHOT_BYTES,requested=observed,
+        self.details = dict(dimension='snapshot_bytes',limit=limit,requested=observed,capacity_policy_sha256=policy_sha256,
             observed_kind='at_least',scope='workspace_snapshot',path=path,recoverable=True,
             reason='Bound in-memory publication and replication of shared workspace snapshots.',
             recovery='Original workspace and experiment evidence are retained. Publish smaller explicit snapshots or reference immutable evidence by hash; do not rerun experiments.')
@@ -224,6 +221,12 @@ class ResearchBridge:
 
     def snapshot(self, paths):
         if not isinstance(paths,list) or not paths or any(not isinstance(x,str) for x in paths) or len(set(paths))!=len(paths): raise ValueError('explicit_snapshot_paths_required')
+        if self.service is None:
+            from integrations.runtimes.capacity_policy import load_policy
+            policy=load_policy()
+        else:
+            policy=self.service.artifact_io_policy
+        snapshot_bytes=policy['limits']['workspace_snapshot_bytes']['value']
         entries=[]; content={}; total=0
         for name in paths:
             if not isinstance(name,str) or Path(name).is_absolute() or '..' in Path(name).parts:
@@ -232,10 +235,10 @@ class ResearchBridge:
             if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(self.workspace):
                 raise ValueError('invalid_snapshot_path')
             size=path.stat().st_size
-            if size>SNAPSHOT_BYTES-total: raise SnapshotLimit(total+size,name)
-            with path.open('rb') as stream: body=stream.read(SNAPSHOT_BYTES+1-total)
+            if size>snapshot_bytes-total: raise SnapshotLimit(total+size,name,snapshot_bytes,policy['sha256'])
+            with path.open('rb') as stream: body=stream.read(snapshot_bytes+1-total)
             total+=len(body)
-            if total>SNAPSHOT_BYTES: raise SnapshotLimit(total,name)
+            if total>snapshot_bytes: raise SnapshotLimit(total,name,snapshot_bytes,policy['sha256'])
             content[name]=body; entries.append(dict(path=name,sha256=hashlib.sha256(body).hexdigest(),size=len(body)))
         manifest=dict(schema='asr-workspace-snapshot/1',project_id=self.project,research_run_id=self.run,files=sorted(entries,key=lambda e:e['path']))
         raw=json.dumps(manifest,sort_keys=True,separators=(',',':')).encode(); digest=hashlib.sha256(raw).hexdigest()

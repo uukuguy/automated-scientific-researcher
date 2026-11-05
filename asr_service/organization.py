@@ -10,7 +10,6 @@ import json
 from .contracts import encoded
 from .control import ControlError, now
 
-MAX_DOCUMENT_BYTES = 65536
 TERMINAL_TASKS = {'completed', 'cancelled'}
 KINDS = {'policy', 'member', 'direction', 'task', 'message'}
 
@@ -215,9 +214,10 @@ def change(service, token, project, run, *, kind, entity_id, expected_revision, 
             replay = service._replay(db, project, 'organization:'+run, idempotency_key, payload)
             if replay: return replay
             require(state['state'] in ('running','paused'), 'organization_run_closed')
-            if len(body) > MAX_DOCUMENT_BYTES:
+            document_limit=service.artifact_io_policy['limits']['organization_document_bytes']['value']
+            if len(body) > document_limit:
                 error = ControlError('organization_document_limit')
-                error.details = dict(dimension='organization_document_bytes', limit=MAX_DOCUMENT_BYTES,
+                error.details = dict(dimension='organization_document_bytes', limit=document_limit, capacity_policy_sha256=service.artifact_io_policy['sha256'],
                     requested=len(body), unit='bytes', scope='organization_record', action='request_deferred',
                     recovery='Preserve the task. Store large code/data as governed artifacts and submit a concise description with evidence references.')
                 raise error
@@ -246,14 +246,17 @@ def change(service, token, project, run, *, kind, entity_id, expected_revision, 
         raise
 
 
-def records(service, token, project, run, *, after=0, limit=100):
+def records(service, token, project, run, *, after=0, limit=None):
     principal = service._auth(token, project, {'human','researcher'})
+    caps=service.artifact_io_policy['limits']
+    limit=caps['organization_page_default_records']['value'] if limit is None else limit
+    maximum=caps['organization_page_max_records']['value']
     require(type(after) is int and after >= 0 and type(limit) is int and limit >= 1, 'invalid_organization_page')
-    if limit > 500:
+    if limit > maximum:
         error = ControlError('invalid_organization_page')
-        error.details = dict(dimension='organization_page_records', limit=500, requested=limit,
+        error.details = dict(dimension='organization_page_records', limit=maximum, requested=limit, capacity_policy_sha256=service.artifact_io_policy['sha256'],
             unit='records', scope='organization_read', action='request_deferred',
-            recovery='Read at most 500 records per page and follow next_after while has_more is true; no history was discarded.')
+            recovery=f'Read at most {maximum} records per page and follow next_after while has_more is true; no history was discarded.')
         with service._connect() as db:
             service._run(db, project, run)
             principal_role(db, project, run, principal)

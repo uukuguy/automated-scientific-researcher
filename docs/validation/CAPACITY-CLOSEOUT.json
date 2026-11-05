@@ -1,0 +1,27 @@
+{
+  "schema": "asr-capacity-closeout/1",
+  "scope": "9 current-P5 capacity settings; no model or scientific execution",
+  "tests": {
+    "total": 677,
+    "passed": 652,
+    "skipped": 25,
+    "log": "artifacts/capacity-closeout-001/verified-tests.log"
+  },
+  "retained_runs": [
+    {
+      "path": "artifacts/capacity-closeout-001/tests.log",
+      "sha256": "3158f2867419b6e798cbbe900103d56fad3e1033b980d134929535313c256dde",
+      "meaning": "Invalidated by changing policy schema during running suite; retain all errors including projection failure; superseded by stable-tree rerun."
+    },
+    {
+      "path": "artifacts/capacity-closeout-001/final-tests.log",
+      "sha256": "3ae0c0c9941c6b452e5c251a437fb2860a6b3a5f93acf435f3aaa2d392026d96",
+      "meaning": "677 tests; four snapshot configuration compatibility errors; fixed then rerun."
+    },
+    {
+      "path": "artifacts/capacity-closeout-001/verified-tests.log",
+      "sha256": "0d02efc8b9b0e04ffa0b115636a851726b41f4526a232c994004b92d0d669fbf",
+      "meaning": "677 tests; 652 passed, 25 skipped."
+    }
+  ]
+}

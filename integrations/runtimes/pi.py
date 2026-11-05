@@ -140,6 +140,11 @@ class PiRuntime:
         self.max_pending_records=max_pending_records;self.max_records=max_records;self.abort_grace_seconds=abort_grace_seconds
 
     def preflight_capabilities(self):
+        caps=self.capacity_policy['limits']
+        required=('capability_skill_count','capability_skill_bytes','capability_pack_bytes')
+        if any(name not in caps for name in required):raise RuntimeFailure('capacity_policy_fields_required',details=dict(required=required,capacity_policy_sha256=self.capacity_policy['sha256']))
+        def exceeded(name,observed):
+            raise RuntimeFailure('capability_skill_capacity_exceeded',details=dict(kind=name,limit=caps[name]['value'],observed=observed,unit=caps[name]['unit'],capacity_policy_sha256=self.capacity_policy['sha256'],recoverable=True,recovery=caps[name]['recovery']))
         try:
             if self.capabilities_path.is_symlink():raise RuntimeFailure('capability_manifest_symlink_forbidden')
             raw=self.capabilities_path.read_bytes()
@@ -152,8 +157,9 @@ class PiRuntime:
             if pack.get('ambient_resources') is not False:
                 raise RuntimeFailure('ambient_capabilities_forbidden')
             skills=pack.get('skills',[])
-            if type(skills) is not list or not 1<=len(skills)<=32:
+            if type(skills) is not list or not skills:
                 raise RuntimeFailure('capability_skill_inventory_invalid')
+            if len(skills)>caps['capability_skill_count']['value']:exceeded('capability_skill_count',len(skills))
             verified=[];seen_ids=set();seen_names=set();seen_paths=set();total=0
             root=self.capabilities_path.parent.resolve()
             for entry in skills:
@@ -171,9 +177,13 @@ class PiRuntime:
                 path=root/relative
                 if any(candidate.is_symlink() for candidate in (root/'skills',path.parent,path)):
                     raise RuntimeFailure('capability_skill_symlink_forbidden')
-                if not path.is_file() or path.stat().st_size>1048576:raise RuntimeFailure('capability_skill_size_invalid')
-                content=path.read_bytes();total+=len(content)
-                if len(content)>1048576 or total>8388608:raise RuntimeFailure('capability_skill_size_invalid')
+                if not path.is_file():raise RuntimeFailure('capability_skill_size_invalid')
+                size=path.stat().st_size
+                if size>caps['capability_skill_bytes']['value']:exceeded('capability_skill_bytes',size)
+                with path.open('rb') as stream:content=stream.read(caps['capability_skill_bytes']['value']+1)
+                total+=len(content)
+                if len(content)>caps['capability_skill_bytes']['value']:exceeded('capability_skill_bytes',len(content))
+                if total>caps['capability_pack_bytes']['value']:exceeded('capability_pack_bytes',total)
                 digest=entry['sha256']
                 if not isinstance(digest,str) or re.fullmatch(r'[a-f0-9]{64}',digest) is None or hashlib.sha256(content).hexdigest()!=digest:
                     raise RuntimeFailure('capability_skill_hash_mismatch')

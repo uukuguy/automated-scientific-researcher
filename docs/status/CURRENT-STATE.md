@@ -4,7 +4,7 @@
 
 - Project: Automated Scientific Researcher — durable research system with power-grid sampling and solver-method research as its first scientific deliverable.
 - Current branch: main
-- Theme-level focus: Task-scoped scientific execution over verified single-researcher science and serial role collaboration.
+- Theme-level focus: P5独立科学验收与组织能力验证；容量专项按有限清单收尾，额外加固为待办。
 - Project route: managed
 - Canonical worklist: docs/plans/WORKLIST.md
 - Active work package: P5 — autonomous direction formation and bounded role collaboration; P4 verified
@@ -130,3 +130,5 @@ See docs/validation/P5-PROJECT-PILOT.md and RESEARCH-COMMUNICATION.md.
 Control提供显式成员笔记核对，比较不可变文件、原保存/采纳回执及当前指针；只生成历史检查报告，不补造成功、不采纳或删除。文件读取在写事务外，提交核对账本与文件版本；报告沿原请求/事件账本保存和导出。
 
 笔记附件正文按统一读取块流式校验/分页，缓存仅保留摘要与文件版本，取页仍核验全文。清单JSON按事件完整解析并只保留身份及目标条目；单标量/嵌套、引用数量和目录核对报告规模仍需单独处理。
+
+统一容量策略第8版覆盖当前P5页面、快照、技能材料与组织记录；预算、隔离配置及冻结科学规则保持各自权威入口。参见`docs/validation/CAPACITY-CLOSEOUT.md`。

@@ -68,6 +68,7 @@ class ControlService(PolicyStore):
         from integrations.runtimes.capacity_policy import load_policy
         self.artifact_io_policy=load_policy(capacity_policy_path)
         if 'artifact_read_chunk_bytes' not in self.artifact_io_policy['limits']:raise ValueError('artifact_io_policy_required')
+        if any(name not in self.artifact_io_policy['limits'] for name in ('source_page_default_characters','source_page_max_characters','workspace_snapshot_bytes','organization_document_bytes','organization_page_default_records','organization_page_max_records')):raise ValueError('capacity_policy_fields_required')
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         if not isinstance(credentials, dict) or not credentials:

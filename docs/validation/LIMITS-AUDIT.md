@@ -510,3 +510,31 @@ pi钩子收到明确recording_backpressure回执后请求原生检查点及abort
 沿用第7版`artifact_read_chunk_bytes`，未新增清单总大小、条目数量、解析时间或深度上限。解析到EOF并完整哈希，不因先找到目标而停止检查。畸形或歧义清单沿原note_artifact_unavailable路径拒绝，保留原件与错误，不自动重试或终止研究。
 
 合成1000/60000/120000条测量中，大清单Python分配峰值约8.8MB；该值不是生产内存上限，小清单使用事件解析可能比整份解析占更多内存。超长标量/深嵌套、原生解析器内存、并发叠加及目录核对清单仍开放。8项专项边界检查覆盖尾部/歧义/跨块编码/读中变更；证据MANIFEST-STREAMING.md/.json。固定依赖已锁定并运行uv sync --locked --extra aar。
+
+
+## 2026-11-05：有限收尾清单与统一管理入口
+
+当前P5路径本轮迁移固定为9项，配置统一位于`configs/capacity-policy.json`第8版；每项含目的、单位、范围、默认充分性及恢复说明。默认值未随迁移缩减。
+
+| 参数 | 默认值 | 范围 |
+|---|---|---|
+| `source_page_default_characters` | 8000 characters | 单次历史原文取页缺省值 |
+| `source_page_max_characters` | 16000 characters | 单次历史原文取页最大值 |
+| `workspace_snapshot_bytes` | 16777216 bytes | 单次工作区快照总正文 |
+| `capability_skill_count` | 32 records | 单个pi能力包技能数量 |
+| `capability_skill_bytes` | 1048576 bytes | 单个pi技能文件 |
+| `capability_pack_bytes` | 8388608 bytes | pi能力包所有技能正文总量 |
+| `organization_document_bytes` | 65536 bytes | 当前Control组织记录/历史查询 |
+| `organization_page_default_records` | 100 records | 当前Control组织记录/历史查询 |
+| `organization_page_max_records` | 500 records | 当前Control组织记录/历史查询 |
+
+页面超限记录`source_page_deferred`；快照沿用持久化budget block但不暂停研究；组织记录沿用请求拒绝回执；技能材料在运行前明确拒绝，由运行入口保留失败详情。均带有效策略指纹，原件不删、成本不重置。边界验证见`tests/test_capacity_closeout.py`及[收尾报告](CAPACITY-CLOSEOUT.md)。16MiB快照默认已覆盖实际约2.28MB报告；更大实验原件使用不可变引用。页面为分段读取，非原件总量限制。技能和组织容量沿用已有验收配置，不宣称覆盖任意未来规模。
+
+统一索引与明确遗留：
+
+- 运行时/传输/日志/上下文及本轮9项：统一容量策略；Control构造参数`capacity_policy_path`及运行时策略入口显式加载。
+- 科研计算、模型时长/轮次/工具预算：Control版本化运行契约及预算账本；配置变更必须保留使用量和变更回执。
+- 候选容器资源与执行期限：已准入执行profile及任务预算；隔离强停仍需实际退出证明和可恢复状态。
+- 冻结评价样本、科学容差与数据权限：独立科学协议，不转成可随意覆盖的运行时容量参数。
+- Codex App Server诊断连接的30秒/5秒、1MiB/8MiB等旧默认：不在当前P5 pi运行路径，尚未迁移，本轮不宣称全仓清零。
+- 目录审计全量列表、大JSON标量/深度、持久队列/断电恢复和精确提供方计量：明确待办，不自动续开、不作为本轮完成条件。

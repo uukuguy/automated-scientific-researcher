@@ -95,15 +95,16 @@ def verify_registered(service,project,run,subject,registration):
     return verify(source['reader']['path'],read)
 
 
-def source_read(service,token,project,run,*,source_registration,message_id,offset=0,limit=8000):
+def source_read(service,token,project,run,*,source_registration,message_id,offset=0,limit=None):
     """Read the owner's immutable visible snapshot, never private native files."""
     from .context_admission import _scope
     from asr_context.conversation import _rebuild
     principal=service._auth(token,project,{'researcher'});subject=principal['subject']
     service._identity(source_registration,message_id)
-    if type(offset) is not int or offset<0 or type(limit) is not int or not 1<=limit<=16000:raise ControlError('invalid_context_source_page')
+    from .source_paging import parameters
     with service._connect() as db:
         member(db,project,run,subject)
+        limit=parameters(service,project,run,offset,limit,code='invalid_context_source_page')
         row=db.execute('SELECT record FROM asr_requests WHERE project=? AND scope=? AND request_key=?',(project,_scope('source',run,subject),source_registration)).fetchone()
         source=json.loads(row[0]) if row else {}
         if source.get('status')!='registered':raise ControlError('context_source_unavailable')

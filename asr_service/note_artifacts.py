@@ -153,14 +153,10 @@ def resolve(db, service, project, run, references,*,prepared=None):
     return [material for material,body in rows]
 
 
-def read_page(db, service, project, run, reference, *, offset=0, limit=8000,prepared=None):
+def read_page(db, service, project, run, reference, *, offset=0, limit=None,prepared=None):
     """Return a verified UTF-8 text page. Offsets count Unicode characters."""
-    if type(offset) is not int or offset<0 or type(limit) is not int or not 1<=limit<=16000:
-        error=ControlError('invalid_note_source_page')
-        error.details=dict(offset=offset if type(offset) is int else type(offset).__name__,limit=limit if type(limit) is int else type(limit).__name__,max_characters=16000,unit='unicode_characters',
-                           purpose='Bound one tool response and prevent refilling context with a large artifact.',
-                           recovery='Use limit 1..16000 and follow next_offset; no source was truncated.')
-        raise error
+    from .source_paging import parameters
+    limit=parameters(service,project,run,offset,limit,code='invalid_note_source_page')
     material,attachment=(prepared.check(db,[reference]) if prepared is not None else _resolve(db,service,project,run,[reference]))[0]
     try:
         original=attachment.witness.check()
