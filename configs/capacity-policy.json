@@ -1,6 +1,6 @@
 {
   "schema": "asr-capacity-policy/1",
-  "revision": 3,
+  "revision": 4,
   "limits": {
     "context_boundary_ms": {
       "value": 300000,
@@ -97,6 +97,30 @@
       "purpose": "避免后台记录器永久卡住收尾或安装边界",
       "adequacy": "两分钟仅用于本机排空，不限制研究；长程积压需按负载调整",
       "recovery": "到时记录未排空与活动前缀，不终止研究，不关闭后台写入流，不授权安装；后续显式核对。"
+    },
+    "observation_recovery_record_bytes": {
+      "value": 16777216,
+      "unit": "bytes",
+      "scope": "恢复时单条交流记录",
+      "purpose": "限制畸形单行解析内存",
+      "adequacy": "16MiB大于现有4MiB原生协议记录及采集封装，逐行读取",
+      "recovery": "记录配置与实际值，保留原件并延迟本次恢复；不截断记录、不终止研究、不重跑科研工作，不自动增加上限。"
+    },
+    "observation_recovery_records": {
+      "value": 1000000,
+      "unit": "records",
+      "scope": "单次冻结前缀恢复",
+      "purpose": "限制异常事件流扫描工作量",
+      "adequacy": "百万条覆盖现有十万条协议流及规范化/回执封装；不是研究历史总上限",
+      "recovery": "记录配置与实际值，保留原件并延迟本次恢复；不截断记录、不终止研究、不重跑科研工作，不自动增加上限。"
+    },
+    "observation_recovery_snapshot_bytes": {
+      "value": 1073741824,
+      "unit": "bytes",
+      "scope": "单次恢复快照",
+      "purpose": "限制本机冻结副本磁盘占用",
+      "adequacy": "1GiB为元数据事件恢复留足余量，超出需显式策略调整或按已核对范围处理",
+      "recovery": "记录配置与实际值，保留原件并延迟本次恢复；不截断记录、不终止研究、不重跑科研工作，不自动增加上限。"
     }
   }
 }

@@ -201,6 +201,8 @@ def main():
             old=json.loads((step/'result.json').read_text())
             if old['status']=='settled' and not (step/'delivery-receipt.json').exists():raise ValueError('delivery_ack_reconciliation_required')
         write(root/(recovery_id+'.json'),dict(reason=args.recovery_reason,prior_budget=previous['budget'],contract_revision=previous['contract_revision'],budget_changes=False,fresh_context_for=sorted(set(args.fresh_context_for))))
+        from .observation_recovery import recover_steps
+        recover_steps(service,tokens['supervisor'],project,run,root/'steps',destination=root/'observation-recovery'/recovery_id)
     else:
         service.publish_contract(tokens['human'],project,'organization-pilot',contract,expected_revision=0,idempotency_key='contract')
         aar.create_run(tokens['human'],project,run,'organization-pilot',1,idempotency_key='start')

@@ -113,3 +113,15 @@ class CommunicationArchiveTests(unittest.TestCase):
         path.write_text(json.dumps(value))
         result=archive(self.root,self.out)
         self.assertTrue(any(g['code']=='context_observations_pending' and g['pending']==2 for g in result['gaps']))
+
+    def test_observation_recovery_receipts_export_without_raw_snapshot_duplication(self):
+        from integrations.runtimes.communication_archive import archive
+        folder=self.root/'observation-recovery/resume-1/000-lead';folder.mkdir(parents=True)
+        (folder/'recovery.json').write_text(json.dumps(dict(status='partial',historical_only=True)))
+        (folder/'receipts.jsonl').write_text(json.dumps(dict(observation_id='old',historical_only=True))+'\n')
+        (folder/'source.jsonl').write_text('restricted frozen original')
+        archive(self.root,self.out)
+        exported=self.out/'observation-recovery/resume-1/000-lead'
+        self.assertTrue((exported/'recovery.json').is_file())
+        self.assertTrue((exported/'receipts.jsonl').is_file())
+        self.assertFalse((exported/'source.jsonl').exists())

@@ -136,6 +136,12 @@ def archive(root, destination):
             if (step/'delivery-receipt.json').is_file():
                 capture(step/'delivery-receipt.json', 'steps/'+step.name+'/delivery-receipt.json')
         sessions.append(session)
+    # Recovery reports are projections, never replacements for frozen steps.
+    # Raw frozen snapshots remain in the restricted store; export their hashes.
+    for record in sorted((root/'observation-recovery').rglob('*')):
+        if record.name not in ('index.json','recovery.json','receipts.jsonl') or not record.is_file():continue
+        relative=str(record.relative_to(root))
+        capture(record,relative,record.suffix=='.jsonl')
     with closing(sqlite3.connect((root/'control.db').as_uri()+'?mode=ro', uri=True)) as db:
         db.execute('BEGIN')
         for table in ('asr_organization','asr_events','asr_runtime_sessions','asr_commands','asr_contracts','asr_hypotheses','asr_findings'):
