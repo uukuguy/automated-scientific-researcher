@@ -47,6 +47,7 @@ class ResearchBridge:
         self.runtime_identity={}
         self.context_installation_id=None
         self.context_observation_barrier=None
+        self.recording_pressure=None
         self.documentation=None
 
     def call(self, operation, arguments, key):
@@ -89,8 +90,10 @@ class ResearchBridge:
             return s.complete_context_installation(self.supervisor_token,p,r,**self.runtime_identity,idempotency_key=key,
                 **{k:v for k,v in arguments.items() if k!='cursor'})
         if operation=='permit':
-            result=s.admit_activity(self.supervisor_token,p,r,kind=arguments['kind'],idempotency_key=key,**self.runtime_identity)
-            self.permits.append(result); return result
+            pressure=self.recording_pressure() if arguments.get('kind')=='turn' and self.recording_pressure is not None else None
+            result=s.admit_activity(self.supervisor_token,p,r,kind=arguments['kind'],idempotency_key=key,recording_pressure=pressure,**self.runtime_identity)
+            if 'activity_id' in result:self.permits.append(result)
+            return result
         if operation=='research_note':
             if arguments.get('operation')=='conversation_read':
                 return s.read_context_source(t,p,r,**{k:v for k,v in arguments.items() if k!='operation'})

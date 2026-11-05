@@ -1,0 +1,31 @@
+{
+  "schema": "asr-async-recording-sizing/1",
+  "measured_at": "2026-11-05T07:45:26.066786+00:00",
+  "measurement": "existing_event_file_bytes",
+  "default_warning_bytes": 134217728,
+  "model_calls": 0,
+  "scientific_experiments": 0,
+  "sources": [
+    {
+      "root": "artifacts/p5-project-001",
+      "matched_files": 194,
+      "largest_path": "artifacts/p5-project-001/steps/009-lead_1/events.jsonl",
+      "bytes": 30499654,
+      "sha256": "537087953f8afd75d8deff7bd16606b1b03f1cff3ca83233f50f703c5ab85989",
+      "default_to_file_ratio": 4.400631167815871
+    },
+    {
+      "root": "artifacts/research-context-model-001",
+      "matched_files": 156,
+      "largest_path": "artifacts/research-context-model-001/steps/installation-002-03-summary/events.jsonl",
+      "bytes": 664588,
+      "sha256": "a10af9833b6bd1d1965cfb4f81a9d818bf283073fe62b103c4e15b2dc2ccb662",
+      "default_to_file_ratio": 201.9562917175754
+    }
+  ],
+  "limits": [
+    "文件总量不等于实际队列积压或进程RSS。",
+    "扫描包含归档副本，matched_files不是唯一会话数。",
+    "不证明任意工具输出、并行负载或磁盘永久失效时的充分性。"
+  ]
+}

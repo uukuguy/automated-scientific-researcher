@@ -37,3 +37,25 @@ class AsyncObservationTests(unittest.TestCase):
         self.assertTrue(worker.close(timeout=1)['drained'])
         self.assertEqual(seen,[{'body':'original'}])
         with self.assertRaises(ValueError):worker.submit({'id':2})
+
+    def test_pressure_probe_is_current_and_exact_boundary_is_allowed(self):
+        import json,tempfile
+        from pathlib import Path
+        from integrations.runtimes.async_observations import OrderedObservations
+        from integrations.runtimes.capacity_policy import load_policy
+        release=threading.Event();entered=threading.Event();value={'id':'pending'}
+        policy=load_policy();del policy['sha256']
+        policy['limits']['async_log_warning_bytes']['value']=len(json.dumps(value,ensure_ascii=False).encode())
+        with tempfile.TemporaryDirectory() as root:
+            config=Path(root)/'policy.json';config.write_text(json.dumps(policy))
+            def consume(value):entered.set();release.wait(3)
+            worker=OrderedObservations(consume,capacity_policy_path=config)
+            try:
+                worker.submit(value);self.assertTrue(entered.wait(1))
+                self.assertIsNone(worker.capacity_state())
+                worker.submit(value)
+                pressure=worker.capacity_state()
+                self.assertEqual(pressure['source'],'context_observations')
+                self.assertEqual(pressure['observed'],2*pressure['limit'])
+            finally:release.set();worker.close(timeout=1)
+            self.assertIsNone(worker.capacity_state())

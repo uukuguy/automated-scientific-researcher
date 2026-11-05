@@ -30,6 +30,12 @@ class OrderedObservations:
                                    observed=self.pending_bytes,unit='bytes',action='record_pressure_continue')
             self.queue.put((self.accepted,value,size))
 
+    def capacity_state(self):
+        with self.condition:
+            if self.pending_bytes<=self.watermark:return None
+            return dict(kind='async_log_warning_bytes',limit=self.watermark,observed=self.pending_bytes,
+                        source='context_observations',capacity_policy_sha256=self.policy['sha256'])
+
     def _run(self):
         while True:
             item=self.queue.get()

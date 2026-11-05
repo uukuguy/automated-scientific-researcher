@@ -132,5 +132,16 @@ class ControlLimitTests(unittest.TestCase):
         self.assertTrue(response['details']['recoverable'])
         self.assertNotIn('agent-secret',json.dumps(response))
 
+    def test_recording_pressure_retains_admitted_trial_and_all_reservations(self):
+        self.start();self.submit()
+        session=self.service.claim_runtime('human-secret','p','r','worker',idempotency_key='recording-session',runtime_identity=self.runtime_identity(),requested_walltime_ms=5000)
+        before=self.service.get_run('human-secret','p','r')
+        result=self.service.admit_activity('human-secret','p','r',kind='turn',idempotency_key='recording-turn',session_id=session['session_id'],epoch=1,owner='worker',recording_pressure=dict(kind='async_log_warning_bytes',limit=100,observed=101,source='communication_events',capacity_policy_sha256='a'*64))
+        after=self.service.get_run('human-secret','p','r')
+        self.assertEqual(after['state'],'paused')
+        self.assertEqual(before['trials'],after['trials'])
+        self.assertEqual(before['budget'],after['budget'])
+        self.assertFalse(result['scientific_executions_cancelled'])
+
 
 if __name__=='__main__':unittest.main()

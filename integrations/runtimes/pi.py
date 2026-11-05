@@ -318,7 +318,7 @@ class PiRuntime:
         def send(command):
             process.stdin.write(json.dumps(command).encode()+b'\n'); process.stdin.flush()
         status='interrupted'; state=None; assistant=[]; turns=tools=0; started=time.monotonic(); settled=False
-        context_installation_verified=False
+        context_installation_verified=False;recording_pressure_receipt=None
         limit_observations=[];pending_tools={};cleanup=dict(native_abort_requested=False,sigterm=False,sigkill=False)
         def limit(kind,configured,observed,reason):
             value=dict(type='asr_limit',kind=kind,limit=max(1,int(configured)),observed=max(int(configured),int(observed)),reason=reason,recoverable=True)
@@ -353,11 +353,13 @@ class PiRuntime:
                 if kind=='extension_ui_request' and record.get('method')=='notify' and type(record.get('message')) is str and record['message'].startswith('ASR_CONTEXT_EVENT '):
                     try:
                         decoded=json.loads(record['message'][len('ASR_CONTEXT_EVENT '):])
-                        if type(decoded) is not dict or decoded.get('type') not in ('asr_context_cursor','asr_context_boundary','asr_context_installation'):raise ValueError('unsupported_context_event')
+                        if type(decoded) is not dict or decoded.get('type') not in ('asr_context_cursor','asr_context_boundary','asr_context_installation','asr_recording_backpressure'):raise ValueError('unsupported_context_event')
                     except ValueError:
                         status='context_recovery_required';break
                     record=decoded;kind=record['type']
                     if on_event:on_event(record)
+                if kind=='asr_recording_backpressure':
+                    recording_pressure_receipt=record;status='recording_backpressure';break
                 if kind=='asr_context_installation':
                     context_installation_verified=record.get('status')=='verified' and record.get('context_installed') is True and record.get('original_journal_preserved') is True and bool(record.get('ticket_id'))
                     if not context_installation_verified:status='context_recovery_required';break
@@ -403,7 +405,7 @@ class PiRuntime:
             # Reap the process group even after a settled RPC response. Closing
             # stdin alone can leave descendant tools running after a timeout.
             if process.poll() is None:
-                if status in ('timed_out','limit_reached','budget_exhausted','cancelled','context_recovery_required'):
+                if status in ('timed_out','limit_reached','budget_exhausted','cancelled','context_recovery_required','recording_backpressure'):
                     try:send({'id':'abort','type':'abort'});cleanup['native_abort_requested']=True
                     except (OSError,ValueError):pass
                 try: process.stdin.close()
@@ -425,7 +427,7 @@ class PiRuntime:
             if process.stdin and not process.stdin.closed: process.stdin.close()
         if process.returncode==75 and status=='interrupted': status='gate_closed'
         return dict(runtime='pi-rpc/1',runtime_version=version,capability_pack_sha256=capabilities['sha256'],capability_pack_id=capabilities['pack']['id'],capability_skills=frozen_skills,provider=self.provider,model=self.model,status=status,session=state,
-                    native_session_id=session_id,context_installation_verified=context_installation_verified,settled=settled,turns=turns,tool_executions=tools,
+                    recording_pressure_receipt=recording_pressure_receipt,native_session_id=session_id,context_installation_verified=context_installation_verified,settled=settled,turns=turns,tool_executions=tools,
                     duration_seconds=time.monotonic()-started,assistant_messages=assistant,exit_code=process.returncode,
                     limit_observations=limit_observations,cleanup=cleanup,protocol_flow=flow,
                     capacity_policy=self.capacity_policy,

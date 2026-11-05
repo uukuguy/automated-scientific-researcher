@@ -8,6 +8,7 @@ import copy
 import hashlib
 import hmac
 import json
+import re
 from pathlib import Path
 import uuid
 from functools import wraps
@@ -679,7 +680,7 @@ class ControlService(PolicyStore):
             return session
 
     @records_budget_block
-    def admit_activity(self, token, project, run, *, kind, idempotency_key, session_id, epoch, owner):
+    def admit_activity(self, token, project, run, *, kind, idempotency_key, session_id, epoch, owner, recording_pressure=None):
         """Issue one finite permit within the exclusively reserved runtime session."""
         principal=self._auth(token,project,{'human','supervisor'})
         self._identity(run,idempotency_key)
@@ -691,6 +692,20 @@ class ControlService(PolicyStore):
             replay=self._replay(db,project,'activity:'+run,idempotency_key,payload)
             if replay:return replay
             if session['state']!='active': raise ControlError('runtime_not_active')
+            if kind=='turn' and recording_pressure is not None:
+                pressure=recording_pressure
+                if (type(pressure) is not dict or set(pressure)!={'kind','limit','observed','source','capacity_policy_sha256'} or
+                    pressure['kind']!='async_log_warning_bytes' or pressure['source'] not in ('communication_events','context_observations') or
+                    type(pressure['capacity_policy_sha256']) is not str or not re.fullmatch('[0-9a-f]{64}',pressure['capacity_policy_sha256'])):
+                    raise ControlError('invalid_recording_pressure')
+                reason='Async '+pressure['source']+' backlog; defer next model request and retain scientific execution. Policy '+pressure['capacity_policy_sha256']
+                receipt=self._observe_runtime_limit_record(db,project,run,principal,session_id=session_id,epoch=epoch,owner=owner,
+                    kind=pressure['kind'],limit=pressure['limit'],observed=pressure['observed'],reason=reason,
+                    idempotency_key='recording_'+hashlib.sha256(idempotency_key.encode()).hexdigest())
+                deferred=dict(status='deferred',reason='recording_backpressure',recoverable=True,scope='next_model_request',
+                    scientific_executions_cancelled=False,capacity_observation=pressure,limit_receipt=receipt)
+                self._remember(db,project,'activity:'+run,idempotency_key,payload,deferred)
+                return deferred
             running=self._run(db,project,run)
             policy=self._contract(db,project,running['contract_id'],running['contract_revision'])['document']['runtime_policy']
             if session['runtime_identity']!={k:policy[k] for k in ('provider','model','auth_mode','billing_mode')}: raise ControlError('runtime_binding_conflict')
@@ -932,28 +947,32 @@ class ControlService(PolicyStore):
     def observe_runtime_limit(self,token,project,run,*,session_id,epoch,owner,kind,limit,observed,reason,idempotency_key):
         principal=self._auth(token,project,{'human','supervisor'})
         self._identity(run,idempotency_key)
-        units={'model_walltime':'milliseconds','bridge_timeout':'milliseconds','provider_turns':'count','tool_executions':'count',
-            'protocol_message_bytes':'bytes','protocol_buffer_bytes':'bytes','protocol_pending_records':'count','protocol_records':'count'}
-        if kind not in units or type(limit) is not int or not 1<=limit<=2**63-1 or type(observed) is not int or not limit<=observed<=2**63-1 or type(reason) is not str or not 1<=len(reason)<=512:raise ControlError('invalid_runtime_limit')
-        payload=[principal['subject'],session_id,epoch,owner,kind,limit,observed,reason]
         with self._connect() as db:
             db.execute('BEGIN IMMEDIATE')
-            session=self._session(db,project,run,session_id,epoch,owner)
-            replay=self._replay(db,project,'runtime_limit:'+run,idempotency_key,payload)
-            if replay:return replay
-            if session['state'] not in ('active','exited'):raise ControlError('runtime_not_active')
-            record=dict(observation_id='limit_'+uuid.uuid4().hex,session_id=session_id,epoch=epoch,
-                kind=kind,limit=limit,observed=observed,unit=units[kind],reason=reason,
-                recoverable=True,author=principal['subject'],created_at=now())
-            session.setdefault('limit_observations',[]).append(record)
-            db.execute('UPDATE asr_runtime_sessions SET record=? WHERE session_id=?',(encoded(session),session_id))
-            running=self._run(db,project,run)
-            if running['state']=='running':running.update(state='paused',control_revision=running['control_revision']+1)
-            running['admission_open']=False
-            db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(running),project,run))
-            self._event(db,project,run,'runtime_limit_observed',**record)
-            self._remember(db,project,'runtime_limit:'+run,idempotency_key,payload,record)
-            return record
+            return self._observe_runtime_limit_record(db,project,run,principal,session_id=session_id,epoch=epoch,owner=owner,
+                kind=kind,limit=limit,observed=observed,reason=reason,idempotency_key=idempotency_key)
+
+    def _observe_runtime_limit_record(self,db,project,run,principal,*,session_id,epoch,owner,kind,limit,observed,reason,idempotency_key):
+        units={'model_walltime':'milliseconds','bridge_timeout':'milliseconds','provider_turns':'count','tool_executions':'count',
+            'async_log_warning_bytes':'bytes','protocol_message_bytes':'bytes','protocol_buffer_bytes':'bytes','protocol_pending_records':'count','protocol_records':'count'}
+        if kind not in units or type(limit) is not int or not 1<=limit<=2**63-1 or type(observed) is not int or not limit<=observed<=2**63-1 or type(reason) is not str or not 1<=len(reason)<=512:raise ControlError('invalid_runtime_limit')
+        payload=[principal['subject'],session_id,epoch,owner,kind,limit,observed,reason]
+        session=self._session(db,project,run,session_id,epoch,owner)
+        replay=self._replay(db,project,'runtime_limit:'+run,idempotency_key,payload)
+        if replay:return replay
+        if session['state'] not in ('active','exited'):raise ControlError('runtime_not_active')
+        record=dict(observation_id='limit_'+uuid.uuid4().hex,session_id=session_id,epoch=epoch,
+            kind=kind,limit=limit,observed=observed,unit=units[kind],reason=reason,
+            recoverable=True,author=principal['subject'],created_at=now())
+        session.setdefault('limit_observations',[]).append(record)
+        db.execute('UPDATE asr_runtime_sessions SET record=? WHERE session_id=?',(encoded(session),session_id))
+        running=self._run(db,project,run)
+        if running['state']=='running':running.update(state='paused',control_revision=running['control_revision']+1)
+        running['admission_open']=False
+        db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(running),project,run))
+        self._event(db,project,run,'runtime_limit_observed',**record)
+        self._remember(db,project,'runtime_limit:'+run,idempotency_key,payload,record)
+        return record
 
     def register_candidate(self, token, project, *, request_key, source, entrypoint='candidate.m', profile='octave-candidate/1', snapshot_ref=None, run=None):
         from .candidates import register

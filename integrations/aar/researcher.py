@@ -64,6 +64,7 @@ def create_researcher(checkout, *, runtime, bridge_factory, service, project, ru
                     message=record.get('message',{})
                     text='\n'.join(x['text'] for x in message.get('content',[]) if x.get('type')=='text')
                     if text and self.callback:self.callback(RuntimeMessage([RuntimeText(text)]))
+            event.capacity_state=getattr(event_callback,'capacity_state',lambda:None)
             result=await asyncio.to_thread(run_session,runtime,bridge_factory(),config_dir=config_dir,
                 native_session_id=run,prompt=task,limits=limits,oauth_source=oauth_source,on_event=event)
             self.owner.runtime_results.append(result)

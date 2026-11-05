@@ -54,6 +54,12 @@ class AsyncEventRecorder:
                     recovery='检查异步写入器；保留原生日志与活动前缀，不取消研究或自动提高策略。')
             self.queue.put((line,size,sequence))
 
+    def capacity_state(self):
+        with self.lock:
+            if self.pending_bytes<=self.watermark:return None
+            return dict(kind='async_log_warning_bytes',limit=self.watermark,observed=self.pending_bytes,
+                        source='communication_events',capacity_policy_sha256=self.policy['sha256'])
+
     def _write(self):
         while True:
             item=self.queue.get()

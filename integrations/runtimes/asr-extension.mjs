@@ -100,7 +100,14 @@ export default function(pi) {
         reportLimit('provider_turns',maxTurns,turns,'Provider turn cap reached before another request.',ctx);
         return await new Promise(()=>{});
       }
-      await bridge('permit', {kind:'turn'}, crypto.randomUUID());
+      const permit=await bridge('permit', {kind:'turn'}, crypto.randomUUID());
+      if(permit.status==='deferred'&&permit.reason==='recording_backpressure') {
+        const receipt={...permit,type:'asr_recording_backpressure',schema:'asr-recording-backpressure/1',native_entry_appended:false,native_entry_persistence_verified:false};
+        try {pi.appendEntry('asr-recording-backpressure',receipt);receipt.native_entry_appended=true;}catch {receipt.checkpoint_failure='native_entry_append_failed';}
+        try {ctx?.abort();}catch {receipt.abort_failure='native_abort_failed';}
+        emitContext(receipt,ctx);
+        return await new Promise(()=>{});
+      }
       if(process.env.ASR_CONTEXT_OBSERVATION==='1') {
         const observation=captureCursor(ctx);
         emitContext({...observation,boundary:'before_provider_request'},ctx);

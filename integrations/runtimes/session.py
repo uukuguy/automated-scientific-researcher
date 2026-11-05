@@ -49,6 +49,12 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
         cursor_receipts.append(receipt)
     cursor_writer=OrderedObservations(record_cursor)
     bridge.context_observation_barrier=cursor_writer.barrier
+    def recording_pressure():
+        observer=cursor_writer.capacity_state()
+        if observer:return observer
+        probe=getattr(on_event,'capacity_state',None)
+        return probe() if probe is not None else None
+    bridge.recording_pressure=recording_pressure
     def record_event(record,forward=True):
         if record.get('type')=='asr_limit':
             observation={key:record[key] for key in ('kind','limit','observed','reason')}
@@ -109,6 +115,7 @@ def run_session(runtime, bridge, *, config_dir, native_session_id, prompt, limit
     finally:
         if not cursor_writer.closed:cursor_writer.close(timeout=0)
         bridge.context_observation_barrier=None
+        bridge.recording_pressure=None
         # If setup failed before spawn, there is no child to reconcile. A runtime
         # exception after launch is conservatively unresolved unless run returned.
         if not exited:
