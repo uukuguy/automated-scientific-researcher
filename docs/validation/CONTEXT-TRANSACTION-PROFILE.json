@@ -1,0 +1,32 @@
+{
+  "schema": "asr-context-transaction-profile-validation/1",
+  "scope": "合成负载测量及登记来源材料重建拆分；非生产延迟保证",
+  "baseline_commit": "5b11e81",
+  "environment": {
+    "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+    "python": "3.14.2"
+  },
+  "tests": 641,
+  "skipped": 25,
+  "status": "passed",
+  "command": "uv run --extra aar python -m unittest discover -s tests -v",
+  "new_concurrency_and_race_checks": 3,
+  "model_calls": 0,
+  "scientific_executions": 0,
+  "artifact_overwrite_check": "已有输出路径在测量前拒绝；退出码2，未覆盖原件",
+  "sources": {
+    "asr_service/context_sources.py": "9fbf99fecc43ff9aa21bd83e80a33b8de86fd719aa9292d381bdc67e01268c03",
+    "scripts/context_transaction_probe.py": "7971e3bb72cebf2c9ac238854133ba5e65e651b3cdc2341ed690c430bf528e96",
+    "tests/test_context_material_io.py": "73ae43c0060fc355ce9302fa122f3f833769f46b864edcb3cc57f14adc3602f7"
+  },
+  "artifacts": {
+    "artifacts/context-transaction-profile-001/before.json": "002cec8c132cedd2893881836a8b58e287f3d8da46afc8e1987d3b1c665d6e7c",
+    "artifacts/context-transaction-profile-001/after.json": "5cf264839ba3897a16cbe32e85e522da28f99db78d6177930a099da2ebd16764",
+    "artifacts/context-material-validation-001/tests.log": "0b5333c94d0b6113622b5580c5b771135e3d5672afb0274caff152a7e62473bd"
+  },
+  "limitations": [
+    "本机合成单消息，每组3次；不覆盖生产尾延迟、冷缓存或大量消息",
+    "计时包含提交和连接关闭，不是精确底层锁持有时间，不含等待锁",
+    "状态指纹、序列化和SQLite提交仍同步；全量附件内存与崩溃对账仍开放"
+  ]
+}

@@ -62,7 +62,7 @@ def read(service,db,project,run,subject,registration,*,verified=None):
     if verified is None:
         observed=_observe(source['reader'])
     else:
-        frozen,observed=verified.check()
+        frozen,observed,prepared_materials=verified.check()
         if frozen!=source:raise ControlError('context_source_changed')
     if observed!=source['observation']:
         error=ControlError('context_source_changed')
@@ -75,7 +75,7 @@ def read(service,db,project,run,subject,registration,*,verified=None):
         from .context_cursors import check
         checked=check(service,db,project,run,subject,source['reader']['cursor_reference'],observed,require_live=False)
         if checked['status']!='verified':raise ControlError(checked['reason'])
-    return materials(observed['conversation'])
+    return materials(observed['conversation']) if verified is None else prepared_materials
 
 
 def verify_registered(service,project,run,subject,registration):
@@ -86,7 +86,13 @@ def verify_registered(service,project,run,subject,registration):
             (project,_scope('source',run,subject),registration)).fetchone()
     source=json.loads(row[0]) if row else {}
     if source.get('status')!='registered':raise ControlError('context_source_unavailable')
-    return verify(source['reader']['path'],lambda:(source,_observe(source['reader'])))
+    def read():
+        observed=_observe(source['reader'])
+        # Rebuild only matching observations. Changed/limited projections retain
+        # the existing detailed rejection in read(), not a partial material list.
+        rows=tuple(materials(observed['conversation'])) if observed==source['observation'] and observed.get('status')=='observed' else None
+        return source,observed,rows
+    return verify(source['reader']['path'],read)
 
 
 def source_read(service,token,project,run,*,source_registration,message_id,offset=0,limit=8000):
