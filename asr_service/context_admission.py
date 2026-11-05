@@ -98,7 +98,7 @@ def _session(db,project,run,session_id,subject):
     validate(db,project,run,binding)
 
 
-def _admit(service,token,project,run,*,subject,preparation_id,idempotency_key,request,candidate,review_request,review,author_session,reviewer_session,verified_source=None,verified_note=None):
+def _admit(service,token,project,run,*,subject,preparation_id,idempotency_key,request,candidate,review_request,review,author_session,reviewer_session,verified_source=None,verified_note=None,evaluation=None):
     service._auth(token,project,{'human','supervisor'});service._identity(run,subject,preparation_id,idempotency_key,author_session,reviewer_session)
     if any(type(v) is not dict for v in (request,candidate,review_request,review)) or type(request.get('payload')) is not dict:raise ControlError('invalid_context_bundle')
     payload=[subject,preparation_id,request,candidate,review_request,review,author_session,reviewer_session]
@@ -115,10 +115,11 @@ def _admit(service,token,project,run,*,subject,preparation_id,idempotency_key,re
         if db.execute("SELECT 1 FROM asr_runtime_sessions WHERE project=? AND run=? AND state!='exited'",(project,run)).fetchone():raise ControlError('context_runtime_active')
         try:
             materials,stamp=snapshot(service,db,project,run,subject,prepared.get('source_registration'),verified_source=verified_source,verified_note=verified_note)
-            frozen=[Material(**{k:tuple(v) if k in ('references','citations','roles') else v for k,v in row.items()}) for row in prepared['materials']]
-            if request.get('payload',{}).get('role')!=subject or request['payload'].get('sources')!=source_rows(frozen):raise ControlError('context_request_sources_mismatch')
-            checked=plan(request,candidate,review_request,review,author_session=author_session,reviewer_session=reviewer_session,
-                         expected_state=prepared['state_stamp'],current_state=stamp)
+            if evaluation is None or evaluation['prepared']!=encoded(prepared) or evaluation['payload']!=encoded(payload):
+                raise ControlError('context_admission_inputs_changed')
+            if evaluation.get('error') is not None:raise evaluation['error']
+            if stamp!=evaluation['state']:raise ControlError('research_state_changed')
+            checked=evaluation['check']
             note_io.check(verified_note,db)
             if verified_source is not None:verified_source.check()
             if checked['status']!='admission_required':
@@ -133,6 +134,22 @@ def _admit(service,token,project,run,*,subject,preparation_id,idempotency_key,re
         return result
 
 
+def _evaluate(service,project,run,prepared,payload,verified_source,verified_note):
+    """Pure review work outside the writer; commit still owns current authority."""
+    subject,preparation_id,request,candidate,review_request,review,author_session,reviewer_session=payload
+    evaluation=dict(prepared=encoded(prepared),payload=encoded(payload))
+    try:
+        with service._connect() as db:
+            _,stamp=snapshot(service,db,project,run,subject,prepared.get('source_registration'),verified_source=verified_source,verified_note=verified_note)
+        frozen=[Material(**{k:tuple(v) if k in ('references','citations','roles') else v for k,v in row.items()}) for row in prepared['materials']]
+        if request.get('payload',{}).get('role')!=subject or request['payload'].get('sources')!=source_rows(frozen):raise ControlError('context_request_sources_mismatch')
+        checked=plan(request,candidate,review_request,review,author_session=author_session,reviewer_session=reviewer_session,
+                     expected_state=prepared['state_stamp'],current_state=stamp)
+        evaluation.update(state=stamp,check=checked)
+    except (ControlError,ValueError) as error:evaluation['error']=error
+    return evaluation
+
+
 def admit(service,token,project,run,**arguments):
     try:
         service._auth(token,project,{'human','supervisor'})
@@ -143,11 +160,20 @@ def admit(service,token,project,run,**arguments):
             replay=service._replay(db,project,_scope('admission',run,subject),arguments['idempotency_key'],payload)
             if replay:return replay
             raw=db.execute('SELECT record FROM asr_requests WHERE project=? AND scope=? AND request_key=?',(project,_scope('prepare',run,subject),arguments['preparation_id'])).fetchone()
-            prepared=json.loads(raw[0]) if raw else {}
+            if not raw:raise ControlError('context_preparation_unavailable')
+            prepared=json.loads(raw[0])
+            member(db,project,run,prepared['reviewer_subject'])
+            _session(db,project,run,arguments['author_session'],subject)
+            _session(db,project,run,arguments['reviewer_session'],prepared['reviewer_subject'])
+            if db.execute("SELECT 1 FROM asr_runtime_sessions WHERE project=? AND run=? AND state!='exited'",(project,run)).fetchone():raise ControlError('context_runtime_active')
         from .context_sources import verify_registered
         source=prepared.get('source_registration')
         verified=verify_registered(service,project,run,subject,source) if source is not None else None
-        return _admit(service,token,project,run,**arguments,verified_source=verified,verified_note=note_io.capture(service,project,run,subject))
+        if any(type(arguments[v]) is not dict for v in ('request','candidate','review_request','review')) or type(arguments['request'].get('payload')) is not dict:
+            raise ControlError('invalid_context_bundle')
+        verified_note=note_io.capture(service,project,run,subject)
+        evaluation=_evaluate(service,project,run,prepared,payload,verified,verified_note)
+        return _admit(service,token,project,run,**arguments,verified_source=verified,verified_note=verified_note,evaluation=evaluation)
     except ControlError as error:
         if error.code not in ('unauthorized','forbidden'):
             service._auth(token,project,{'human','supervisor'})

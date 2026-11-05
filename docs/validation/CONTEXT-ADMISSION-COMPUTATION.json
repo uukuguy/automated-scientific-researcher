@@ -1,0 +1,22 @@
+{
+  "schema": "asr-context-admission-computation-validation/1",
+  "scope": "准入摘要及复核计算移出写事务；提交重查输入、状态及成员/会话资格",
+  "command": "uv run --extra aar python -m unittest discover -s tests -v",
+  "tests": 638,
+  "skipped": 25,
+  "status": "passed",
+  "new_concurrency_and_race_checks": 9,
+  "model_calls": 0,
+  "scientific_executions": 0,
+  "log": "artifacts/context-admission-computation-001/tests.log",
+  "log_sha256": "a6d91dd74fb4dc96fba7e220856f6aef38a524539256b9d880a49f62286b26dd",
+  "sources": {
+    "asr_service/context_admission.py": "3d1478187be2e60b2365f182235e17069d43316744c1322e67b50f46fd53198c",
+    "tests/test_admission_computation.py": "31203728f97791f88a15851b7a54caaeb4a806953ff8932ec8e2fc2732930972"
+  },
+  "limitations": [
+    "状态指纹和数据库大对象序列化仍可能占写事务",
+    "文件/数据库崩溃对账及全量附件内存仍开放",
+    "不证明长期无人值守科研或完整提供方载荷保真"
+  ]
+}
