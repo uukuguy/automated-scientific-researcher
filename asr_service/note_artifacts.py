@@ -15,9 +15,6 @@ from .contracts import encoded
 from .control import ControlError
 
 
-def _hash(body):return hashlib.sha256(body).hexdigest()
-
-
 def _safe_path(root, relative):
     if type(relative) is not str or not relative or Path(relative).is_absolute() or '..' in Path(relative).parts:
         raise ValueError('unsafe_artifact_path')
@@ -25,10 +22,6 @@ def _safe_path(root, relative):
     if root.is_symlink() or any(p.is_symlink() for p in [path,*path.parents] if p==root or p.is_relative_to(root)) or not path.resolve().is_relative_to(root.resolve()):
         raise ValueError('unsafe_artifact_path')
     return path
-
-
-def _safe_file(root,relative):
-    return _safe_path(root,relative).read_bytes()
 
 
 @dataclass(frozen=True)
@@ -66,14 +59,13 @@ def _attachment(root,relative,chunk_bytes,witnesses,policy_sha256):
     return ArtifactFile(root,relative,chunk_bytes,witness,policy_sha256)
 
 
-def _read_file(root,relative,witnesses):
-    if witnesses is None:return _safe_file(root,relative)
-    # Validate the relative path before even inspecting filesystem metadata.
-    if type(relative) is not str or not relative or Path(relative).is_absolute() or '..' in Path(relative).parts:
-        raise ValueError('unsafe_artifact_path')
+def _read_manifest(root,kind,target,chunk_bytes,witnesses):
     from .context_io import verify
-    result=verify(str(root/relative),lambda:_safe_file(root,relative))
-    witnesses.append(result)
+    from .manifest_stream import select
+    path=_safe_path(root,'manifest.json')
+    if not path.is_file():raise ValueError('manifest_regular_file_required')
+    result=verify(str(path),lambda:select(path,kind,target,chunk_bytes))
+    if witnesses is not None:witnesses.append(result)
     return result.value
 
 
@@ -124,9 +116,9 @@ def _resolve(db, service, project, run, references,*,witnesses=None):
                 digest=ref['snapshot_sha256']
                 if type(digest) is not str or not re.fullmatch('[0-9a-f]{64}',digest):raise ValueError('invalid_snapshot')
                 directory=service.path.parent/'snapshots'/digest
-                body=_read_file(directory,'manifest.json',witnesses);manifest=json.loads(body)
-                if _hash(body)!=digest or manifest['schema']!='asr-workspace-snapshot/1' or (manifest['project_id'],manifest['research_run_id'])!=(project,run):raise ValueError('snapshot_mismatch')
-                entry=next(x for x in manifest['files'] if x['path']==ref['path'])
+                selected=_read_manifest(directory,'snapshot',ref['path'],chunk_bytes,witnesses);manifest=selected['headers']
+                if selected['sha256']!=digest or manifest['schema']!='asr-workspace-snapshot/1' or (manifest['project_id'],manifest['research_run_id'])!=(project,run):raise ValueError('snapshot_mismatch')
+                entry=selected['entry']
                 attachment=_attachment(directory/'files',ref['path'],chunk_bytes,witnesses,service.artifact_io_policy['sha256']);summary=attachment.witness.value
                 if summary['sha256']!=entry['sha256'] or summary['bytes']!=entry['size']:raise ValueError('snapshot_file_mismatch')
                 provenance=dict(snapshot_sha256=digest)
@@ -141,9 +133,9 @@ def _resolve(db, service, project, run, references,*,witnesses=None):
                 report=execution.get('report') or {}
                 if report.get('execution_exited') is not True:raise ValueError('execution_unsettled')
                 directory=Path(report['evidence_path'])
-                manifest_body=_read_file(directory,'manifest.json',witnesses);manifest=json.loads(manifest_body)
-                if _hash(manifest_body)!=report['manifest_hash'] or (manifest['trial_id'],manifest['execution_attempt_id'],manifest['status'])!=(ref['trial_id'],row[0],row[1]):raise ValueError('manifest_mismatch')
-                attachment=_attachment(directory,ref['path'],chunk_bytes,witnesses,service.artifact_io_policy['sha256']);summary=attachment.witness.value;entry=manifest['artifacts'][ref['path']]
+                selected=_read_manifest(directory,'trial',ref['path'],chunk_bytes,witnesses);manifest=selected['headers']
+                if selected['sha256']!=report['manifest_hash'] or (manifest['trial_id'],manifest['execution_attempt_id'],manifest['status'])!=(ref['trial_id'],row[0],row[1]):raise ValueError('manifest_mismatch')
+                attachment=_attachment(directory,ref['path'],chunk_bytes,witnesses,service.artifact_io_policy['sha256']);summary=attachment.witness.value;entry=selected['entry']
                 if summary['sha256']!=entry['sha256'] or summary['bytes']!=entry['bytes']:raise ValueError('trial_file_mismatch')
                 provenance=dict(trial_id=ref['trial_id'],execution_attempt_id=row[0],manifest_sha256=report['manifest_hash'])
             else:raise ValueError('unsupported_artifact_kind')

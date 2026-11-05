@@ -1,0 +1,35 @@
+{
+  "schema": "asr-manifest-streaming-validation/1",
+  "scope": "流式清单选择与完整哈希/JSON校验，未执行模型或科研",
+  "command": "uv run --extra aar python -m unittest discover -s tests -v",
+  "tests": 671,
+  "skipped": 25,
+  "status": "passed",
+  "new_tests": 8,
+  "model_calls": 0,
+  "scientific_executions": 0,
+  "dependency": "ijson==3.5.1",
+  "environment": {
+    "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+    "python": "3.14.2"
+  },
+  "sources": {
+    "asr_service/manifest_stream.py": "b1f704a90f32196fec671d52fd634b68f2b5335268347602c3383620066e7142",
+    "asr_service/note_artifacts.py": "ee8d0523908b11a525f0bd335f882acfd110ae72b520e49de0690292ff2e14b1",
+    "scripts/manifest_memory_probe.py": "cf7e9274e4934f420c03d55f2ddb38b35a2d3366073130158d3d5a03bb9007ee",
+    "tests/test_manifest_streaming.py": "2a4e8df6cf681e024600fba276313bb02e4d916f747bdaa1e9a4d4d52231b4c6",
+    "tests/test_note_io.py": "5b72bbbfde80c762f014191a480994f2b4528b9feabddf72f6f40bb8db7c1739",
+    "pyproject.toml": "8f950bc872c51c4b40dfa7f28e39df2e0476ba3107935f8df5aec0245b2b16c4",
+    "uv.lock": "9a6025591b7f1f9a70cb13372046a6e5bea86de56e79085c0a121c9e5c66f6f0"
+  },
+  "artifacts": {
+    "artifacts/manifest-streaming-001/tests.log": "427ff74625fb76aeeb116950fb68225f4e3b13ba6d7efd71256ca8cd4a5b484c",
+    "artifacts/manifest-streaming-001/memory.json": "76191cd77596765d8907f3095354b6f7f0ac560759b0cc8442e954b65a31b926"
+  },
+  "limitations": [
+    "Python分配测量不含原生解析器/RSS/并发",
+    "大标量和深嵌套仍可能占较多内存",
+    "目录审计全量清单仍开放",
+    "重复关键字段/目标现在明确拒绝，历史原件和回执不变"
+  ]
+}

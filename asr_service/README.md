@@ -381,3 +381,6 @@ read_context_source为已认证成员只读本人冻结可见历史，模型经r
 `ControlService(...,capacity_policy_path=...)`可指定统一容量策略；缺省读取`configs/capacity-policy.json`。第7版的`artifact_read_chunk_bytes`缺省1MiB，仅控制每次读取缓冲，不限制文件总大小。正文完整哈希/字节数校验和UTF-8分页都采用流式读取；每页仍检查全文，明确返回字符位置与是否有后续页。分页回执及事件包含实际块大小和策略指纹。显式旧策略缺少该参数时构造Control报错，请显式修订策略；不会改写旧策略或预算。
 
 清单JSON仍整体解析，不能将正文流式化视为所有内存问题已解决。见`docs/validation/NOTE-ARTIFACT-STREAMING.md`。
+
+
+附件清单也通过固定`ijson==3.5.1`流式解析并计算完整哈希，仅保留身份和目标条目，仍读取至EOF检查尾部。重复关键字段或重复目标会明确拒绝，不能以清单中某个同名条目猜测原件身份。读取块沿用统一第7版配置；最大单个JSON标量、嵌套和目录核对清单仍是独立内存边界。见`docs/validation/MANIFEST-STREAMING.md`。

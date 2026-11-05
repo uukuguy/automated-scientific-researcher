@@ -99,10 +99,10 @@ class NoteIOTests(unittest.TestCase):
         import test_note_artifact_sources as fixture
         from asr_service import note_artifacts
         case=fixture.NoteArtifactTests();case.setUp();self.addCleanup(case.doCleanups);self.s=case.service
-        original=note_artifacts._safe_file;original_stream=note_artifacts._stream_file
+        original=note_artifacts._read_manifest;original_stream=note_artifacts._stream_file
         def read(*args):self.writable();return original(*args)
         def stream(*args,**kwargs):self.writable();return original_stream(*args,**kwargs)
-        with patch.object(note_artifacts,'_safe_file',side_effect=read) as reads,patch.object(note_artifacts,'_stream_file',side_effect=stream) as streams:
+        with patch.object(note_artifacts,'_read_manifest',side_effect=read) as reads,patch.object(note_artifacts,'_stream_file',side_effect=stream) as streams:
             draft=case.call('save',text='保留附件',artifact_references=[case.ref])
             case.call('adopt',revision=draft['revision'],expected_note=None)
             self.assertEqual(case.call('read')['restoration']['status'],'ready')
@@ -150,7 +150,7 @@ class NoteIOTests(unittest.TestCase):
         import hashlib,json
         import test_context_installation_service as fixture
         from asr_service import note_artifacts
-        original=note_artifacts._safe_file;original_stream=note_artifacts._stream_file;case=fixture.InstallationServiceTests();reads=[]
+        original=note_artifacts._read_manifest;original_stream=note_artifacts._stream_file;case=fixture.InstallationServiceTests();reads=[]
         def save(base,key='draft'):
             body=b'candidate method\n'
             manifest=json.dumps(dict(schema='asr-workspace-snapshot/1',project_id='p',research_run_id='r',files=[dict(path='method.py',sha256=hashlib.sha256(body).hexdigest(),size=len(body))])).encode()
@@ -163,7 +163,7 @@ class NoteIOTests(unittest.TestCase):
         def stream(*args,**kwargs):
             self.s=case.base.s;self.writable();reads.append(args)
             return original_stream(*args,**kwargs)
-        with patch.object(fixture.sources.admission.fixtures.ControlResearchNotesTests,'save',save),patch.object(note_artifacts,'_safe_file',side_effect=read),patch.object(note_artifacts,'_stream_file',side_effect=stream):
+        with patch.object(fixture.sources.admission.fixtures.ControlResearchNotesTests,'save',save),patch.object(note_artifacts,'_read_manifest',side_effect=read),patch.object(note_artifacts,'_stream_file',side_effect=stream):
             case.setUp();self.addCleanup(case.doCleanups)
             case.test_actual_sdk_append_is_verified_once_and_original_prefix_survives()
         self.assertGreaterEqual(len(reads),14)
