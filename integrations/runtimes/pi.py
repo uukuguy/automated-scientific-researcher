@@ -112,11 +112,18 @@ class PiRuntime:
     provider='openai-codex'
 
     def __init__(self, *, executable='pi', model, thinking='high', expected_version='1.5.0', capabilities_path=None, environment=None,
-                 max_message_bytes=4194304,max_buffer_bytes=16777216,max_pending_records=256,max_records=100000,abort_grace_seconds=1.5,context_generation=0,compact_before_prompt=False):
+                 max_message_bytes=None,max_buffer_bytes=None,max_pending_records=None,max_records=None,abort_grace_seconds=1.5,context_generation=0,compact_before_prompt=False,capacity_policy_path=None):
         if not isinstance(model,str) or not model or ':' in model or '/' in model:
             raise ValueError('explicit_codex_model_id_required')
         if type(context_generation) is not int or context_generation<0:raise ValueError('invalid_context_generation')
         if type(compact_before_prompt) is not bool:raise ValueError('invalid_compaction_request')
+        from .capacity_policy import load_policy
+        self.capacity_policy=load_policy(capacity_policy_path)
+        caps=self.capacity_policy['limits']
+        max_message_bytes=caps['pi_message_bytes']['value'] if max_message_bytes is None else max_message_bytes
+        max_buffer_bytes=caps['pi_buffer_bytes']['value'] if max_buffer_bytes is None else max_buffer_bytes
+        max_pending_records=caps['pi_pending_records']['value'] if max_pending_records is None else max_pending_records
+        max_records=caps['pi_records']['value'] if max_records is None else max_records
         self.compact_before_prompt=compact_before_prompt
         self.context_generation=context_generation
         self.executable=executable
@@ -243,7 +250,7 @@ class PiRuntime:
             settings=json.loads(settings_path.read_text());settings.setdefault('compaction',{}).update(enabled=False,keepRecentTokens=1)
             settings_path.write_text(json.dumps(settings))
         env['ASR_CONTEXT_OBSERVATION']='1'
-        env['ASR_CONTEXT_BOUNDARY_TIMEOUT_MS']='30000'
+        env['ASR_CONTEXT_BOUNDARY_TIMEOUT_MS']=str(self.capacity_policy['limits']['context_boundary_ms']['value'])
         env['ASR_OWNED_PROCESS_GROUP']='1'
         env['ASR_SKILL_PATHS']=json.dumps([skill['frozen_path'] for skill in frozen_skills])
         env['ASR_SKILL_PATH']=frozen_skills[0]['frozen_path']
@@ -421,6 +428,7 @@ class PiRuntime:
                     native_session_id=session_id,context_installation_verified=context_installation_verified,settled=settled,turns=turns,tool_executions=tools,
                     duration_seconds=time.monotonic()-started,assistant_messages=assistant,exit_code=process.returncode,
                     limit_observations=limit_observations,cleanup=cleanup,protocol_flow=flow,
+                    capacity_policy=self.capacity_policy,
                     protocol_caps=dict(message_bytes=self.max_message_bytes,buffer_bytes=self.max_buffer_bytes,pending_records=self.max_pending_records,records=self.max_records,abort_grace_ms=math.ceil(self.abort_grace_seconds*1000)),
                     recovery=dict(context_generation=self.context_generation,native_session_id=session_id,native_session_file=(state or {}).get('sessionFile'),
                         pending_tools=list(pending_tools.values()),instruction='Read authoritative state before retrying; reuse accepted request keys and reconcile uncertain execution.'))

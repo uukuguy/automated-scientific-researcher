@@ -18,17 +18,21 @@ from .environment import COMMON_ENVIRONMENT,build_environment
 def _digest(value):return hashlib.sha256(_encode(value)).hexdigest()
 
 
-def sdk_projection(entries,leaf):
+def sdk_projection(entries,leaf,*,capacity_policy_path=None):
+    from .capacity_policy import load_policy
+    policy=load_policy(capacity_policy_path)
     binary=shutil.which('pi')
     if not binary:raise ValueError('pi_not_installed')
     index=Path(binary).resolve().parents[1]/'index.js'
     package=json.loads((index.parent.parent/'package.json').read_text())
     if package['name']!='@earendil-works/pi-coding-agent' or package['version']!='1.5.0':raise ValueError('pi_sdk_version_mismatch')
     result=subprocess.run(['node',str(Path(__file__).with_name('pi_context_projection.mjs')),str(index)],
-        input=_encode(dict(entries=entries,leafId=leaf)),capture_output=True,timeout=30,
+        input=_encode(dict(entries=entries,leafId=leaf)),capture_output=True,timeout=policy['limits']['projection_seconds']['value'],
         env=build_environment(COMMON_ENVIRONMENT,runtime='pi',provider='openai-codex'))
     if result.returncode:raise ValueError('pi_projection_failed')
     projection=json.loads(result.stdout)
+    projection['capacity_policy_sha256']=policy['sha256']
+    projection['projection_timeout_seconds']=policy['limits']['projection_seconds']['value']
     projection['projection_helper_sha256']=hashlib.sha256(Path(__file__).with_name('pi_context_projection.mjs').read_bytes()).hexdigest()
     projection['sdk_index_sha256']=hashlib.sha256(index.read_bytes()).hexdigest()
     return projection

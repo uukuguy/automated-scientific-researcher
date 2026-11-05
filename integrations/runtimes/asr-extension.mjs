@@ -1,4 +1,6 @@
 /** Curated pi extension. No discovered skills, extensions, provider switching or Bash. */
+import { readFileSync } from 'node:fs';
+const capacityDefaults=JSON.parse(readFileSync(new URL('../../configs/capacity-policy.json',import.meta.url),'utf8'));
 import { workspacePath } from './workspace-path.mjs';
 import { captureCursor } from './pi_context_cursor.mjs';
 import { beforeCompact } from './pi_context_boundary.mjs';
@@ -73,7 +75,7 @@ export default function(pi) {
     return await response.json();
   }
   pi.on('session_before_compact', (event,ctx) => beforeCompact(event,ctx,{
-    timeoutMs:Number(process.env.ASR_CONTEXT_BOUNDARY_TIMEOUT_MS||30000),
+    timeoutMs:Number(process.env.ASR_CONTEXT_BOUNDARY_TIMEOUT_MS??capacityDefaults.limits.context_boundary_ms.value),
     emit:record=>emitContext(record,ctx),
     onAuthorized:ticket=>{pendingInstallation=ticket;contextGuard=true;},
     request:(cursor,signal)=>contextRequest('context_boundary',{observation:cursor,tokens_before:event.preparation?.tokensBefore},cursor.observation_id,signal)
@@ -82,7 +84,7 @@ export default function(pi) {
     const ticket=pendingInstallation;contextGuard=true;let receipt;
     try {
       if(!ticket||event.fromExtension!==true||event.compactionEntry?.details?.asr_installation_ticket!==ticket.ticket_id)throw new Error('unregistered_compaction');
-      receipt=await contextRequest('context_installed',{boundary_id:ticket.boundary_id,ticket_id:ticket.ticket_id,entry_id:event.compactionEntry.id,cursor:captureCursor(ctx)},crypto.randomUUID(),AbortSignal.timeout(Number(process.env.ASR_CONTEXT_BOUNDARY_TIMEOUT_MS||30000)));
+      receipt=await contextRequest('context_installed',{boundary_id:ticket.boundary_id,ticket_id:ticket.ticket_id,entry_id:event.compactionEntry.id,cursor:captureCursor(ctx)},crypto.randomUUID(),AbortSignal.timeout(Number(process.env.ASR_CONTEXT_BOUNDARY_TIMEOUT_MS??capacityDefaults.limits.context_boundary_ms.value)));
       if(receipt.status==='verified'){contextGuard=false;pendingInstallation=undefined;}
     } catch {receipt={status:'deferred',reason:'context_installation_verification_failed',context_installed:false};}
     emitContext({type:'asr_context_installation',ticket_id:ticket?.ticket_id,...receipt},ctx);
