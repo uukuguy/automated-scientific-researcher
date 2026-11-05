@@ -7,6 +7,10 @@ Research reference: [Task specification v2.2](../IEEE118_OOD_Sample_Expansion_Ta
 This ledger replaces the initialization WP1–WP7 breakdown after the user confirmed the system-first foundation and bounded initial task.
 At most one package is active. P4 is complete; P5 organization implementation is active. Status records evidence, not elapsed time.
 
+## P5验收准备实查（2026-11-05）
+
+[独立验收准备](../validation/P5-ACCEPTANCE-READINESS.md)：478份档案及14份交付指纹通过，候选固定；当前paused/准入关闭，开发profile无最终评价授权，现有最终评价器绑定P4旧面板。待确定独立评价方、前瞻协议、新面板保管与评价预算后执行，不重复训练或恢复旧面板。
+
 ## 当前收尾边界（2026-11-05）
 
 用户已同意停止扩展基础设施优化。本轮只迁移当前P5路径的9项旧容量参数；目录审计分页、大JSON标量/嵌套、持久队列与断电恢复、精确提供方请求计量均留作待办，不自动阻塞P5验收。D034/D035已有的限定工程实现不再标为未实现；任意长期无人干预与语义保真仍未验收。下文旧进展按历史证据阅读，以此段及[容量收尾报告](../validation/CAPACITY-CLOSEOUT.md)为当前范围。

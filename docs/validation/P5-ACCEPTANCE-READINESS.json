@@ -1,0 +1,90 @@
+{
+  "observed_at": "2026-11-05T15:54:28.267497+00:00",
+  "scope": "read-only readiness; no model, training, labels or evaluation executed",
+  "inventories": [
+    {
+      "path": "artifacts/p5-project-followup-delivery-001/inventory.json",
+      "sha256": "1a5343dac04bbd0646434ad415b0992e20906f623ca48485edf31b3014ef813a",
+      "checked": 478,
+      "failures": []
+    },
+    {
+      "path": "research_projects/paired_acquisition/delivered_continuation/INVENTORY.json",
+      "sha256": "23fcf57d76a3484b3d7a9dbc0744cd89d0511b913c9e99ca28bddd1186fae131",
+      "checked": 14,
+      "failures": []
+    }
+  ],
+  "model_sha256": "cf81c81f7208ff452f7be06595ff0afdcf7f4e4c8072aad1eed234ae46b4f589",
+  "run": {
+    "admission_open": false,
+    "contract_id": "organization-pilot",
+    "contract_revision": 1,
+    "control_revision": 18,
+    "created_at": "2026-11-04T04:49:35.267610+00:00",
+    "experiment_id": "aar-experiment:1",
+    "health": "ok",
+    "project_id": "organization-97ad1aee4ff4",
+    "quota_state": "unknown",
+    "research_run_id": "research_2fdee65a1c2f4bd5b107bfc388469d8d",
+    "state": "paused"
+  },
+  "contract_sha256": "cf7cf27279bf8e08f7a84400a026103ade13486cc92306944b9570f14730030f",
+  "capability_profile": "ood-study-development/1",
+  "study_operations": [
+    "analysis",
+    "label",
+    "fit"
+  ],
+  "accounting": {
+    "attempts": {
+      "limit": 256,
+      "consumed": 27,
+      "reserved": 0
+    },
+    "execution_ms": {
+      "limit": 7200000,
+      "consumed": 100275,
+      "reserved": 0
+    },
+    "research_walltime_ms": {
+      "limit": 14400000,
+      "consumed": 7549745,
+      "reserved": 0
+    },
+    "sample_proposals": {
+      "limit": 4096,
+      "consumed": 512,
+      "reserved": 0
+    },
+    "tool_executions": {
+      "limit": 3200,
+      "consumed": 688,
+      "reserved": 0
+    },
+    "turns": {
+      "limit": 1600,
+      "consumed": 363,
+      "reserved": 0
+    }
+  },
+  "session_database_states": {
+    "exited": 35
+  },
+  "evaluation_jobs": {},
+  "ready_for_hidden_evaluation": false,
+  "missing": [
+    "prospectively approved fresh-panel protocol",
+    "authorized independent evaluator/profile and evaluation budget",
+    "fresh hidden panel with custody and overlap evidence"
+  ],
+  "limitations": [
+    "Session database states are not a new OS process-exit audit.",
+    "Inventory integrity is not scientific validation.",
+    "Existing final evaluator uses P4 64+64 panels; do not reuse for new hidden claims."
+  ],
+  "audit_source": {
+    "path": "artifacts/p5-acceptance-readiness-001/audit.py",
+    "sha256": "f5f469ba67af7dda62aa5f2690aa32647bc8ee2d777836dca6e355ef1e9392fb"
+  }
+}
