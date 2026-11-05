@@ -359,3 +359,16 @@ pi原生压缩会合并系统配置增量。写后核验按固定SDK的内容追
 观察变化或容量延期时不创建部分材料，沿用原先包含原因和原件指纹的拒绝路径。重建过程中原件改变或来源记录改变，提交均拒绝。新增3项检查验证第二写连接可用及上述两种竞争，完整回归继续覆盖原有安装/恢复路径。
 
 可复现测量脚本`scripts/context_transaction_probe.py`使用临时Control库、合成1KiB/256KiB/1MiB消息和真实固定SDK，不读取或改写历史研究库，不请求模型。计时从取得写事务后到上下文退出，包括提交及连接关闭；剖析另跑，不混入计时样本。结果和限制见`docs/validation/CONTEXT-TRANSACTION-PROFILE.md`。
+
+
+## 未登记笔记的显式核对（2026-11-05）
+
+`ControlService.audit_research_notes(token, project, run, subject=..., idempotency_key=...)`仅允许human/supervisor调用并要求成员当前有效；未添加HTTP端点、模型工具或后台扫描。每次核对本成员的目录及原`research-note`请求回执。读取使用不创建目录的NoteStore，验证文件自身内容哈希、结构和scope，不重读科研附件或宣称当前来源有效。
+
+报告每个版本的完整性、保存/采纳回执键及是否为当时当前采纳版本；没有登记回执的完整版本标`unregistered`，只有采纳指针而无回执则标`head_only`。缺失文件、损坏文件、符号链接和临时/未知条目均列出，不删除、不跟随文件符号链接，也不把临时文件转成笔记。当前或历史采纳由独立字段及原回执表达。
+
+提交短事务重查成员、采纳指针、原请求记录和文件/目录元数据；变化时保存`deferred`观察报告，`snapshot_stable=false`，不把旧观察说成一致快照。成功也只表示本次观察稳定，`historical_receipt=true`、`sources_current_verified=false`和`current_context_authorized=false`始终明确。原幂等键只重放历史核对，需要新观察时用新键。
+
+核对记录沿用`context-note-audit:[run,subject]`命名空间，交流归档将其纳入context_requests。原始笔记和临时文件保留在受限目录；临时文件原文目前不由既有笔记JSON导出器自动导出，报告明确列出其存在。恢复只提供本人原有history_read入口及当前规则下的显式修订/采纳，不伪造save回执、不重置预算、不重新运行科研。
+
+真实子进程在不可变草稿写盘后、Control保存登记前直接退出，父进程核对发现完整未登记版本且采纳指针未变。10项专项检查还覆盖缺失/损坏/临时文件、权限/成员隔离、并发写连接、文件/账本竞争、不创建目录及历史重放；归档检查覆盖新报告范围。详见NOTE-RECONCILIATION.md/.json。

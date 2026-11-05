@@ -82,11 +82,11 @@ class CommunicationArchiveTests(unittest.TestCase):
         (self.root/'identity.json').write_text(json.dumps(dict(project_id='p',research_run_id='r')))
         with sqlite3.connect(self.root/'control.db') as db:
             db.execute('CREATE TABLE asr_requests(project TEXT,scope TEXT,request_key TEXT,payload TEXT,record TEXT)')
-            for project,scope,text in [('p','context-prepare:'+json.dumps(['r','lead']),'original context preparation'),('p','context-admission:'+json.dumps(['r','lead']),'admission record'),('p','context-source:'+json.dumps(['r','lead']),'frozen conversation source'),('p','context-cursor:'+json.dumps(['r','lead']),'runtime cursor binding'),('other','context-prepare:'+json.dumps(['r','lead']),'unrelated private content')]:
+            for project,scope,text in [('p','context-prepare:'+json.dumps(['r','lead']),'original context preparation'),('p','context-admission:'+json.dumps(['r','lead']),'admission record'),('p','context-source:'+json.dumps(['r','lead']),'frozen conversation source'),('p','context-cursor:'+json.dumps(['r','lead']),'runtime cursor binding'),('p','context-note-audit:'+json.dumps(['r','lead']),'unregistered draft inspection'),('other','context-prepare:'+json.dumps(['r','lead']),'unrelated private content')]:
                 db.execute('INSERT INTO asr_requests VALUES (?,?,?,?,?)',(project,scope,'key','[]',json.dumps(dict(text=text))))
         archive(self.root,self.out)
         text=(self.out/'control/context_requests.json').read_text()
-        self.assertIn('original context preparation',text);self.assertIn('admission record',text);self.assertIn('frozen conversation source',text);self.assertIn('runtime cursor binding',text)
+        self.assertIn('original context preparation',text);self.assertIn('admission record',text);self.assertIn('frozen conversation source',text);self.assertIn('runtime cursor binding',text);self.assertIn('unregistered draft inspection',text)
         self.assertNotIn('unrelated private content',text)
 
     def test_context_failures_and_decoded_model_replies_are_preserved(self):

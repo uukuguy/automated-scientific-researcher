@@ -20,14 +20,14 @@ def _revision(value):
 
 
 class NoteStore:
-    def __init__(self, root, *, scope):
+    def __init__(self, root, *, scope, create=True):
         if type(scope) is not str or not scope:raise ValueError('invalid_note_scope')
         self.root=Path(root);self.scope=scope
         if self.root.is_symlink():raise ValueError('unsafe_note_directory')
-        self.root.mkdir(parents=True,exist_ok=True,mode=0o700)
+        if create:self.root.mkdir(parents=True,exist_ok=True,mode=0o700)
         self.directory=self.root/'revisions'
         if self.directory.is_symlink():raise ValueError('unsafe_note_directory')
-        self.directory.mkdir(exist_ok=True,mode=0o700)
+        if create:self.directory.mkdir(exist_ok=True,mode=0o700)
         self._check_directory()
 
     def _check_directory(self):

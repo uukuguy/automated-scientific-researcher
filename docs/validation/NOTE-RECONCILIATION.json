@@ -1,0 +1,28 @@
+{
+  "schema": "asr-note-reconciliation-validation/1",
+  "scope": "受控子进程写盘后退出及显式核对，无模型/科研执行",
+  "command": "uv run --extra aar python -m unittest discover -s tests -v",
+  "tests": 651,
+  "skipped": 25,
+  "status": "passed",
+  "new_tests": 10,
+  "actual_child_exit_code": 73,
+  "model_calls": 0,
+  "scientific_executions": 0,
+  "log": "artifacts/note-reconciliation-validation-001/tests.log",
+  "log_sha256": "9385335eed945088c363f93d0380d48589d0f45d3ae92a3795dc4a646c248ba5",
+  "sources": {
+    "asr_context/notes.py": "c10b6eef29c913f3ae81c3181e975627ce492ebb4beb2aa6ea24387f31f405fa",
+    "asr_service/note_reconciliation.py": "bc9255bfe180e602bf4b9942717ad6010e78fa61923c9188231874a03143aa51",
+    "asr_service/control.py": "42f3a33175d24386784a3962e97531bf6e93535c917a7468cb33c72b1bc32221",
+    "integrations/runtimes/communication_archive.py": "98faee41b1ed5da72841d2f90f457b63291344489312567c62acf48e92280aa7",
+    "tests/test_note_reconciliation.py": "e8a646e81a144016a162edd2b05cd7850c17cfe3f61b37d21ca08d834180a7c1",
+    "tests/test_communication_archive.py": "afb753064e09b4658a598303ab45d2ffd631af08d4894d34b7148f5dfb0013ab"
+  },
+  "limitations": [
+    "报告仅历史观察，不授予当前来源或科学有效性",
+    "不修复save回执、不自动采纳或删除",
+    "临时文件正文留受限目录，现有JSON导出器不自动导出",
+    "大量文件清单内存、断电持久性和文件系统/SQLite原子恢复仍开放"
+  ]
+}

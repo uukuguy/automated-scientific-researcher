@@ -154,6 +154,10 @@ class ControlService(PolicyStore):
         from .context_admission import admit
         return admit(self, token, project, run, **arguments)
 
+    def audit_research_notes(self, token, project, run, **arguments):
+        from .note_reconciliation import audit
+        return audit(self, token, project, run, **arguments)
+
     def research_note(self, token, project, run, **arguments):
         from .research_notes import operation
         return operation(self, token, project, run, **arguments)

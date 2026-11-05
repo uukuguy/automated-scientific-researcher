@@ -367,3 +367,10 @@ actual autonomous organization and concurrent role execution remain unverified.
 上下文安装：stage_context_installation从已准入的原件/摘要/复核准备内容；authorize_context_installation在当前受管同步边界复算来源和状态，发一次性票据；complete_context_installation核对原日志前缀、SDK原生条目、保护重放与保留投影，再允许接续。材料admitted、安装授权、原生写过、核验通过分别记录，不以任一标签替代其它步骤。
 
 read_context_source为已认证成员只读本人冻结可见历史，模型经research_note conversation_read访问。source_registration与message_id必需，offset/limit按Unicode字符，缺省8000/最高16000，历史读取不自动采用为现行记忆。没有任意路径或跨成员读取权限。实际订阅闭环见docs/validation/RESEARCH-CONTEXT-INSTALLATION.md。
+
+
+### 笔记写盘后未登记的核对
+
+本机控制端调用`audit_research_notes(token, project, run, subject=..., idempotency_key=...)`，权限为human/supervisor，成员须当前有效。返回版本清单及完整性、原保存/采纳回执、当时当前采纳指针；`unregistered`不意味着科学有效或可自动恢复。核对只报告，不创建笔记目录、不修复回执、不删除或采纳。变化中的快照返回deferred。所有结果为历史观察，复用键只重放旧报告；新核对用新键。
+
+完整未登记版本可由本人用`research_note(..., operation='history_read', revision=...)`查看，后续明确修订/采纳仍受当前来源、父版本与权限校验。没有新增模型工具、HTTP端点、自动扫描或自动重试。细节见`docs/validation/NOTE-RECONCILIATION.md`。
