@@ -97,3 +97,11 @@ class CommunicationArchiveTests(unittest.TestCase):
         archive(self.root,self.out)
         self.assertTrue((self.out/'installation-001/closeout-failed.json').is_file())
         self.assertEqual(json.loads((self.out/'steps/000-lead/reply.json').read_text())['scope'],'shared_service')
+
+    def test_async_recording_receipt_is_exported_and_incomplete_is_a_gap(self):
+        from integrations.runtimes.communication_archive import archive
+        marker=self.step/'events.recording.json'
+        marker.write_text(json.dumps(dict(schema='asr-event-recording/1',status='recording',durability_verified=False)))
+        result=archive(self.root,self.out)
+        self.assertTrue(any(g['code']=='event_recording_incomplete' for g in result['gaps']))
+        self.assertTrue((self.out/'steps/000-lead/events.recording.json').is_file())

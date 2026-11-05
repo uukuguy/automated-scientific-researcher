@@ -14,7 +14,7 @@ from asr_context.summary_review import prepare_review, assess
 from asr_service.control import ControlService
 from integrations.aar.bridge import ResearchBridge
 from powerflow_lab.reference import make_request
-from .communication_archive import EventRecorder
+from .async_events import AsyncEventRecorder
 from .environment import reject_api_key_settings
 from .pi import PiRuntime, Limits
 from .session import run_session
@@ -128,9 +128,9 @@ def execute(root,*,proxy=None,resume_reason=None,previous_candidate=None):
         turns=min(policy['session_turns'],budget['turns']['available']);tools=min(policy['session_tools'],budget['tool_executions']['available'])
         if seconds<=5 or turns<1 or tools<1:raise ValueError('remaining_validation_budget_exhausted')
         bridge=ResearchBridge(service,project=project,run=run,researcher_token=tokens[role],supervisor_token=tokens['supervisor'],workspace=work,snapshots=root/'snapshots',capability_profile='powerflow-readonly-finalization/1')
-        with (step/'events.jsonl').open('x') as stream:
+        with AsyncEventRecorder(step/'events.jsonl') as recorder:
             result=run_session(PiRuntime(model=identity['model'],capabilities_path=pack),bridge,config_dir=step/'pi-private',native_session_id=run,prompt=prompt,
-                limits=Limits(seconds,turns,tools),on_event=EventRecorder(stream))
+                limits=Limits(seconds,turns,tools),on_event=recorder)
         write(step/'runtime-result.json',result)
         value=parse_reply(result);write(step/'reply.json',value)
         return value,result['runtime_claim']['session_id']

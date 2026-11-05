@@ -310,12 +310,12 @@ write durable output early and finish each session promptly after your handoff.
             prompt=f'You are authenticated member {actor}, role {ACTORS[actor]}. Read CLIENT-BRIEF.md, state and organization_records pages. Your pending deliveries: '+json.dumps(deliveries)+'. Inspect actual sources, act within your role, preserve useful artifacts and hand off using organization records. No fixed scientific direction has been assigned by the host.'
             if generations[actor]:prompt+=' Native conversation context was explicitly rotated after capacity exhaustion; recover from your existing files, snapshots and authoritative records. Prior journals and research identity/budget are preserved. Do not repeat completed experiments.'
             write(step/'request.json',dict(context_generation=generations[actor],actor=actor,role=ACTORS[actor],prompt=prompt,client_brief=brief,client_brief_sha256=digest(work/'CLIENT-BRIEF.md'),deliveries=deliveries,budget=budget,limits=effective.__dict__,access_probe='controller_read_denied'))
-            from .communication_archive import EventRecorder
-            with (step/'events.jsonl').open('x') as stream:
-                event=EventRecorder(stream)
+            from .async_events import AsyncEventRecorder
+            with AsyncEventRecorder(step/'events.jsonl') as event:
                 result=run_research_session(runtime,bridge,config_dir=root/'pi-private',native_session_id=run,
                     prompt=prompt,
                     limits=effective,oauth_source=args.oauth_source,on_event=event,checkout=args.checkout)
+            result['communication_recording']=event.receipt
             write(step/'result.json',result);steps.append(dict(actor=actor,path=str(step),status=result['status']))
             if result['status']!='settled':raise ValueError('role_session_'+result['status'])
             receipt=acknowledge(service,tokens['supervisor'],project,run,deliveries,result['runtime_claim']['session_id'])

@@ -32,7 +32,14 @@ def register(service,token,project,run,*,subject,idempotency_key,path,native_ses
         scope=_scope('source',run,subject)
         replay=service._replay(db,project,scope,idempotency_key,arguments)
         if replay:return replay  # Historical registration, not a fresh cursor check.
-        observed=_observe(arguments)
+    # Parse outside the write transaction. Recheck all authority and replay
+    # state in a short transaction after the potentially slow SDK subprocess.
+    observed=_observe(arguments)
+    with service._connect() as db:
+        db.execute('BEGIN IMMEDIATE')
+        member(db,project,run,subject);service._run(db,project,run)
+        replay=service._replay(db,project,scope,idempotency_key,arguments)
+        if replay:return replay
         cursor_check=None
         if cursor_reference is not None:
             from .context_cursors import check

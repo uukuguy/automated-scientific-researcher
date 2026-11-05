@@ -6,7 +6,7 @@ from pathlib import Path
 DEFAULT_PATH = Path(__file__).resolve().parents[2]/'configs/capacity-policy.json'
 NAMES = frozenset(('context_boundary_ms', 'projection_seconds', 'journal_bytes',
                    'summary_bytes', 'review_bytes', 'pi_message_bytes',
-                   'pi_buffer_bytes', 'pi_pending_records', 'pi_records'))
+                   'pi_buffer_bytes', 'pi_pending_records', 'pi_records', 'async_log_warning_bytes'))
 
 
 def load_policy(path=None):

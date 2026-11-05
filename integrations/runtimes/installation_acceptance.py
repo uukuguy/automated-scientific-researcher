@@ -7,7 +7,8 @@ from asr_context.summary_review import prepare_review,assess
 from asr_service.control import ControlService
 from integrations.aar.bridge import ResearchBridge
 from .summary_acceptance import credentials,parse_reply,drain
-from .communication_archive import EventRecorder,archive
+from .communication_archive import archive
+from .async_events import AsyncEventRecorder
 from .pi import PiRuntime,Limits
 from .session import run_session
 
@@ -81,8 +82,8 @@ def execute(root,*,resume_reason=None,cycle=1):
             bridge=ResearchBridge(service,project=project,run=run,researcher_token=tokens[subject],supervisor_token=tokens['supervisor'],workspace=workspace,snapshots=root/'snapshots',capability_profile='research-organization/1')
             bridge.context_installation_id=stage
             runtime=PiRuntime(model=identity['model'],capabilities_path=HERE/'organization-capabilities.json',compact_before_prompt=compact)
-            with (step/'events.jsonl').open('x') as stream:
-                result=run_session(runtime,bridge,config_dir=(root/'installation-001'/'pi-private') if native else work/'pi-private',native_session_id=native or str(uuid.uuid4()),prompt=prompt,limits=Limits(seconds,min(20,budget['turns']['available']),min(20,budget['tool_executions']['available'])),on_event=EventRecorder(stream))
+            with AsyncEventRecorder(step/'events.jsonl') as recorder:
+                result=run_session(runtime,bridge,config_dir=(root/'installation-001'/'pi-private') if native else work/'pi-private',native_session_id=native or str(uuid.uuid4()),prompt=prompt,limits=Limits(seconds,min(20,budget['turns']['available']),min(20,budget['tool_executions']['available'])),on_event=recorder)
             with (step/'runtime-result.json').open('x') as f:json.dump(result,f,ensure_ascii=False,indent=2)
             if result['status']!='settled':raise ValueError('model_session_'+result['status'])
             reply=parse_reply(result)
@@ -149,14 +150,14 @@ def export_communications(root,work,name):
             for step in sorted(cycle_dir.glob('0*')):
                 if not step.is_dir() or not (step/'request.json').is_file():continue
                 dest=root/'steps'/(cycle_dir.name+'-'+step.name);dest.mkdir(parents=True,exist_ok=True)
-                for origin,target in [('request.json','request.json'),('events.jsonl','events.jsonl'),('runtime-result.json','result.json'),('reply.json','reply.json')]:
+                for origin,target in [('request.json','request.json'),('events.jsonl','events.jsonl'),('events.recording.json','events.recording.json'),('runtime-result.json','result.json'),('reply.json','reply.json')]:
                     if (step/origin).is_file() and not (dest/target).exists():shutil.copyfile(step/origin,dest/target)
         return archive(root,work/name)
     with sqlite3.connect(root/'control.db') as source,sqlite3.connect(work/'control.db') as target:source.backup(target)
     for step in sorted(work.glob('0*')):
         if not step.is_dir() or not (step/'request.json').is_file():continue
         dest=work/'steps'/step.name;dest.mkdir(parents=True,exist_ok=True)
-        for origin,target in [('request.json','request.json'),('events.jsonl','events.jsonl'),('runtime-result.json','result.json'),('reply.json','reply.json')]:
+        for origin,target in [('request.json','request.json'),('events.jsonl','events.jsonl'),('events.recording.json','events.recording.json'),('runtime-result.json','result.json'),('reply.json','reply.json')]:
             if (step/origin).is_file() and not (dest/target).exists():shutil.copyfile(step/origin,dest/target)
     if (root/'research-notes').exists():shutil.copytree(root/'research-notes',work/'research-notes',dirs_exist_ok=True)
     return archive(work,work/name)
@@ -182,8 +183,8 @@ def retrieve_after_installation(root):
     bridge=ResearchBridge(service,project=project,run=run,researcher_token=tokens['generator'],supervisor_token=tokens['supervisor'],workspace=root/'installation-001'/'target-workspace',snapshots=root/'snapshots',capability_profile='research-organization/1')
     budget=service.get_run(tokens['human'],project,run)['budget'];native=json.loads((root/'installation-001'/'configured.json').read_text())['target_native_id']
     try:
-        with (step/'events.jsonl').open('x') as stream:
-            result=run_session(PiRuntime(model=identity['model'],capabilities_path=HERE/'organization-capabilities.json'),bridge,config_dir=root/'installation-001'/'pi-private',native_session_id=native,prompt=prompt,limits=Limits(min(600,budget['research_walltime_ms']['available']/1000),min(20,budget['turns']['available']),min(20,budget['tool_executions']['available'])),on_event=EventRecorder(stream))
+        with AsyncEventRecorder(step/'events.jsonl') as recorder:
+            result=run_session(PiRuntime(model=identity['model'],capabilities_path=HERE/'organization-capabilities.json'),bridge,config_dir=root/'installation-001'/'pi-private',native_session_id=native,prompt=prompt,limits=Limits(min(600,budget['research_walltime_ms']['available']/1000),min(20,budget['turns']['available']),min(20,budget['tool_executions']['available'])),on_event=recorder)
         with (step/'runtime-result.json').open('x') as f:json.dump(result,f,ensure_ascii=False,indent=2)
         reply=parse_reply(result)
         with (step/'reply.json').open('x') as f:json.dump(reply,f,ensure_ascii=False,indent=2)

@@ -103,6 +103,13 @@ def archive(root, destination):
         request = step/'request.json'; result = step/'result.json'
         capture(request, 'steps/'+step.name+'/request.json')
         capture(step/'events.jsonl', 'steps/'+step.name+'/events.jsonl', True)
+        marker=step/'events.recording.json'
+        if marker.is_file():
+            capture(marker,'steps/'+step.name+'/events.recording.json')
+            recording=json.loads(marker.read_text())
+            if recording.get('status')!='complete' or recording.get('durability_verified') is not True:
+                gaps.append(dict(code='event_recording_incomplete',step=step.name,status=recording.get('status'),
+                                 recovery='Retain restricted native originals; reconcile the explicit recording gaps before claiming full coverage.'))
         if (step/'reply.json').is_file():capture(step/'reply.json','steps/'+step.name+'/reply.json')
         session = dict(step=step.name, finalized=result.is_file())
         if not result.is_file():

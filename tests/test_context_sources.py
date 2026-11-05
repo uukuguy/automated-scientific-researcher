@@ -64,3 +64,16 @@ class ContextSourcesTests(unittest.TestCase):
         self.assertEqual(page['text']+rest['text'],original)
         with self.assertRaisesRegex(ControlError,'context_source_unavailable'):
             self.s.read_context_source('lead2','p','r',source_registration='source',message_id=key,offset=0,limit=8000)
+
+    def test_source_projection_does_not_hold_database_write_transaction(self):
+        from unittest.mock import patch
+        import asr_service.context_sources as sources
+        original=sources._observe
+        def project(arguments):
+            with self.s._connect() as db:
+                db.execute('PRAGMA busy_timeout=50')
+                db.execute('BEGIN IMMEDIATE')
+                db.rollback()
+            return original(arguments)
+        with patch.object(sources,'_observe',side_effect=project):
+            self.assertEqual(self.register()['status'],'registered')
