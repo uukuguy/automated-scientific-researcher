@@ -44,6 +44,7 @@ def frozen_payload(path, sha256, *, operations=('label','fit','analysis')):
 
 
 class StudyBackend(CandidateBackend):
+    worker_module = 'research_projects.ood_augmentation.worker'
     output_bytes = MAX_OUTPUT_BYTES
     profile = PROFILE
     operations = ('label','fit','analysis')
@@ -86,7 +87,7 @@ class StudyBackend(CandidateBackend):
         for key, value in identity['labels'].items():
             arguments += ['--label', key + '=' + value]
         identity['container_id'] = self._call(arguments + [self.image_id, '-m',
-            'research_projects.ood_augmentation.worker', '--input', '/input.json'])
+            self.worker_module, '--input', '/input.json'])
         inspected = self._raw_inspect(identity)
         self.verify_container(inspected, identity, path)
         (path / 'container-inspection.json').write_bytes(canonical(inspected))
@@ -96,7 +97,7 @@ class StudyBackend(CandidateBackend):
         config = value['Config']; host = value['HostConfig']
         if (value['Image'] != self.image_id or config['Image'] != self.image_id or
             config['User'] != '65532:65532' or config['Entrypoint'] != ['python3'] or
-            config['Cmd'] != ['-m', 'research_projects.ood_augmentation.worker', '--input', '/input.json']):
+            config['Cmd'] != ['-m', self.worker_module, '--input', '/input.json']):
             raise RuntimeError('study executable policy mismatch')
         mounts = value['Mounts']
         if (len(mounts) != 1 or mounts[0]['Type'] != 'bind' or mounts[0]['RW'] or

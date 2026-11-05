@@ -15,6 +15,8 @@ SOURCES = (
     'powerflow_lab/validation.py',
     'asr_evaluation/ood_metrics.py',
     'asr_evaluation/ood_worker.py',
+    'asr_evaluation/isolated_confirmation.py',
+    'asr_evaluation/isolated_worker.py',
 )
 
 

@@ -7,7 +7,11 @@ Research reference: [Task specification v2.2](../IEEE118_OOD_Sample_Expansion_Ta
 This ledger replaces the initialization WP1–WP7 breakdown after the user confirmed the system-first foundation and bounded initial task.
 At most one package is active. P4 is complete; P5 organization implementation is active. Status records evidence, not elapsed time.
 
-## P5验收准备实查（2026-11-05）
+## P5内部隔离评价（2026-11-06当前）
+
+用户已选定内部隔离路径。Control准入、原账本预留、实际离线容器核验/评分、原始附件限制与汇总交付已通过工程验证；685项回归，26项跳过。见[工程结果](../validation/P5-INTERNAL-EVALUATION.md)。正式新面板尚未执行，待确认团队512+512/95%方案的[具体协议](../validation/P5-INTERNAL-EVALUATION-PROTOCOL.md)。外部机构不是此前置条件，不继续容量优化。
+
+## P5验收准备实查（2026-11-05，历史）
 
 [独立验收准备](../validation/P5-ACCEPTANCE-READINESS.md)：478份档案及14份交付指纹通过，候选固定；当前paused/准入关闭，开发profile无最终评价授权，现有最终评价器绑定P4旧面板。待确定独立评价方、前瞻协议、新面板保管与评价预算后执行，不重复训练或恢复旧面板。
 

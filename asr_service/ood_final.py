@@ -17,15 +17,21 @@ CAPABILITY='ood-study-confirmation/1'
 
 def evaluation_reference(config):
     required={'client_root','preparation_report_sha256','image_id','metric_source_sha256','worker_source_sha256'}
-    if type(config) is not dict or set(config)!=required or type(config['client_root']) is not str or not Path(config['client_root']).is_absolute():
+    if type(config) is not dict or set(config) not in (required,required|{'isolated_panel'}) or type(config['client_root']) is not str or not Path(config['client_root']).is_absolute():
         raise ControlError('invalid_final_configuration')
     if any(type(config[k]) is not str or re.fullmatch('[a-f0-9]{64}',config[k]) is None for k in required-{'client_root','image_id'}):
         raise ControlError('invalid_final_configuration')
     if type(config['image_id']) is not str or re.fullmatch('sha256:[a-f0-9]{64}',config['image_id']) is None:
         raise ControlError('invalid_final_configuration')
-    return dict(profile='ood-independent-final/1',image_id=config['image_id'],
+    extra={}
+    if 'isolated_panel' in config:
+        panel=config['isolated_panel']
+        if type(panel) is not dict or set(panel)!={'path','sha256'} or type(panel['path']) is not str or not Path(panel['path']).is_absolute() or type(panel['sha256']) is not str or re.fullmatch('[a-f0-9]{64}',panel['sha256']) is None:
+            raise ControlError('invalid_isolated_panel_configuration')
+        extra=dict(panel_sha256=panel['sha256'])
+    return dict(profile='ood-isolated-confirmation/1' if extra else 'ood-independent-final/1',image_id=config['image_id'],
         metric_source_sha256=config['metric_source_sha256'],worker_source_sha256=config['worker_source_sha256'],
-        preparation_report_sha256=config['preparation_report_sha256'],release='one_frozen_protocol')
+        preparation_report_sha256=config['preparation_report_sha256'],release='one_frozen_protocol',**extra)
 
 
 def materials(config, study_config):
@@ -85,12 +91,24 @@ def submit(service,token,project,run,*,request_key,protocol,hypothesis_ref):
             raise ControlError('final_requires_settled_experiments')
         hypothesis=service._hypothesis_ref(db,project,hypothesis_ref)
         config=doc['provenance']['final']
-        data=materials(config,doc['provenance']['study']);data['models']={};dependencies=[]
+        isolated='isolated_panel' in config
+        if isolated:
+            from .isolated_confirmation import load_panel
+            data=load_panel(config,doc['provenance']['study'])
+        else:
+            data=materials(config,doc['provenance']['study'])
+        data['models']={};dependencies=[]
         for trial_id in protocol['model_trials']:
             material,reference=completed_material(db,project,run,trial_id)
             if material['variables']!={'operation':'fit'}:raise ControlError('final_requires_trusted_fit')
             data['models'][trial_id]=material['events'][-1]['result']['model'];dependencies.append(reference)
-        request=dict(operation='final',primary_model=protocol['primary_model'],model_trials=protocol['model_trials'],protocol_sha256=protocol_hash)
+        if isolated:
+            from asr_evaluation.isolated_confirmation import verify, sha
+            if data['protocol']['primary_model']!=protocol['primary_model'] or set(data['protocol']['models'])!=set(protocol['model_trials']):raise ControlError('isolated_model_selection_changed')
+            request=dict(operation='isolated_final',protocol_sha256=sha(data['protocol']))
+            verify(request,data)
+        else:
+            request=dict(operation='final',primary_model=protocol['primary_model'],model_trials=protocol['model_trials'],protocol_sha256=protocol_hash)
         body=canonical(dict(request=request,materials=data))
         from .study import check_limit
         check_limit('study_payload_limit','final_payload_bytes',MAX_PAYLOAD_BYTES,len(body))
@@ -104,18 +122,19 @@ def submit(service,token,project,run,*,request_key,protocol,hypothesis_ref):
         else:
             fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o444)
             with os.fdopen(fd,'wb') as stream:stream.write(body);stream.flush();os.fsync(stream.fileno())
-        timeout=min(60,doc['execution_policy']['timeout_seconds'])
+        timeout=min(300 if isolated else 60,doc['execution_policy']['timeout_seconds'])
         attempt='attempt_'+uuid.uuid4().hex;trial='trial_'+uuid.uuid4().hex
-        budget=dict(attempts=1,execution_ms=timeout*1000,sample_proposals=0)
+        budget=dict(attempts=1,execution_ms=timeout*1000,sample_proposals=sum(data['protocol']['counts'].values()) if isolated else 0)
         service.budgets.reserve_many_in_transaction(db,project,attempt,budget)
         record=dict(project_id=project,research_run_id=run,trial_id=trial,execution_attempt_id=attempt,
             contract_id=running['contract_id'],contract_revision=running['contract_revision'],contract=contract,
             variables=dict(operation='final'),references=dict(problem=doc['problem_ref'],evaluation=doc['evaluation_ref']),
-            execution_request=dict(profile='ood-independent-final/1',image_id=config['image_id'],payload_path=str(path.resolve()),payload_sha256=sha,timeout_seconds=timeout),
+            execution_request=dict(profile='ood-isolated-confirmation/1' if isolated else 'ood-independent-final/1',image_id=config['image_id'],payload_path=str(path.resolve()),payload_sha256=sha,timeout_seconds=timeout),
             requested_budget=budget,state='queued',created_at=now(),hypothesis_ref=hypothesis,hypothesis_linkage='linked',
             dependencies=dependencies,protocol=protocol,protocol_sha256=protocol_hash)
         db.execute('INSERT INTO asr_dispatch VALUES (?,?,?,?,?,?,?)',(attempt,project,run,trial,attempt,'queued',encoded(record)))
         running['study_final_lock']=dict(protocol_sha256=protocol_hash,attempt_id=attempt)
+        if isolated:running['study_final_lock']['isolated']=True
         db.execute('UPDATE asr_runs SET record=? WHERE project=? AND run=?',(encoded(running),project,run))
         service._remember(db,project,'ood-final:'+run,request_key,payload,record)
         service._event(db,project,run,'final_protocol_frozen',protocol_sha256=protocol_hash,trial_id=trial,execution_attempt_id=attempt)

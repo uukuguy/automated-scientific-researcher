@@ -48,6 +48,11 @@ def export_final_result(report, workspace):
         json.loads((path/'manifest.json').read_text())['artifacts'] != publication_inventory(path)):
         raise ValueError('final evidence corrupt')
     result=json.loads((path/'study-result.json').read_text())
+    if result.get('schema') == 'asr-isolated-confirmation-result/1':
+        allowed={'schema','protocol_sha256','primary_model','baseline_model','model_sha256','label_validity','independence','engineering_fixture','scope','assessment','metrics','thresholds'}
+        if set(result)-allowed:raise ValueError('unexpected isolated delivery fields')
+        write(Path(workspace)/'INTERNAL-ISOLATED-EVALUATION.json',result)
+        return
     if result.get('schema') != 'asr-ood-independent-validation/1':
         raise ValueError('independent final result required')
     write(Path(workspace)/'INDEPENDENT-FINAL-RESULT.json',result)

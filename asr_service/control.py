@@ -632,6 +632,7 @@ class ControlService(PolicyStore):
                 row=db.execute('SELECT record FROM asr_runtime_sessions WHERE session_id=?',(replay['session_id'],)).fetchone()
                 return dict(json.loads(row[0]),replayed=True)
             record=self._run(db,project,run)
+            if record.get('study_final_lock',{}).get('isolated'):raise ControlError('isolated_evaluation_runtime_closed')
             policy=self._contract(db,project,record['contract_id'],record['contract_revision'])['document']['runtime_policy']
             expected_identity={k:policy[k] for k in ('provider','model','auth_mode','billing_mode')}
             if runtime_identity!=expected_identity: raise ControlError('runtime_binding_conflict')

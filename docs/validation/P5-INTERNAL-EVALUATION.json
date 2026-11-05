@@ -1,0 +1,83 @@
+{
+  "schema": "asr-internal-evaluation-engineering/1",
+  "scope": "Public-only engineering acceptance; no new hidden panel or P5 science score",
+  "image": {
+    "image_id": "sha256:175997e933fed526c76230cd8971532ef5083fb6ad8ca7c019c319f9501d040c",
+    "base": "sha256:cd5dc68c73d6c397c838dff732111ee72d90bb5161243690ca3d12ea06a90012",
+    "uv_lock_sha256": "81303c283dabf033624def67f42511e07d16c796fb11937fb4e5485d05bd7406",
+    "source_hashes": {
+      "research_projects/ood_augmentation/project.py": "61feddeef8add21223b22da0199616afd1a2395c5761b77548927768a5cc3c97",
+      "research_projects/ood_augmentation/worker.py": "e81019dd5a4fc333bdbca13bb9d57c6b6d2d4676f1581a38665df987320e1d51",
+      "environments/scientific/calibrate.py": "3868f980d0a41b4cf05ce7aa13a088ef1deaadc2259df292d0d10f1827982bb2",
+      "powerflow_lab/validation.py": "090499c1c180e63215dd444a7f3a0cb10da02a724904e3a684c74ae5beb562d3",
+      "asr_evaluation/ood_metrics.py": "d20e5e8da113876da6648fb072b4898c0c4317905aef9aa521716bd0cf52a17c",
+      "asr_evaluation/ood_worker.py": "faeb31d476025dc8db898b5c459ad98cea24e703a777645d3aafde98ff71fc40",
+      "asr_evaluation/isolated_confirmation.py": "fa61af729a4c50d03345238f97cc89a29fb681d9dd0dd7988c4e1d0e25a4fdeb",
+      "asr_evaluation/isolated_worker.py": "81c8c8a36eaddd70ad7dad403e0dc57177102683e14fc430bf9b28c184861ffc"
+    }
+  },
+  "execution": {
+    "status": "succeeded",
+    "execution_exited": true,
+    "manifest_hash": "17639cefa0cca4595a6c256789e679c4a7dd71af8dc9fb160b87659ac7e2eae3"
+  },
+  "trial_id": "trial_df3ddf82127f418997b74f855ed77577",
+  "attempt_id": "attempt_6c8d9cef648d4b57805bedefa39c825a",
+  "tests": {
+    "total": 685,
+    "passed": 659,
+    "skipped": 26,
+    "real_container_tests": 7
+  },
+  "logs": [
+    {
+      "path": "artifacts/p5-isolated-confirmation-validation-001/asr-isolated-admission-red.log",
+      "sha256": "ee1a12b895027194db9d68456e0169726cd8d23c5f3dd36f05f801669622c38a"
+    },
+    {
+      "path": "artifacts/p5-isolated-confirmation-validation-001/asr-isolated-build.log",
+      "sha256": "a704d58654699d4700114982fbb34c7644d99ebfa44d6d043a3457c187b2eb89"
+    },
+    {
+      "path": "artifacts/p5-isolated-confirmation-validation-001/asr-isolated-container-final.log",
+      "sha256": "9e53a6c37a6904bb9c8b25997c7307a7e5437281e4328fc9fa1a7815c9dac2d9"
+    },
+    {
+      "path": "artifacts/p5-isolated-confirmation-validation-001/asr-isolated-export-red.log",
+      "sha256": "1f70080561cf46b7559a82c4c77dd211df60a53a2485fe569915e692cd89ae38"
+    },
+    {
+      "path": "artifacts/p5-isolated-confirmation-validation-001/asr-isolated-final-suite.log",
+      "sha256": "b2e66df7fc09c0fd6fe8565dcb431a7060c0447a86d200eda93cef9d0c18810f"
+    },
+    {
+      "path": "artifacts/p5-isolated-confirmation-validation-001/asr-isolated-focused-final.log",
+      "sha256": "33cc6807e8d0163b99b74624028818c3a6a944a880755a2d5e88d910bcee0c8b"
+    },
+    {
+      "path": "artifacts/p5-isolated-confirmation-validation-001/asr-isolated-full-tests.log",
+      "sha256": "35932a28ea596491e0614f472e8689ec5de363a28711ce101beb2300d5b12b7b"
+    },
+    {
+      "path": "artifacts/p5-isolated-confirmation-validation-001/asr-isolated-green.log",
+      "sha256": "e28f52db5cda8112a710e83b07c5b40262b775922c88bc217d96415b4ac178f8"
+    },
+    {
+      "path": "artifacts/p5-isolated-confirmation-validation-001/asr-isolated-red.log",
+      "sha256": "8dcec504a4fb977ebd332d45186c972391d01492f00be7e86454505f946aeeca"
+    },
+    {
+      "path": "artifacts/p5-isolated-confirmation-validation-001/asr-isolated-verified-suite.log",
+      "sha256": "927e31af903471b4d0405c96018d540a2af379748e7f4304106401dd782c6e65"
+    }
+  ],
+  "historical_coordinates": {
+    "path": "artifacts/p5-isolated-confirmation-preflight-001/history-audit.json",
+    "sha256": "187c66785f56b1efd63e9061c592be3ef5350aee003ed3ccc6dcfe6ac94efad1"
+  },
+  "pending": [
+    "Prospective confirmation of team-proposed 95% valid-label rule and 512+512 panel",
+    "Generate fresh hidden panel, reconcile historical coverage and bind contract/protocol",
+    "Actual internal evaluation and controlled feedback; not external certification"
+  ]
+}

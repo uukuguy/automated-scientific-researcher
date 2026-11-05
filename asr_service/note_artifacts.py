@@ -127,6 +127,9 @@ def _resolve(db, service, project, run, references,*,witnesses=None):
                 if ref['path'] not in {'study-result.json','study-events.json','validation.json','result.json'}:raise ValueError('unsupported_trial_file')
                 row=db.execute('SELECT attempt,state FROM asr_dispatch WHERE project=? AND run=? AND trial=?',(project,run,ref['trial_id'])).fetchone()
                 if not row or row[1] not in {'succeeded','failed','timed_out','interrupted'}:raise ValueError('trial_unavailable')
+                dispatch=db.execute('SELECT record FROM asr_dispatch WHERE attempt=?',(row[0],)).fetchone()
+                profile=json.loads(dispatch[0]).get('execution_request',{}).get('profile') if dispatch else None
+                if profile in {'ood-independent-final/1','ood-isolated-confirmation/1'}:raise ValueError('independent_evaluation_artifacts_restricted')
                 raw=db.execute('SELECT record FROM asr_executions WHERE attempt=?',(row[0],)).fetchone()
                 execution=json.loads(raw[0]) if raw else {}
                 if (execution.get('project'),execution.get('run'),execution.get('trial'),execution.get('attempt'))!=(project,run,ref['trial_id'],row[0]):raise ValueError('execution_mismatch')
