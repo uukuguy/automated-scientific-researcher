@@ -25,7 +25,51 @@ def _safe_file(root, relative):
     return path.read_bytes()
 
 
-def _resolve(db, service, project, run, references):
+def _read_file(root,relative,witnesses):
+    if witnesses is None:return _safe_file(root,relative)
+    # Validate the relative path before even inspecting filesystem metadata.
+    if type(relative) is not str or not relative or Path(relative).is_absolute() or '..' in Path(relative).parts:
+        raise ValueError('unsafe_artifact_path')
+    from .context_io import verify
+    result=verify(str(root/relative),lambda:_safe_file(root,relative))
+    witnesses.append(result)
+    return result.value
+
+
+class PreparedArtifacts:
+    def __init__(self,references,rows,witnesses,bindings):
+        self.references=encoded(references);self.rows=rows;self.witnesses=witnesses;self.bindings=bindings
+
+    def check(self,db,references):
+        if encoded(references)!=self.references:raise ControlError('note_artifact_unavailable')
+        for query,parameters,expected in self.bindings:
+            if db.execute(query,parameters).fetchone()!=expected:raise ControlError('note_artifact_unavailable')
+        try:
+            for witness in self.witnesses:witness.check()
+        except (ControlError,OSError):raise ControlError('note_artifact_unavailable') from None
+        return self.rows
+
+
+class _ObservedQueries:
+    """Record only this resolver's SELECT/fetchone bindings for commit checks."""
+    def __init__(self,db):self.db=db;self.bindings=[]
+
+    def execute(self,query,parameters):
+        if not query.lstrip().startswith('SELECT '):raise ValueError('artifact_read_only_required')
+        value=self.db.execute(query,parameters).fetchone()
+        self.bindings.append((query,parameters,value))
+        class Row:
+            def fetchone(self):return value
+        return Row()
+
+
+def prepare(db,service,project,run,references):
+    tracked=_ObservedQueries(db);witnesses=[]
+    rows=_resolve(tracked,service,project,run,references,witnesses=witnesses)
+    return PreparedArtifacts(references,rows,witnesses,tracked.bindings)
+
+
+def _resolve(db, service, project, run, references,*,witnesses=None):
     if type(references) is not list:raise ControlError('invalid_note_artifacts')
     result=[];seen=set()
     for ref in references:
@@ -38,10 +82,10 @@ def _resolve(db, service, project, run, references):
                 digest=ref['snapshot_sha256']
                 if type(digest) is not str or not re.fullmatch('[0-9a-f]{64}',digest):raise ValueError('invalid_snapshot')
                 directory=service.path.parent/'snapshots'/digest
-                body=_safe_file(directory,'manifest.json');manifest=json.loads(body)
+                body=_read_file(directory,'manifest.json',witnesses);manifest=json.loads(body)
                 if _hash(body)!=digest or manifest['schema']!='asr-workspace-snapshot/1' or (manifest['project_id'],manifest['research_run_id'])!=(project,run):raise ValueError('snapshot_mismatch')
                 entry=next(x for x in manifest['files'] if x['path']==ref['path'])
-                body=_safe_file(directory/'files',ref['path'])
+                body=_read_file(directory/'files',ref['path'],witnesses)
                 if _hash(body)!=entry['sha256'] or len(body)!=entry['size']:raise ValueError('snapshot_file_mismatch')
                 provenance=dict(snapshot_sha256=digest)
             elif ref.get('kind')=='trial' and set(ref)=={'kind','trial_id','path'}:
@@ -55,9 +99,9 @@ def _resolve(db, service, project, run, references):
                 report=execution.get('report') or {}
                 if report.get('execution_exited') is not True:raise ValueError('execution_unsettled')
                 directory=Path(report['evidence_path'])
-                manifest_body=_safe_file(directory,'manifest.json');manifest=json.loads(manifest_body)
+                manifest_body=_read_file(directory,'manifest.json',witnesses);manifest=json.loads(manifest_body)
                 if _hash(manifest_body)!=report['manifest_hash'] or (manifest['trial_id'],manifest['execution_attempt_id'],manifest['status'])!=(ref['trial_id'],row[0],row[1]):raise ValueError('manifest_mismatch')
-                body=_safe_file(directory,ref['path']);entry=manifest['artifacts'][ref['path']]
+                body=_read_file(directory,ref['path'],witnesses);entry=manifest['artifacts'][ref['path']]
                 if _hash(body)!=entry['sha256'] or len(body)!=entry['bytes']:raise ValueError('trial_file_mismatch')
                 provenance=dict(trial_id=ref['trial_id'],execution_attempt_id=row[0],manifest_sha256=report['manifest_hash'])
             else:raise ValueError('unsupported_artifact_kind')
@@ -70,11 +114,12 @@ def _resolve(db, service, project, run, references):
     return result
 
 
-def resolve(db, service, project, run, references):
-    return [material for material,body in _resolve(db,service,project,run,references)]
+def resolve(db, service, project, run, references,*,prepared=None):
+    rows=prepared.check(db,references) if prepared is not None else _resolve(db,service,project,run,references)
+    return [material for material,body in rows]
 
 
-def read_page(db, service, project, run, reference, *, offset=0, limit=8000):
+def read_page(db, service, project, run, reference, *, offset=0, limit=8000,prepared=None):
     """Return a verified UTF-8 text page. Offsets count Unicode characters."""
     if type(offset) is not int or offset<0 or type(limit) is not int or not 1<=limit<=16000:
         error=ControlError('invalid_note_source_page')
@@ -82,7 +127,7 @@ def read_page(db, service, project, run, reference, *, offset=0, limit=8000):
                            purpose='Bound one tool response and prevent refilling context with a large artifact.',
                            recovery='Use limit 1..16000 and follow next_offset; no source was truncated.')
         raise error
-    material,body=_resolve(db,service,project,run,[reference])[0]
+    material,body=(prepared.check(db,[reference]) if prepared is not None else _resolve(db,service,project,run,[reference]))[0]
     try:text=body.decode('utf-8')
     except UnicodeError:raise ControlError('note_source_not_utf8') from None
     if offset>len(text):raise ControlError('note_source_offset_out_of_range')

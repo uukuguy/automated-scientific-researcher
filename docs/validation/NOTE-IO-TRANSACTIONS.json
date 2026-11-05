@@ -1,0 +1,26 @@
+{
+  "schema": "asr-note-io-validation/1",
+  "scope": "笔记与代码/实验附件事务外读写及提交竞争；实际pi SDK安装，无模型或科研执行",
+  "command": "uv run --extra aar python -m unittest discover -s tests -v",
+  "tests": 622,
+  "skipped": 25,
+  "status": "passed",
+  "new_concurrency_and_race_checks": 12,
+  "model_calls": 0,
+  "scientific_executions": 0,
+  "log": "artifacts/note-io-validation-001/tests.log",
+  "log_sha256": "df99d670e14629b6e20391aad56d7e6d944120d70a2a1022a9f6472513db0023",
+  "sources": {
+    "asr_service/note_io.py": "8b963de1546fd17706031bd49a02b9cc31b627ad40068ae3616d9c856c1bbe71",
+    "asr_service/note_artifacts.py": "f9e6eefbd7017b3e3d8e408a3a40ca1614d0ef94cdbed8d30eb8c85ecbb35636",
+    "asr_service/research_notes.py": "26dd68f03d4ce547490459393c3285e380ce067ce4e76a0f20f949df17b029bf",
+    "asr_service/context_admission.py": "f988fa6ae671fe81a11c60fdf6c3d4cb4d29a7d97639d513a32003a42b9ffa31",
+    "asr_service/context_installation.py": "823dad0accefce7b5e9b76e660cc51582fc66ac23ba4cfd14aa3e40dfb0a2fb9",
+    "tests/test_note_io.py": "9bcb84301f4c318f8275dfc5cf1661704fdc503adb19a917b0c9a679d7b08970"
+  },
+  "limitations": [
+    "文件版本检查不提供文件系统/SQLite原子提交或特权宿主隔离",
+    "文件落盘与数据库登记之间崩溃可能保留未登记草稿，尚无自动对账",
+    "附件全量读取的内存及编译/数据库大对象占锁仍开放"
+  ]
+}

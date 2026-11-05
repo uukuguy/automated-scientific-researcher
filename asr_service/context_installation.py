@@ -14,6 +14,7 @@ from .context_admission import _scope,snapshot,_session
 from .context_cursors import _live,check as cursor_check
 from .organization_runtime import validate
 from .context_sources import _observe
+from . import note_io
 
 
 def _record(db,project,scope,key):
@@ -33,7 +34,7 @@ def _native_replay(observed,first_kept_entry_id):
     return (key,) if any(g['ids']==[key] for g in snapshot['groups']) else ()
 
 
-def _stage(service,token,project,run,*,subject,admission_id,first_kept_entry_id,idempotency_key,verified_source=None):
+def _stage(service,token,project,run,*,subject,admission_id,first_kept_entry_id,idempotency_key,verified_source=None,verified_note=None):
     service._auth(token,project,{'human','supervisor'});service._identity(subject,admission_id,first_kept_entry_id,idempotency_key)
     with service._connect() as db:
         db.execute('BEGIN IMMEDIATE');scope=_scope('installation',run,subject);payload=[admission_id,first_kept_entry_id]
@@ -45,11 +46,12 @@ def _stage(service,token,project,run,*,subject,admission_id,first_kept_entry_id,
         source_id=prepared.get('source_registration')
         if not source_id:raise ControlError('context_conversation_source_required')
         source,_=_record(db,project,_scope('source',run,subject),source_id)
-        snapshot(service,db,project,run,subject,source_id,verified_source=verified_source)  # Re-read exact originals at staging.
+        snapshot(service,db,project,run,subject,source_id,verified_source=verified_source,verified_note=verified_note)  # Re-read exact originals at staging.
         request,candidate,review_request,review,author,reviewer=bundle[2:]
         compiled=compile_plan(source['observation'],request,candidate,review_request,review,author_session=author,reviewer_session=reviewer,first_kept_entry_id=first_kept_entry_id,native_replay_ids=_native_replay(source['observation'],first_kept_entry_id))
         if compiled['status']!='installation_plan':raise ControlError(compiled.get('reason','context_coverage_required'))
         result=dict(status='staged',stage_id=idempotency_key,subject=subject,preparation=prepared,reader=source['reader'],bundle=bundle,plan=compiled,installation_authorized=False)
+        note_io.check(verified_note,db)
         if verified_source is not None:verified_source.check()
         service._remember(db,project,scope,idempotency_key,payload,result);service._event(db,project,run,'context_installation_staged',subject=subject,stage_id=idempotency_key,plan_sha256=compiled['plan_sha256'])
         return result
@@ -68,10 +70,10 @@ def stage(service,token,project,run,**arguments):
     from .context_sources import verify_registered
     source=prepared.get('source_registration')
     verified=verify_registered(service,project,run,subject,source) if source else None
-    return _stage(service,token,project,run,**arguments,verified_source=verified)
+    return _stage(service,token,project,run,**arguments,verified_source=verified,verified_note=note_io.capture(service,project,run,subject))
 
 
-def _authorize(service,token,project,run,session_id,epoch,owner,*,stage_id,observation,tokens_before,verified_read):
+def _authorize(service,token,project,run,session_id,epoch,owner,*,stage_id,observation,tokens_before,verified_read,verified_note):
     service._auth(token,project,{'human','supervisor'});service._identity(stage_id,observation.get('observation_id'))
     if type(tokens_before) is not int or tokens_before<0:raise ControlError('context_token_measurement_required')
     with service._connect() as db:
@@ -93,7 +95,7 @@ def _authorize(service,token,project,run,session_id,epoch,owner,*,stage_id,obser
         _session(db,project,run,author,subject);_session(db,project,run,reviewer,staged['preparation']['reviewer_subject'])
         compiled=compile_plan(observed,request,candidate,review_request,review,author_session=author,reviewer_session=reviewer,first_kept_entry_id=staged['plan']['first_kept_entry_id'],native_replay_ids=tuple(r['id'] for r in staged['plan'].get('native_replayed_messages',[])))
         if compiled['status']!='installation_plan':raise ControlError(compiled.get('reason','context_coverage_required'))
-        current_materials,stamp=snapshot(service,db,project,run,subject)
+        current_materials,stamp=snapshot(service,db,project,run,subject,verified_note=verified_note)
         current_materials.extend(materials(observed['conversation']));stamp['source_fingerprints']={m.id:material_digest(m) for m in current_materials}
         app=application_plan(request,candidate,review_request,review,author_session=author,reviewer_session=reviewer,expected_state=staged['preparation']['state_stamp'],current_state=stamp)
         if app['status']!='admission_required':raise ControlError(app.get('reason','context_state_changed'))
@@ -103,6 +105,7 @@ def _authorize(service,token,project,run,session_id,epoch,owner,*,stage_id,obser
         envelope['source_retrieval']='asr.research_note conversation_read'
         summary=_encode(envelope).decode()
         compaction=dict(summary=summary,firstKeptEntryId=compiled['first_kept_entry_id'],tokensBefore=tokens_before,details=dict(asr_installation_ticket=ticket_id))
+        note_io.check(verified_note,db)
         verified_read.check()
         if raw_sha!=observed['witness']['journal_sha256']:raise ControlError('context_source_changed')
         ticket=dict(schema='asr-installation-ticket/1',ticket_id=ticket_id,stage_id=stage_id,boundary_id=key,session_id=session_id,epoch=epoch,owner=owner,
@@ -135,7 +138,7 @@ def authorize(service,token,project,run,session_id,epoch,owner,*,stage_id,observ
         if len(raw)>reader['max_journal_bytes']:raise ControlError('context_source_changed')
         return reader,observed,hashlib.sha256(raw).hexdigest(),len(raw)
     verified=verify(reader['path'],read)
-    return _authorize(service,token,project,run,session_id,epoch,owner,stage_id=stage_id,observation=observation,tokens_before=tokens_before,verified_read=verified)
+    return _authorize(service,token,project,run,session_id,epoch,owner,stage_id=stage_id,observation=observation,tokens_before=tokens_before,verified_read=verified,verified_note=note_io.capture(service,project,run,subject))
 
 
 def _verify_write(service,db,project,run,subject,ticket,entry_id,progress):
@@ -166,7 +169,7 @@ def _verify_write(service,db,project,run,subject,ticket,entry_id,progress):
     return observed,retained
 
 
-def _complete(service,token,project,run,session_id,epoch,owner,*,boundary_id,ticket_id,entry_id,idempotency_key,verified_write,verification_error,progress):
+def _complete(service,token,project,run,session_id,epoch,owner,*,boundary_id,ticket_id,entry_id,idempotency_key,verified_write,verification_error,progress,verified_note=None):
     service._auth(token,project,{'human','supervisor'});service._identity(boundary_id,ticket_id,entry_id,idempotency_key)
     with service._connect() as db:
         db.execute('BEGIN IMMEDIATE');session=service._session(db,project,run,session_id,epoch,owner);_live(session)
@@ -181,13 +184,14 @@ def _complete(service,token,project,run,session_id,epoch,owner,*,boundary_id,tic
             if verification_error is not None:raise verification_error
             frozen_ticket,observed,retained=verified_write.check()
             if frozen_ticket!=ticket:raise ControlError('context_ticket_binding_mismatch')
-            fresh_materials,fresh_stamp=snapshot(service,db,project,run,subject)
+            fresh_materials,fresh_stamp=snapshot(service,db,project,run,subject,verified_note=verified_note)
             fresh_stamp['source_fingerprints']=dict(ticket['state_stamp']['source_fingerprints'])
             fresh_stamp['source_fingerprints'].update({m.id:material_digest(m) for m in fresh_materials})
             if _digest(fresh_stamp)!=ticket['state_sha256']:raise ControlError('context_research_state_changed_after_write')
             result=dict(status='verified',context_installed=True,native_write_observed=True,installation_authorized=False,ticket_id=ticket_id,entry_id=entry_id,
                         original_journal_preserved=True,retained_ids=retained,projection_sha256=observed['witness']['projection_sha256'],after_journal_sha256=observed['witness']['journal_sha256'],provider_payload_verified=False)
             verified_write.check()
+            note_io.check(verified_note,db)
             session['native_context'].pop('pending_installation');session['native_context']['installed_context']=result
             db.execute('UPDATE asr_runtime_sessions SET record=? WHERE session_id=?',(encoded(session),session_id))
         except (ControlError,ValueError,OSError) as error:
@@ -254,6 +258,7 @@ def _verified_operation(service,token,project,run,session_id,epoch,owner,argumen
         verified=None;error=None
         try:verified=verify(ticket['reader']['path'],read)
         except (ControlError,ValueError,OSError) as failure:error=failure
+    if not historical:arguments=dict(arguments,verified_note=note_io.capture(service,project,run,subject))
     operation=_reconcile if historical else _complete
     return operation(service,token,project,run,session_id,epoch,owner,**arguments,
         verified_write=verified,verification_error=error,progress=progress)
