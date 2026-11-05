@@ -34,7 +34,7 @@ def _native_replay(observed,first_kept_entry_id):
     return (key,) if any(g['ids']==[key] for g in snapshot['groups']) else ()
 
 
-def _stage(service,token,project,run,*,subject,admission_id,first_kept_entry_id,idempotency_key,verified_source=None,verified_note=None):
+def _stage(service,token,project,run,*,subject,admission_id,first_kept_entry_id,idempotency_key,verified_source=None,verified_note=None,compilation=None):
     service._auth(token,project,{'human','supervisor'});service._identity(subject,admission_id,first_kept_entry_id,idempotency_key)
     with service._connect() as db:
         db.execute('BEGIN IMMEDIATE');scope=_scope('installation',run,subject);payload=[admission_id,first_kept_entry_id]
@@ -47,8 +47,9 @@ def _stage(service,token,project,run,*,subject,admission_id,first_kept_entry_id,
         if not source_id:raise ControlError('context_conversation_source_required')
         source,_=_record(db,project,_scope('source',run,subject),source_id)
         snapshot(service,db,project,run,subject,source_id,verified_source=verified_source,verified_note=verified_note)  # Re-read exact originals at staging.
-        request,candidate,review_request,review,author,reviewer=bundle[2:]
-        compiled=compile_plan(source['observation'],request,candidate,review_request,review,author_session=author,reviewer_session=reviewer,first_kept_entry_id=first_kept_entry_id,native_replay_ids=_native_replay(source['observation'],first_kept_entry_id))
+        if compilation is None or compilation['inputs']!=(admission,bundle,prepared,source):
+            raise ControlError('context_compilation_inputs_changed')
+        compiled=compilation['plan']
         if compiled['status']!='installation_plan':raise ControlError(compiled.get('reason','context_coverage_required'))
         result=dict(status='staged',stage_id=idempotency_key,subject=subject,preparation=prepared,reader=source['reader'],bundle=bundle,plan=compiled,installation_authorized=False)
         note_io.check(verified_note,db)
@@ -64,13 +65,21 @@ def stage(service,token,project,run,**arguments):
     with service._connect() as db:
         replay=service._replay(db,project,_scope('installation',run,subject),arguments['idempotency_key'],payload)
         if replay:return replay
-        admission,_=_record(db,project,_scope('admission',run,subject),arguments['admission_id'])
+        admission,bundle=_record(db,project,_scope('admission',run,subject),arguments['admission_id'])
         if admission['status']!='admitted':raise ControlError('context_admission_required')
         prepared,_=_record(db,project,_scope('prepare',run,subject),admission['preparation_id'])
+        source_id=prepared.get('source_registration')
+        if not source_id:raise ControlError('context_conversation_source_required')
+        source_record,_=_record(db,project,_scope('source',run,subject),source_id)
     from .context_sources import verify_registered
     source=prepared.get('source_registration')
     verified=verify_registered(service,project,run,subject,source) if source else None
-    return _stage(service,token,project,run,**arguments,verified_source=verified,verified_note=note_io.capture(service,project,run,subject))
+    verified_note=note_io.capture(service,project,run,subject)
+    request,candidate,review_request,review,author,reviewer=bundle[2:]
+    first=arguments['first_kept_entry_id']
+    compiled=compile_plan(source_record['observation'],request,candidate,review_request,review,author_session=author,reviewer_session=reviewer,first_kept_entry_id=first,native_replay_ids=_native_replay(source_record['observation'],first))
+    compilation=dict(inputs=(admission,bundle,prepared,source_record),plan=compiled)
+    return _stage(service,token,project,run,**arguments,verified_source=verified,verified_note=verified_note,compilation=compilation)
 
 
 def _authorize(service,token,project,run,session_id,epoch,owner,*,stage_id,observation,tokens_before,verified_read,verified_note):
@@ -87,17 +96,19 @@ def _authorize(service,token,project,run,session_id,epoch,owner,*,stage_id,obser
             if json.loads(row[0]).get('ticket',{}).get('stage_id')==stage_id:raise ControlError('context_stage_already_used')
         if session.get('native_context',{}).get('pending_installation'):raise ControlError('context_installation_pending')
         active_reader=dict(staged['reader'],leaf_id=observation['leaf_id'])
-        frozen_reader,observed,raw_sha,raw_size=verified_read.check()
+        frozen_reader,observed,raw_sha,raw_size,compilation=verified_read.check()
+        if compilation['staged']!=staged:raise ControlError('context_compilation_inputs_changed')
         if frozen_reader!=active_reader:raise ControlError('context_source_changed')
         checked=cursor_check(service,db,project,run,subject,dict(session_id=session_id,observation_id=key),observed,require_live=True)
         if checked['status']!='verified':raise ControlError(checked['reason'])
         request,candidate,review_request,review,author,reviewer=staged['bundle'][2:]
         _session(db,project,run,author,subject);_session(db,project,run,reviewer,staged['preparation']['reviewer_subject'])
-        compiled=compile_plan(observed,request,candidate,review_request,review,author_session=author,reviewer_session=reviewer,first_kept_entry_id=staged['plan']['first_kept_entry_id'],native_replay_ids=tuple(r['id'] for r in staged['plan'].get('native_replayed_messages',[])))
+        compiled=compilation['plan']
         if compiled['status']!='installation_plan':raise ControlError(compiled.get('reason','context_coverage_required'))
         current_materials,stamp=snapshot(service,db,project,run,subject,verified_note=verified_note)
         current_materials.extend(materials(observed['conversation']));stamp['source_fingerprints']={m.id:material_digest(m) for m in current_materials}
-        app=application_plan(request,candidate,review_request,review,author_session=author,reviewer_session=reviewer,expected_state=staged['preparation']['state_stamp'],current_state=stamp)
+        if stamp!=compilation['state']:raise ControlError('research_state_changed')
+        app=compilation['application']
         if app['status']!='admission_required':raise ControlError(app.get('reason','context_state_changed'))
         ticket_id='install_'+uuid.uuid4().hex
         envelope=json.loads(compiled['summary']);envelope['installation_id']=ticket_id
@@ -131,14 +142,23 @@ def authorize(service,token,project,run,session_id,epoch,owner,*,stage_id,observ
         if replay:return replay
         staged,_=_record(db,project,_scope('installation',run,subject),stage_id)
     reader=dict(staged['reader'],leaf_id=observation['leaf_id'])
+    verified_note=note_io.capture(service,project,run,subject)
     from .context_io import verify
     def read():
         observed=_observe(reader)
         with Path(reader['path']).open('rb') as stream:raw=stream.read(reader['max_journal_bytes']+1)
         if len(raw)>reader['max_journal_bytes']:raise ControlError('context_source_changed')
-        return reader,observed,hashlib.sha256(raw).hexdigest(),len(raw)
+        request,candidate,review_request,review,author,reviewer=staged['bundle'][2:]
+        compiled=compile_plan(observed,request,candidate,review_request,review,author_session=author,reviewer_session=reviewer,first_kept_entry_id=staged['plan']['first_kept_entry_id'],native_replay_ids=tuple(r['id'] for r in staged['plan'].get('native_replayed_messages',[])))
+        with service._connect() as db:
+            current_materials,stamp=snapshot(service,db,project,run,subject,verified_note=verified_note)
+        current_materials.extend(materials(observed['conversation']))
+        stamp['source_fingerprints']={m.id:material_digest(m) for m in current_materials}
+        app=application_plan(request,candidate,review_request,review,author_session=author,reviewer_session=reviewer,expected_state=staged['preparation']['state_stamp'],current_state=stamp)
+        compilation=dict(staged=staged,plan=compiled,state=stamp,application=app)
+        return reader,observed,hashlib.sha256(raw).hexdigest(),len(raw),compilation
     verified=verify(reader['path'],read)
-    return _authorize(service,token,project,run,session_id,epoch,owner,stage_id=stage_id,observation=observation,tokens_before=tokens_before,verified_read=verified,verified_note=note_io.capture(service,project,run,subject))
+    return _authorize(service,token,project,run,session_id,epoch,owner,stage_id=stage_id,observation=observation,tokens_before=tokens_before,verified_read=verified,verified_note=verified_note)
 
 
 def _verify_write(service,db,project,run,subject,ticket,entry_id,progress):

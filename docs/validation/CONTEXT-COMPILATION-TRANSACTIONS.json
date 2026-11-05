@@ -1,0 +1,22 @@
+{
+  "schema": "asr-context-compilation-validation/1",
+  "scope": "安装stage与授权编译、授权摘要复核计算移出Control写事务；当前状态与一次性使用仍同步核对",
+  "command": "uv run --extra aar python -m unittest discover -s tests -v",
+  "tests": 629,
+  "skipped": 25,
+  "status": "passed",
+  "new_concurrency_and_race_checks": 7,
+  "model_calls": 0,
+  "scientific_executions": 0,
+  "log": "artifacts/context-compilation-validation-001/tests.log",
+  "log_sha256": "8b4becbde1bd2c91d07473dcd7bd817f82215afde38b65e506ff5122eb6a9592",
+  "sources": {
+    "asr_service/context_installation.py": "84a7dc6e0c1c2757e24e80b084f7fc2497b57d1fc789633289f3af7d8dbc863a",
+    "tests/test_context_compilation_io.py": "f9bac4dbe8531dba3d832e0d3f090e59a8f000cea96ba51fb5102410ee4d10d7"
+  },
+  "limitations": [
+    "准入阶段复核、状态指纹及数据库大对象序列化仍可能占写事务",
+    "文件版本围栏不提供文件系统/SQLite原子提交",
+    "不证明长期无人值守科研或提供方完整载荷保真"
+  ]
+}
